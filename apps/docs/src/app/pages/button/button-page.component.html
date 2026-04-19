@@ -137,13 +137,15 @@
             </p>
             <preview-card>
                 <ng-container preview>
-                    <button ngAtomsButton [loading]="loadingDemo()" (click)="triggerLoadingDemo()"
-                            [disabled]="loadingDemo()">
-                        {{ loadingDemo() ? 'Saving…' : 'Save' }}
+                    <button ngAtomsButton
+                            [loading]="loadingDemo()"
+                            [variant]="loadingError() ? 'destructive' : 'primary'"
+                            (click)="triggerLoadingDemo()">
+                        {{ loadingDemo() ? 'Saving…' : loadingError() ? 'Failed — try again' : 'Save' }}
                     </button>
                     <button ngAtomsButton variant="secondary" [loading]="loadingDemo()"
-                            (click)="triggerLoadingDemo()" [disabled]="loadingDemo()">
-                        {{ loadingDemo() ? 'Saving…' : 'Try me' }}
+                            (click)="triggerLoadingDemo()">
+                        {{ loadingDemo() ? 'Saving…' : loadingError() ? 'Try again' : 'Try me' }}
                     </button>
                 </ng-container>
                 <ng-container code>
@@ -229,19 +231,14 @@
                 Built on a native <code class="cp-code">&lt;button&gt;</code> element, so most accessibility is
                 handled by the browser. What ngAtoms adds on top:
             </p>
-            <ul class="a11y-list">
+            <dl class="a11y-list">
                 @for (item of a11yItems; track item.title) {
-                    <li class="a11y-item">
-                        <div class="a11y-icon">
-                            <i [class]="'ph ph-' + item.icon"></i>
-                        </div>
-                        <div class="a11y-body">
-                            <div class="a11y-title">{{ item.title }}</div>
-                            <div class="a11y-desc">{{ item.body }}</div>
-                        </div>
-                    </li>
+                    <div class="a11y-item">
+                        <dt class="a11y-term">{{ item.title }}</dt>
+                        <dd class="a11y-desc">{{ item.body }}</dd>
+                    </div>
                 }
-            </ul>
+            </dl>
         </section>
 
         <!-- Recipes -->
@@ -254,6 +251,13 @@
                 This pattern works equally well with RxJS, NgRx, or plain promises.
             </p>
             <app-code-block [code]="recipeAsyncCode" language="typescript"/>
+
+            <h3 class="cp-h3" id="recipe-error">Submit + error handling</h3>
+            <p class="cp-p">
+                Bind a second signal for the error state and flip the variant on failure. The button
+                communicates failure without leaving the user on a broken-looking form.
+            </p>
+            <app-code-block [code]="recipeAsyncErrorCode" language="typescript"/>
 
             <h3 class="cp-h3">Destructive confirmation</h3>
             <p class="cp-p">

@@ -56,29 +56,6 @@
   margin-top: 18px;
 }
 
-.cp-chip {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 4px 10px 4px 8px;
-  background: color-mix(in oklab, var(--nga-color-card) 60%, transparent);
-  border: 1px solid color-mix(in oklab, var(--nga-color-border) 60%, transparent);
-  border-radius: var(--nga-radius-full);
-  font-family: var(--nga-font-mono);
-  font-size: 11.5px;
-  color: var(--nga-color-muted-foreground);
-  font-weight: var(--nga-font-weight-medium);
-  text-decoration: none;
-  backdrop-filter: blur(8px);
-}
-
-.cp-chip i {
-  font-size: 12px;
-}
-
-.cp-chip--subtle {
-  background: transparent;
-}
 
 /* ── Section headings ────────────────────────────────────────── */
 
@@ -240,20 +217,17 @@ section {
 }
 
 .inline-terminal-cmd {
-  color: #FFA94D;
+  color: var(--nga-color-accent);
 }
 
 /* ── Props table ─────────────────────────────────────────────── */
 
 .props-table {
-  border: 1px solid color-mix(in oklab, var(--nga-color-border) 70%, transparent);
+  border: 1px solid var(--nga-color-border);
   border-radius: var(--nga-radius-lg);
   overflow: hidden;
   margin: 12px 0;
-  background: color-mix(in oklab, var(--nga-color-card) 65%, transparent);
-  backdrop-filter: blur(16px) saturate(150%);
-  -webkit-backdrop-filter: blur(16px) saturate(150%);
-  box-shadow: 0 1px 3px rgba(0,0,0,0.05), 0 4px 16px rgba(0,0,0,0.03);
+  background: var(--nga-color-card);
 }
 
 .props-table-header {
@@ -292,7 +266,7 @@ section {
 .props-type {
   font-family: var(--nga-font-mono);
   font-size: 12px;
-  color: var(--nga-color-accent);
+  color: var(--nga-color-muted-foreground);
   word-break: break-word;
 }
 
@@ -309,51 +283,39 @@ section {
 /* ── A11y list ───────────────────────────────────────────────── */
 
 .a11y-list {
-  list-style: none;
-  padding: 0;
   margin: 12px 0;
-  display: grid;
-  gap: 8px;
+  padding: 0;
+  border: 1px solid var(--nga-color-border);
+  border-radius: var(--nga-radius-md);
+  overflow: hidden;
+  background: var(--nga-color-card);
 }
 
 .a11y-item {
   display: grid;
-  grid-template-columns: 20px 1fr;
-  gap: 12px;
-  padding: 12px 14px;
-  border: 1px solid color-mix(in oklab, var(--nga-color-border) 60%, transparent);
-  border-radius: var(--nga-radius-md);
-  background: color-mix(in oklab, var(--nga-color-card) 60%, transparent);
-  backdrop-filter: blur(12px);
-  align-items: flex-start;
+  grid-template-columns: 148px 1fr;
+  gap: 16px;
+  padding: 11px 16px;
+  border-top: 1px solid var(--nga-color-border);
+  align-items: baseline;
 }
 
-.a11y-icon {
-  width: 20px;
-  height: 20px;
-  border-radius: var(--nga-radius-full);
-  margin-top: 2px;
-  background: var(--nga-color-accent-soft);
-  color: var(--nga-color-accent);
-  display: grid;
-  place-items: center;
+.a11y-item:first-child {
+  border-top: none;
 }
 
-.a11y-icon i {
-  font-size: 11px;
-}
-
-.a11y-title {
-  font-size: 13.5px;
-  font-weight: var(--nga-font-weight-semibold);
+.a11y-term {
+  font-family: var(--nga-font-mono);
+  font-size: 12.5px;
+  font-weight: var(--nga-font-weight-medium);
   color: var(--nga-color-foreground);
-  margin-bottom: 2px;
 }
 
 .a11y-desc {
   font-size: 13px;
   color: var(--nga-color-muted-foreground);
   line-height: 1.55;
+  margin: 0;
 }
 
 /* ── Prev / Next nav ─────────────────────────────────────────── */
@@ -372,18 +334,17 @@ section {
   flex-direction: column;
   gap: 4px;
   padding: 16px 18px;
-  border: 1px solid color-mix(in oklab, var(--nga-color-border) 60%, transparent);
+  border: 1px solid var(--nga-color-border);
   border-radius: var(--nga-radius-lg);
   color: var(--nga-color-foreground);
   text-decoration: none;
-  background: color-mix(in oklab, var(--nga-color-card) 60%, transparent);
-  backdrop-filter: blur(12px);
+  background: var(--nga-color-card);
   transition: border-color var(--nga-dur-fast) var(--nga-ease-out), background var(--nga-dur-fast) var(--nga-ease-out);
 }
 
 .cp-prevnext-item:hover {
-  background: color-mix(in oklab, var(--nga-color-card) 80%, transparent);
-  border-color: color-mix(in oklab, var(--nga-color-border) 90%, transparent);
+  background: var(--nga-color-muted);
+  border-color: var(--nga-color-border-strong);
   text-decoration: none;
 }
 
@@ -405,7 +366,7 @@ section {
 }
 
 .cp-prevnext-label--accent {
-  color: var(--nga-color-accent);
+  color: var(--nga-color-foreground);
 }
 
 

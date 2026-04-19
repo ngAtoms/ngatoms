@@ -26,9 +26,9 @@
 
   /* Sizes — font */
   --nga-btn-font-size-xs: var(--nga-size-font-xs, 11px);
-  --nga-btn-font-size-sm: 12.5px;
+  --nga-btn-font-size-sm: var(--nga-size-font-sm, 12.5px);
   --nga-btn-font-size-md: var(--nga-size-font-md, 14px);
-  --nga-btn-font-size-lg: var(--nga-text-base, 15px);
+  --nga-btn-font-size-lg: var(--nga-size-font-lg, 15px);
   --nga-btn-font-size-xl: var(--nga-size-font-xl, 18px);
 
   /* Sizes — spinner */
@@ -42,7 +42,7 @@
   --nga-btn-primary-bg:        var(--nga-color-accent, #F06B00);
   --nga-btn-primary-fg:        var(--nga-color-accent-foreground, #FFFFFF);
   --nga-btn-primary-bg-hover:  var(--nga-color-accent-hover, #C75400);
-  --nga-btn-primary-bg-active: #9A4000;
+  --nga-btn-primary-bg-active: var(--nga-color-accent-active, #9A4000);
 
   /* Variant: secondary — white surface + subtle border */
   --nga-btn-secondary-bg:        var(--nga-color-card, #FFFFFF);
@@ -63,15 +63,15 @@
   /* Variant: destructive */
   --nga-btn-destructive-bg:        var(--nga-color-destructive, #DC2626);
   --nga-btn-destructive-fg:        var(--nga-color-destructive-foreground, #FFFFFF);
-  --nga-btn-destructive-bg-hover:  #B91C1C;
-  --nga-btn-destructive-bg-active: #991B1B;
+  --nga-btn-destructive-bg-hover:  var(--nga-color-destructive-hover, #B91C1C);
+  --nga-btn-destructive-bg-active: var(--nga-color-destructive-active, #991B1B);
 }
 
 /* ── Dark mode token overrides ──────────────────────────────── */
 .dark {
-  --nga-btn-primary-bg:       var(--nga-color-accent, #FF8A1F);
-  --nga-btn-primary-bg-hover: var(--nga-color-accent-hover, #FFA94D);
-  --nga-btn-primary-bg-active: #FF8A1F;
+  --nga-btn-primary-bg:        var(--nga-color-accent, #FF8A1F);
+  --nga-btn-primary-bg-hover:  var(--nga-color-accent-hover, #FFA94D);
+  --nga-btn-primary-bg-active: var(--nga-color-accent-active, #E07000);
 
   --nga-btn-secondary-bg:           var(--nga-color-card, #1A1714);
   --nga-btn-secondary-border:       var(--nga-color-border, #2A2520);
@@ -107,7 +107,7 @@
 }
 
 .nga-btn:focus-visible {
-  box-shadow: var(--nga-glow-ember, 0 0 0 4px rgba(240, 107, 0, 0.18));
+  box-shadow: var(--nga-glow-ember, 0 0 0 4px color-mix(in oklch, var(--nga-color-accent, #F06B00) 18%, transparent));
 }
 
 .nga-btn[aria-disabled="true"],
@@ -212,3 +212,20 @@
 .nga-btn--md .nga-btn-spinner { width: var(--nga-btn-spinner-size-md); height: var(--nga-btn-spinner-size-md); }
 .nga-btn--lg .nga-btn-spinner { width: var(--nga-btn-spinner-size-lg); height: var(--nga-btn-spinner-size-lg); }
 .nga-btn--xl .nga-btn-spinner { width: var(--nga-btn-spinner-size-xl); height: var(--nga-btn-spinner-size-xl); }
+
+/* ── Full width ─────────────────────────────────────────────── */
+.nga-btn--full-width {
+  width: 100%;
+}
+
+/* ── Reduced motion ─────────────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  .nga-btn {
+    transition: none;
+  }
+  .nga-btn-spinner {
+    animation: none;
+    border-top-color: currentColor;
+    opacity: 0.5;
+  }
+}

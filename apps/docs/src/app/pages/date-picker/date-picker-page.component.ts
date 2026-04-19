@@ -100,11 +100,21 @@ export class MyComponent {
     { name: 'maxDate',        type: 'string',                         defaultVal: '—',         description: 'Latest selectable date (YYYY-MM-DD).' },
     { name: 'availableDates', type: 'string[]',                       defaultVal: '[]',        description: 'If non-empty, only these dates are selectable.' },
     { name: 'showToday',      type: 'boolean',                        defaultVal: 'false',     description: 'Shows a "Today" button in the calendar footer.' },
+    { name: 'outputFormat',   type: `'iso' | 'locale'`,               defaultVal: `'iso'`,     description: `Output format for model values. 'iso' → YYYY-MM-DD; 'locale' → locale-formatted string.` },
     { name: 'locale',         type: 'string',                         defaultVal: `'en-US'`,   description: 'BCP 47 locale tag used for month/day formatting.' },
     { name: 'dayLabels',      type: 'string[]',                       defaultVal: '—',         description: 'Custom day-of-week header labels (7 entries).' },
     { name: 'monthLabels',    type: 'string[]',                       defaultVal: '—',         description: 'Custom month name labels (12 entries).' },
     { name: 'invalid',        type: 'boolean',                        defaultVal: 'false',     description: 'Applies error state styling to the trigger.' },
     { name: 'disabled',       type: 'boolean',                        defaultVal: 'false',     description: 'Prevents interaction with the date picker.' },
+  ];
+
+  readonly a11yItems = [
+    { term: 'Keyboard',     body: 'Arrow keys move focus between calendar days. PageUp/PageDown navigate months. Enter or Space selects a day. Escape closes the calendar and returns focus to the trigger.' },
+    { term: 'Focus ring',   body: 'Visible focus ring on the trigger and each day cell during keyboard navigation. The trigger exposes aria-expanded and aria-haspopup="dialog".' },
+    { term: 'Grid',         body: 'The calendar grid uses role="grid" with role="row" and role="gridcell" semantics so screen readers can announce day, month, and position.' },
+    { term: 'Scroll',       body: 'The calendar closes automatically when the page is scrolled, keeping the overlay anchored to its trigger at all times.' },
+    { term: 'Range mode',   body: 'An incomplete range (start chosen, end not yet selected) is discarded on close so forms never receive a partial value.' },
+    { term: 'Disabled',     body: 'Disabled days carry aria-disabled="true". The trigger itself uses the disabled HTML attribute when the entire picker is disabled.' },
   ];
 
   readonly tocItems = [
@@ -115,5 +125,6 @@ export class MyComponent {
     { id: 'sizes',       label: 'Sizes' },
     { id: 'i18n',        label: 'Internationalization' },
     { id: 'api',         label: 'API' },
+    { id: 'a11y',        label: 'Accessibility' },
   ];
 }

@@ -1,4 +1,4 @@
-import {Component, signal} from "@angular/core";
+import {Component, input, signal} from "@angular/core";
 import {CodeBlockComponent} from "../code-block/code-block.component";
 import {NgAtomsButtonDirective} from "../button";
 
@@ -13,6 +13,8 @@ import {NgAtomsButtonDirective} from "../button";
 })
 export class PreviewCard {
     tab = signal<string>('preview')
+    allowOverflow = input(false)
+    previewMinHeight = input('320px')
     readonly disabledCode = `<button ngAtomsButton [disabled]="true">Disabled</button>`
 
     setTab(tab: 'preview' | 'code') {

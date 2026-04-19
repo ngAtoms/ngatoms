@@ -1,4 +1,4 @@
-<div class="preview-card">
+<div class="preview-card" [class.preview-card--overflow]="allowOverflow()">
     <div class="preview-card-tabs">
         <button class="preview-tab" [class.preview-tab--active]="tab() === 'preview'"
                 (click)="setTab( 'preview')">
@@ -10,7 +10,7 @@
         </button>
     </div>
     @if (tab() === 'preview') {
-        <div class="preview-area">
+        <div class="preview-area" [style.min-height]="allowOverflow() ? previewMinHeight() : null">
             <div class="preview-area-content">
                <ng-content select="[preview]"></ng-content>
             </div>

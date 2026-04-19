@@ -14,22 +14,17 @@ import {PreviewCard} from "../../../components/preview-card/preview-card";
 })
 export class ButtonPageComponent {
   loadingDemo = signal(false);
-
-  /* Preview card tab state: cardId → 'preview' | 'code' */
-  previewTabs: Record<string, 'preview' | 'code'> = {};
-
-  setTab(id: string, tab: 'preview' | 'code') {
-    this.previewTabs = { ...this.previewTabs, [id]: tab };
-  }
-
-  tab(id: string): 'preview' | 'code' {
-    return this.previewTabs[id] ?? 'preview';
-  }
+  loadingError = signal(false);
 
   triggerLoadingDemo() {
     if (this.loadingDemo()) return;
     this.loadingDemo.set(true);
-    setTimeout(() => this.loadingDemo.set(false), 1600);
+    this.loadingError.set(false);
+    setTimeout(() => {
+      this.loadingDemo.set(false);
+      this.loadingError.set(true);
+      setTimeout(() => this.loadingError.set(false), 2000);
+    }, 1600);
   }
 
   /* ── Code snippets ─────────────────────────────────────────── */
@@ -76,9 +71,11 @@ export class SaveBar {
 <button ngAtomsButton variant="ghost">Ghost</button>
 <button ngAtomsButton variant="destructive">Destructive</button>`;
 
-  readonly sizesCode = `<button ngAtomsButton size="sm">Small</button>
-<button ngAtomsButton size="md">Medium</button>
-<button ngAtomsButton size="lg">Large</button>`;
+  readonly sizesCode = `<button ngAtomsButton size="xs">Extra small</button>
+<button ngAtomsButton size="sm">Small</button>
+<button ngAtomsButton>Default</button>
+<button ngAtomsButton size="lg">Large</button>
+<button ngAtomsButton size="xl">Extra large</button>`;
 
   readonly iconCode = `<button ngAtomsButton>
   <i class="ph-bold ph-download-simple"></i>
@@ -94,18 +91,58 @@ export class SaveBar {
   <i class="ph-bold ph-list"></i>
 </button>`;
 
-  readonly loadingCode = `<button ngAtomsButton [loading]="saving()" (click)="save()">
-  {{ saving() ? 'Saving…' : 'Save' }}
+  readonly loadingCode = `<button ngAtomsButton
+  [loading]="saving()"
+  [variant]="saveError() ? 'destructive' : 'primary'"
+  (click)="save()">
+  {{ saving() ? 'Saving…' : saveError() ? 'Failed — try again' : 'Save' }}
 </button>`;
 
   readonly disabledCode = `<button ngAtomsButton [disabled]="true">Disabled</button>
 <button ngAtomsButton variant="secondary" [disabled]="true">Disabled</button>`;
 
-  readonly asLinkCode = `<button ngAtomsButton>See pricing</button>
-<button ngAtomsButton variant="secondary">
+  readonly asLinkCode = `<a ngAtomsButton href="/pricing">See pricing</a>
+<a ngAtomsButton variant="secondary" href="https://github.com/ngAtoms/ngatoms" target="_blank">
   View on GitHub
   <i class="ph-bold ph-arrow-up-right"></i>
-</button>`;
+</a>`;
+
+  readonly recipeAsyncErrorCode = `import { Component, signal, inject } from '@angular/core';
+import { NgAtomsButtonDirective } from './ui/button';
+import { ContactApi } from './contact.api';
+
+@Component({
+  standalone: true,
+  selector: 'app-contact-form',
+  imports: [NgAtomsButtonDirective],
+  template: \`
+    <button ngAtomsButton
+      [loading]="sending()"
+      [variant]="sendError() ? 'destructive' : 'primary'"
+      (click)="submit()">
+      {{ sending() ? 'Sending…' : sendError() ? 'Failed — try again' : 'Send message' }}
+    </button>
+  \`,
+})
+export class ContactForm {
+  private api = inject(ContactApi);
+  sending = signal(false);
+  sendError = signal(false);
+
+  async submit() {
+    this.sendError.set(false);
+    await this.send().catch(() => this.sendError.set(true));
+  }
+
+  private async send() {
+    this.sending.set(true);
+    try {
+      await this.api.send(/* ... */);
+    } finally {
+      this.sending.set(false);
+    }
+  }
+}`;
 
   readonly recipeAsyncCode = `import { Component, signal, inject } from '@angular/core';
 import { NgAtomsButtonDirective } from './ui/button';
@@ -181,6 +218,7 @@ export class ContactForm {
     { id: 'api',      label: 'API' },
     { id: 'a11y',     label: 'Accessibility' },
     { id: 'recipes',  label: 'Recipes' },
+    { id: 'recipe-error', label: '↳ Error handling' },
   ];
 
 }

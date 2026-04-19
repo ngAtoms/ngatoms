@@ -20,7 +20,7 @@
   --nga-select-filled-fg:           var(--nga-color-secondary-foreground, #1A1714);
   --nga-select-filled-border:       transparent;
   --nga-select-filled-border-hover: var(--nga-color-primary, #1A1714);
-  --nga-select-filled-bg-hover:     color-mix(in srgb, var(--nga-select-filled-bg) 85%, black);
+  --nga-select-filled-bg-hover:     color-mix(in oklch, var(--nga-select-filled-bg) 85%, black);
 
   /* Variant: ghost */
   --nga-select-ghost-bg:           transparent;
@@ -34,23 +34,23 @@
   /* Panel */
   --nga-select-panel-bg:     color-mix(in oklab, var(--nga-color-card, #FFFFFF) 78%, transparent);
   --nga-select-panel-border: color-mix(in oklab, var(--nga-color-border, #DED4C5) 55%, transparent);
-  --nga-select-panel-inset:  inset 0 1px 0 rgba(255, 255, 255, 0.85);
+  --nga-select-panel-inset:  inset 0 1px 0 color-mix(in oklch, white 85%, transparent);
   --nga-select-panel-blur:   blur(20px) saturate(180%);
-  --nga-select-panel-shadow: 0 8px 24px -4px rgba(26, 23, 20, 0.10), 0 2px 8px -2px rgba(26, 23, 20, 0.06);
+  --nga-select-panel-shadow: 0 8px 24px -4px color-mix(in oklch, oklch(10% 0.01 60) 10%, transparent),
+                             0 2px 8px -2px  color-mix(in oklch, oklch(10% 0.01 60) 6%, transparent);
 
-  /* Options */
+  /* Options — selected uses accent tint + accent text for WCAG AA compliance */
   --nga-select-option-hover-bg:    var(--nga-color-muted, #F3EEE7);
-  --nga-select-option-selected-bg: var(--nga-color-accent, #F06B00);
-  --nga-select-option-selected-fg: #FFFFFF;
+  --nga-select-option-selected-bg: color-mix(in oklch, var(--nga-color-accent, #F06B00) 10%, transparent);
+  --nga-select-option-selected-fg: var(--nga-color-accent, #F06B00);
 }
 
 /* ── Dark mode ──────────────────────────────────────────────── */
 .dark {
-  --nga-select-filled-bg-hover:    color-mix(in srgb, var(--nga-select-filled-bg) 82%, white);
+  --nga-select-filled-bg-hover:    color-mix(in oklch, var(--nga-select-filled-bg) 82%, white);
   --nga-select-panel-bg:           color-mix(in oklab, var(--nga-color-card) 82%, transparent);
   --nga-select-panel-border:       color-mix(in oklab, white 14%, transparent);
   --nga-select-panel-blur:         blur(24px) saturate(200%) brightness(1.06);
-  --nga-select-option-selected-fg: #FFFFFF;
 }
 
 /* ── Root ───────────────────────────────────────────────────── */
@@ -60,6 +60,19 @@
 
 .nga-select-wrapper {
   position: relative;
+}
+
+/* ── Screen reader utility ──────────────────────────────────── */
+.nga-sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
 }
 
 /* ── Trigger ────────────────────────────────────────────────── */
@@ -82,7 +95,7 @@
 }
 
 .nga-select-trigger:focus-visible {
-  box-shadow: var(--nga-glow-ember, 0 0 0 4px rgba(240, 107, 0, 0.18));
+  box-shadow: 0 0 0 4px color-mix(in oklch, var(--nga-color-accent, #F06B00) 18%, transparent);
 }
 
 .nga-select-trigger:disabled {
@@ -148,7 +161,7 @@
 /* ── Invalid ────────────────────────────────────────────────── */
 .nga-select-trigger--invalid { border-color: var(--nga-select-invalid-border) !important; }
 .nga-select-trigger--invalid:focus-visible {
-  box-shadow: 0 0 0 4px rgba(220, 38, 38, 0.18);
+  box-shadow: 0 0 0 4px color-mix(in oklch, var(--nga-color-destructive, #DC2626) 18%, transparent);
 }
 
 /* ── Panel ──────────────────────────────────────────────────── */
@@ -181,6 +194,10 @@
 @keyframes nga-select-panel-in-above {
   from { opacity: 0; transform: translateY(4px); }
   to   { opacity: 1; transform: translateY(0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nga-select-panel { animation: none; }
 }
 
 /* ── Search ─────────────────────────────────────────────────── */
@@ -234,7 +251,8 @@
   font-size: var(--nga-size-font-sm, 13px);
   line-height: 1.4;
   cursor: pointer;
-  transition: background var(--nga-dur-fast, 120ms) var(--nga-ease-out, ease), color var(--nga-dur-fast, 120ms) var(--nga-ease-out, ease);
+  transition: background var(--nga-dur-fast, 120ms) var(--nga-ease-out, ease),
+              color var(--nga-dur-fast, 120ms) var(--nga-ease-out, ease);
   color: var(--nga-color-foreground, #1A1714);
   user-select: none;
 }
@@ -247,11 +265,12 @@
 .nga-select-option--selected {
   background: var(--nga-select-option-selected-bg);
   color: var(--nga-select-option-selected-fg);
+  font-weight: var(--nga-font-weight-medium, 500);
 }
 
 .nga-select-option--selected.nga-select-option--focused,
 .nga-select-option--selected:hover:not(.nga-select-option--disabled) {
-  background: color-mix(in srgb, var(--nga-select-option-selected-bg) 85%, black);
+  background: color-mix(in oklch, var(--nga-color-accent, #F06B00) 15%, transparent);
 }
 
 .nga-select-option--disabled {

@@ -1,4 +1,4 @@
-import { Component, signal } from '@angular/core';
+import { Component, computed, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { NgAtomsSelectComponent, NgAtomsSelectOption } from '../../../components/select';
 import { NgAtomsBadgeDirective } from '../../../components/badge';
@@ -21,6 +21,10 @@ import { PreviewCard } from '../../../components/preview-card/preview-card';
 })
 export class SelectPageComponent {
   readonly skills = signal<string[]>([]);
+
+  readonly selectedSkillLabels = computed(() =>
+    this.skills().map(v => this.skillOptions.find(o => o.value === v)?.label ?? v).join(', ')
+  );
 
   readonly departments: NgAtomsSelectOption[] = [
     { value: 'eng',     label: 'Engineering' },
@@ -124,9 +128,10 @@ export class MyComponent {
   ];
 
   readonly a11yItems = [
-    { icon: 'keyboard',   title: 'Keyboard navigation', body: 'Arrow keys move between options. Enter or Space selects. Escape closes the panel. Home/End jump to first/last.' },
-    { icon: 'eye',        title: 'Focus ring',          body: 'Visible focus ring appears on keyboard navigation. The trigger uses aria-expanded to announce open/closed state.' },
-    { icon: 'list-magnifying-glass', title: 'Search', body: 'When searchable, typing filters options in real time. Screen readers announce the count of matching results.' },
+    { term: 'Keyboard',      body: 'Arrow keys navigate options. Enter or Space selects. Escape closes the panel and returns focus to the trigger. Home/End jump to the first and last option.' },
+    { term: 'Focus ring',    body: 'Visible focus ring on keyboard navigation. The trigger exposes aria-expanded and aria-haspopup="listbox". aria-activedescendant tracks the focused option for screen readers.' },
+    { term: 'Search',        body: 'When searchable, options filter as you type. A live region announces the count of matching results after each keystroke.' },
+    { term: 'Disabled',      body: 'Disabled options carry aria-disabled="true" so screen readers announce them as unavailable rather than silently refusing selection.' },
   ];
 
   readonly tocItems = [

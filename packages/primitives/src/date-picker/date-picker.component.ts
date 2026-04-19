@@ -13,6 +13,7 @@ import {
   viewChild,
 } from '@angular/core';
 import { DOCUMENT } from '@angular/common';
+import { NgAtomsOverlayService } from '../overlay/overlay.service';
 
 export type NgAtomsDatePickerSize = 'sm' | 'md' | 'lg';
 export type NgAtomsDatePickerMode = 'single' | 'range';
@@ -46,6 +47,8 @@ export class NgAtomsDatePickerComponent implements OnDestroy {
   private readonly el = inject(ElementRef<HTMLElement>);
   private readonly renderer = inject(Renderer2);
   private readonly document = inject(DOCUMENT);
+  private readonly overlay = inject(NgAtomsOverlayService);
+  private deregister: (() => void) | null = null;
 
   /** Single mode: the selected date (YYYY-MM-DD). */
   readonly value = model<string>('');
@@ -102,7 +105,10 @@ export class NgAtomsDatePickerComponent implements OnDestroy {
   readonly hoverDate = signal('');
 
   readonly panelEl = viewChild.required<ElementRef<HTMLElement>>('panelEl');
-  readonly monthsShort = MONTHS_SHORT;
+  readonly triggerEl = viewChild.required<ElementRef<HTMLButtonElement>>('triggerEl');
+
+  /** Tracks the date cell with tabindex="0" for roving tabindex grid navigation. */
+  readonly focusedDateStr = signal('');
 
   /** Year range shown in year picker: 12 years centred on viewYear. */
   readonly yearRange = computed(() => {
@@ -113,6 +119,19 @@ export class NgAtomsDatePickerComponent implements OnDestroy {
   readonly yearRangeLabel = computed(() => {
     const r = this.yearRange();
     return `${r[0]} – ${r[r.length - 1]}`;
+  });
+
+  /** Short month names derived from monthLabels — keeps i18n in sync. */
+  readonly monthLabelsShort = computed(() =>
+    this.monthLabels().map(m => m.slice(0, 3))
+  );
+
+  /** calendarDays chunked into rows of 7 for role="row" grid semantics. */
+  readonly calendarWeeks = computed(() => {
+    const days = this.calendarDays();
+    const weeks: NgAtomsCalendarDay[][] = [];
+    for (let i = 0; i < days.length; i += 7) weeks.push(days.slice(i, i + 7));
+    return weeks;
   });
 
   // ── Display value ──────────────────────────────────────────
@@ -223,23 +242,54 @@ export class NgAtomsDatePickerComponent implements OnDestroy {
 
   toggle(): void {
     if (this.disabled()) return;
-    this.open.update(v => !v);
-    if (this.open()) {
-      // Navigate to relevant month
+    if (!this.open()) {
+      this.open.set(true);
       const anchor = this.mode() === 'range' ? this.startDate() : this.value();
       if (anchor) {
         const [year, month] = anchor.split('-').map(Number);
         this.viewYear.set(year);
         this.viewMonth.set(month - 1);
       }
-      requestAnimationFrame(() => this.position());
+      const focusTarget = anchor || this.toDateStr(new Date());
+      this.focusedDateStr.set(focusTarget);
+      this.deregister = this.overlay.register(
+        () => this.close(false),
+        this.el.nativeElement,
+        this.panelEl().nativeElement,
+      );
+      requestAnimationFrame(() => {
+        this.position();
+        this._focusCell(this.focusedDateStr());
+      });
+    } else {
+      this.close();
     }
   }
 
-  close(): void {
+  /** @param returnFocus Whether to move focus back to the trigger. Pass false when closing via outside click. */
+  close(returnFocus = true): void {
+    const wasOpen = this.open();
     this.open.set(false);
     this.hoverDate.set('');
     this.view.set('days');
+    this.deregister?.();
+    this.deregister = null;
+    // Discard a half-committed range so forms never receive an incomplete selection.
+    if (this.mode() === 'range' && this.startDate() && !this.endDate()) {
+      this.startDate.set('');
+    }
+    if (wasOpen && returnFocus) {
+      setTimeout(() => this.triggerEl().nativeElement.focus());
+    }
+  }
+
+  clear(): void {
+    if (this.mode() === 'single') {
+      this.value.set('');
+    } else {
+      this.startDate.set('');
+      this.endDate.set('');
+    }
   }
 
   // ── Month / year picker ────────────────────────────────────
@@ -358,17 +408,51 @@ export class NgAtomsDatePickerComponent implements OnDestroy {
     this.renderer.setStyle(panel, 'left', `${left}px`);
   }
 
-  @HostListener('document:click', ['$event'])
-  onDocumentClick(event: MouseEvent): void {
-    const target = event.target as Node;
-    if (!this.el.nativeElement.contains(target) && !this.panelEl().nativeElement.contains(target)) {
-      this.close();
+  @HostListener('document:keydown', ['$event'])
+  onDocumentKeydown(event: KeyboardEvent): void {
+    if (!this.open()) return;
+    if (this.view() !== 'days') return;
+    const panel = this.panelEl().nativeElement;
+    if (!panel.contains(event.target as Node)) return;
+
+    const focused = this.focusedDateStr();
+    const date = focused ? this.parseIso(focused) : null;
+    if (!date) return;
+
+    let moved = false;
+    switch (event.key) {
+      case 'ArrowLeft':  date.setDate(date.getDate() - 1); moved = true; break;
+      case 'ArrowRight': date.setDate(date.getDate() + 1); moved = true; break;
+      case 'ArrowUp':    date.setDate(date.getDate() - 7); moved = true; break;
+      case 'ArrowDown':  date.setDate(date.getDate() + 7); moved = true; break;
+      case 'Home':       date.setDate(date.getDate() - date.getDay()); moved = true; break;
+      case 'End':        date.setDate(date.getDate() + (6 - date.getDay())); moved = true; break;
+      case 'PageUp':     date.setMonth(date.getMonth() - 1); moved = true; break;
+      case 'PageDown':   date.setMonth(date.getMonth() + 1); moved = true; break;
+      case 'Enter':
+      case ' ': {
+        const day = this.calendarDays().find(d => d.dateStr === focused);
+        if (day) this.selectDay(day);
+        event.preventDefault();
+        return;
+      }
+    }
+
+    if (moved) {
+      event.preventDefault();
+      const newStr = this.toDateStr(date);
+      this.focusedDateStr.set(newStr);
+      if (date.getMonth() !== this.viewMonth() || date.getFullYear() !== this.viewYear()) {
+        this.viewMonth.set(date.getMonth());
+        this.viewYear.set(date.getFullYear());
+      }
+      requestAnimationFrame(() => this._focusCell(newStr));
     }
   }
 
-  @HostListener('document:keydown.escape')
-  onEscape(): void {
-    if (this.open()) this.close();
+  private _focusCell(dateStr: string): void {
+    const cell = this.panelEl().nativeElement.querySelector<HTMLElement>(`[data-date="${dateStr}"]`);
+    cell?.focus();
   }
 
   ngOnDestroy(): void {

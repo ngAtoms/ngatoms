@@ -13,6 +13,7 @@ export class AppComponent implements AfterViewInit, OnDestroy {
 
   readonly isDark = signal(true);
   readonly scrolled = signal(false);
+  readonly mobileNavOpen = signal(false);
 
   private readonly onScroll = () => this.scrolled.set(this.document.documentElement.scrollTop > 4);
 
@@ -32,5 +33,15 @@ export class AppComponent implements AfterViewInit, OnDestroy {
 
   toggleTheme(): void {
     this.isDark.update(v => !v);
+  }
+
+  toggleMobileNav(): void {
+    this.mobileNavOpen.update(v => !v);
+  }
+
+  onSidebarNavClick(event: MouseEvent): void {
+    if ((event.target as HTMLElement).closest('a')) {
+      this.mobileNavOpen.set(false);
+    }
   }
 }
