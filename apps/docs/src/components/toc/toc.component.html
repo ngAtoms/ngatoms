@@ -1,0 +1,9 @@
+<div class="toc-heading">On this page</div>
+<nav class="toc-nav">
+  @for (item of items(); track item.id) {
+    <a (click)="scrollTo(item.id)" class="toc-item" [class.toc-item--active]="activeTocId() === item.id">
+      {{ item.label }}
+    </a>
+  }
+</nav>
+<ng-content />

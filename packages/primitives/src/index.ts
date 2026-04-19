@@ -1,4 +1,5 @@
 // NgAtoms primitives — components will be exported from here
+export * from './overlay';
 export * from './alert';
 export * from './badge';
 export * from './checkbox';

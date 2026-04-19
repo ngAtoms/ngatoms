@@ -1,57 +1,201 @@
-<app-component-demo [files]="codeFiles">
-  <header class="page-header">
-    <h1 class="page-title">Avatar</h1>
-    <p class="page-desc">Displays a user image with fallback to initials or a generic icon.</p>
-  </header>
+<div class="cp-layout">
 
-  <section class="showcase-section">
-    <h2 class="section-title">Image</h2>
-    <p class="section-note">Images are random avatars served by <a class="section-link" href="https://i.pravatar.cc" target="_blank" rel="noopener noreferrer"><code>i.pravatar.cc</code></a>.</p>
-    <div class="sizes-grid">
-      @for (size of sizes; track size) {
-        <div class="size-item">
-          <span class="size-label">{{ size }}</span>
-          <nga-avatar src="https://i.pravatar.cc/150" alt="Jane Doe" [size]="size"></nga-avatar>
-        </div>
-      }
-    </div>
-  </section>
+    <main class="cp-main">
 
-  <section class="showcase-section">
-    <h2 class="section-title">Initials fallback</h2>
-    <div class="sizes-grid">
-      @for (size of sizes; track size) {
-        <div class="size-item">
-          <span class="size-label">{{ size }}</span>
-          <nga-avatar fallback="JD" [size]="size"></nga-avatar>
-        </div>
-      }
-    </div>
-  </section>
+        <header class="cp-header">
+            <div class="cp-eyebrow">Components / Display</div>
+            <h1 class="cp-title">Avatar</h1>
+            <p class="cp-lede">
+                Displays a user image with graceful fallback to initials or a generic icon.
+                Four sizes and automatic broken-image detection.
+            </p>
+            <div class="cp-chips">
+                <span ngAtomsBadge variant="default"><i class="ph ph-angular-logo"></i> ngAtoms v0.3+</span>
+                <span ngAtomsBadge variant="default"><i class="ph ph-package"></i> ngatoms add avatar</span>
+                <span ngAtomsBadge variant="success"><i class="ph ph-check-circle"></i> Stable</span>
+                <a ngAtomsBadge variant="outline" href="https://github.com/ngAtoms/ngatoms/tree/rc/packages/primitives/src/avatar" target="_blank">
+                    <i class="ph ph-arrow-square-out"></i> Source
+                </a>
+            </div>
+        </header>
 
-  <section class="showcase-section">
-    <h2 class="section-title">Icon fallback</h2>
-    <div class="sizes-grid">
-      @for (size of sizes; track size) {
-        <div class="size-item">
-          <span class="size-label">{{ size }}</span>
-          <nga-avatar [size]="size"></nga-avatar>
-        </div>
-      }
-    </div>
-  </section>
+        <!-- Hero preview -->
+        <preview-card>
+            <ng-container preview>
+                <div class="avatar-row">
+                    @for (size of sizes; track size) {
+                        <nga-avatar src="https://i.pravatar.cc/150" alt="Jane Doe" [size]="size" />
+                    }
+                </div>
+            </ng-container>
+            <ng-container code>
+                <app-code-block [code]="heroCode" language="html" />
+            </ng-container>
+        </preview-card>
 
-  <section class="showcase-section">
-    <h2 class="section-title">Broken image</h2>
-    <div class="states-grid">
-      <div class="state-item">
-        <span class="state-label">Broken → initials</span>
-        <nga-avatar src="broken-url.jpg" fallback="AB" size="md"></nga-avatar>
-      </div>
-      <div class="state-item">
-        <span class="state-label">Broken → icon</span>
-        <nga-avatar src="broken-url.jpg" size="md"></nga-avatar>
-      </div>
-    </div>
-  </section>
-</app-component-demo>
+        <!-- Usage -->
+        <section id="usage">
+            <h2 class="cp-h2">Usage</h2>
+            <p class="cp-p">Add the avatar to your project and import the standalone component wherever you need it.</p>
+            <div class="inline-terminal">
+                <span class="inline-terminal-dollar">$</span>
+                <span class="inline-terminal-cmd">ngatoms add avatar</span>
+            </div>
+            <p class="cp-p" style="margin-top: 14px;">Then import into your component:</p>
+            <app-code-block [code]="usageCode" language="typescript" />
+        </section>
+
+        <!-- Image -->
+        <section id="image">
+            <h2 class="cp-h2">Image</h2>
+            <p class="cp-p">
+                Provide a <code class="cp-code">src</code> URL and an <code class="cp-code">alt</code> description.
+                The image fills the avatar circle and is cropped to cover.
+            </p>
+            <preview-card>
+                <ng-container preview>
+                    <div class="avatar-row">
+                        @for (size of sizes; track size) {
+                            <div class="avatar-item">
+                                <span class="avatar-label">{{ size }}</span>
+                                <nga-avatar src="https://i.pravatar.cc/150" alt="Jane Doe" [size]="size" />
+                            </div>
+                        }
+                    </div>
+                </ng-container>
+                <ng-container code>
+                    <app-code-block [code]="imageCode" language="html" />
+                </ng-container>
+            </preview-card>
+        </section>
+
+        <!-- Initials fallback -->
+        <section id="initials">
+            <h2 class="cp-h2">Initials fallback</h2>
+            <p class="cp-p">
+                Set <code class="cp-code">fallback</code> to a short string (typically 1–2 characters) shown when
+                no image is provided or the image fails to load.
+            </p>
+            <preview-card>
+                <ng-container preview>
+                    <div class="avatar-row">
+                        @for (size of sizes; track size) {
+                            <div class="avatar-item">
+                                <span class="avatar-label">{{ size }}</span>
+                                <nga-avatar fallback="JD" [size]="size" />
+                            </div>
+                        }
+                    </div>
+                </ng-container>
+                <ng-container code>
+                    <app-code-block [code]="initialsCode" language="html" />
+                </ng-container>
+            </preview-card>
+        </section>
+
+        <!-- Icon fallback -->
+        <section id="icon">
+            <h2 class="cp-h2">Icon fallback</h2>
+            <p class="cp-p">
+                When neither <code class="cp-code">src</code> nor <code class="cp-code">fallback</code> is set,
+                a generic user icon is shown as the final fallback.
+            </p>
+            <preview-card>
+                <ng-container preview>
+                    <div class="avatar-row">
+                        @for (size of sizes; track size) {
+                            <div class="avatar-item">
+                                <span class="avatar-label">{{ size }}</span>
+                                <nga-avatar [size]="size" />
+                            </div>
+                        }
+                    </div>
+                </ng-container>
+                <ng-container code>
+                    <app-code-block [code]="iconCode" language="html" />
+                </ng-container>
+            </preview-card>
+        </section>
+
+        <!-- Broken image -->
+        <section id="broken">
+            <h2 class="cp-h2">Broken image</h2>
+            <p class="cp-p">
+                If the image URL fails to load, the component automatically falls back to initials (if set)
+                or the generic icon. No extra configuration needed.
+            </p>
+            <preview-card>
+                <ng-container preview>
+                    <div class="avatar-row">
+                        <div class="avatar-item">
+                            <span class="avatar-label">→ initials</span>
+                            <nga-avatar src="broken-url.jpg" fallback="AB" size="md" />
+                        </div>
+                        <div class="avatar-item">
+                            <span class="avatar-label">→ icon</span>
+                            <nga-avatar src="broken-url.jpg" size="md" />
+                        </div>
+                    </div>
+                </ng-container>
+                <ng-container code>
+                    <app-code-block [code]="brokenCode" language="html" />
+                </ng-container>
+            </preview-card>
+        </section>
+
+        <!-- API -->
+        <section id="api">
+            <h2 class="cp-h2">API</h2>
+            <p class="cp-p">Inputs on <code class="cp-code">nga-avatar</code>.</p>
+            <div class="props-table">
+                <div class="props-table-header">
+                    <span>Prop</span>
+                    <span>Type</span>
+                    <span>Default</span>
+                    <span>Description</span>
+                </div>
+                @for (prop of props; track prop.name) {
+                    <div class="props-table-row">
+                        <code class="props-name">{{ prop.name }}</code>
+                        <code class="props-type">{{ prop.type }}</code>
+                        <code class="props-default">{{ prop.defaultVal }}</code>
+                        <span class="props-desc">{{ prop.description }}</span>
+                    </div>
+                }
+            </div>
+        </section>
+
+        <!-- Accessibility -->
+        <section id="a11y">
+            <h2 class="cp-h2">Accessibility</h2>
+            <p class="cp-p">Avatars are decorative images. Supply a meaningful <code class="cp-code">alt</code> when the image carries information.</p>
+            <ul class="a11y-list">
+                @for (item of a11yItems; track item.title) {
+                    <li class="a11y-item">
+                        <div class="a11y-icon"><i [class]="'ph ph-' + item.icon"></i></div>
+                        <div class="a11y-body">
+                            <div class="a11y-title">{{ item.title }}</div>
+                            <div class="a11y-desc">{{ item.body }}</div>
+                        </div>
+                    </li>
+                }
+            </ul>
+        </section>
+
+        <!-- Prev / Next -->
+        <nav class="cp-prevnext">
+            <a routerLink="/separator" class="cp-prevnext-item">
+                <span class="cp-prevnext-dir">← PREVIOUS</span>
+                <span class="cp-prevnext-label">Separator</span>
+            </a>
+            <a routerLink="/alert" class="cp-prevnext-item cp-prevnext-item--right">
+                <span class="cp-prevnext-dir">NEXT →</span>
+                <span class="cp-prevnext-label cp-prevnext-label--accent">Alert</span>
+            </a>
+        </nav>
+
+    </main>
+
+    <app-toc [items]="tocItems" />
+
+</div>

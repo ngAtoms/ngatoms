@@ -1,26 +1,164 @@
-<app-component-demo [files]="codeFiles">
-  <header class="page-header">
-    <h1 class="page-title">Badge</h1>
-    <p class="page-desc">Small status label for counts, states, or categories.</p>
-  </header>
+<div class="cp-layout">
 
-  <section class="showcase-section">
-    <h2 class="section-title">Variants</h2>
-    <div class="row-group">
-      @for (variant of variants; track variant) {
-        <span ngAtomsBadge [variant]="variant">{{ variant }}</span>
-      }
-    </div>
-  </section>
+    <main class="cp-main">
 
-  <section class="showcase-section">
-    <h2 class="section-title">Usage examples</h2>
-    <div class="row-group">
-      <span ngAtomsBadge variant="default">New</span>
-      <span ngAtomsBadge variant="secondary">Beta</span>
-      <span ngAtomsBadge variant="success">Active</span>
-      <span ngAtomsBadge variant="destructive">Deprecated</span>
-      <span ngAtomsBadge variant="outline">Draft</span>
-    </div>
-  </section>
-</app-component-demo>
+        <header class="cp-header">
+            <div class="cp-eyebrow">Components / Feedback</div>
+            <h1 class="cp-title">Badge</h1>
+            <p class="cp-lede">
+                Small inline label for status, counts, and categories. Seven semantic variants keep
+                feedback visually distinct without extra structure.
+            </p>
+            <div class="cp-chips">
+                <span ngAtomsBadge variant="default"><i class="ph ph-angular-logo"></i> ngAtoms v0.3+</span>
+                <span ngAtomsBadge variant="default"><i class="ph ph-package"></i> ngatoms add badge</span>
+                <span ngAtomsBadge variant="success"><i class="ph ph-check-circle"></i> Stable</span>
+                <a ngAtomsBadge variant="outline" href="https://github.com/ngAtoms/ngatoms/tree/rc/packages/primitives/src/badge" target="_blank">
+                    <i class="ph ph-arrow-square-out"></i> Source
+                </a>
+            </div>
+        </header>
+
+        <!-- Hero preview -->
+        <preview-card>
+            <ng-container preview>
+                <span ngAtomsBadge variant="default">New</span>
+                <span ngAtomsBadge variant="success">Active</span>
+                <span ngAtomsBadge variant="warning">Pending</span>
+                <span ngAtomsBadge variant="destructive">Deprecated</span>
+            </ng-container>
+            <ng-container code>
+                <app-code-block [code]="heroCode" language="html" />
+            </ng-container>
+        </preview-card>
+
+        <!-- Usage -->
+        <section id="usage">
+            <h2 class="cp-h2">Usage</h2>
+            <p class="cp-p">Add the badge to your project and import the standalone directive wherever you need it.</p>
+            <div class="inline-terminal">
+                <span class="inline-terminal-dollar">$</span>
+                <span class="inline-terminal-cmd">ngatoms add badge</span>
+            </div>
+            <p class="cp-p" style="margin-top: 14px;">Then import into your component:</p>
+            <app-code-block [code]="usageCode" language="typescript" />
+        </section>
+
+        <!-- Variants -->
+        <section id="variants">
+            <h2 class="cp-h2">Variants</h2>
+            <p class="cp-p">
+                Seven visual styles. Use <strong>default</strong> for general labels,
+                semantic variants (<strong>success</strong>, <strong>warning</strong>, <strong>destructive</strong>)
+                for statuses, <strong>solid</strong> for high emphasis, and <strong>outline</strong> for subtle labeling.
+            </p>
+            <preview-card>
+                <ng-container preview>
+                    @for (variant of variants; track variant) {
+                        <span ngAtomsBadge [variant]="variant">{{ variant }}</span>
+                    }
+                </ng-container>
+                <ng-container code>
+                    <app-code-block [code]="variantsCode" language="html" />
+                </ng-container>
+            </preview-card>
+        </section>
+
+        <!-- With icons -->
+        <section id="with-icon">
+            <h2 class="cp-h2">With icons</h2>
+            <p class="cp-p">
+                Any content — text, icons, or both — is allowed inside the badge.
+                Use Phosphor Icons for consistent sizing.
+            </p>
+            <preview-card>
+                <ng-container preview>
+                    <span ngAtomsBadge variant="success"><i class="ph ph-check-circle"></i> Stable</span>
+                    <span ngAtomsBadge variant="warning"><i class="ph ph-clock"></i> Beta</span>
+                    <span ngAtomsBadge variant="destructive"><i class="ph ph-x-circle"></i> Deprecated</span>
+                    <span ngAtomsBadge variant="default"><i class="ph ph-angular-logo"></i> Angular</span>
+                </ng-container>
+                <ng-container code>
+                    <app-code-block [code]="iconCode" language="html" />
+                </ng-container>
+            </preview-card>
+        </section>
+
+        <!-- As link -->
+        <section id="as-link">
+            <h2 class="cp-h2">As link</h2>
+            <p class="cp-p">
+                Apply <code class="cp-code">ngAtomsBadge</code> to an anchor tag when the badge should navigate.
+                It keeps the badge appearance but is a real link.
+            </p>
+            <preview-card>
+                <ng-container preview>
+                    <a ngAtomsBadge variant="outline" href="https://github.com/ngAtoms/ngatoms" target="_blank">
+                        <i class="ph ph-arrow-square-out"></i> Source
+                    </a>
+                    <a ngAtomsBadge variant="default" href="https://github.com/ngAtoms/ngatoms" target="_blank">
+                        View on GitHub
+                    </a>
+                </ng-container>
+                <ng-container code>
+                    <app-code-block [code]="linkCode" language="html" />
+                </ng-container>
+            </preview-card>
+        </section>
+
+        <!-- API -->
+        <section id="api">
+            <h2 class="cp-h2">API</h2>
+            <p class="cp-p">Inputs on <code class="cp-code">ngAtomsBadge</code>. The directive applies to any inline element.</p>
+            <div class="props-table">
+                <div class="props-table-header">
+                    <span>Prop</span>
+                    <span>Type</span>
+                    <span>Default</span>
+                    <span>Description</span>
+                </div>
+                @for (prop of props; track prop.name) {
+                    <div class="props-table-row">
+                        <code class="props-name">{{ prop.name }}</code>
+                        <code class="props-type">{{ prop.type }}</code>
+                        <code class="props-default">{{ prop.defaultVal }}</code>
+                        <span class="props-desc">{{ prop.description }}</span>
+                    </div>
+                }
+            </div>
+        </section>
+
+        <!-- Accessibility -->
+        <section id="a11y">
+            <h2 class="cp-h2">Accessibility</h2>
+            <p class="cp-p">Badges are inline text — assistive technology reads them in context. Color alone is never the only indicator.</p>
+            <ul class="a11y-list">
+                @for (item of a11yItems; track item.title) {
+                    <li class="a11y-item">
+                        <div class="a11y-icon"><i [class]="'ph ph-' + item.icon"></i></div>
+                        <div class="a11y-body">
+                            <div class="a11y-title">{{ item.title }}</div>
+                            <div class="a11y-desc">{{ item.body }}</div>
+                        </div>
+                    </li>
+                }
+            </ul>
+        </section>
+
+        <!-- Prev / Next -->
+        <nav class="cp-prevnext">
+            <a routerLink="/alert" class="cp-prevnext-item">
+                <span class="cp-prevnext-dir">← PREVIOUS</span>
+                <span class="cp-prevnext-label">Alert</span>
+            </a>
+            <a routerLink="/progress" class="cp-prevnext-item cp-prevnext-item--right">
+                <span class="cp-prevnext-dir">NEXT →</span>
+                <span class="cp-prevnext-label cp-prevnext-label--accent">Progress</span>
+            </a>
+        </nav>
+
+    </main>
+
+    <app-toc [items]="tocItems" />
+
+</div>

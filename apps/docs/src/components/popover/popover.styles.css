@@ -5,14 +5,22 @@
    ============================================================= */
 
 :root {
-  --nga-popover-bg:     var(--nga-color-card, oklch(100% 0 0));
-  --nga-popover-border: var(--nga-color-border, oklch(92% 0.004 85));
-  --nga-popover-radius: var(--nga-radius-md, 0.5rem);
-  --nga-popover-shadow: 0 4px 24px oklch(0% 0 0 / 0.10), 0 1px 4px oklch(0% 0 0 / 0.06);
+  /* Light — warm frosted glass */
+  --nga-popover-bg:     color-mix(in oklab, var(--nga-color-card, #FFFFFF) 78%, transparent);
+  --nga-popover-border: color-mix(in oklab, var(--nga-color-border, #DED4C5) 55%, transparent);
+  --nga-popover-radius: var(--nga-radius-md, 6px);
+  --nga-popover-shadow: 0 8px 24px -4px rgba(26, 23, 20, 0.10), 0 2px 8px -2px rgba(26, 23, 20, 0.06);
+  --nga-popover-inset:  inset 0 1px 0 rgba(255, 255, 255, 0.85);
+  --nga-popover-blur:   blur(20px) saturate(180%);
 }
 
 .dark {
-  --nga-popover-shadow: 0 4px 24px oklch(0% 0 0 / 0.35), 0 1px 4px oklch(0% 0 0 / 0.18);
+  /* Dark — deep frosted glass */
+  --nga-popover-bg:     color-mix(in oklab, var(--nga-color-card) 82%, transparent);
+  --nga-popover-border: color-mix(in oklab, white 14%, transparent);
+  --nga-popover-shadow: 0 8px 32px rgba(0, 0, 0, 0.45), 0 2px 8px rgba(0, 0, 0, 0.28);
+  --nga-popover-inset:  inset 0 1px 0 rgba(255, 255, 255, 0.07);
+  --nga-popover-blur:   blur(24px) saturate(200%) brightness(1.06);
 }
 
 /* ── Host ───────────────────────────────────────────────────── */
@@ -28,13 +36,14 @@
   max-width: calc(100vw - 2rem);
   padding: 1rem;
   background: var(--nga-popover-bg);
+  backdrop-filter: var(--nga-popover-blur);
+  -webkit-backdrop-filter: var(--nga-popover-blur);
   border: 1px solid var(--nga-popover-border);
   border-radius: var(--nga-popover-radius);
-  box-shadow: var(--nga-popover-shadow);
-  color: var(--nga-color-foreground, oklch(13% 0.002 85));
-  font-size: var(--nga-text-sm, 0.875rem);
+  box-shadow: var(--nga-popover-shadow), var(--nga-popover-inset);
+  color: var(--nga-color-foreground, #1A1714);
+  font-size: var(--nga-text-sm, 13px);
   line-height: 1.5;
-  /* Hidden until open */
   display: none;
 }
 
@@ -44,36 +53,30 @@
 
 /* ── Entry animations (direction matches placement) ─────────── */
 .nga-popover-panel--open.nga-popover-panel--bottom {
-  animation: nga-popover-in-bottom 140ms cubic-bezier(0.16, 1, 0.3, 1);
+  animation: nga-popover-in-bottom var(--nga-dur-base, 180ms) var(--nga-ease-out, ease);
 }
-
 .nga-popover-panel--open.nga-popover-panel--top {
-  animation: nga-popover-in-top 140ms cubic-bezier(0.16, 1, 0.3, 1);
+  animation: nga-popover-in-top var(--nga-dur-base, 180ms) var(--nga-ease-out, ease);
 }
-
 .nga-popover-panel--open.nga-popover-panel--left {
-  animation: nga-popover-in-left 140ms cubic-bezier(0.16, 1, 0.3, 1);
+  animation: nga-popover-in-left var(--nga-dur-base, 180ms) var(--nga-ease-out, ease);
 }
-
 .nga-popover-panel--open.nga-popover-panel--right {
-  animation: nga-popover-in-right 140ms cubic-bezier(0.16, 1, 0.3, 1);
+  animation: nga-popover-in-right var(--nga-dur-base, 180ms) var(--nga-ease-out, ease);
 }
 
 @keyframes nga-popover-in-bottom {
   from { opacity: 0; transform: translateY(-6px) scale(0.97); }
   to   { opacity: 1; transform: none; }
 }
-
 @keyframes nga-popover-in-top {
   from { opacity: 0; transform: translateY(6px) scale(0.97); }
   to   { opacity: 1; transform: none; }
 }
-
 @keyframes nga-popover-in-left {
   from { opacity: 0; transform: translateX(6px) scale(0.97); }
   to   { opacity: 1; transform: none; }
 }
-
 @keyframes nga-popover-in-right {
   from { opacity: 0; transform: translateX(-6px) scale(0.97); }
   to   { opacity: 1; transform: none; }

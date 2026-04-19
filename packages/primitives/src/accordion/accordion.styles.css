@@ -5,10 +5,9 @@
    ============================================================= */
 
 :root {
-  --nga-accordion-border:     var(--nga-color-border, oklch(92% 0.004 85));
-  --nga-accordion-radius:     var(--nga-radius-md, 0.5rem);
-  --nga-accordion-transition: grid-template-rows 220ms ease;
-  --nga-accordion-focus-ring: var(--nga-color-ring, oklch(76% 0.068 68));
+  --nga-accordion-border:     var(--nga-color-border, #DED4C5);
+  --nga-accordion-radius:     var(--nga-radius-md, 6px);
+  --nga-accordion-transition: grid-template-rows var(--nga-dur-slow, 320ms) var(--nga-ease-out, ease);
 }
 
 /* ── Root ───────────────────────────────────────────────────── */
@@ -41,21 +40,20 @@
   font-family: inherit;
   font-size: var(--nga-size-font-md, 14px);
   font-weight: 500;
-  color: var(--nga-color-foreground, oklch(13% 0.002 85));
+  color: var(--nga-color-foreground, #1A1714);
   text-align: left;
   cursor: pointer;
   outline: none;
-  transition: background 150ms ease, color 150ms ease;
+  transition: background var(--nga-dur-base, 180ms) var(--nga-ease-out, ease), color var(--nga-dur-base, 180ms) var(--nga-ease-out, ease);
   gap: 0.75rem;
 }
 
 .nga-accordion-trigger:hover {
-  background: var(--nga-color-muted, oklch(96% 0.003 85));
+  background: var(--nga-color-muted, #F3EEE7);
 }
 
 .nga-accordion-trigger:focus-visible {
-  outline: 2px solid var(--nga-accordion-focus-ring);
-  outline-offset: -2px;
+  box-shadow: inset var(--nga-glow-ember, 0 0 0 4px rgba(240, 107, 0, 0.18));
 }
 
 /* Chevron icon */
@@ -64,15 +62,15 @@
   flex-shrink: 0;
   width: 14px;
   height: 14px;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23374151' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%234A3F34' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
   background-repeat: no-repeat;
   background-position: center;
   background-size: contain;
-  transition: transform 220ms ease;
+  transition: transform var(--nga-dur-slow, 320ms) var(--nga-ease-out, ease);
 }
 
 .dark .nga-accordion-trigger::after {
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23d1d5db' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23C5B7A1' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
 }
 
 .nga-accordion-trigger--open::after {
@@ -98,6 +96,6 @@
 .nga-accordion-content {
   padding: 0 1.125rem 1rem;
   font-size: var(--nga-size-font-sm, 13px);
-  color: var(--nga-color-muted-foreground, oklch(54% 0.006 85));
+  color: var(--nga-color-muted-foreground, #87735A);
   line-height: 1.6;
 }

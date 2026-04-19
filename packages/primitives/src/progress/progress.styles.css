@@ -32,7 +32,7 @@
   width: 100%;
   border-radius: var(--nga-progress-radius);
   overflow: hidden;
-  box-shadow: inset 0 1px 2px color-mix(in srgb, black 8%, transparent);
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.08);
 }
 
 /* ── Determinate fill ───────────────────────────────────────── */
@@ -45,13 +45,6 @@
 }
 
 /* ── Indeterminate ──────────────────────────────────────────── */
-/*
-   Two synced `alternate` animations on the same duration:
-   - nga-progress-move:  left 0%→65% then back
-   - nga-progress-dir:   background-position 0%→100% then back
-   At position 0%  → gradient dark→light (leading dark, going right ✓)
-   At position 100% → gradient light→dark (leading dark, going left ✓)
-*/
 .nga-progress--indeterminate .nga-progress__fill {
   position: absolute;
   top: 0;
@@ -76,25 +69,25 @@
 
 /* ── Variants ───────────────────────────────────────────────── */
 .nga-progress--default {
-  background: var(--nga-color-muted, oklch(96% 0.003 85));
-  --nga-progress-c1: var(--nga-color-primary, oklch(13% 0.002 85));
-  --nga-progress-c2: var(--nga-color-muted-foreground, oklch(54% 0.006 85));
+  background: var(--nga-color-muted, #F3EEE7);
+  --nga-progress-c1: var(--nga-color-primary, #1A1714);
+  --nga-progress-c2: var(--nga-color-muted-foreground, #87735A);
 }
 
 .nga-progress--accent {
-  background: oklch(91% 0.035 75 / 0.35);
-  --nga-progress-c1: oklch(50% 0.060 58);
-  --nga-progress-c2: oklch(84% 0.058 72);
+  background: rgba(255, 169, 77, 0.25);
+  --nga-progress-c1: #F06B00;
+  --nga-progress-c2: #FFC988;
 }
 
 .nga-progress--success {
-  background: oklch(90% 0.022 148 / 0.35);
-  --nga-progress-c1: oklch(38% 0.046 148);
-  --nga-progress-c2: oklch(80% 0.038 148);
+  background: rgba(22, 163, 74, 0.15);
+  --nga-progress-c1: #16A34A;
+  --nga-progress-c2: #86EFAC;
 }
 
 .nga-progress--destructive {
-  background: oklch(85% 0.06 22 / 0.25);
-  --nga-progress-c1: oklch(47% 0.130 22);
-  --nga-progress-c2: oklch(75% 0.12 22);
+  background: rgba(220, 38, 38, 0.15);
+  --nga-progress-c1: #DC2626;
+  --nga-progress-c2: #FCA5A5;
 }

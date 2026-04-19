@@ -1,16 +1,230 @@
+.app-shell {
+  display: flex;
+  flex-direction: column;
+  min-height: 100dvh;
+}
+
+/* ── Top nav ──────────────────────────────────────────────── */
+
+.top-nav {
+  height: var(--nga-nav-height, 56px);
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  padding: 0 1.5rem;
+  gap: 1.5rem;
+  background: color-mix(in oklab, var(--nga-color-background) 40%, transparent);
+  backdrop-filter: blur(20px) saturate(180%) brightness(1.02);
+  -webkit-backdrop-filter: blur(20px) saturate(180%) brightness(1.02);
+  border-bottom: 1px solid color-mix(in oklab, var(--nga-color-border) 40%, transparent);
+  box-shadow: inset 0 -1px 0 color-mix(in oklab, white 6%, transparent),
+              0 1px 16px rgba(0, 0, 0, 0.04);
+  transition: border-color 240ms ease-out, box-shadow 240ms ease-out, background 240ms ease-out;
+  flex-shrink: 0;
+}
+
+.top-nav--scrolled {
+  background: color-mix(in oklab, var(--nga-color-background) 30%, transparent);
+  border-bottom-color: color-mix(in oklab, var(--nga-color-border) 60%, transparent);
+  box-shadow: inset 0 -1px 0 color-mix(in oklab, white 8%, transparent),
+              0 4px 32px rgba(0, 0, 0, 0.1),
+              0 1px 0 color-mix(in oklab, var(--nga-color-border) 40%, transparent);
+}
+
+/* Brand */
+
+.nav-brand {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  text-decoration: none;
+  color: var(--nga-color-foreground);
+  flex-shrink: 0;
+}
+
+.nav-logo {
+  display: block;
+  flex-shrink: 0;
+}
+
+.nav-brand-name {
+  font-size: 1.0625rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: var(--nga-color-foreground);
+}
+
+.nav-brand-accent {
+  color: var(--nga-color-accent);
+}
+
+.nav-brand-badge {
+  font-family: var(--nga-font-mono, ui-monospace, monospace);
+  font-size: 0.625rem;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--nga-color-accent-foreground);
+  background: color-mix(in oklch, var(--nga-color-accent) 15%, transparent);
+  border: 1px solid color-mix(in oklch, var(--nga-color-accent) 35%, transparent);
+  padding: 1px 6px;
+  border-radius: 9999px;
+}
+
+/* Nav links */
+
+.nav-links {
+  display: flex;
+  gap: 2px;
+  margin-left: 1rem;
+}
+
+.nav-link {
+  font-size: 0.84375rem;
+  font-weight: 500;
+  color: var(--nga-color-muted-foreground);
+  padding: 6px 10px;
+  border-radius: 6px;
+  text-decoration: none;
+  transition: background 120ms ease, color 120ms ease;
+}
+
+.nav-link:hover {
+  background: color-mix(in oklab, var(--nga-color-foreground) 8%, transparent);
+  color: var(--nga-color-foreground);
+}
+
+.nav-link--active {
+  color: var(--nga-color-foreground);
+  background: color-mix(in oklab, var(--nga-color-foreground) 8%, transparent);
+}
+
+.nav-link--dim {
+  opacity: 0.45;
+  cursor: default;
+  pointer-events: none;
+}
+
+/* Right controls */
+
+.nav-controls {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.nav-search {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  padding: 6px 8px 6px 10px;
+  min-width: 220px;
+  background: color-mix(in oklab, var(--nga-color-foreground) 5%, transparent);
+  border: 1px solid color-mix(in oklab, var(--nga-color-border) 60%, transparent);
+  border-radius: 8px;
+  color: var(--nga-color-muted-foreground);
+  font-size: 0.8125rem;
+  font-family: inherit;
+  cursor: not-allowed;
+  opacity: 0.8;
+  backdrop-filter: blur(4px);
+}
+
+.nav-search-label {
+  flex: 1;
+  text-align: left;
+}
+
+.nav-search-kbd {
+  display: flex;
+  gap: 2px;
+  margin-left: auto;
+}
+
+kbd {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1px 5px;
+  font-family: var(--nga-font-mono, ui-monospace, monospace);
+  font-size: 0.6875rem;
+  background: var(--nga-color-background);
+  border: 1px solid var(--nga-color-border);
+  border-radius: 4px;
+  color: var(--nga-color-muted-foreground);
+}
+
+.nav-icon-btn {
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  border: 1px solid color-mix(in oklab, var(--nga-color-border) 60%, transparent);
+  border-radius: 6px;
+  background: color-mix(in oklab, var(--nga-color-foreground) 4%, transparent);
+  color: var(--nga-color-muted-foreground);
+  font-size: 1.125rem;
+  cursor: pointer;
+  text-decoration: none;
+  transition: background 120ms ease, color 120ms ease, border-color 120ms ease;
+  flex-shrink: 0;
+  line-height: 1;
+  backdrop-filter: blur(4px);
+}
+
+.nav-icon-btn i {
+  display: block;
+  font-size: 1.125rem;
+  line-height: 1;
+}
+
+.nav-icon-btn:hover {
+  background: color-mix(in oklab, var(--nga-color-foreground) 10%, transparent);
+  color: var(--nga-color-foreground);
+  border-color: color-mix(in oklab, var(--nga-color-border) 80%, transparent);
+}
+
+.nav-icon-btn--bmc {
+  width: auto;
+  padding: 0 12px;
+  gap: 6px;
+  display: flex;
+  align-items: center;
+  background: #FFDD00;
+  border-color: #FFDD00;
+  color: #000;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  font-family: inherit;
+  white-space: nowrap;
+}
+
+.nav-icon-btn--bmc:hover {
+  background: #ffd000;
+  border-color: #ffd000;
+  color: #000;
+}
+
+/* ── Body layout ──────────────────────────────────────────── */
+
 .layout {
   display: grid;
   grid-template-columns: 220px 1fr;
-  height: 100dvh;
+  flex: 1;
 }
 
 .sidebar {
   position: sticky;
-  top: 0;
-  height: 100vh;
+  top: 56px;
+  height: calc(100dvh - var(--nga-nav-height, 56px));
   overflow-y: auto;
-  background: var(--nga-color-card);
-  border-right: 1px solid var(--nga-color-border);
+  background: color-mix(in oklab, var(--nga-color-card) 50%, transparent);
+  backdrop-filter: blur(20px) saturate(160%);
+  -webkit-backdrop-filter: blur(20px) saturate(160%);
+  border-right: 1px solid color-mix(in oklab, var(--nga-color-border) 60%, transparent);
   padding: 1.5rem 0;
   display: flex;
   flex-direction: column;
@@ -55,6 +269,7 @@
   flex-direction: column;
   padding: 0 0.75rem;
   gap: 1px;
+  overflow-y: scroll;
 }
 
 .nav-section {
@@ -92,7 +307,6 @@
 .content {
   padding: 2.5rem 3rem;
   min-width: 0;
-  overflow: auto;
 }
 
 .sidebar-footer {

@@ -1,0 +1,89 @@
+.preview-card {
+    border: 1px solid color-mix(in oklab, var(--nga-color-border) 70%, transparent);
+    border-radius: var(--nga-radius-lg);
+    overflow: hidden;
+    margin: 16px 0 8px;
+    background: color-mix(in oklab, var(--nga-color-card) 65%, transparent);
+    backdrop-filter: blur(16px) saturate(150%);
+    -webkit-backdrop-filter: blur(16px) saturate(150%);
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06), 0 4px 16px rgba(0,0,0,0.04);
+}
+
+.preview-card-tabs {
+    display: flex;
+    align-items: center;
+    border-bottom: 1px solid color-mix(in oklab, var(--nga-color-border) 60%, transparent);
+    padding: 6px 8px;
+    gap: 2px;
+    background: color-mix(in oklab, var(--nga-color-foreground) 3%, transparent);
+}
+
+.preview-tab {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 5px 10px;
+    background: transparent;
+    border: none;
+    border-radius: var(--nga-radius-md);
+    font-family: var(--nga-font-sans);
+    font-size: 12.5px;
+    font-weight: var(--nga-font-weight-medium);
+    color: var(--nga-color-muted-foreground);
+    cursor: pointer;
+    transition: all var(--nga-dur-fast) var(--nga-ease-out);
+}
+
+.preview-tab i {
+    font-size: 13px;
+}
+
+.preview-tab:hover {
+    background: var(--nga-color-muted);
+    color: var(--nga-color-foreground);
+}
+
+.preview-tab--active {
+    background: var(--nga-color-muted);
+    color: var(--nga-color-foreground);
+    font-weight: var(--nga-font-weight-semibold);
+}
+
+.preview-card-filename {
+    margin-left: auto;
+    font-family: var(--nga-font-mono);
+    font-size: 11px;
+    color: var(--nga-stone-400);
+    padding-right: 4px;
+}
+
+.preview-area {
+    min-height: 140px;
+    padding: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    flex-wrap: wrap;
+    background:
+            radial-gradient(circle at 1px 1px, var(--nga-color-border) 1px, transparent 0) 0 0 / 16px 16px,
+            var(--nga-color-background);
+}
+
+.preview-area-content {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: var(--nga-color-background);
+    border-radius: var(--nga-radius-md);
+    border: 1px solid var(--nga-color-border);
+    padding: var(--nga-space-8);
+}
+
+.preview-code {
+    background: var(--code-panel-bg);
+}
+
+.preview-code app-code-block {
+    display: block;
+}

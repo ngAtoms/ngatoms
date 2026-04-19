@@ -1,104 +1,239 @@
-<app-component-demo [files]="codeFiles">
-  <header class="page-header">
-    <h1 class="page-title">Select</h1>
-    <p class="page-desc">A custom dropdown with search, multiple selection, keyboard navigation, and variant support.</p>
-  </header>
+<div class="cp-layout">
 
-  <section class="showcase-section">
-    <h2 class="section-title">Variants</h2>
-    <div class="field-group">
-      <div class="field">
-        <label class="field-label">Default</label>
-        <nga-select [options]="departments" placeholder="Choose department" />
-      </div>
-      <div class="field">
-        <label class="field-label">Filled</label>
-        <nga-select [options]="departments" placeholder="Choose department" variant="filled" />
-      </div>
-      <div class="field">
-        <label class="field-label">Ghost</label>
-        <nga-select [options]="departments" placeholder="Choose department" variant="ghost" />
-      </div>
-    </div>
-  </section>
+    <main class="cp-main">
 
-  <section class="showcase-section">
-    <h2 class="section-title">Sizes</h2>
-    <div class="field-group">
-      <div class="field">
-        <label class="field-label">Extra small</label>
-        <nga-select [options]="roles" size="xs" placeholder="Select role" />
-      </div>
-      <div class="field">
-        <label class="field-label">Small</label>
-        <nga-select [options]="roles" size="sm" placeholder="Select role" />
-      </div>
-      <div class="field">
-        <label class="field-label">Medium</label>
-        <nga-select [options]="roles" size="md" placeholder="Select role" />
-      </div>
-      <div class="field">
-        <label class="field-label">Large</label>
-        <nga-select [options]="roles" size="lg" placeholder="Select role" />
-      </div>
-      <div class="field">
-        <label class="field-label">Extra large</label>
-        <nga-select [options]="roles" size="xl" placeholder="Select role" />
-      </div>
-    </div>
-  </section>
+        <header class="cp-header">
+            <div class="cp-eyebrow">Components / Forms</div>
+            <h1 class="cp-title">Select</h1>
+            <p class="cp-lede">A custom dropdown with optional search, multiple selection, keyboard navigation, and three visual variants. Fully accessible and composable.</p>
+            <div class="cp-chips">
+                <span ngAtomsBadge variant="default"><i class="ph ph-angular-logo"></i> ngAtoms v0.3+</span>
+                <span ngAtomsBadge variant="default"><i class="ph ph-package"></i> ngatoms add select</span>
+                <span ngAtomsBadge variant="success"><i class="ph ph-check-circle"></i> Stable</span>
+                <a ngAtomsBadge variant="outline" href="https://github.com/ngAtoms/ngatoms/tree/rc/packages/primitives/src/select" target="_blank">
+                    <i class="ph ph-arrow-square-out"></i> Source
+                </a>
+            </div>
+        </header>
 
-  <section class="showcase-section">
-    <h2 class="section-title">With search</h2>
-    <div class="field-group">
-      <div class="field field--wide">
-        <label class="field-label">Country — searchable</label>
-        <nga-select
-          [options]="countries"
-          [searchable]="true"
-          placeholder="Search countries..."
-        />
-      </div>
-    </div>
-  </section>
+        <!-- Hero preview -->
+        <div class="overflow-preview">
+            <preview-card>
+                <ng-container preview>
+                    <nga-select [options]="roles" placeholder="Select role" style="width: 200px" />
+                </ng-container>
+                <ng-container code>
+                    <app-code-block [code]="heroCode" language="html" />
+                </ng-container>
+            </preview-card>
+        </div>
 
-  <section class="showcase-section">
-    <h2 class="section-title">Multiple selection</h2>
-    <div class="field-group">
-      <div class="field field--wide">
-        <label class="field-label">Skills — multiple + searchable</label>
-        <nga-select
-          [options]="skillOptions"
-          [multiple]="true"
-          [searchable]="true"
-          [(value)]="skills"
-          placeholder="Select skills..."
-        />
-        <span class="field-message field-message--hint">
-          {{ skills().length > 0 ? 'Selected: ' + skills().join(', ') : '' }}
-        </span>
-      </div>
-    </div>
-  </section>
+        <!-- Usage -->
+        <section id="usage">
+            <h2 class="cp-h2">Usage</h2>
+            <p class="cp-p">Add the select to your project, then import the component and option type.</p>
+            <div class="inline-terminal">
+                <span class="inline-terminal-dollar">$</span>
+                <span class="inline-terminal-cmd">ngatoms add select</span>
+            </div>
+            <p class="cp-p" style="margin-top: 14px;">Import in your component:</p>
+            <app-code-block [code]="usageCode" language="typescript" />
+        </section>
 
-  <section class="showcase-section">
-    <h2 class="section-title">States</h2>
-    <div class="field-group">
-      <div class="field">
-        <label class="field-label">Default</label>
-        <nga-select [options]="roles" placeholder="Select role" />
-        <span class="field-message"></span>
-      </div>
-      <div class="field">
-        <label class="field-label">Invalid</label>
-        <nga-select [options]="roles" [invalid]="true" [(value)]="invalidValue" placeholder="Select role" />
-        <span class="field-message field-message--error">This field is required.</span>
-      </div>
-      <div class="field">
-        <label class="field-label">Disabled</label>
-        <nga-select [options]="roles" [disabled]="true" placeholder="Unavailable" />
-        <span class="field-message"></span>
-      </div>
-    </div>
-  </section>
-</app-component-demo>
+        <!-- Variants -->
+        <section id="variants">
+            <h2 class="cp-h2">Variants</h2>
+            <p class="cp-p">Three visual weights. <strong>default</strong> for standard form fields, <strong>filled</strong> for surfaces that already have a background, <strong>ghost</strong> for minimal inline usage.</p>
+            <div class="overflow-preview">
+                <preview-card>
+                    <ng-container preview>
+                        <div class="select-field-group">
+                            <div class="select-field">
+                                <label class="select-field-label">Default</label>
+                                <nga-select [options]="departments" placeholder="Choose department" />
+                            </div>
+                            <div class="select-field">
+                                <label class="select-field-label">Filled</label>
+                                <nga-select [options]="departments" variant="filled" placeholder="Choose department" />
+                            </div>
+                            <div class="select-field">
+                                <label class="select-field-label">Ghost</label>
+                                <nga-select [options]="departments" variant="ghost" placeholder="Choose department" />
+                            </div>
+                        </div>
+                    </ng-container>
+                    <ng-container code>
+                        <app-code-block [code]="variantsCode" language="html" />
+                    </ng-container>
+                </preview-card>
+            </div>
+        </section>
+
+        <!-- Sizes -->
+        <section id="sizes">
+            <h2 class="cp-h2">Sizes</h2>
+            <p class="cp-p">Five sizes. <strong>md</strong> is the default. Use <strong>sm</strong> / <strong>xs</strong> in dense toolbars and <strong>lg</strong> / <strong>xl</strong> in prominent form areas.</p>
+            <div class="overflow-preview">
+                <preview-card>
+                    <ng-container preview>
+                        <div class="select-field-group">
+                            <div class="select-field">
+                                <label class="select-field-label">xs</label>
+                                <nga-select [options]="roles" size="xs" placeholder="Select role" />
+                            </div>
+                            <div class="select-field">
+                                <label class="select-field-label">sm</label>
+                                <nga-select [options]="roles" size="sm" placeholder="Select role" />
+                            </div>
+                            <div class="select-field">
+                                <label class="select-field-label">md</label>
+                                <nga-select [options]="roles" size="md" placeholder="Select role" />
+                            </div>
+                            <div class="select-field">
+                                <label class="select-field-label">lg</label>
+                                <nga-select [options]="roles" size="lg" placeholder="Select role" />
+                            </div>
+                            <div class="select-field">
+                                <label class="select-field-label">xl</label>
+                                <nga-select [options]="roles" size="xl" placeholder="Select role" />
+                            </div>
+                        </div>
+                    </ng-container>
+                    <ng-container code>
+                        <app-code-block [code]="sizesCode" language="html" />
+                    </ng-container>
+                </preview-card>
+            </div>
+        </section>
+
+        <!-- Searchable -->
+        <section id="search">
+            <h2 class="cp-h2">Searchable</h2>
+            <p class="cp-p">Pass <code class="cp-code">[searchable]="true"</code> to show a search field at the top of the panel. Options filter as the user types.</p>
+            <div class="overflow-preview">
+                <preview-card>
+                    <ng-container preview>
+                        <nga-select
+                            [options]="countries"
+                            [searchable]="true"
+                            placeholder="Search countries..."
+                            style="width: 240px"
+                        />
+                    </ng-container>
+                    <ng-container code>
+                        <app-code-block [code]="searchCode" language="html" />
+                    </ng-container>
+                </preview-card>
+            </div>
+        </section>
+
+        <!-- Multiple -->
+        <section id="multiple">
+            <h2 class="cp-h2">Multiple selection</h2>
+            <p class="cp-p">Pass <code class="cp-code">[multiple]="true"</code> to allow selecting more than one option. The value binding becomes <code class="cp-code">string[]</code>.</p>
+            <div class="overflow-preview">
+                <preview-card>
+                    <ng-container preview>
+                        <div style="display:flex; flex-direction:column; gap:8px; width: 260px">
+                            <nga-select
+                                [options]="skillOptions"
+                                [multiple]="true"
+                                [searchable]="true"
+                                [(value)]="skills"
+                                placeholder="Select skills..."
+                            />
+                            @if (skills().length > 0) {
+                                <span style="font-size:12px; color:var(--nga-color-muted-foreground)">
+                                    Selected: {{ skills().join(', ') }}
+                                </span>
+                            }
+                        </div>
+                    </ng-container>
+                    <ng-container code>
+                        <app-code-block [code]="multipleCode" language="html" />
+                    </ng-container>
+                </preview-card>
+            </div>
+        </section>
+
+        <!-- States -->
+        <section id="states">
+            <h2 class="cp-h2">States</h2>
+            <p class="cp-p"><strong>Invalid</strong> state is for form validation errors. <strong>Disabled</strong> prevents any interaction.</p>
+            <div class="overflow-preview">
+                <preview-card>
+                    <ng-container preview>
+                        <div class="select-field-group">
+                            <div class="select-field">
+                                <label class="select-field-label">Invalid</label>
+                                <nga-select [options]="roles" [invalid]="true" placeholder="Select role" />
+                            </div>
+                            <div class="select-field">
+                                <label class="select-field-label">Disabled</label>
+                                <nga-select [options]="roles" [disabled]="true" placeholder="Unavailable" />
+                            </div>
+                        </div>
+                    </ng-container>
+                    <ng-container code>
+                        <app-code-block [code]="statesCode" language="html" />
+                    </ng-container>
+                </preview-card>
+            </div>
+        </section>
+
+        <!-- API -->
+        <section id="api">
+            <h2 class="cp-h2">API</h2>
+            <p class="cp-p">Inputs on <code class="cp-code">nga-select</code>.</p>
+            <div class="props-table">
+                <div class="props-table-header">
+                    <span>Prop</span>
+                    <span>Type</span>
+                    <span>Default</span>
+                    <span>Description</span>
+                </div>
+                @for (prop of props; track prop.name) {
+                    <div class="props-table-row">
+                        <code class="props-name">{{ prop.name }}</code>
+                        <code class="props-type">{{ prop.type }}</code>
+                        <code class="props-default">{{ prop.defaultVal }}</code>
+                        <span class="props-desc">{{ prop.description }}</span>
+                    </div>
+                }
+            </div>
+        </section>
+
+        <!-- Accessibility -->
+        <section id="a11y">
+            <h2 class="cp-h2">Accessibility</h2>
+            <p class="cp-p">The select is keyboard-navigable and announces state via ARIA attributes.</p>
+            <ul class="a11y-list">
+                @for (item of a11yItems; track item.title) {
+                    <li class="a11y-item">
+                        <div class="a11y-icon"><i [class]="'ph ph-' + item.icon"></i></div>
+                        <div class="a11y-body">
+                            <div class="a11y-title">{{ item.title }}</div>
+                            <div class="a11y-desc">{{ item.body }}</div>
+                        </div>
+                    </li>
+                }
+            </ul>
+        </section>
+
+        <!-- Prev / Next -->
+        <nav class="cp-prevnext">
+            <a routerLink="/input" class="cp-prevnext-item">
+                <span class="cp-prevnext-dir">← PREVIOUS</span>
+                <span class="cp-prevnext-label">Input</span>
+            </a>
+            <a routerLink="/date-picker" class="cp-prevnext-item cp-prevnext-item--right">
+                <span class="cp-prevnext-dir">NEXT →</span>
+                <span class="cp-prevnext-label cp-prevnext-label--accent">Date Picker</span>
+            </a>
+        </nav>
+
+    </main>
+
+    <app-toc [items]="tocItems" />
+
+</div>

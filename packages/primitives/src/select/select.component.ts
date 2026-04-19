@@ -2,7 +2,6 @@ import {
   AfterViewChecked,
   Component,
   ElementRef,
-  HostListener,
   computed,
   inject,
   input,
@@ -11,6 +10,7 @@ import {
   viewChild,
 } from '@angular/core';
 import { NgClass } from '@angular/common';
+import { NgAtomsOverlayService } from '../overlay/overlay.service';
 
 export interface NgAtomsSelectOption {
   value: string;
@@ -31,6 +31,8 @@ export type NgAtomsSelectSize = 'xs' | 'sm' | 'md' | 'lg' | 'xl';
 })
 export class NgAtomsSelectComponent implements AfterViewChecked {
   private readonly el = inject(ElementRef);
+  private readonly overlay = inject(NgAtomsOverlayService);
+  private deregister: (() => void) | null = null;
 
   readonly searchInputEl = viewChild<ElementRef<HTMLInputElement>>('searchInput');
 
@@ -96,6 +98,10 @@ export class NgAtomsSelectComponent implements AfterViewChecked {
     if (!this.isOpen()) {
       this.computePanelPosition();
       this.isOpen.set(true);
+      this.deregister = this.overlay.register(
+        () => this.close(),
+        this.el.nativeElement,
+      );
       if (this.searchable()) this._shouldFocusSearch = true;
     } else {
       this.close();
@@ -106,6 +112,8 @@ export class NgAtomsSelectComponent implements AfterViewChecked {
     this.isOpen.set(false);
     this.searchQuery.set('');
     this.focusedIndex.set(-1);
+    this.deregister?.();
+    this.deregister = null;
   }
 
   selectOption(option: NgAtomsSelectOption): void {
@@ -155,18 +163,6 @@ export class NgAtomsSelectComponent implements AfterViewChecked {
       const idx = this.focusedIndex();
       if (idx >= 0 && idx < opts.length) this.selectOption(opts[idx]);
     }
-  }
-
-  @HostListener('document:click', ['$event'])
-  onDocumentClick(event: MouseEvent): void {
-    if (!this.el.nativeElement.contains(event.target as Node)) {
-      this.close();
-    }
-  }
-
-  @HostListener('document:keydown.escape')
-  onEscape(): void {
-    this.close();
   }
 
   ngAfterViewChecked(): void {

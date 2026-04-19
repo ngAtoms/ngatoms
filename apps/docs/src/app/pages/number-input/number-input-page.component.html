@@ -1,44 +1,166 @@
-<app-component-demo [files]="codeFiles">
-  <header class="page-header">
-    <h1 class="page-title">Number Input</h1>
-    <p class="page-desc">A numeric input with increment and decrement controls, min/max clamping, and step support.</p>
-  </header>
+<div class="cp-layout">
 
-  <section class="showcase-section">
-    <h2 class="section-title">Sizes</h2>
-    <div class="sizes-grid">
-      <div class="size-item">
-        <span class="size-label">sm</span>
-        <nga-number-input [(value)]="qty" size="sm" [min]="0"></nga-number-input>
-      </div>
-      <div class="size-item">
-        <span class="size-label">md</span>
-        <nga-number-input [(value)]="qty" size="md" [min]="0"></nga-number-input>
-      </div>
-      <div class="size-item">
-        <span class="size-label">lg</span>
-        <nga-number-input [(value)]="qty" size="lg" [min]="0"></nga-number-input>
-      </div>
-    </div>
-  </section>
+    <main class="cp-main">
 
-  <section class="showcase-section">
-    <h2 class="section-title">States</h2>
-    <div class="states-grid">
-      <div class="state-item">
-        <span class="state-label">Min / Max</span>
-        <nga-number-input [(value)]="rating" [min]="1" [max]="10"></nga-number-input>
-        <span class="state-desc">Min 1 — Max 10</span>
-      </div>
-      <div class="state-item">
-        <span class="state-label">Step</span>
-        <nga-number-input [(value)]="temp" [step]="0.5"></nga-number-input>
-        <span class="state-desc">Step 0.5</span>
-      </div>
-      <div class="state-item">
-        <span class="state-label">Disabled</span>
-        <nga-number-input [value]="42" [disabled]="true"></nga-number-input>
-      </div>
-    </div>
-  </section>
-</app-component-demo>
+        <header class="cp-header">
+            <div class="cp-eyebrow">Components / Forms</div>
+            <h1 class="cp-title">Number Input</h1>
+            <p class="cp-lede">
+                A numeric input with increment and decrement controls, min/max clamping, and step support.
+                Bound to a signal — the display stays in sync as the value changes.
+            </p>
+            <div class="cp-chips">
+                <span ngAtomsBadge variant="default"><i class="ph ph-angular-logo"></i> ngAtoms v0.3+</span>
+                <span ngAtomsBadge variant="default"><i class="ph ph-package"></i> ngatoms add number-input</span>
+                <span ngAtomsBadge variant="success"><i class="ph ph-check-circle"></i> Stable</span>
+                <a ngAtomsBadge variant="outline" href="https://github.com/ngAtoms/ngatoms/tree/rc/packages/primitives/src/number-input" target="_blank">
+                    <i class="ph ph-arrow-square-out"></i> Source
+                </a>
+            </div>
+        </header>
+
+        <!-- Hero preview -->
+        <preview-card>
+            <ng-container preview>
+                <nga-number-input [(value)]="heroVal" [min]="0" [max]="99" />
+            </ng-container>
+            <ng-container code>
+                <app-code-block [code]="heroCode" language="html" />
+            </ng-container>
+        </preview-card>
+
+        <!-- Usage -->
+        <section id="usage">
+            <h2 class="cp-h2">Usage</h2>
+            <p class="cp-p">Add the number input to your project and import the standalone component wherever you need it.</p>
+            <div class="inline-terminal">
+                <span class="inline-terminal-dollar">$</span>
+                <span class="inline-terminal-cmd">ngatoms add number-input</span>
+            </div>
+            <p class="cp-p" style="margin-top: 14px;">Then import into your component:</p>
+            <app-code-block [code]="usageCode" language="typescript" />
+        </section>
+
+        <!-- Sizes -->
+        <section id="sizes">
+            <h2 class="cp-h2">Sizes</h2>
+            <p class="cp-p">Three sizes. <strong>md</strong> is the default and works in most form layouts.</p>
+            <preview-card>
+                <ng-container preview>
+                    <div class="demo-col">
+                        <div class="demo-row">
+                            <span class="demo-label">sm</span>
+                            <nga-number-input [(value)]="sizeVal" size="sm" [min]="0" />
+                        </div>
+                        <div class="demo-row">
+                            <span class="demo-label">md</span>
+                            <nga-number-input [(value)]="sizeVal" size="md" [min]="0" />
+                        </div>
+                        <div class="demo-row">
+                            <span class="demo-label">lg</span>
+                            <nga-number-input [(value)]="sizeVal" size="lg" [min]="0" />
+                        </div>
+                    </div>
+                </ng-container>
+                <ng-container code>
+                    <app-code-block [code]="sizesCode" language="html" />
+                </ng-container>
+            </preview-card>
+        </section>
+
+        <!-- Min / Max / Step -->
+        <section id="constraints">
+            <h2 class="cp-h2">Min, max, and step</h2>
+            <p class="cp-p">
+                Clamp the value with <code class="cp-code">[min]</code> and <code class="cp-code">[max]</code>.
+                Change the increment amount with <code class="cp-code">[step]</code> — supports decimal values.
+            </p>
+            <preview-card>
+                <ng-container preview>
+                    <div class="demo-col">
+                        <div class="demo-row">
+                            <span class="demo-label">Min 1 / Max 10</span>
+                            <nga-number-input [(value)]="ratingVal" [min]="1" [max]="10" />
+                        </div>
+                        <div class="demo-row">
+                            <span class="demo-label">Step 0.5</span>
+                            <nga-number-input [(value)]="tempVal" [step]="0.5" />
+                        </div>
+                    </div>
+                </ng-container>
+                <ng-container code>
+                    <app-code-block [code]="constraintsCode" language="html" />
+                </ng-container>
+            </preview-card>
+        </section>
+
+        <!-- Disabled -->
+        <section id="disabled">
+            <h2 class="cp-h2">Disabled</h2>
+            <p class="cp-p">Pass <code class="cp-code">[disabled]="true"</code> to prevent interaction.</p>
+            <preview-card>
+                <ng-container preview>
+                    <nga-number-input [value]="42" [disabled]="true" />
+                </ng-container>
+                <ng-container code>
+                    <app-code-block [code]="disabledCode" language="html" />
+                </ng-container>
+            </preview-card>
+        </section>
+
+        <!-- API -->
+        <section id="api">
+            <h2 class="cp-h2">API</h2>
+            <p class="cp-p">Inputs on <code class="cp-code">nga-number-input</code>.</p>
+            <div class="props-table">
+                <div class="props-table-header">
+                    <span>Prop</span>
+                    <span>Type</span>
+                    <span>Default</span>
+                    <span>Description</span>
+                </div>
+                @for (prop of props; track prop.name) {
+                    <div class="props-table-row">
+                        <code class="props-name">{{ prop.name }}</code>
+                        <code class="props-type">{{ prop.type }}</code>
+                        <code class="props-default">{{ prop.defaultVal }}</code>
+                        <span class="props-desc">{{ prop.description }}</span>
+                    </div>
+                }
+            </div>
+        </section>
+
+        <!-- Accessibility -->
+        <section id="a11y">
+            <h2 class="cp-h2">Accessibility</h2>
+            <p class="cp-p">The increment and decrement buttons are native <code class="cp-code">&lt;button&gt;</code> elements with accessible labels.</p>
+            <ul class="a11y-list">
+                @for (item of a11yItems; track item.title) {
+                    <li class="a11y-item">
+                        <div class="a11y-icon"><i [class]="'ph ph-' + item.icon"></i></div>
+                        <div class="a11y-body">
+                            <div class="a11y-title">{{ item.title }}</div>
+                            <div class="a11y-desc">{{ item.body }}</div>
+                        </div>
+                    </li>
+                }
+            </ul>
+        </section>
+
+        <!-- Prev / Next -->
+        <nav class="cp-prevnext">
+            <a routerLink="/select" class="cp-prevnext-item">
+                <span class="cp-prevnext-dir">← PREVIOUS</span>
+                <span class="cp-prevnext-label">Select</span>
+            </a>
+            <a routerLink="/switch" class="cp-prevnext-item cp-prevnext-item--right">
+                <span class="cp-prevnext-dir">NEXT →</span>
+                <span class="cp-prevnext-label cp-prevnext-label--accent">Switch</span>
+            </a>
+        </nav>
+
+    </main>
+
+    <app-toc [items]="tocItems" />
+
+</div>

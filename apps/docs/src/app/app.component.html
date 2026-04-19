@@ -1,62 +1,124 @@
-<div class="layout">
-  <aside class="sidebar">
-    <div class="sidebar-brand">
-      <img class="brand-logo" [src]="isDark() ? 'assets/ngatoms-logo-w.svg' : 'assets/ngatoms-logo-b.svg'" alt="" aria-hidden="true" />
-      <span class="brand-name">NgAtoms</span>
-      <span class="brand-badge">alpha</span>
-    </div>
-    <nav class="sidebar-nav">
-      <span class="nav-section">Overview</span>
-      <a routerLink="/get-started" routerLinkActive="active">Get Started</a>
+<div class="app-shell">
 
-      <span class="nav-section">Forms</span>
-      <a routerLink="/button" routerLinkActive="active">Button</a>
-      <a routerLink="/date-picker" routerLinkActive="active">Date Picker</a>
-      <a routerLink="/radio-group" routerLinkActive="active">Radio Group</a>
-      <a routerLink="/checkbox" routerLinkActive="active">Checkbox</a>
-      <a routerLink="/input" routerLinkActive="active">Input</a>
-      <a routerLink="/select" routerLinkActive="active">Select</a>
-      <a routerLink="/number-input" routerLinkActive="active">Number Input</a>
-      <a routerLink="/switch" routerLinkActive="active">Switch</a>
-      <a routerLink="/textarea" routerLinkActive="active">Textarea</a>
+  <!-- ── Top navigation ──────────────────────────────────────── -->
+  <header class="top-nav" [class.top-nav--scrolled]="scrolled()">
+    <!-- Brand -->
+    <a routerLink="/get-started" class="nav-brand">
+      <img
+        class="nav-logo"
+        [src]="isDark() ? 'assets/ngatoms-logo-w.svg' : 'assets/ngatoms-logo-b.svg'"
+        alt="ngAtoms logo"
+        width="22"
+        height="18"
+      />
+      <span class="nav-brand-name">
+        <span class="nav-brand-accent">ng</span>Atoms
+      </span>
+    </a>
 
-      <span class="nav-section">Layout</span>
-      <a routerLink="/card" routerLinkActive="active">Card</a>
-      <a routerLink="/separator" routerLinkActive="active">Separator</a>
-
-      <span class="nav-section">Display</span>
-      <a routerLink="/avatar" routerLinkActive="active">Avatar</a>
-
-      <span class="nav-section">Feedback</span>
-      <a routerLink="/alert" routerLinkActive="active">Alert</a>
-      <a routerLink="/badge" routerLinkActive="active">Badge</a>
-      <a routerLink="/progress" routerLinkActive="active">Progress</a>
-      <a routerLink="/spinner" routerLinkActive="active">Spinner</a>
-      <a routerLink="/tooltip" routerLinkActive="active">Tooltip</a>
-
-      <span class="nav-section">Navigation</span>
-      <a routerLink="/accordion" routerLinkActive="active">Accordion</a>
-      <a routerLink="/tabs" routerLinkActive="active">Tabs</a>
-
-      <span class="nav-section">Overlays</span>
-      <a routerLink="/dialog" routerLinkActive="active">Dialog</a>
-      <a routerLink="/dropdown-menu" routerLinkActive="active">Dropdown Menu</a>
-      <a routerLink="/popover" routerLinkActive="active">Popover</a>
+    <!-- Nav links -->
+    <nav class="nav-links">
+      <a routerLink="/get-started" routerLinkActive="nav-link--active" class="nav-link">Docs</a>
+      <a routerLink="/button"      routerLinkActive="nav-link--active" class="nav-link">Components</a>
+      <a class="nav-link nav-link--dim">Examples</a>
+      <a class="nav-link nav-link--dim">Blog</a>
     </nav>
-    <div class="sidebar-footer">
-      <a class="bmc-btn" href="https://www.buymeacoffee.com/lazarodutrae" target="_blank"><img src="https://img.buymeacoffee.com/button-api/?text=Buy me a coffee&emoji=☕&slug=lazarodutrae&button_colour=FFDD00&font_colour=000000&font_family=Cookie&outline_colour=000000&coffee_colour=ffffff" /></a>
-      <button class="theme-toggle" (click)="toggleTheme()" [attr.aria-label]="isDark() ? 'Switch to light mode' : 'Switch to dark mode'">
+
+    <!-- Right controls -->
+    <div class="nav-controls">
+      <!-- Search pill -->
+      <button class="nav-search" disabled>
+        <i class="ph ph-magnifying-glass"></i>
+        <span class="nav-search-label">Search docs…</span>
+        <span class="nav-search-kbd">
+          <kbd>⌘</kbd><kbd>K</kbd>
+        </span>
+      </button>
+
+      <!-- Buy me a coffee -->
+      <a
+        href="https://www.buymeacoffee.com/lazarodutrae"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="nav-icon-btn nav-icon-btn--bmc"
+        title="Buy me a coffee"
+      >
+        <i class="ph ph-coffee"></i>
+        <span>Buy me a coffee</span>
+      </a>
+
+      <!-- Theme toggle -->
+      <button
+        class="nav-icon-btn"
+        (click)="toggleTheme()"
+        [attr.title]="isDark() ? 'Switch to light mode' : 'Switch to dark mode'"
+      >
         @if (isDark()) {
-          <i class="ph-bold ph-sun"></i>
-          <span>Light mode</span>
+          <i class="ph ph-sun"></i>
         } @else {
-          <i class="ph-bold ph-moon"></i>
-          <span>Dark mode</span>
+          <i class="ph ph-moon"></i>
         }
       </button>
+
+      <!-- GitHub -->
+      <a
+        href="https://github.com/ngAtoms/ngatoms"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="nav-icon-btn"
+        title="View on GitHub"
+      >
+        <i class="ph ph-github-logo"></i>
+      </a>
     </div>
-  </aside>
-  <main class="content">
-    <router-outlet></router-outlet>
-  </main>
+  </header>
+
+  <!-- ── Body: sidebar + content ─────────────────────────────── -->
+  <div class="layout">
+    <aside class="sidebar">
+      <nav class="sidebar-nav">
+        <span class="nav-section">Overview</span>
+        <a routerLink="/get-started" routerLinkActive="active">Get Started</a>
+
+        <span class="nav-section">Forms</span>
+        <a routerLink="/button" routerLinkActive="active">Button</a>
+        <a routerLink="/date-picker" routerLinkActive="active">Date Picker</a>
+        <a routerLink="/radio-group" routerLinkActive="active">Radio Group</a>
+        <a routerLink="/checkbox" routerLinkActive="active">Checkbox</a>
+        <a routerLink="/input" routerLinkActive="active">Input</a>
+        <a routerLink="/select" routerLinkActive="active">Select</a>
+        <a routerLink="/number-input" routerLinkActive="active">Number Input</a>
+        <a routerLink="/switch" routerLinkActive="active">Switch</a>
+        <a routerLink="/textarea" routerLinkActive="active">Textarea</a>
+
+        <span class="nav-section">Layout</span>
+        <a routerLink="/card" routerLinkActive="active">Card</a>
+        <a routerLink="/separator" routerLinkActive="active">Separator</a>
+
+        <span class="nav-section">Display</span>
+        <a routerLink="/avatar" routerLinkActive="active">Avatar</a>
+
+        <span class="nav-section">Feedback</span>
+        <a routerLink="/alert" routerLinkActive="active">Alert</a>
+        <a routerLink="/badge" routerLinkActive="active">Badge</a>
+        <a routerLink="/progress" routerLinkActive="active">Progress</a>
+        <a routerLink="/spinner" routerLinkActive="active">Spinner</a>
+        <a routerLink="/tooltip" routerLinkActive="active">Tooltip</a>
+
+        <span class="nav-section">Navigation</span>
+        <a routerLink="/accordion" routerLinkActive="active">Accordion</a>
+        <a routerLink="/tabs" routerLinkActive="active">Tabs</a>
+
+        <span class="nav-section">Overlays</span>
+        <a routerLink="/dialog" routerLinkActive="active">Dialog</a>
+        <a routerLink="/dropdown-menu" routerLinkActive="active">Dropdown Menu</a>
+        <a routerLink="/popover" routerLinkActive="active">Popover</a>
+      </nav>
+    </aside>
+
+    <main class="content">
+      <router-outlet></router-outlet>
+    </main>
+  </div>
+
 </div>

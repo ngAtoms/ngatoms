@@ -5,14 +5,30 @@
    ============================================================= */
 
 :root {
-  --nga-dialog-shadow:  0 20px 60px oklch(0% 0 0 / 0.18), 0 4px 16px oklch(0% 0 0 / 0.10);
-  --nga-dialog-radius:  var(--nga-radius-lg, 0.75rem);
-  --nga-dialog-backdrop: oklch(0% 0 0 / 0.45);
+  /* Light */
+  --nga-dialog-panel-bg:     color-mix(in oklab, var(--nga-color-card, #FFFFFF) 80%, transparent);
+  --nga-dialog-panel-border: color-mix(in oklab, var(--nga-color-border, #DED4C5) 55%, transparent);
+  --nga-dialog-panel-inset:  inset 0 1px 0 rgba(255, 255, 255, 0.9);
+  --nga-dialog-panel-blur:   blur(28px) saturate(180%);
+  --nga-dialog-footer-bg:    color-mix(in oklab, var(--nga-color-muted, #F3EEE7) 60%, transparent);
+  --nga-dialog-footer-border: color-mix(in oklab, var(--nga-color-border, #DED4C5) 50%, transparent);
+  --nga-dialog-shadow:       0 24px 48px -8px rgba(26, 23, 20, 0.16), 0 8px 16px -4px rgba(26, 23, 20, 0.08);
+  --nga-dialog-radius:       var(--nga-radius-lg, 10px);
+  --nga-dialog-backdrop:     rgba(0, 0, 0, 0.32);
+  --nga-dialog-backdrop-blur: blur(10px) saturate(140%);
 }
 
 .dark {
-  --nga-dialog-shadow: 0 20px 60px oklch(0% 0 0 / 0.45), 0 4px 16px oklch(0% 0 0 / 0.30);
-  --nga-dialog-backdrop: oklch(0% 0 0 / 0.65);
+  /* Dark */
+  --nga-dialog-panel-bg:     color-mix(in oklab, var(--nga-color-card) 84%, transparent);
+  --nga-dialog-panel-border: color-mix(in oklab, white 14%, transparent);
+  --nga-dialog-panel-inset:  inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  --nga-dialog-panel-blur:   blur(32px) saturate(220%) brightness(1.08);
+  --nga-dialog-footer-bg:    color-mix(in oklab, var(--nga-color-muted) 50%, transparent);
+  --nga-dialog-footer-border: color-mix(in oklab, white 10%, transparent);
+  --nga-dialog-shadow:       0 24px 64px rgba(0, 0, 0, 0.55), 0 8px 24px rgba(0, 0, 0, 0.35);
+  --nga-dialog-backdrop:     rgba(0, 0, 0, 0.60);
+  --nga-dialog-backdrop-blur: blur(12px) saturate(160%);
 }
 
 /* ── Root host ──────────────────────────────────────────────── */
@@ -34,21 +50,21 @@
 
 .nga-dialog::backdrop {
   background: var(--nga-dialog-backdrop);
-  backdrop-filter: blur(3px);
-  -webkit-backdrop-filter: blur(3px);
+  backdrop-filter: var(--nga-dialog-backdrop-blur);
+  -webkit-backdrop-filter: var(--nga-dialog-backdrop-blur);
 }
 
 /* Open animation */
 .nga-dialog[open] {
-  animation: nga-dialog-in 160ms cubic-bezier(0.16, 1, 0.3, 1);
+  animation: nga-dialog-in var(--nga-dur-base, 180ms) var(--nga-ease-out, ease);
 }
 
 .nga-dialog[open]::backdrop {
-  animation: nga-backdrop-in 160ms ease;
+  animation: nga-backdrop-in var(--nga-dur-base, 180ms) var(--nga-ease-out, ease);
 }
 
 @keyframes nga-dialog-in {
-  from { opacity: 0; transform: translateY(-12px) scale(0.97); }
+  from { opacity: 0; transform: translateY(-8px) scale(0.98); }
   to   { opacity: 1; transform: translateY(0) scale(1); }
 }
 
@@ -65,10 +81,12 @@
 
 /* ── Panel ──────────────────────────────────────────────────── */
 .nga-dialog-panel {
-  background: var(--nga-color-card, oklch(100% 0 0));
-  border: 1px solid var(--nga-color-border, oklch(92% 0.004 85));
+  background: var(--nga-dialog-panel-bg);
+  backdrop-filter: var(--nga-dialog-panel-blur);
+  -webkit-backdrop-filter: var(--nga-dialog-panel-blur);
+  border: 1px solid var(--nga-dialog-panel-border);
   border-radius: var(--nga-dialog-radius);
-  box-shadow: var(--nga-dialog-shadow);
+  box-shadow: var(--nga-dialog-shadow), var(--nga-dialog-panel-inset);
   overflow: hidden;
   display: flex;
   flex-direction: column;
@@ -86,10 +104,10 @@
 
 /* ── Title ──────────────────────────────────────────────────── */
 .nga-dialog-title {
-  font-size: var(--nga-text-base, 1rem);
+  font-size: var(--nga-text-base, 15px);
   font-weight: var(--nga-font-weight-semibold, 600);
-  letter-spacing: -0.01em;
-  color: var(--nga-color-foreground, oklch(13% 0.002 85));
+  letter-spacing: var(--nga-tracking-snug, -0.01em);
+  color: var(--nga-color-foreground, #1A1714);
   margin: 0;
   line-height: 1.3;
 }
@@ -97,7 +115,7 @@
 /* ── Description ────────────────────────────────────────────── */
 .nga-dialog-description {
   font-size: 0.84375rem;
-  color: var(--nga-color-muted-foreground, oklch(54% 0.006 85));
+  color: var(--nga-color-muted-foreground, #87735A);
   margin: 0.25rem 0 0;
   line-height: 1.5;
 }
@@ -108,7 +126,7 @@
   overflow-y: auto;
   flex: 1;
   font-size: var(--nga-size-font-sm, 13px);
-  color: var(--nga-color-foreground, oklch(13% 0.002 85));
+  color: var(--nga-color-foreground, #1A1714);
   line-height: 1.6;
   scrollbar-width: thin;
   scrollbar-color: var(--nga-color-border) transparent;
@@ -121,8 +139,8 @@
   justify-content: flex-end;
   gap: 0.625rem;
   padding: 1rem 1.375rem;
-  border-top: 1px solid var(--nga-color-border, oklch(92% 0.004 85));
-  background: var(--nga-color-muted, oklch(96% 0.003 85));
+  border-top: 1px solid var(--nga-dialog-footer-border);
+  background: var(--nga-dialog-footer-bg);
 }
 
 /* ── Close button ───────────────────────────────────────────── */
@@ -134,21 +152,20 @@
   width: 1.75rem;
   height: 1.75rem;
   border: none;
-  border-radius: var(--nga-radius-sm, 0.25rem);
+  border-radius: var(--nga-radius-sm, 4px);
   background: transparent;
-  color: var(--nga-color-muted-foreground, oklch(54% 0.006 85));
+  color: var(--nga-color-muted-foreground, #87735A);
   cursor: pointer;
   padding: 0;
-  transition: background 150ms ease, color 150ms ease;
+  transition: background var(--nga-dur-base, 180ms) var(--nga-ease-out, ease), color var(--nga-dur-base, 180ms) var(--nga-ease-out, ease);
   outline: none;
 }
 
 .nga-dialog-close:hover {
-  background: var(--nga-color-muted, oklch(96% 0.003 85));
-  color: var(--nga-color-foreground, oklch(13% 0.002 85));
+  background: var(--nga-color-muted, #F3EEE7);
+  color: var(--nga-color-foreground, #1A1714);
 }
 
 .nga-dialog-close:focus-visible {
-  outline: 2px solid var(--nga-color-ring, oklch(76% 0.068 68));
-  outline-offset: 1px;
+  box-shadow: var(--nga-glow-ember, 0 0 0 4px rgba(240, 107, 0, 0.18));
 }

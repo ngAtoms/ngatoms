@@ -5,15 +5,10 @@
    ============================================================= */
 
 :root {
-  --nga-textarea-radius:      var(--nga-radius-md, 0.5rem);
+  --nga-textarea-radius:      var(--nga-radius-md, 6px);
   --nga-textarea-font-weight: var(--nga-font-weight-normal, 400);
-  --nga-textarea-transition:  border-color 150ms ease, box-shadow 150ms ease, background 150ms ease;
+  --nga-textarea-transition:  border-color var(--nga-dur-base, 180ms) var(--nga-ease-out, ease), box-shadow var(--nga-dur-base, 180ms) var(--nga-ease-out, ease), background var(--nga-dur-base, 180ms) var(--nga-ease-out, ease);
   --nga-textarea-min-height:  5rem;
-
-  /* Focus ring */
-  --nga-textarea-focus-ring-color:  var(--nga-color-ring, oklch(76% 0.068 68));
-  --nga-textarea-focus-ring-width:  2px;
-  --nga-textarea-focus-ring-offset: 0;
 
   /* Sizes — padding */
   --nga-textarea-padding-xs: var(--nga-size-padding-y-xs, 3px) 8px;
@@ -30,34 +25,33 @@
   --nga-textarea-font-size-xl: var(--nga-size-font-xl, 18px);
 
   /* Variant: default */
-  --nga-textarea-default-bg:           var(--nga-color-background, oklch(100% 0 0));
-  --nga-textarea-default-fg:           var(--nga-color-foreground, oklch(13% 0.002 85));
-  --nga-textarea-default-border:       var(--nga-color-border, oklch(82% 0.003 85));
-  --nga-textarea-default-border-hover: var(--nga-color-primary, oklch(13% 0.002 85));
-  --nga-textarea-default-placeholder:  var(--nga-color-muted-foreground, oklch(55% 0.003 85));
+  --nga-textarea-default-bg:           var(--nga-color-background, #FAF8F5);
+  --nga-textarea-default-fg:           var(--nga-color-foreground, #1A1714);
+  --nga-textarea-default-border:       var(--nga-color-border, #DED4C5);
+  --nga-textarea-default-border-hover: var(--nga-color-primary, #1A1714);
+  --nga-textarea-default-placeholder:  var(--nga-color-muted-foreground, #87735A);
 
   /* Variant: filled */
-  --nga-textarea-filled-bg:           var(--nga-color-secondary, oklch(96% 0.003 85));
-  --nga-textarea-filled-fg:           var(--nga-color-secondary-foreground, oklch(13% 0.002 85));
+  --nga-textarea-filled-bg:           var(--nga-color-secondary, #F3EEE7);
+  --nga-textarea-filled-fg:           var(--nga-color-secondary-foreground, #1A1714);
   --nga-textarea-filled-border:       transparent;
-  --nga-textarea-filled-border-hover: var(--nga-color-primary, oklch(13% 0.002 85));
-  --nga-textarea-filled-placeholder:  var(--nga-color-muted-foreground, oklch(55% 0.003 85));
-  --nga-textarea-filled-bg-hover:     color-mix(in oklch, var(--nga-textarea-filled-bg) 85%, black);
+  --nga-textarea-filled-border-hover: var(--nga-color-primary, #1A1714);
+  --nga-textarea-filled-placeholder:  var(--nga-color-muted-foreground, #87735A);
+  --nga-textarea-filled-bg-hover:     color-mix(in srgb, var(--nga-textarea-filled-bg) 85%, black);
 
   /* Variant: ghost */
   --nga-textarea-ghost-bg:           transparent;
-  --nga-textarea-ghost-fg:           var(--nga-color-foreground, oklch(13% 0.002 85));
+  --nga-textarea-ghost-fg:           var(--nga-color-foreground, #1A1714);
   --nga-textarea-ghost-border:       transparent;
-  --nga-textarea-ghost-border-hover: var(--nga-color-border, oklch(82% 0.003 85));
-  --nga-textarea-ghost-placeholder:  var(--nga-color-muted-foreground, oklch(55% 0.003 85));
+  --nga-textarea-ghost-border-hover: var(--nga-color-border, #DED4C5);
+  --nga-textarea-ghost-placeholder:  var(--nga-color-muted-foreground, #87735A);
 
   /* Invalid state */
-  --nga-textarea-invalid-border:     var(--nga-color-destructive, oklch(47% 0.130 22));
-  --nga-textarea-invalid-focus-ring: var(--nga-color-destructive, oklch(47% 0.130 22));
+  --nga-textarea-invalid-border:     var(--nga-color-destructive, #DC2626);
 }
 
 .dark {
-  --nga-textarea-filled-bg-hover: color-mix(in oklch, var(--nga-textarea-filled-bg) 82%, white);
+  --nga-textarea-filled-bg-hover: color-mix(in srgb, var(--nga-textarea-filled-bg) 82%, white);
 }
 
 /* ── Base ───────────────────────────────────────────────────── */
@@ -65,7 +59,7 @@
   display: block;
   width: 100%;
   min-height: var(--nga-textarea-min-height);
-  border: 1.5px solid transparent;
+  border: 1px solid transparent;
   border-radius: var(--nga-textarea-radius);
   font-weight: var(--nga-textarea-font-weight);
   font-family: inherit;
@@ -76,21 +70,14 @@
   resize: vertical;
 }
 
-.nga-textarea::-webkit-scrollbar {
-  width: 0.25rem;
-}
-
-.nga-textarea::-webkit-scrollbar-track {
-  background: transparent;
-}
-
+.nga-textarea::-webkit-scrollbar { width: 0.25rem; }
+.nga-textarea::-webkit-scrollbar-track { background: transparent; }
 .nga-textarea::-webkit-scrollbar-thumb {
-  background: var(--nga-color-border, oklch(82% 0.003 85));
+  background: var(--nga-color-border, #DED4C5);
   border-radius: 9999px;
 }
-
 .nga-textarea::-webkit-scrollbar-thumb:hover {
-  background: var(--nga-color-muted-foreground, oklch(55% 0.003 85));
+  background: var(--nga-color-muted-foreground, #87735A);
 }
 
 .nga-textarea::placeholder {
@@ -98,8 +85,7 @@
 }
 
 .nga-textarea:focus-visible {
-  outline: var(--nga-textarea-focus-ring-width) solid var(--nga-textarea-focus-ring-color);
-  outline-offset: var(--nga-textarea-focus-ring-offset);
+  box-shadow: var(--nga-glow-ember, 0 0 0 4px rgba(240, 107, 0, 0.18));
 }
 
 .nga-textarea:disabled {
@@ -128,7 +114,7 @@
 }
 .nga-textarea--default::placeholder { color: var(--nga-textarea-default-placeholder); }
 .nga-textarea--default:hover:not(:disabled):not([readonly]) { border-color: var(--nga-textarea-default-border-hover); }
-.nga-textarea--default:focus-visible { border-color: var(--nga-textarea-focus-ring-color); }
+.nga-textarea--default:focus-visible { border-color: var(--nga-color-ring, #F06B00); }
 
 /* ── Variant: filled ────────────────────────────────────────── */
 .nga-textarea--filled {
@@ -141,7 +127,7 @@
   background: var(--nga-textarea-filled-bg-hover);
   border-color: var(--nga-textarea-filled-border-hover);
 }
-.nga-textarea--filled:focus-visible { border-color: var(--nga-textarea-focus-ring-color); }
+.nga-textarea--filled:focus-visible { border-color: var(--nga-color-ring, #F06B00); }
 
 /* ── Variant: ghost ─────────────────────────────────────────── */
 .nga-textarea--ghost {
@@ -151,8 +137,10 @@
 }
 .nga-textarea--ghost::placeholder { color: var(--nga-textarea-ghost-placeholder); }
 .nga-textarea--ghost:hover:not(:disabled):not([readonly]) { border-color: var(--nga-textarea-ghost-border-hover); }
-.nga-textarea--ghost:focus-visible { border-color: var(--nga-textarea-focus-ring-color); }
+.nga-textarea--ghost:focus-visible { border-color: var(--nga-color-ring, #F06B00); }
 
 /* ── Invalid state ──────────────────────────────────────────── */
 .nga-textarea--invalid { border-color: var(--nga-textarea-invalid-border) !important; }
-.nga-textarea--invalid:focus-visible { outline-color: var(--nga-textarea-invalid-focus-ring); }
+.nga-textarea--invalid:focus-visible {
+  box-shadow: 0 0 0 4px rgba(220, 38, 38, 0.18);
+}

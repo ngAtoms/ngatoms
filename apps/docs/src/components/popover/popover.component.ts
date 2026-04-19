@@ -1,10 +1,10 @@
 import {
   Component,
   ElementRef,
-  HostListener,
   OnDestroy,
   Renderer2,
   afterNextRender,
+  effect,
   inject,
   input,
   model,
@@ -12,6 +12,7 @@ import {
   viewChild,
 } from '@angular/core';
 import { DOCUMENT } from '@angular/common';
+import { NgAtomsOverlayService } from '../overlay/overlay.service';
 
 export type NgAtomsPopoverPlacement = 'top' | 'bottom' | 'left' | 'right';
 
@@ -33,18 +34,32 @@ export class NgAtomsPopoverComponent implements OnDestroy {
   private readonly el = inject(ElementRef<HTMLElement>);
   private readonly renderer = inject(Renderer2);
   private readonly document = inject(DOCUMENT);
+  private readonly overlay = inject(NgAtomsOverlayService);
 
   readonly open = model<boolean>(false);
   readonly placement = input<NgAtomsPopoverPlacement>('bottom');
 
   readonly panelEl = viewChild.required<ElementRef<HTMLElement>>('panelEl');
 
-  /** Resolved placement after flip logic — used for CSS animation class. */
   readonly activePlacement = signal<NgAtomsPopoverPlacement>('bottom');
+
+  private deregister: (() => void) | null = null;
 
   constructor() {
     afterNextRender(() => {
       this.renderer.appendChild(this.document.body, this.panelEl().nativeElement);
+    });
+    effect(() => {
+      if (this.open()) {
+        this.deregister = this.overlay.register(
+          () => this.open.set(false),
+          this.el.nativeElement,
+          this.panelEl().nativeElement,
+        );
+      } else {
+        this.deregister?.();
+        this.deregister = null;
+      }
     });
   }
 
@@ -122,7 +137,6 @@ export class NgAtomsPopoverComponent implements OnDestroy {
       resolved = fallback;
       ({ top, left } = fallbackCoords);
     } else {
-      // Neither fits — use preferred, clamped to viewport
       resolved = preferred;
       top = Math.max(margin, Math.min(preferredCoords.top, window.innerHeight - panelRect.height - margin));
       left = Math.max(margin, Math.min(preferredCoords.left, window.innerWidth - panelRect.width - margin));
@@ -133,23 +147,8 @@ export class NgAtomsPopoverComponent implements OnDestroy {
     this.renderer.setStyle(panel, 'left', `${left}px`);
   }
 
-  @HostListener('document:click', ['$event'])
-  onDocumentClick(event: MouseEvent): void {
-    const target = event.target as Node;
-    if (
-      !this.el.nativeElement.contains(target) &&
-      !this.panelEl().nativeElement.contains(target)
-    ) {
-      this.close();
-    }
-  }
-
-  @HostListener('document:keydown.escape')
-  onEscape(): void {
-    if (this.open()) this.close();
-  }
-
   ngOnDestroy(): void {
+    this.deregister?.();
     const panel = this.panelEl().nativeElement;
     if (panel.parentElement === this.document.body) {
       this.renderer.removeChild(this.document.body, panel);
