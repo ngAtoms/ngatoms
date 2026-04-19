@@ -48,8 +48,8 @@ section { scroll-margin-top: calc(var(--nga-nav-height, 56px) + 24px); }
   display: flex;
   flex-direction: column;
   gap: 10px;
-  width: 100%;
-  max-width: 440px;
+  width: 380px;
+  max-width: 100%;
 }
 
 .progress-row {
