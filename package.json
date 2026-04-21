@@ -12,7 +12,7 @@
     "lint": "eslint packages/primitives/src packages/utils/src packages/ngatoms/src packages/ngatoms/bin apps/docs/src",
     "changeset": "changeset",
     "version:packages": "changeset version",
-    "publish:changesets": "changeset publish --access public",
+    "publish:changesets": "changeset publish",
     "pre:enter:lts": "changeset pre enter lts",
     "pre:enter:rc": "changeset pre enter rc",
     "pre:exit": "changeset pre exit",
