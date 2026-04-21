@@ -1,6 +1,7 @@
 import {
   Component,
   ElementRef,
+  HostListener,
   OnDestroy,
   Renderer2,
   afterNextRender,
@@ -53,14 +54,21 @@ export class NgAtomsPopoverComponent implements OnDestroy {
       if (this.open()) {
         this.deregister = this.overlay.register(
           () => this.open.set(false),
-          this.el.nativeElement,
-          this.panelEl().nativeElement,
+          [this.el.nativeElement, this.panelEl().nativeElement],
+          { closeOnScroll: false }
         );
       } else {
         this.deregister?.();
         this.deregister = null;
       }
     });
+  }
+
+  @HostListener('window:scroll')
+  onWindowScroll(): void {
+    if (this.open()) {
+      this.position();
+    }
   }
 
   toggle(): void {

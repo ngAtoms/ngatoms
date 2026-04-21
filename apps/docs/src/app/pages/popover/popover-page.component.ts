@@ -84,7 +84,7 @@ export class ExampleComponent {
             desc: 'Escape closes the popover and returns focus to the trigger.'
         },
         {icon: 'ph-cursor-click', title: 'Click outside', desc: 'Clicking outside the panel closes it automatically.'},
-        {icon: 'ph-arrow-u-up-left', title: 'Focus management', desc: 'Focus is trapped inside the panel while open.'},
+        {icon: 'ph-arrows-out-simple', title: 'Repositioning', desc: 'Stays open and follows its trigger when the page is scrolled.'},
         {icon: 'ph-list', title: 'ARIA', desc: 'Trigger has aria-expanded. Panel has role="dialog" with aria-modal.'},
     ];
 

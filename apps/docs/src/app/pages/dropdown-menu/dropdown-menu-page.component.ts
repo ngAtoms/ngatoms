@@ -92,7 +92,7 @@ export class DropdownMenuPageComponent {
 
   readonly a11yItems = [
     { icon: 'ph-keyboard',      title: 'Keyboard navigation', desc: 'Arrow keys move focus between items. Enter/Space activates. Escape closes.' },
-    { icon: 'ph-arrow-u-up-left', title: 'Focus management',  desc: 'Focus returns to the trigger when the menu closes.' },
+    { icon: 'ph-arrows-out-simple', title: 'Repositioning',      desc: 'Stays open and follows its trigger when the page is scrolled.' },
     { icon: 'ph-list',          title: 'ARIA roles',           desc: 'Panel has role="menu", items have role="menuitem". Trigger has aria-haspopup and aria-expanded.' },
     { icon: 'ph-cursor-click',  title: 'Click outside',        desc: 'Clicking outside the panel closes the menu automatically.' },
   ];

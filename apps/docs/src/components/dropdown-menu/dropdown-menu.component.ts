@@ -1,6 +1,7 @@
 import {
   Component,
   ElementRef,
+  HostListener,
   InjectionToken,
   OnDestroy,
   Renderer2,
@@ -67,8 +68,8 @@ export class NgAtomsDropdownMenuComponent implements NgAtomsDropdownMenuContext,
       if (this.open()) {
         this.deregister = this.overlay.register(
           () => this.open.set(false),
-          this.el.nativeElement,
-          this.panelEl().nativeElement,
+          [this.el.nativeElement, this.panelEl().nativeElement],
+          { closeOnScroll: false }
         );
       } else {
         this.deregister?.();
@@ -78,6 +79,13 @@ export class NgAtomsDropdownMenuComponent implements NgAtomsDropdownMenuContext,
     afterNextRender(() => {
       this.renderer.appendChild(this.document.body, this.panelEl().nativeElement);
     });
+  }
+
+  @HostListener('window:scroll')
+  onWindowScroll(): void {
+    if (this.open()) {
+      this.position();
+    }
   }
 
   toggle(): void {

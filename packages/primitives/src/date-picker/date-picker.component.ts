@@ -6,6 +6,7 @@ import {
   Renderer2,
   afterNextRender,
   computed,
+  effect,
   inject,
   input,
   model,
@@ -205,6 +206,18 @@ export class NgAtomsDatePickerComponent implements OnDestroy {
     afterNextRender(() => {
       this.renderer.appendChild(this.document.body, this.panelEl().nativeElement);
     });
+    effect(() => {
+      if (this.open()) {
+        this.deregister = this.overlay.register(
+          () => this.close(false),
+          [this.el.nativeElement, this.panelEl().nativeElement],
+          { closeOnScroll: false }
+        );
+      } else {
+        this.deregister?.();
+        this.deregister = null;
+      }
+    });
   }
 
   // ── Helpers ────────────────────────────────────────────────
@@ -252,11 +265,6 @@ export class NgAtomsDatePickerComponent implements OnDestroy {
       }
       const focusTarget = anchor || this.toDateStr(new Date());
       this.focusedDateStr.set(focusTarget);
-      this.deregister = this.overlay.register(
-        () => this.close(false),
-        this.el.nativeElement,
-        this.panelEl().nativeElement,
-      );
       requestAnimationFrame(() => {
         this.position();
         this._focusCell(this.focusedDateStr());
@@ -406,6 +414,13 @@ export class NgAtomsDatePickerComponent implements OnDestroy {
 
     this.renderer.setStyle(panel, 'top',  `${top}px`);
     this.renderer.setStyle(panel, 'left', `${left}px`);
+  }
+
+  @HostListener('window:scroll')
+  onWindowScroll(): void {
+    if (this.open()) {
+      this.position();
+    }
   }
 
   @HostListener('document:keydown', ['$event'])

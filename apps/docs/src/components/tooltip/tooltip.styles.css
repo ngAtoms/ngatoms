@@ -15,7 +15,7 @@
 /* ── Base ───────────────────────────────────────────────────── */
 .nga-tooltip {
   position: fixed;
-  z-index: 9999;
+  z-index: 50;
   padding: 0.3125rem 0.625rem;
   background: var(--nga-tooltip-bg);
   backdrop-filter: var(--nga-tooltip-blur);

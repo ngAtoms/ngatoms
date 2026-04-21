@@ -76,6 +76,7 @@ export class MyComponent {}`;
     { icon: 'keyboard',   title: 'Keyboard focus', body: 'Tooltips appear on both hover and keyboard focus, so keyboard-only users get the same contextual information.' },
     { icon: 'text-aa',    title: 'Accessible name', body: 'Use tooltips on icon-only buttons to provide an accessible name (in addition to aria-label for robustness).' },
     { icon: 'prohibit',   title: 'Interactive content', body: 'Tooltips are pointer-events:none and cannot contain interactive elements. Use a Popover for rich content.' },
+    { icon: 'arrows-out-simple', title: 'Repositioning', body: 'The tooltip remains visible and automatically repositions itself when the page is scrolled, staying anchored to its trigger.' },
   ];
 
   readonly tocItems = [

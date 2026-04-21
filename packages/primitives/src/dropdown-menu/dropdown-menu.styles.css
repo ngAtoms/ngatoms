@@ -47,7 +47,7 @@
 /* ── Panel ──────────────────────────────────────────────────── */
 .nga-dropdown-panel {
   position: fixed;
-  z-index: 9999;
+  z-index: 50;
   min-width: var(--nga-dropdown-min-width);
   padding: var(--nga-dropdown-padding);
   background: var(--nga-dropdown-bg);

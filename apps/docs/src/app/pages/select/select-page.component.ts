@@ -131,6 +131,7 @@ export class MyComponent {
     { term: 'Keyboard',      body: 'Arrow keys navigate options. Enter or Space selects. Escape closes the panel and returns focus to the trigger. Home/End jump to the first and last option.' },
     { term: 'Focus ring',    body: 'Visible focus ring on keyboard navigation. The trigger exposes aria-expanded and aria-haspopup="listbox". aria-activedescendant tracks the focused option for screen readers.' },
     { term: 'Search',        body: 'When searchable, options filter as you type. A live region announces the count of matching results after each keystroke.' },
+    { term: 'Repositioning', body: 'The panel remains open and automatically repositions itself when the page is scrolled, staying anchored to the trigger.' },
     { term: 'Disabled',      body: 'Disabled options carry aria-disabled="true" so screen readers announce them as unavailable rather than silently refusing selection.' },
   ];
 

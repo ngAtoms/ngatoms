@@ -2,6 +2,7 @@ import {
   AfterViewChecked,
   Component,
   ElementRef,
+  HostListener,
   computed,
   inject,
   input,
@@ -100,11 +101,19 @@ export class NgAtomsSelectComponent implements AfterViewChecked {
       this.isOpen.set(true);
       this.deregister = this.overlay.register(
         () => this.close(),
-        this.el.nativeElement,
+        [this.el.nativeElement],
+        { closeOnScroll: false }
       );
       if (this.searchable()) this._shouldFocusSearch = true;
     } else {
       this.close();
+    }
+  }
+
+  @HostListener('window:scroll')
+  onWindowScroll(): void {
+    if (this.isOpen()) {
+      this.computePanelPosition();
     }
   }
 

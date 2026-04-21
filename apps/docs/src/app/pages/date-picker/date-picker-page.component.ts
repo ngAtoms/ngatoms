@@ -112,7 +112,7 @@ export class MyComponent {
     { term: 'Keyboard',     body: 'Arrow keys move focus between calendar days. PageUp/PageDown navigate months. Enter or Space selects a day. Escape closes the calendar and returns focus to the trigger.' },
     { term: 'Focus ring',   body: 'Visible focus ring on the trigger and each day cell during keyboard navigation. The trigger exposes aria-expanded and aria-haspopup="dialog".' },
     { term: 'Grid',         body: 'The calendar grid uses role="grid" with role="row" and role="gridcell" semantics so screen readers can announce day, month, and position.' },
-    { term: 'Scroll',       body: 'The calendar closes automatically when the page is scrolled, keeping the overlay anchored to its trigger at all times.' },
+    { term: 'Repositioning', body: 'The calendar remains open and automatically repositions itself when the page is scrolled, staying anchored to the trigger.' },
     { term: 'Range mode',   body: 'An incomplete range (start chosen, end not yet selected) is discarded on close so forms never receive a partial value.' },
     { term: 'Disabled',     body: 'Disabled days carry aria-disabled="true". The trigger itself uses the disabled HTML attribute when the entire picker is disabled.' },
   ];

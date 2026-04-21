@@ -4,6 +4,7 @@ import { DOCUMENT } from '@angular/common';
 interface OverlayEntry {
   close: () => void;
   contains: HTMLElement[];
+  closeOnScroll?: boolean;
 }
 
 /**
@@ -23,15 +24,25 @@ export class NgAtomsOverlayService implements OnDestroy {
   /**
    * Register an open overlay.
    *
-   * @param closeFn   Called by the service to close the overlay
-   *                  (scroll / Escape / click-outside).
-   * @param contains  Elements whose subtree, when clicked, should NOT
-   *                  close this overlay (e.g. trigger + panel elements).
+   * @param closeFn         Called by the service to close the overlay
+   *                        (scroll / Escape / click-outside).
+   * @param contains        Elements whose subtree, when clicked, should NOT
+   *                        close this overlay (e.g. trigger + panel elements).
+   * @param options.closeOnScroll Whether to close the overlay when the user scrolls.
    * @returns A deregister function — call it when the component closes
    *          itself so the service can remove it from the stack.
    */
-  register(closeFn: () => void, ...contains: HTMLElement[]): () => void {
-    const entry: OverlayEntry = { close: closeFn, contains };
+  register(
+    closeFn: () => void,
+    contains: HTMLElement | HTMLElement[],
+    options: { closeOnScroll?: boolean } = {}
+  ): () => void {
+    const elements = Array.isArray(contains) ? contains : [contains];
+    const entry: OverlayEntry = {
+      close: closeFn,
+      contains: elements,
+      closeOnScroll: options.closeOnScroll ?? true
+    };
     this.stack.push(entry);
     if (this.stack.length === 1) {
       this.attachGlobal();
@@ -47,9 +58,16 @@ export class NgAtomsOverlayService implements OnDestroy {
   }
 
   private readonly onScroll = (): void => {
-    const all = this.stack.splice(0);
-    this.detach();
-    all.forEach(e => e.close());
+    const toClose = this.stack.filter(e => e.closeOnScroll);
+    
+    // Remove closed entries from stack
+    toClose.forEach(entry => {
+      const idx = this.stack.indexOf(entry);
+      if (idx >= 0) this.stack.splice(idx, 1);
+    });
+
+    if (!this.stack.length) this.detach();
+    toClose.forEach(e => e.close());
   };
 
   private readonly onEscape = (e: KeyboardEvent): void => {
