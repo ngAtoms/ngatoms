@@ -1,5 +1,11 @@
 # ngatoms
 
+## 0.3.0-rc.1
+
+### Minor Changes
+
+- 1192e4d: feat(primitives): overlays (date-picker, dropdown-menu, popover, select, tooltip) now reposition on scroll instead of closing. Overlay service gains a `closeOnScroll` option; panel `z-index` normalized to 50.
+
 ## 0.3.0-rc.0
 
 ### Minor Changes
