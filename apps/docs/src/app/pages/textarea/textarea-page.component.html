@@ -1,52 +1,188 @@
-<app-component-demo [files]="codeFiles">
-  <header class="page-header">
-    <h1 class="page-title">Textarea</h1>
-    <p class="page-desc">Multiline text input with variants, sizes, and auto-resize support.</p>
-  </header>
+<div class="cp-layout">
 
-  <section class="showcase-section">
-    <h2 class="section-title">Variants</h2>
-    <div class="sizes-grid">
-      @for (variant of variants; track variant) {
-        <div class="size-item">
-          <span class="size-label">{{ variant }}</span>
-          <textarea ngAtomsTextarea [variant]="variant" placeholder="Enter your message..."></textarea>
-        </div>
-      }
-    </div>
-  </section>
+    <main class="cp-main">
 
-  <section class="showcase-section">
-    <h2 class="section-title">Sizes</h2>
-    <div class="sizes-grid">
-      @for (size of sizes; track size) {
-        <div class="size-item">
-          <span class="size-label">{{ size }}</span>
-          <textarea ngAtomsTextarea [size]="size" placeholder="Enter your message..."></textarea>
-        </div>
-      }
-    </div>
-  </section>
+        <header class="cp-header">
+            <div class="cp-eyebrow">Components / Forms</div>
+            <h1 class="cp-title">Textarea</h1>
+            <p class="cp-lede">
+                Multiline text input with three visual variants, five sizes, invalid state, and optional
+                auto-resize. Drop it on any <code class="cp-code-inline">&lt;textarea&gt;</code> element.
+            </p>
+            <div class="cp-chips">
+                <span ngAtomsBadge variant="default"><i class="ph ph-angular-logo"></i> ngAtoms v0.3+</span>
+                <span ngAtomsBadge variant="default"><i class="ph ph-package"></i> ngatoms add textarea</span>
+                <span ngAtomsBadge variant="success"><i class="ph ph-check-circle"></i> Stable</span>
+                <a ngAtomsBadge variant="outline" href="https://github.com/ngAtoms/ngatoms/tree/rc/packages/primitives/src/textarea" target="_blank">
+                    <i class="ph ph-arrow-square-out"></i> Source
+                </a>
+            </div>
+        </header>
 
-  <section class="showcase-section">
-    <h2 class="section-title">States</h2>
-    <div class="states-grid">
-      <div class="state-item">
-        <span class="state-label">Invalid</span>
-        <textarea ngAtomsTextarea [invalid]="true" placeholder="This field has an error"></textarea>
-      </div>
-      <div class="state-item">
-        <span class="state-label">Disabled</span>
-        <textarea ngAtomsTextarea placeholder="Disabled textarea" disabled></textarea>
-      </div>
-      <div class="state-item">
-        <span class="state-label">Readonly</span>
-        <textarea ngAtomsTextarea readonly>This content is read-only.</textarea>
-      </div>
-      <div class="state-item">
-        <span class="state-label">Auto-resize</span>
-        <textarea ngAtomsTextarea [autoResize]="true" placeholder="Type to auto-resize..."></textarea>
-      </div>
-    </div>
-  </section>
-</app-component-demo>
+        <!-- Hero preview -->
+        <preview-card>
+            <ng-container preview>
+                <textarea ngAtomsTextarea placeholder="Enter your message…" style="width: 320px;"></textarea>
+            </ng-container>
+            <ng-container code>
+                <app-code-block [code]="heroCode" language="html" />
+            </ng-container>
+        </preview-card>
+
+        <!-- Usage -->
+        <section id="usage">
+            <h2 class="cp-h2">Usage</h2>
+            <p class="cp-p">Add the textarea to your project and import the standalone directive wherever you need it.</p>
+            <div class="inline-terminal">
+                <span class="inline-terminal-dollar">$</span>
+                <span class="inline-terminal-cmd">ngatoms add textarea</span>
+            </div>
+            <p class="cp-p" style="margin-top: 14px;">Then import into your component:</p>
+            <app-code-block [code]="usageCode" language="typescript" />
+        </section>
+
+        <!-- Variants -->
+        <section id="variants">
+            <h2 class="cp-h2">Variants</h2>
+            <p class="cp-p">
+                Three visual styles. <strong>default</strong> shows a clear border, <strong>filled</strong>
+                uses a subtle background without a border, and <strong>ghost</strong> is borderless for
+                inline editing contexts.
+            </p>
+            <preview-card>
+                <ng-container preview>
+                    <div class="textarea-col">
+                        @for (variant of variants; track variant) {
+                            <div class="textarea-row">
+                                <span class="textarea-label">{{ variant }}</span>
+                                <textarea ngAtomsTextarea [variant]="variant" placeholder="Placeholder"></textarea>
+                            </div>
+                        }
+                    </div>
+                </ng-container>
+                <ng-container code>
+                    <app-code-block [code]="variantsCode" language="html" />
+                </ng-container>
+            </preview-card>
+        </section>
+
+        <!-- Sizes -->
+        <section id="sizes">
+            <h2 class="cp-h2">Sizes</h2>
+            <p class="cp-p">
+                Five sizes from <strong>xs</strong> to <strong>xl</strong>. <strong>md</strong> is the default
+                and fits most form layouts.
+            </p>
+            <preview-card>
+                <ng-container preview>
+                    <div class="textarea-col">
+                        @for (size of sizes; track size) {
+                            <div class="textarea-row">
+                                <span class="textarea-label">{{ size }}</span>
+                                <textarea ngAtomsTextarea [size]="size" placeholder="Placeholder"></textarea>
+                            </div>
+                        }
+                    </div>
+                </ng-container>
+                <ng-container code>
+                    <app-code-block [code]="sizesCode" language="html" />
+                </ng-container>
+            </preview-card>
+        </section>
+
+        <!-- States -->
+        <section id="states">
+            <h2 class="cp-h2">States</h2>
+            <p class="cp-p">
+                Use <code class="cp-code">[invalid]="true"</code> for validation errors. The
+                <code class="cp-code">[autoResize]="true"</code> input grows the textarea height as the user
+                types. Native <code class="cp-code">disabled</code> and <code class="cp-code">readonly</code>
+                attributes pass through to the underlying element.
+            </p>
+            <preview-card>
+                <ng-container preview>
+                    <div class="textarea-col">
+                        <div class="textarea-row">
+                            <span class="textarea-label">Default</span>
+                            <textarea ngAtomsTextarea placeholder="Default textarea"></textarea>
+                        </div>
+                        <div class="textarea-row">
+                            <span class="textarea-label">Invalid</span>
+                            <textarea ngAtomsTextarea [invalid]="true" placeholder="This field has an error"></textarea>
+                        </div>
+                        <div class="textarea-row">
+                            <span class="textarea-label">Disabled</span>
+                            <textarea ngAtomsTextarea placeholder="Disabled textarea" disabled></textarea>
+                        </div>
+                        <div class="textarea-row">
+                            <span class="textarea-label">Readonly</span>
+                            <textarea ngAtomsTextarea readonly>This content is read-only.</textarea>
+                        </div>
+                        <div class="textarea-row">
+                            <span class="textarea-label">Auto-resize</span>
+                            <textarea ngAtomsTextarea [autoResize]="true" placeholder="Type to auto-resize…"></textarea>
+                        </div>
+                    </div>
+                </ng-container>
+                <ng-container code>
+                    <app-code-block [code]="statesCode" language="html" />
+                </ng-container>
+            </preview-card>
+        </section>
+
+        <!-- API -->
+        <section id="api">
+            <h2 class="cp-h2">API</h2>
+            <p class="cp-p">Inputs on <code class="cp-code">ngAtomsTextarea</code>. All standard textarea attributes pass through to the underlying element.</p>
+            <div class="props-table">
+                <div class="props-table-header">
+                    <span>Prop</span>
+                    <span>Type</span>
+                    <span>Default</span>
+                    <span>Description</span>
+                </div>
+                @for (prop of props; track prop.name) {
+                    <div class="props-table-row">
+                        <code class="props-name">{{ prop.name }}</code>
+                        <code class="props-type">{{ prop.type }}</code>
+                        <code class="props-default">{{ prop.defaultVal }}</code>
+                        <span class="props-desc">{{ prop.description }}</span>
+                    </div>
+                }
+            </div>
+        </section>
+
+        <!-- Accessibility -->
+        <section id="a11y">
+            <h2 class="cp-h2">Accessibility</h2>
+            <p class="cp-p">Built on a native <code class="cp-code">&lt;textarea&gt;</code>. Associate a <code class="cp-code">&lt;label&gt;</code> or use <code class="cp-code">aria-label</code> for screen readers.</p>
+            <ul class="a11y-list">
+                @for (item of a11yItems; track item.title) {
+                    <li class="a11y-item">
+                        <div class="a11y-icon"><i [class]="'ph ph-' + item.icon"></i></div>
+                        <div class="a11y-body">
+                            <div class="a11y-title">{{ item.title }}</div>
+                            <div class="a11y-desc">{{ item.body }}</div>
+                        </div>
+                    </li>
+                }
+            </ul>
+        </section>
+
+        <!-- Prev / Next -->
+        <nav class="cp-prevnext">
+            <a routerLink="/switch" class="cp-prevnext-item">
+                <span class="cp-prevnext-dir">← PREVIOUS</span>
+                <span class="cp-prevnext-label">Switch</span>
+            </a>
+            <a routerLink="/card" class="cp-prevnext-item cp-prevnext-item--right">
+                <span class="cp-prevnext-dir">NEXT →</span>
+                <span class="cp-prevnext-label cp-prevnext-label--accent">Card</span>
+            </a>
+        </nav>
+
+    </main>
+
+    <app-toc [items]="tocItems" />
+
+</div>

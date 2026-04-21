@@ -11,6 +11,7 @@ import {
   viewChild,
 } from '@angular/core';
 import { NgClass } from '@angular/common';
+import { NgAtomsOverlayService } from '../overlay/overlay.service';
 
 export interface NgAtomsSelectOption {
   value: string;
@@ -31,7 +32,10 @@ export type NgAtomsSelectSize = 'xs' | 'sm' | 'md' | 'lg' | 'xl';
 })
 export class NgAtomsSelectComponent implements AfterViewChecked {
   private readonly el = inject(ElementRef);
+  private readonly overlay = inject(NgAtomsOverlayService);
+  private deregister: (() => void) | null = null;
 
+  readonly triggerEl = viewChild.required<ElementRef<HTMLButtonElement>>('triggerEl');
   readonly searchInputEl = viewChild<ElementRef<HTMLInputElement>>('searchInput');
 
   readonly options = input<NgAtomsSelectOption[]>([]);
@@ -57,6 +61,10 @@ export class NgAtomsSelectComponent implements AfterViewChecked {
     if (!query) return this.options();
     return this.options().filter(o => o.label.toLowerCase().includes(query));
   });
+
+  readonly focusedOptionId = computed(() =>
+    this.focusedIndex() >= 0 ? `nga-select-opt-${this.focusedIndex()}` : null
+  );
 
   readonly hasValue = computed(() => {
     const val = this.value();
@@ -96,16 +104,33 @@ export class NgAtomsSelectComponent implements AfterViewChecked {
     if (!this.isOpen()) {
       this.computePanelPosition();
       this.isOpen.set(true);
+      this.deregister = this.overlay.register(
+        () => this.close(false),
+        [this.el.nativeElement],
+        { closeOnScroll: false }
+      );
       if (this.searchable()) this._shouldFocusSearch = true;
     } else {
       this.close();
     }
   }
 
-  close(): void {
+  @HostListener('window:scroll')
+  onWindowScroll(): void {
+    if (this.isOpen()) {
+      this.computePanelPosition();
+    }
+  }
+
+  close(returnFocus = true): void {
     this.isOpen.set(false);
     this.searchQuery.set('');
     this.focusedIndex.set(-1);
+    this.deregister?.();
+    this.deregister = null;
+    if (returnFocus) {
+      this.triggerEl().nativeElement.focus();
+    }
   }
 
   selectOption(option: NgAtomsSelectOption): void {
@@ -126,47 +151,38 @@ export class NgAtomsSelectComponent implements AfterViewChecked {
   }
 
   onTriggerKeydown(event: KeyboardEvent): void {
-    if (['ArrowDown', 'ArrowUp', 'Enter', ' '].includes(event.key)) {
-      event.preventDefault();
-      if (!this.isOpen()) {
-        this.toggleOpen();
-      } else {
-        const opts = this.filteredOptions();
-        if (event.key === 'ArrowDown') this.focusedIndex.update(i => Math.min(i + 1, opts.length - 1));
-        if (event.key === 'ArrowUp') this.focusedIndex.update(i => Math.max(i - 1, 0));
-        if (event.key === 'Enter' || event.key === ' ') {
-          const idx = this.focusedIndex();
-          if (idx >= 0 && idx < opts.length) this.selectOption(opts[idx]);
-        }
+    if (!['ArrowDown', 'ArrowUp', 'Enter', ' ', 'Escape', 'Home', 'End'].includes(event.key)) return;
+    event.preventDefault();
+    if (!this.isOpen()) {
+      if (event.key !== 'Escape') this.toggleOpen();
+      return;
+    }
+    const opts = this.filteredOptions();
+    switch (event.key) {
+      case 'ArrowDown': this.focusedIndex.update(i => Math.min(i + 1, opts.length - 1)); break;
+      case 'ArrowUp':   this.focusedIndex.update(i => Math.max(i - 1, 0)); break;
+      case 'Home':      this.focusedIndex.set(0); break;
+      case 'End':       this.focusedIndex.set(opts.length - 1); break;
+      case 'Enter':
+      case ' ': {
+        const idx = this.focusedIndex();
+        if (idx >= 0 && idx < opts.length) this.selectOption(opts[idx]);
+        break;
       }
+      case 'Escape': this.close(); break;
     }
   }
 
   onPanelKeydown(event: KeyboardEvent): void {
     const opts = this.filteredOptions();
-    if (event.key === 'ArrowDown') {
-      event.preventDefault();
-      this.focusedIndex.update(i => Math.min(i + 1, opts.length - 1));
-    } else if (event.key === 'ArrowUp') {
-      event.preventDefault();
-      this.focusedIndex.update(i => Math.max(i - 1, 0));
-    } else if (event.key === 'Enter') {
-      event.preventDefault();
-      const idx = this.focusedIndex();
-      if (idx >= 0 && idx < opts.length) this.selectOption(opts[idx]);
+    switch (event.key) {
+      case 'ArrowDown': event.preventDefault(); this.focusedIndex.update(i => Math.min(i + 1, opts.length - 1)); break;
+      case 'ArrowUp':   event.preventDefault(); this.focusedIndex.update(i => Math.max(i - 1, 0)); break;
+      case 'Home':      event.preventDefault(); this.focusedIndex.set(0); break;
+      case 'End':       event.preventDefault(); this.focusedIndex.set(opts.length - 1); break;
+      case 'Enter':     event.preventDefault(); { const idx = this.focusedIndex(); if (idx >= 0 && idx < opts.length) this.selectOption(opts[idx]); } break;
+      case 'Escape':    event.preventDefault(); this.close(); break;
     }
-  }
-
-  @HostListener('document:click', ['$event'])
-  onDocumentClick(event: MouseEvent): void {
-    if (!this.el.nativeElement.contains(event.target as Node)) {
-      this.close();
-    }
-  }
-
-  @HostListener('document:keydown.escape')
-  onEscape(): void {
-    this.close();
   }
 
   ngAfterViewChecked(): void {
@@ -184,5 +200,4 @@ export class NgAtomsSelectComponent implements AfterViewChecked {
     const spaceBelow = window.innerHeight - rect.bottom;
     this.panelAbove.set(spaceBelow < 240 && rect.top > spaceBelow);
   }
-
 }

@@ -14,6 +14,7 @@ import {
   viewChild,
 } from '@angular/core';
 import { DOCUMENT } from '@angular/common';
+import { NgAtomsOverlayService } from '../overlay/overlay.service';
 
 export type NgAtomsDropdownPlacement = 'top' | 'bottom' | 'left' | 'right';
 export type NgAtomsDropdownAlign = 'start' | 'center' | 'end';
@@ -48,6 +49,7 @@ export class NgAtomsDropdownMenuComponent implements NgAtomsDropdownMenuContext,
   private readonly el = inject(ElementRef<HTMLElement>);
   private readonly renderer = inject(Renderer2);
   private readonly document = inject(DOCUMENT);
+  private readonly overlay = inject(NgAtomsOverlayService);
 
   readonly open = model<boolean>(false);
   readonly placement = input<NgAtomsDropdownPlacement>('bottom');
@@ -56,13 +58,34 @@ export class NgAtomsDropdownMenuComponent implements NgAtomsDropdownMenuContext,
 
   readonly panelEl = viewChild.required<ElementRef<HTMLElement>>('panelEl');
 
+  private deregister: (() => void) | null = null;
+
   constructor() {
     effect(() => {
       if (!this.open()) this.activePlacement.set(this.placement());
     });
+    effect(() => {
+      if (this.open()) {
+        this.deregister = this.overlay.register(
+          () => this.open.set(false),
+          [this.el.nativeElement, this.panelEl().nativeElement],
+          { closeOnScroll: false }
+        );
+      } else {
+        this.deregister?.();
+        this.deregister = null;
+      }
+    });
     afterNextRender(() => {
       this.renderer.appendChild(this.document.body, this.panelEl().nativeElement);
     });
+  }
+
+  @HostListener('window:scroll')
+  onWindowScroll(): void {
+    if (this.open()) {
+      this.position();
+    }
   }
 
   toggle(): void {
@@ -183,23 +206,8 @@ export class NgAtomsDropdownMenuComponent implements NgAtomsDropdownMenuContext,
     this.renderer.setStyle(panel, 'left', `${left}px`);
   }
 
-  @HostListener('document:click', ['$event'])
-  onDocumentClick(event: MouseEvent): void {
-    const target = event.target as Node;
-    if (
-      !this.el.nativeElement.contains(target) &&
-      !this.panelEl().nativeElement.contains(target)
-    ) {
-      this.close();
-    }
-  }
-
-  @HostListener('document:keydown.escape')
-  onEscape(): void {
-    if (this.open()) this.close();
-  }
-
   ngOnDestroy(): void {
+    this.deregister?.();
     const panel = this.panelEl().nativeElement;
     if (panel.parentElement === this.document.body) {
       this.renderer.removeChild(this.document.body, panel);

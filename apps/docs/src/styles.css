@@ -22,6 +22,7 @@
 @import './components/dropdown-menu/dropdown-menu.styles.css';
 @import './components/date-picker/date-picker.styles.css';
 @import './components/code-block/code-block.styles.css';
+@import '@phosphor-icons/web/regular';
 @import '@phosphor-icons/web/bold';
 
 /* ── Code panel theme tokens ────────────────────────────────── */
@@ -57,7 +58,7 @@ body {
   background: var(--nga-color-background);
   color: var(--nga-color-foreground);
   font-family: var(--nga-font-sans), serif;
-  font-size: var(--nga-text-sm, 0.875rem);
+  font-size: var(--nga-text-base, 15px);
   line-height: var(--nga-leading-normal, 1.5);
 }
 

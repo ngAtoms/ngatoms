@@ -5,22 +5,21 @@
    ============================================================= */
 
 :root {
-  --nga-number-input-radius:     var(--nga-radius-md, 0.5rem);
-  --nga-number-input-border:     var(--nga-color-border, oklch(82% 0.003 85));
-  --nga-number-input-bg:         var(--nga-color-background, oklch(100% 0 0));
-  --nga-number-input-fg:         var(--nga-color-foreground, oklch(13% 0.002 85));
-  --nga-number-input-btn-bg:     var(--nga-color-muted, oklch(96% 0.003 85));
-  --nga-number-input-btn-hover:  var(--nga-color-secondary, oklch(92% 0.004 85));
-  --nga-number-input-focus-ring: var(--nga-color-ring, oklch(76% 0.068 68));
-  --nga-number-input-transition: border-color 150ms ease, box-shadow 150ms ease;
+  --nga-number-input-radius:     var(--nga-radius-md, 6px);
+  --nga-number-input-border:     var(--nga-color-border, #DED4C5);
+  --nga-number-input-bg:         var(--nga-color-background, #FAF8F5);
+  --nga-number-input-fg:         var(--nga-color-foreground, #1A1714);
+  --nga-number-input-btn-bg:     var(--nga-color-muted, #F3EEE7);
+  --nga-number-input-btn-hover:  var(--nga-color-secondary, #EBE4D9);
+  --nga-number-input-transition: border-color var(--nga-dur-base, 180ms) var(--nga-ease-out, ease), box-shadow var(--nga-dur-base, 180ms) var(--nga-ease-out, ease);
 
   --nga-number-input-height-sm: 2rem;
   --nga-number-input-height-md: 2.5rem;
   --nga-number-input-height-lg: 3rem;
 
-  --nga-number-input-font-sm:  var(--nga-text-xs,  0.75rem);
-  --nga-number-input-font-md:  var(--nga-text-sm,  0.875rem);
-  --nga-number-input-font-lg:  var(--nga-text-base, 1rem);
+  --nga-number-input-font-sm:  var(--nga-text-xs,  12px);
+  --nga-number-input-font-md:  var(--nga-text-sm,  13px);
+  --nga-number-input-font-lg:  var(--nga-text-base, 15px);
 
   --nga-number-input-btn-sm:   1.75rem;
   --nga-number-input-btn-md:   2.25rem;
@@ -31,7 +30,7 @@
 .nga-number-input {
   display: inline-flex;
   align-items: stretch;
-  border: 1.5px solid var(--nga-number-input-border);
+  border: 1px solid var(--nga-number-input-border);
   border-radius: var(--nga-number-input-radius);
   background: var(--nga-number-input-bg);
   overflow: hidden;
@@ -39,8 +38,8 @@
 }
 
 .nga-number-input:focus-within {
-  border-color: var(--nga-number-input-focus-ring);
-  box-shadow: 0 0 0 2px color-mix(in srgb, var(--nga-number-input-focus-ring) 25%, transparent);
+  border-color: var(--nga-color-ring, #F06B00);
+  box-shadow: var(--nga-glow-ember, 0 0 0 4px rgba(240, 107, 0, 0.18));
 }
 
 /* ── Buttons ────────────────────────────────────────────────── */
@@ -56,7 +55,7 @@
   cursor: pointer;
   font-size: 1rem;
   line-height: 1;
-  transition: background 150ms ease;
+  transition: background var(--nga-dur-base, 180ms) var(--nga-ease-out, ease);
   user-select: none;
 }
 

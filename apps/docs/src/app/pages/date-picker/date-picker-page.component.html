@@ -1,119 +1,211 @@
-<app-component-demo [files]="codeFiles">
-  <header class="page-header">
-    <h1 class="page-title">Date Picker</h1>
-    <p class="page-desc">A fully custom calendar overlay with single and range selection, min/max/available-date constraints, clickable month and year pickers, and i18n support.</p>
-  </header>
+<div class="cp-layout">
 
-  <section class="showcase-section">
-    <h2 class="section-title">Single</h2>
-    <div class="demo-row">
-      <div class="demo-field">
-        <nga-date-picker [(value)]="single" placeholder="Pick a date" style="width: 220px" />
-        @if (single()) {
-          <span class="hint">{{ single() }}</span>
-        }
-      </div>
-    </div>
-  </section>
+    <main class="cp-main">
 
-  <section class="showcase-section">
-    <h2 class="section-title">Range</h2>
-    <div class="demo-row">
-      <div class="demo-field">
-        <nga-date-picker
-          mode="range"
-          [(startDate)]="rangeStart"
-          [(endDate)]="rangeEnd"
-          placeholder="Select a range"
-          style="width: 280px"
-        />
-        @if (rangeStart()) {
-          <span class="hint">{{ rangeStart() }} → {{ rangeEnd() || '...' }}</span>
-        }
-      </div>
-    </div>
-  </section>
+        <header class="cp-header">
+            <div class="cp-eyebrow">Components / Forms</div>
+            <h1 class="cp-title">Date Picker</h1>
+            <p class="cp-lede">A fully custom calendar overlay with single and range selection, min/max/available-date constraints, month and year pickers, and i18n support.</p>
+            <div class="cp-chips">
+                <span ngAtomsBadge variant="default"><i class="ph ph-angular-logo"></i> ngAtoms v0.3+</span>
+                <span ngAtomsBadge variant="default"><i class="ph ph-package"></i> ngatoms add date-picker</span>
+                <span ngAtomsBadge variant="success"><i class="ph ph-check-circle"></i> Stable</span>
+                <a ngAtomsBadge variant="outline" href="https://github.com/ngAtoms/ngatoms/tree/rc/packages/primitives/src/date-picker" target="_blank">
+                    <i class="ph ph-arrow-square-out"></i> Source
+                </a>
+            </div>
+        </header>
 
-  <section class="showcase-section">
-    <h2 class="section-title">Min / Max date</h2>
-    <div class="demo-row">
-      <div class="demo-field">
-        <nga-date-picker
-          [minDate]="minDate"
-          [maxDate]="maxDate"
-          placeholder="Pick a date"
-          style="width: 220px"
-        />
-        <span class="hint">{{ minDate }} → {{ maxDate }}</span>
-      </div>
-    </div>
-  </section>
+        <!-- Hero preview -->
+        <preview-card [allowOverflow]="true" previewMinHeight="360px">
+            <ng-container preview>
+                <nga-date-picker [(value)]="single" placeholder="Pick a date" style="width: 220px" />
+            </ng-container>
+            <ng-container code>
+                <app-code-block [code]="heroCode" language="html" />
+            </ng-container>
+        </preview-card>
 
-  <section class="showcase-section">
-    <h2 class="section-title">Available dates</h2>
-    <div class="demo-row">
-      <div class="demo-field">
-        <nga-date-picker
-          [availableDates]="availableDates"
-          placeholder="Pick a date"
-          style="width: 220px"
-        />
-        <span class="hint">Only 5 specific dates are enabled</span>
-      </div>
-    </div>
-  </section>
+        <!-- Usage -->
+        <section id="usage">
+            <h2 class="cp-h2">Usage</h2>
+            <p class="cp-p">Add the date picker to your project and bind the value via a signal.</p>
+            <div class="inline-terminal">
+                <span class="inline-terminal-dollar">$</span>
+                <span class="inline-terminal-cmd">ngatoms add date-picker</span>
+            </div>
+            <p class="cp-p" style="margin-top: 14px;">Import in your component:</p>
+            <app-code-block [code]="usageCode" language="typescript" />
+        </section>
 
-  <section class="showcase-section">
-    <h2 class="section-title">Today button</h2>
-    <div class="demo-row">
-      <div class="demo-field">
-        <nga-date-picker [showToday]="true" placeholder="Pick a date" style="width: 220px" />
-      </div>
-    </div>
-  </section>
+        <!-- Single -->
+        <section id="single">
+            <h2 class="cp-h2">Single date</h2>
+            <p class="cp-p">The default mode. Bind a single ISO date string with <code class="cp-code">[(value)]</code>.</p>
+            <preview-card [allowOverflow]="true" previewMinHeight="360px">
+                <ng-container preview>
+                    <div style="display:flex; flex-direction:column; gap:8px; align-items:flex-start">
+                        <nga-date-picker [(value)]="single" placeholder="Pick a date" style="width: 220px" />
+                        @if (single()) {
+                            <span style="font-size:12px; color:var(--nga-color-muted-foreground)">{{ single() }}</span>
+                        }
+                    </div>
+                </ng-container>
+                <ng-container code>
+                    <app-code-block [code]="singleCode" language="html" />
+                </ng-container>
+            </preview-card>
+        </section>
 
-  <section class="showcase-section">
-    <h2 class="section-title">Sizes</h2>
-    <div class="sizes-row">
-      <div class="demo-field">
-        <label class="field-label">sm</label>
-        <nga-date-picker size="sm" placeholder="Pick a date" style="width: 180px" />
-      </div>
-      <div class="demo-field">
-        <label class="field-label">md</label>
-        <nga-date-picker size="md" placeholder="Pick a date" style="width: 200px" />
-      </div>
-      <div class="demo-field">
-        <label class="field-label">lg</label>
-        <nga-date-picker size="lg" placeholder="Pick a date" style="width: 220px" />
-      </div>
-    </div>
-  </section>
+        <!-- Range -->
+        <section id="range">
+            <h2 class="cp-h2">Range selection</h2>
+            <p class="cp-p">Set <code class="cp-code">mode="range"</code> to enable a start/end date selection. Bind both with <code class="cp-code">[(startDate)]</code> and <code class="cp-code">[(endDate)]</code>.</p>
+            <preview-card [allowOverflow]="true" previewMinHeight="360px">
+                <ng-container preview>
+                    <div style="display:flex; flex-direction:column; gap:8px; align-items:flex-start">
+                        <nga-date-picker
+                            mode="range"
+                            [(startDate)]="rangeStart"
+                            [(endDate)]="rangeEnd"
+                            placeholder="Select a range"
+                            style="width: 280px"
+                        />
+                        @if (rangeStart()) {
+                            <span style="font-size:12px; color:var(--nga-color-muted-foreground)">
+                                {{ rangeStart() }} → {{ rangeEnd() || '...' }}
+                            </span>
+                        }
+                    </div>
+                </ng-container>
+                <ng-container code>
+                    <app-code-block [code]="rangeCode" language="html" />
+                </ng-container>
+            </preview-card>
+        </section>
 
-  <section class="showcase-section">
-    <h2 class="section-title">States</h2>
-    <div class="sizes-row">
-      <div class="demo-field">
-        <label class="field-label">Invalid</label>
-        <nga-date-picker [invalid]="true" placeholder="Pick a date" style="width: 200px" />
-      </div>
-      <div class="demo-field">
-        <label class="field-label">Disabled</label>
-        <nga-date-picker [disabled]="true" value="2026-03-31" style="width: 200px" />
-      </div>
-    </div>
-  </section>
+        <!-- Constraints -->
+        <section id="constraints">
+            <h2 class="cp-h2">Constraints</h2>
+            <p class="cp-p">Limit the selectable dates with <code class="cp-code">minDate</code>, <code class="cp-code">maxDate</code>, or an <code class="cp-code">availableDates</code> allowlist.</p>
+            <preview-card [allowOverflow]="true" previewMinHeight="360px">
+                <ng-container preview>
+                    <div class="dp-field-row">
+                        <div style="display:flex; flex-direction:column; gap:6px;">
+                            <span style="font-size:12px; color:var(--nga-color-muted-foreground)">Min / Max</span>
+                            <nga-date-picker [minDate]="minDate" [maxDate]="maxDate" placeholder="Pick a date" style="width: 200px" />
+                            <span style="font-size:11px; color:var(--nga-color-muted-foreground)">{{ minDate }} → {{ maxDate }}</span>
+                        </div>
+                        <div style="display:flex; flex-direction:column; gap:6px;">
+                            <span style="font-size:12px; color:var(--nga-color-muted-foreground)">Available dates</span>
+                            <nga-date-picker [availableDates]="availableDates" placeholder="Pick a date" style="width: 200px" />
+                            <span style="font-size:11px; color:var(--nga-color-muted-foreground)">Only 5 specific dates enabled</span>
+                        </div>
+                    </div>
+                </ng-container>
+                <ng-container code>
+                    <app-code-block [code]="constraintsCode" language="html" />
+                </ng-container>
+            </preview-card>
+        </section>
 
-  <section class="showcase-section">
-    <h2 class="section-title">Translations (pt-BR)</h2>
-    <div class="demo-row">
-      <nga-date-picker
-        locale="pt-BR"
-        [dayLabels]="['Do', 'Se', 'Te', 'Qu', 'Qu', 'Se', 'Sá']"
-        [monthLabels]="['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro']"
-        placeholder="Selecione uma data"
-        style="width: 220px"
-      />
-    </div>
-  </section>
-</app-component-demo>
+        <!-- Sizes -->
+        <section id="sizes">
+            <h2 class="cp-h2">Sizes</h2>
+            <p class="cp-p">Three trigger sizes: <strong>sm</strong>, <strong>md</strong> (default), and <strong>lg</strong>.</p>
+            <preview-card [allowOverflow]="true" previewMinHeight="360px">
+                <ng-container preview>
+                    <div class="dp-field-row">
+                        <div style="display:flex; flex-direction:column; gap:6px;">
+                            <span style="font-size:12px; color:var(--nga-color-muted-foreground)">sm</span>
+                            <nga-date-picker size="sm" placeholder="Pick a date" style="width: 180px" />
+                        </div>
+                        <div style="display:flex; flex-direction:column; gap:6px;">
+                            <span style="font-size:12px; color:var(--nga-color-muted-foreground)">md</span>
+                            <nga-date-picker size="md" placeholder="Pick a date" style="width: 200px" />
+                        </div>
+                        <div style="display:flex; flex-direction:column; gap:6px;">
+                            <span style="font-size:12px; color:var(--nga-color-muted-foreground)">lg</span>
+                            <nga-date-picker size="lg" placeholder="Pick a date" style="width: 220px" />
+                        </div>
+                    </div>
+                </ng-container>
+                <ng-container code>
+                    <app-code-block [code]="sizesCode" language="html" />
+                </ng-container>
+            </preview-card>
+        </section>
+
+        <!-- I18n -->
+        <section id="i18n">
+            <h2 class="cp-h2">Internationalization</h2>
+            <p class="cp-p">Override <code class="cp-code">locale</code>, <code class="cp-code">dayLabels</code>, and <code class="cp-code">monthLabels</code> to localise the calendar for any language.</p>
+            <preview-card [allowOverflow]="true" previewMinHeight="360px">
+                <ng-container preview>
+                    <nga-date-picker
+                        locale="pt-BR"
+                        [dayLabels]="['Do', 'Se', 'Te', 'Qu', 'Qu', 'Se', 'Sá']"
+                        [monthLabels]="['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro']"
+                        placeholder="Selecione uma data"
+                        style="width: 240px"
+                    />
+                </ng-container>
+                <ng-container code>
+                    <app-code-block [code]="i18nCode" language="html" />
+                </ng-container>
+            </preview-card>
+        </section>
+
+        <!-- API -->
+        <section id="api">
+            <h2 class="cp-h2">API</h2>
+            <p class="cp-p">Inputs on <code class="cp-code">nga-date-picker</code>.</p>
+            <div class="props-table">
+                <div class="props-table-header">
+                    <span>Prop</span>
+                    <span>Type</span>
+                    <span>Default</span>
+                    <span>Description</span>
+                </div>
+                @for (prop of props; track prop.name) {
+                    <div class="props-table-row">
+                        <code class="props-name">{{ prop.name }}</code>
+                        <code class="props-type">{{ prop.type }}</code>
+                        <code class="props-default">{{ prop.defaultVal }}</code>
+                        <span class="props-desc">{{ prop.description }}</span>
+                    </div>
+                }
+            </div>
+        </section>
+
+        <!-- Accessibility -->
+        <section id="a11y">
+            <h2 class="cp-h2">Accessibility</h2>
+            <p class="cp-p">The date picker is keyboard-navigable and communicates state via ARIA attributes.</p>
+            <dl class="a11y-list">
+                @for (item of a11yItems; track item.term) {
+                    <div class="a11y-item">
+                        <dt class="a11y-term">{{ item.term }}</dt>
+                        <dd class="a11y-desc">{{ item.body }}</dd>
+                    </div>
+                }
+            </dl>
+        </section>
+
+        <!-- Prev / Next -->
+        <nav class="cp-prevnext">
+            <a routerLink="/select" class="cp-prevnext-item">
+                <span class="cp-prevnext-dir">← PREVIOUS</span>
+                <span class="cp-prevnext-label">Select</span>
+            </a>
+            <a routerLink="/checkbox" class="cp-prevnext-item cp-prevnext-item--right">
+                <span class="cp-prevnext-dir">NEXT →</span>
+                <span class="cp-prevnext-label cp-prevnext-label--accent">Checkbox</span>
+            </a>
+        </nav>
+
+    </main>
+
+    <app-toc [items]="tocItems" />
+
+</div>

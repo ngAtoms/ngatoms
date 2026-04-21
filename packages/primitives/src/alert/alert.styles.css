@@ -5,55 +5,56 @@
    ============================================================= */
 
 :root {
-  --nga-alert-radius:  var(--nga-radius-lg, 0.75rem);
+  --nga-alert-radius:  var(--nga-radius-lg, 10px);
   --nga-alert-padding: 1rem 1.25rem;
+  --nga-alert-blur:    blur(14px) saturate(150%);
 
   /* Variant: default */
-  --nga-alert-default-bg:     var(--nga-color-card, oklch(100% 0 0));
-  --nga-alert-default-fg:     var(--nga-color-foreground, oklch(8% 0.002 85));
-  --nga-alert-default-border: var(--nga-color-border, oklch(82% 0.003 85));
+  --nga-alert-default-bg:     color-mix(in oklab, var(--nga-color-card, #FFFFFF) 78%, transparent);
+  --nga-alert-default-fg:     var(--nga-color-foreground, #1A1714);
+  --nga-alert-default-border: color-mix(in oklab, var(--nga-color-border, #DED4C5) 70%, transparent);
 
   /* Variant: info */
-  --nga-alert-info-bg:     oklch(96% 0.010 240);
-  --nga-alert-info-fg:     oklch(30% 0.060 240);
-  --nga-alert-info-border: oklch(80% 0.040 240);
+  --nga-alert-info-bg:     color-mix(in oklab, #EFF6FF 78%, transparent);
+  --nga-alert-info-fg:     #1D4ED8;
+  --nga-alert-info-border: color-mix(in oklab, #BFDBFE 80%, transparent);
 
   /* Variant: success */
-  --nga-alert-success-bg:     oklch(96% 0.010 148);
-  --nga-alert-success-fg:     oklch(30% 0.046 148);
-  --nga-alert-success-border: oklch(75% 0.038 148);
+  --nga-alert-success-bg:     color-mix(in oklab, #F0FDF4 78%, transparent);
+  --nga-alert-success-fg:     #15803D;
+  --nga-alert-success-border: color-mix(in oklab, #BBF7D0 80%, transparent);
 
   /* Variant: warning */
-  --nga-alert-warning-bg:     oklch(97% 0.016 80);
-  --nga-alert-warning-fg:     oklch(35% 0.060 68);
-  --nga-alert-warning-border: oklch(80% 0.058 72);
+  --nga-alert-warning-bg:     color-mix(in oklab, #FEFCE8 78%, transparent);
+  --nga-alert-warning-fg:     #A16207;
+  --nga-alert-warning-border: color-mix(in oklab, #FEF08A 80%, transparent);
 
   /* Variant: destructive */
-  --nga-alert-destructive-bg:     oklch(97% 0.010 22);
-  --nga-alert-destructive-fg:     oklch(35% 0.080 22);
-  --nga-alert-destructive-border: oklch(78% 0.060 22);
+  --nga-alert-destructive-bg:     color-mix(in oklab, #FEF2F2 78%, transparent);
+  --nga-alert-destructive-fg:     #B91C1C;
+  --nga-alert-destructive-border: color-mix(in oklab, #FECACA 80%, transparent);
 }
 
 .dark {
   /* Variant: info */
-  --nga-alert-info-bg:     oklch(20% 0.020 240);
-  --nga-alert-info-fg:     oklch(75% 0.040 240);
-  --nga-alert-info-border: oklch(32% 0.040 240);
+  --nga-alert-info-bg:     rgba(29, 78, 216, 0.12);
+  --nga-alert-info-fg:     #93C5FD;
+  --nga-alert-info-border: rgba(29, 78, 216, 0.25);
 
   /* Variant: success */
-  --nga-alert-success-bg:     oklch(18% 0.015 148);
-  --nga-alert-success-fg:     oklch(68% 0.050 148);
-  --nga-alert-success-border: oklch(30% 0.035 148);
+  --nga-alert-success-bg:     rgba(21, 128, 61, 0.12);
+  --nga-alert-success-fg:     #86EFAC;
+  --nga-alert-success-border: rgba(21, 128, 61, 0.25);
 
   /* Variant: warning */
-  --nga-alert-warning-bg:     oklch(20% 0.020 80);
-  --nga-alert-warning-fg:     oklch(76% 0.068 68);
-  --nga-alert-warning-border: oklch(32% 0.050 72);
+  --nga-alert-warning-bg:     rgba(161, 98, 7, 0.12);
+  --nga-alert-warning-fg:     #FDE047;
+  --nga-alert-warning-border: rgba(161, 98, 7, 0.25);
 
   /* Variant: destructive */
-  --nga-alert-destructive-bg:     oklch(18% 0.020 22);
-  --nga-alert-destructive-fg:     oklch(72% 0.080 22);
-  --nga-alert-destructive-border: oklch(30% 0.060 22);
+  --nga-alert-destructive-bg:     rgba(185, 28, 28, 0.12);
+  --nga-alert-destructive-fg:     #FCA5A5;
+  --nga-alert-destructive-border: rgba(185, 28, 28, 0.25);
 }
 
 /* ── Base ───────────────────────────────────────────────────── */
@@ -65,6 +66,8 @@
   padding: var(--nga-alert-padding);
   border-radius: var(--nga-alert-radius);
   border: 1px solid;
+  backdrop-filter: var(--nga-alert-blur);
+  -webkit-backdrop-filter: var(--nga-alert-blur);
 }
 
 .nga-alert:not(:has(.nga-alert-title + .nga-alert-description)) {
@@ -83,7 +86,10 @@
   font-size: 0.875rem;
   font-weight: 600;
   line-height: 1.4;
-  margin: 0 0 0.25rem;
+    margin: 0;
+    &:has(.nga-alert-description) {
+        margin: 0 0 0.25rem;
+    }
 }
 
 /* ── Description ────────────────────────────────────────────── */

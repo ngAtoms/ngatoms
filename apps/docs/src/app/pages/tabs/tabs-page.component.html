@@ -1,155 +1,236 @@
-<app-component-demo [files]="codeFiles">
-  <header class="page-header">
-    <h1 class="page-title">Tabs</h1>
-    <p class="page-desc">Organizes content into distinct panels, only one visible at a time.</p>
-  </header>
+<div class="cp-layout">
 
-  <section class="showcase-section">
-    <h2 class="section-title">Underline (default)</h2>
-    <nga-tabs defaultValue="account">
-      <div ngAtomsTabList>
-        <button ngAtomsTabTrigger value="account">Account</button>
-        <button ngAtomsTabTrigger value="security">Security</button>
-        <button ngAtomsTabTrigger value="notifications">Notifications</button>
-        <button ngAtomsTabTrigger value="billing" disabled>Billing</button>
-      </div>
+    <main class="cp-main">
 
-      <div ngAtomsTabPanel value="account">
-        <div class="panel-card">
-          <h3 class="panel-title">Account settings</h3>
-          <p class="panel-desc">Manage your display name, avatar, and public profile.</p>
-          <div class="panel-fields">
-            <div class="panel-field">
-              <span class="panel-field-label">Display name</span>
-              <span class="panel-field-value">Jane Smith</span>
+        <header class="cp-header">
+            <div class="cp-eyebrow">Components / Navigation</div>
+            <h1 class="cp-title">Tabs</h1>
+            <p class="cp-lede">
+                Organizes content into distinct panels — only one visible at a time.
+                Two visual variants, full keyboard navigation, and disabled tab support.
+            </p>
+            <div class="cp-chips">
+                <span ngAtomsBadge variant="default"><i class="ph ph-angular-logo"></i> ngAtoms v0.3+</span>
+                <span ngAtomsBadge variant="default"><i class="ph ph-package"></i> ngatoms add tabs</span>
+                <span ngAtomsBadge variant="success"><i class="ph ph-check-circle"></i> Stable</span>
+                <a ngAtomsBadge variant="outline" href="https://github.com/ngAtoms/ngatoms/tree/rc/packages/primitives/src/tabs" target="_blank">
+                    <i class="ph ph-arrow-square-out"></i> Source
+                </a>
             </div>
-            <div class="panel-field">
-              <span class="panel-field-label">Username</span>
-              <span class="panel-field-value">@janesmith</span>
-            </div>
-            <div class="panel-field">
-              <span class="panel-field-label">Email</span>
-              <span class="panel-field-value">jane&#64;example.com</span>
-            </div>
-          </div>
-        </div>
-      </div>
+        </header>
 
-      <div ngAtomsTabPanel value="security">
-        <div class="panel-card">
-          <h3 class="panel-title">Security</h3>
-          <p class="panel-desc">Update your password and manage two-factor authentication.</p>
-          <div class="panel-fields">
-            <div class="panel-field">
-              <span class="panel-field-label">Password</span>
-              <span class="panel-field-value">Last changed 3 months ago</span>
-            </div>
-            <div class="panel-field">
-              <span class="panel-field-label">Two-factor auth</span>
-              <span class="panel-field-value panel-field-value--success">Enabled</span>
-            </div>
-            <div class="panel-field">
-              <span class="panel-field-label">Active sessions</span>
-              <span class="panel-field-value">2 devices</span>
-            </div>
-          </div>
-        </div>
-      </div>
+        <!-- Hero preview -->
+        <preview-card>
+            <ng-container preview>
+                <div class="tabs-demo">
+                    <nga-tabs defaultValue="account">
+                        <div ngAtomsTabList>
+                            <button ngAtomsTabTrigger value="account">Account</button>
+                            <button ngAtomsTabTrigger value="security">Security</button>
+                            <button ngAtomsTabTrigger value="billing">Billing</button>
+                        </div>
+                        <div ngAtomsTabPanel value="account">
+                            <div class="panel-card">
+                                <p class="panel-desc">Manage your display name, avatar, and profile settings.</p>
+                            </div>
+                        </div>
+                        <div ngAtomsTabPanel value="security">
+                            <div class="panel-card">
+                                <p class="panel-desc">Update your password and two-factor authentication.</p>
+                            </div>
+                        </div>
+                        <div ngAtomsTabPanel value="billing">
+                            <div class="panel-card">
+                                <p class="panel-desc">Manage your subscription and payment methods.</p>
+                            </div>
+                        </div>
+                    </nga-tabs>
+                </div>
+            </ng-container>
+            <ng-container code>
+                <app-code-block [code]="heroCode" language="html" />
+            </ng-container>
+        </preview-card>
 
-      <div ngAtomsTabPanel value="notifications">
-        <div class="panel-card">
-          <h3 class="panel-title">Notifications</h3>
-          <p class="panel-desc">Choose what you want to be notified about.</p>
-          <div class="panel-fields">
-            <div class="panel-field">
-              <span class="panel-field-label">Email digests</span>
-              <span class="panel-field-value">Weekly</span>
+        <!-- Usage -->
+        <section id="usage">
+            <h2 class="cp-h2">Usage</h2>
+            <p class="cp-p">Add the tabs component to your project and import all four standalone pieces.</p>
+            <div class="inline-terminal">
+                <span class="inline-terminal-dollar">$</span>
+                <span class="inline-terminal-cmd">ngatoms add tabs</span>
             </div>
-            <div class="panel-field">
-              <span class="panel-field-label">Push alerts</span>
-              <span class="panel-field-value panel-field-value--success">On</span>
-            </div>
-            <div class="panel-field">
-              <span class="panel-field-label">Marketing</span>
-              <span class="panel-field-value panel-field-value--muted">Off</span>
-            </div>
-          </div>
-        </div>
-      </div>
-    </nga-tabs>
-  </section>
+            <p class="cp-p" style="margin-top: 14px;">Then import into your component:</p>
+            <app-code-block [code]="usageCode" language="typescript" />
+        </section>
 
-  <section class="showcase-section">
-    <h2 class="section-title">Pills</h2>
-    <nga-tabs defaultValue="overview" variant="pills">
-      <div ngAtomsTabList>
-        <button ngAtomsTabTrigger value="overview">Overview</button>
-        <button ngAtomsTabTrigger value="analytics">Analytics</button>
-        <button ngAtomsTabTrigger value="reports">Reports</button>
-      </div>
+        <!-- Underline -->
+        <section id="underline">
+            <h2 class="cp-h2">Underline (default)</h2>
+            <p class="cp-p">
+                The default variant shows an animated underline on the active tab.
+                Best for settings pages and content areas.
+            </p>
+            <preview-card>
+                <ng-container preview>
+                    <div class="tabs-demo">
+                        <nga-tabs defaultValue="account">
+                            <div ngAtomsTabList>
+                                <button ngAtomsTabTrigger value="account">Account</button>
+                                <button ngAtomsTabTrigger value="security">Security</button>
+                                <button ngAtomsTabTrigger value="notifications">Notifications</button>
+                                <button ngAtomsTabTrigger value="billing" disabled>Billing</button>
+                            </div>
+                            <div ngAtomsTabPanel value="account">
+                                <div class="panel-card">
+                                    <h3 class="panel-title">Account settings</h3>
+                                    <p class="panel-desc">Manage your display name, avatar, and public profile.</p>
+                                    <div class="panel-fields">
+                                        <div class="panel-field"><span class="panel-field-label">Display name</span><span class="panel-field-value">Jane Smith</span></div>
+                                        <div class="panel-field"><span class="panel-field-label">Username</span><span class="panel-field-value">&#64;janesmith</span></div>
+                                        <div class="panel-field"><span class="panel-field-label">Email</span><span class="panel-field-value">jane&#64;example.com</span></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div ngAtomsTabPanel value="security">
+                                <div class="panel-card">
+                                    <h3 class="panel-title">Security</h3>
+                                    <p class="panel-desc">Update your password and manage two-factor authentication.</p>
+                                    <div class="panel-fields">
+                                        <div class="panel-field"><span class="panel-field-label">Password</span><span class="panel-field-value">Last changed 3 months ago</span></div>
+                                        <div class="panel-field"><span class="panel-field-label">Two-factor auth</span><span class="panel-field-value panel-field-value--success">Enabled</span></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div ngAtomsTabPanel value="notifications">
+                                <div class="panel-card">
+                                    <h3 class="panel-title">Notifications</h3>
+                                    <p class="panel-desc">Choose what you want to be notified about.</p>
+                                    <div class="panel-fields">
+                                        <div class="panel-field"><span class="panel-field-label">Email digests</span><span class="panel-field-value">Weekly</span></div>
+                                        <div class="panel-field"><span class="panel-field-label">Push alerts</span><span class="panel-field-value panel-field-value--success">On</span></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </nga-tabs>
+                    </div>
+                </ng-container>
+                <ng-container code>
+                    <app-code-block [code]="underlineCode" language="html" />
+                </ng-container>
+            </preview-card>
+        </section>
 
-      <div ngAtomsTabPanel value="overview">
-        <div class="panel-card">
-          <h3 class="panel-title">Overview</h3>
-          <p class="panel-desc">A summary of your workspace activity and key metrics.</p>
-          <div class="stat-row">
-            <div class="stat">
-              <span class="stat-value">1,284</span>
-              <span class="stat-label">Total users</span>
-            </div>
-            <div class="stat">
-              <span class="stat-value">94%</span>
-              <span class="stat-label">Uptime</span>
-            </div>
-            <div class="stat">
-              <span class="stat-value">48</span>
-              <span class="stat-label">Active today</span>
-            </div>
-          </div>
-        </div>
-      </div>
+        <!-- Pills -->
+        <section id="pills">
+            <h2 class="cp-h2">Pills</h2>
+            <p class="cp-p">
+                Set <code class="cp-code">variant="pills"</code> for a segmented control appearance.
+                Best for filter groups and compact navigation.
+            </p>
+            <preview-card>
+                <ng-container preview>
+                    <div class="tabs-demo">
+                        <nga-tabs defaultValue="overview" variant="pills">
+                            <div ngAtomsTabList>
+                                <button ngAtomsTabTrigger value="overview">Overview</button>
+                                <button ngAtomsTabTrigger value="analytics">Analytics</button>
+                                <button ngAtomsTabTrigger value="reports">Reports</button>
+                            </div>
+                            <div ngAtomsTabPanel value="overview">
+                                <div class="panel-card">
+                                    <h3 class="panel-title">Overview</h3>
+                                    <p class="panel-desc">A summary of your workspace activity and key metrics.</p>
+                                    <div class="stat-row">
+                                        <div class="stat"><span class="stat-value">1,284</span><span class="stat-label">Total users</span></div>
+                                        <div class="stat"><span class="stat-value">94%</span><span class="stat-label">Uptime</span></div>
+                                        <div class="stat"><span class="stat-value">48</span><span class="stat-label">Active today</span></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div ngAtomsTabPanel value="analytics">
+                                <div class="panel-card">
+                                    <h3 class="panel-title">Analytics</h3>
+                                    <p class="panel-desc">Detailed usage metrics for the current period.</p>
+                                    <div class="stat-row">
+                                        <div class="stat"><span class="stat-value">24.6k</span><span class="stat-label">Page views</span></div>
+                                        <div class="stat"><span class="stat-value">3.2s</span><span class="stat-label">Load time</span></div>
+                                        <div class="stat"><span class="stat-value">18%</span><span class="stat-label">Bounce rate</span></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div ngAtomsTabPanel value="reports">
+                                <div class="panel-card">
+                                    <h3 class="panel-title">Reports</h3>
+                                    <p class="panel-desc">Scheduled and on-demand reports for your team.</p>
+                                    <div class="panel-fields">
+                                        <div class="panel-field"><span class="panel-field-label">Last report</span><span class="panel-field-value">Monthly summary — Mar 2026</span></div>
+                                        <div class="panel-field"><span class="panel-field-label">Recipients</span><span class="panel-field-value">4 team members</span></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </nga-tabs>
+                    </div>
+                </ng-container>
+                <ng-container code>
+                    <app-code-block [code]="pillsCode" language="html" />
+                </ng-container>
+            </preview-card>
+        </section>
 
-      <div ngAtomsTabPanel value="analytics">
-        <div class="panel-card">
-          <h3 class="panel-title">Analytics</h3>
-          <p class="panel-desc">Detailed usage metrics for the current billing period.</p>
-          <div class="stat-row">
-            <div class="stat">
-              <span class="stat-value">24.6k</span>
-              <span class="stat-label">Page views</span>
+        <!-- API -->
+        <section id="api">
+            <h2 class="cp-h2">API</h2>
+            <p class="cp-p">Inputs on <code class="cp-code">nga-tabs</code>. Each tab trigger takes a <code class="cp-code">value</code> string matching its panel.</p>
+            <div class="props-table">
+                <div class="props-table-header">
+                    <span>Prop</span>
+                    <span>Type</span>
+                    <span>Default</span>
+                    <span>Description</span>
+                </div>
+                @for (prop of props; track prop.name) {
+                    <div class="props-table-row">
+                        <code class="props-name">{{ prop.name }}</code>
+                        <code class="props-type">{{ prop.type }}</code>
+                        <code class="props-default">{{ prop.defaultVal }}</code>
+                        <span class="props-desc">{{ prop.description }}</span>
+                    </div>
+                }
             </div>
-            <div class="stat">
-              <span class="stat-value">3.2s</span>
-              <span class="stat-label">Avg. load time</span>
-            </div>
-            <div class="stat">
-              <span class="stat-value">18%</span>
-              <span class="stat-label">Bounce rate</span>
-            </div>
-          </div>
-        </div>
-      </div>
+        </section>
 
-      <div ngAtomsTabPanel value="reports">
-        <div class="panel-card">
-          <h3 class="panel-title">Reports</h3>
-          <p class="panel-desc">Scheduled and on-demand reports for your team.</p>
-          <div class="panel-fields">
-            <div class="panel-field">
-              <span class="panel-field-label">Last report</span>
-              <span class="panel-field-value">Monthly summary — Mar 2026</span>
-            </div>
-            <div class="panel-field">
-              <span class="panel-field-label">Schedule</span>
-              <span class="panel-field-value">1st of every month</span>
-            </div>
-            <div class="panel-field">
-              <span class="panel-field-label">Recipients</span>
-              <span class="panel-field-value">4 team members</span>
-            </div>
-          </div>
-        </div>
-      </div>
-    </nga-tabs>
-  </section>
-</app-component-demo>
+        <!-- Accessibility -->
+        <section id="a11y">
+            <h2 class="cp-h2">Accessibility</h2>
+            <p class="cp-p">Follows the ARIA Tabs pattern — <code class="cp-code">role="tablist"</code>, <code class="cp-code">role="tab"</code>, and <code class="cp-code">role="tabpanel"</code> are set automatically.</p>
+            <ul class="a11y-list">
+                @for (item of a11yItems; track item.title) {
+                    <li class="a11y-item">
+                        <div class="a11y-icon"><i [class]="'ph ph-' + item.icon"></i></div>
+                        <div class="a11y-body">
+                            <div class="a11y-title">{{ item.title }}</div>
+                            <div class="a11y-desc">{{ item.body }}</div>
+                        </div>
+                    </li>
+                }
+            </ul>
+        </section>
+
+        <!-- Prev / Next -->
+        <nav class="cp-prevnext">
+            <a routerLink="/accordion" class="cp-prevnext-item">
+                <span class="cp-prevnext-dir">← PREVIOUS</span>
+                <span class="cp-prevnext-label">Accordion</span>
+            </a>
+            <a routerLink="/dialog" class="cp-prevnext-item cp-prevnext-item--right">
+                <span class="cp-prevnext-dir">NEXT →</span>
+                <span class="cp-prevnext-label cp-prevnext-label--accent">Dialog</span>
+            </a>
+        </nav>
+
+    </main>
+
+    <app-toc [items]="tocItems" />
+
+</div>

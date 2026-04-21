@@ -30,6 +30,7 @@ export class NgAtomsButtonDirective implements OnDestroy {
   readonly variant = input<NgAtomsButtonVariant>('primary');
   readonly size = input<NgAtomsButtonSize>('md');
   readonly loading = input<boolean>(false);
+  readonly fullWidth = input<boolean>(false);
 
   private _prevVariant: NgAtomsButtonVariant = 'primary';
   private _prevSize: NgAtomsButtonSize = 'md';
@@ -55,6 +56,14 @@ export class NgAtomsButtonDirective implements OnDestroy {
         this._activateLoading();
       } else {
         this._deactivateLoading();
+      }
+    });
+
+    effect(() => {
+      if (this.fullWidth()) {
+        this.renderer.addClass(this.el.nativeElement, 'nga-btn--full-width');
+      } else {
+        this.renderer.removeClass(this.el.nativeElement, 'nga-btn--full-width');
       }
     });
   }

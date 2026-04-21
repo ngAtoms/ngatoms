@@ -1,0 +1,23 @@
+<div class="preview-card" [class.preview-card--overflow]="allowOverflow()">
+    <div class="preview-card-tabs">
+        <button class="preview-tab" [class.preview-tab--active]="tab() === 'preview'"
+                (click)="setTab( 'preview')">
+            <i class="ph ph-eye"></i> Preview
+        </button>
+        <button class="preview-tab" [class.preview-tab--active]="tab() === 'code'"
+                (click)="setTab('code')">
+            <i class="ph ph-code"></i> Code
+        </button>
+    </div>
+    @if (tab() === 'preview') {
+        <div class="preview-area" [style.min-height]="allowOverflow() ? previewMinHeight() : null">
+            <div class="preview-area-content">
+               <ng-content select="[preview]"></ng-content>
+            </div>
+        </div>
+    } @else {
+        <div class="preview-code">
+            <ng-content select="[code]"></ng-content>
+        </div>
+    }
+</div>

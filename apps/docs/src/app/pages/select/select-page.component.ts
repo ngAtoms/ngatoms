@@ -1,34 +1,44 @@
-import { Component, signal } from '@angular/core';
+import { Component, computed, signal } from '@angular/core';
+import { RouterLink } from '@angular/router';
 import { NgAtomsSelectComponent, NgAtomsSelectOption } from '../../../components/select';
-import { ComponentDemoComponent, CodeFile } from '../../../components/component-demo/component-demo.component';
-
+import { NgAtomsBadgeDirective } from '../../../components/badge';
+import { CodeBlockComponent } from '../../../components/code-block/code-block.component';
+import { TocComponent } from '../../../components/toc/toc.component';
+import { PreviewCard } from '../../../components/preview-card/preview-card';
 @Component({
   selector: 'app-select-page',
   standalone: true,
-  imports: [NgAtomsSelectComponent, ComponentDemoComponent],
+    imports: [
+        RouterLink,
+        NgAtomsSelectComponent,
+        NgAtomsBadgeDirective,
+        CodeBlockComponent,
+        TocComponent,
+        PreviewCard,
+    ],
   templateUrl: './select-page.component.html',
   styleUrl: './select-page.component.css',
 })
 export class SelectPageComponent {
-  readonly department = signal<string | null>(null);
-  readonly role = signal<string | null>(null);
   readonly skills = signal<string[]>([]);
-  readonly invalidValue = signal<string | null>(null);
+
+  readonly selectedSkillLabels = computed(() =>
+    this.skills().map(v => this.skillOptions.find(o => o.value === v)?.label ?? v).join(', ')
+  );
 
   readonly departments: NgAtomsSelectOption[] = [
-    { value: 'eng', label: 'Engineering' },
-    { value: 'design', label: 'Design' },
-    { value: 'marketing', label: 'Marketing' },
+    { value: 'eng',     label: 'Engineering' },
+    { value: 'design',  label: 'Design' },
+    { value: 'mkt',     label: 'Marketing' },
     { value: 'finance', label: 'Finance' },
-    { value: 'hr', label: 'Human Resources' },
-    { value: 'legal', label: 'Legal' },
+    { value: 'hr',      label: 'Human Resources' },
   ];
 
   readonly roles: NgAtomsSelectOption[] = [
-    { value: 'admin', label: 'Admin' },
-    { value: 'editor', label: 'Editor' },
-    { value: 'viewer', label: 'Viewer' },
-    { value: 'guest', label: 'Guest', disabled: true },
+    { value: 'admin',   label: 'Admin' },
+    { value: 'editor',  label: 'Editor' },
+    { value: 'viewer',  label: 'Viewer' },
+    { value: 'guest',   label: 'Guest', disabled: true },
   ];
 
   readonly countries: NgAtomsSelectOption[] = [
@@ -40,67 +50,99 @@ export class SelectPageComponent {
     { value: 'gb', label: 'United Kingdom' },
     { value: 'fr', label: 'France' },
     { value: 'ca', label: 'Canada' },
-    { value: 'au', label: 'Australia' },
-    { value: 'mx', label: 'Mexico' },
   ];
 
   readonly skillOptions: NgAtomsSelectOption[] = [
-    { value: 'ts', label: 'TypeScript' },
-    { value: 'ng', label: 'Angular' },
-    { value: 'react', label: 'React' },
-    { value: 'vue', label: 'Vue' },
-    { value: 'node', label: 'Node.js' },
+    { value: 'ts',     label: 'TypeScript' },
+    { value: 'ng',     label: 'Angular' },
+    { value: 'react',  label: 'React' },
+    { value: 'vue',    label: 'Vue' },
+    { value: 'node',   label: 'Node.js' },
     { value: 'python', label: 'Python' },
-    { value: 'rust', label: 'Rust' },
-    { value: 'go', label: 'Go' },
+    { value: 'rust',   label: 'Rust' },
+    { value: 'go',     label: 'Go' },
   ];
 
-  readonly codeFiles: CodeFile[] = [
-    {
-      name: 'example.component.html',
-      language: 'html',
-      code: `<!-- Basic select -->
-<nga-select [options]="options" placeholder="Choose an option" />
+  readonly heroCode = `<nga-select [options]="options" [(value)]="selected" placeholder="Choose department" />`;
 
-<!-- With two-way binding -->
-<nga-select [options]="options" [(value)]="selected" placeholder="Choose an option" />
-
-<!-- Searchable -->
-<nga-select [options]="options" [searchable]="true" placeholder="Search options..." />
-
-<!-- Multiple selection -->
-<nga-select [options]="options" [multiple]="true" [(value)]="selectedMany" placeholder="Select multiple..." />
-
-<!-- Variants -->
-<nga-select [options]="options" variant="filled" placeholder="Filled" />
-<nga-select [options]="options" variant="ghost" placeholder="Ghost" />
-
-<!-- Invalid state -->
-<nga-select [options]="options" [invalid]="true" placeholder="Select role" />`,
-    },
-    {
-      name: 'example.component.ts',
-      language: 'typescript',
-      code: `import { Component, signal } from '@angular/core';
-import { NgAtomsSelectComponent, NgAtomsSelectOption } from './components/select';
+  readonly usageCode = `import { NgAtomsSelectComponent, NgAtomsSelectOption } from './ui/select';
+import { signal } from '@angular/core';
 
 @Component({
-  selector: 'app-example',
   standalone: true,
   imports: [NgAtomsSelectComponent],
-  templateUrl: './example.component.html',
+  template: \`
+    <nga-select [options]="roles" [(value)]="role" placeholder="Select role" />
+  \`,
 })
-export class ExampleComponent {
-  readonly selected = signal<string | null>(null);
-  readonly selectedMany = signal<string[]>([]);
+export class MyComponent {
+  readonly role = signal<string | null>(null);
 
-  readonly options: NgAtomsSelectOption[] = [
-    { value: 'admin', label: 'Admin' },
+  readonly roles: NgAtomsSelectOption[] = [
+    { value: 'admin',  label: 'Admin' },
     { value: 'editor', label: 'Editor' },
     { value: 'viewer', label: 'Viewer' },
-    { value: 'guest', label: 'Guest', disabled: true },
   ];
-}`,
-    },
+}`;
+
+  readonly variantsCode = `<nga-select [options]="options" placeholder="Default" />
+<nga-select [options]="options" variant="filled" placeholder="Filled" />
+<nga-select [options]="options" variant="ghost" placeholder="Ghost" />`;
+
+  readonly sizesCode = `<nga-select [options]="options" size="xs" placeholder="Extra small" />
+<nga-select [options]="options" size="sm" placeholder="Small" />
+<nga-select [options]="options" size="md" placeholder="Medium" />
+<nga-select [options]="options" size="lg" placeholder="Large" />
+<nga-select [options]="options" size="xl" placeholder="Extra large" />`;
+
+  readonly searchCode = `<nga-select
+  [options]="countries"
+  [searchable]="true"
+  placeholder="Search countries..."
+/>`;
+
+  readonly multipleCode = `<nga-select
+  [options]="skillOptions"
+  [multiple]="true"
+  [searchable]="true"
+  [(value)]="skills"
+  placeholder="Select skills..."
+/>`;
+
+  readonly statesCode = `<!-- Invalid -->
+<nga-select [options]="options" [invalid]="true" placeholder="Select role" />
+
+<!-- Disabled -->
+<nga-select [options]="options" [disabled]="true" placeholder="Unavailable" />`;
+
+  readonly props = [
+    { name: 'options',      type: 'NgAtomsSelectOption[]',                       defaultVal: '[]',          description: 'Array of options. Each item has value, label, and optional disabled.' },
+    { name: 'value',        type: 'string | string[] | null',                    defaultVal: 'null',         description: 'Two-way bound selected value (or array if multiple).' },
+    { name: 'placeholder',  type: 'string',                                      defaultVal: `''`,           description: 'Shown when no value is selected.' },
+    { name: 'variant',      type: `'default' | 'filled' | 'ghost'`,              defaultVal: `'default'`,    description: 'Visual style of the trigger.' },
+    { name: 'size',         type: `'xs' | 'sm' | 'md' | 'lg' | 'xl'`,           defaultVal: `'md'`,         description: 'Sizing preset.' },
+    { name: 'multiple',     type: 'boolean',                                     defaultVal: 'false',        description: 'Allows selecting more than one option.' },
+    { name: 'searchable',   type: 'boolean',                                     defaultVal: 'false',        description: 'Shows a search input at the top of the panel.' },
+    { name: 'invalid',      type: 'boolean',                                     defaultVal: 'false',        description: 'Applies error state styling to the trigger.' },
+    { name: 'disabled',     type: 'boolean',                                     defaultVal: 'false',        description: 'Prevents interaction with the select.' },
+  ];
+
+  readonly a11yItems = [
+    { term: 'Keyboard',      body: 'Arrow keys navigate options. Enter or Space selects. Escape closes the panel and returns focus to the trigger. Home/End jump to the first and last option.' },
+    { term: 'Focus ring',    body: 'Visible focus ring on keyboard navigation. The trigger exposes aria-expanded and aria-haspopup="listbox". aria-activedescendant tracks the focused option for screen readers.' },
+    { term: 'Search',        body: 'When searchable, options filter as you type. A live region announces the count of matching results after each keystroke.' },
+    { term: 'Repositioning', body: 'The panel remains open and automatically repositions itself when the page is scrolled, staying anchored to the trigger.' },
+    { term: 'Disabled',      body: 'Disabled options carry aria-disabled="true" so screen readers announce them as unavailable rather than silently refusing selection.' },
+  ];
+
+  readonly tocItems = [
+    { id: 'usage',    label: 'Usage' },
+    { id: 'variants', label: 'Variants' },
+    { id: 'sizes',    label: 'Sizes' },
+    { id: 'search',   label: 'Searchable' },
+    { id: 'multiple', label: 'Multiple' },
+    { id: 'states',   label: 'States' },
+    { id: 'api',      label: 'API' },
+    { id: 'a11y',     label: 'Accessibility' },
   ];
 }
