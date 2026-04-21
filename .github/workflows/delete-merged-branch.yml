@@ -13,7 +13,7 @@ jobs:
         uses: actions/github-script@v9
         with:
           script: |
-            const protected = ['main', 'alpha', 'beta', 'rc'];
+            const protected = ['main', 'lts', 'rc'];
             const branch = context.payload.pull_request.head.ref;
 
             if (protected.includes(branch)) {

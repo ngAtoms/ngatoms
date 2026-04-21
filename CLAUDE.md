@@ -103,10 +103,9 @@ The project supports multiple release channels via branch strategy:
 
 GitHub Actions workflows:
 
-- **ci.yml** — Runs lint, test, build on PRs and pushes to main/alpha/beta/rc
-- **changeset-required.yml** — Validates changeset presence on publishable-package PRs
-- **release.yml** — Unified release pipeline (stable + preview)
-- **release-main.yml / release-prerelease.yml** — Alternative streamlined release pipelines
+- **release.yml** — Unified CI + release pipeline. Runs lint/test/build on every PR and push; publishes to the matching npm tag (`latest`/`lts`/`rc`) on push to `main`/`lts`/`rc`.
+- **changeset-required.yml** — Fails PRs that modify `packages/*` or `registry/` without a `.changeset/*.md` entry.
+- **delete-merged-branch.yml** — Auto-deletes feature branches after PR merge (protects `main`, `lts`, `rc`).
 
 Node version: **22.x**
 
