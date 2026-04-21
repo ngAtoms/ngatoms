@@ -5,11 +5,21 @@
    ============================================================= */
 
 :root {
-  --nga-card-bg:      var(--nga-color-card, oklch(100% 0 0));
-  --nga-card-fg:      var(--nga-color-card-foreground, oklch(8% 0.002 85));
-  --nga-card-border:  var(--nga-color-border, oklch(82% 0.003 85));
-  --nga-card-radius:  var(--nga-radius-lg, 0.75rem);
-  --nga-card-shadow:  0 1px 3px oklch(0% 0 0 / 0.08), 0 1px 2px oklch(0% 0 0 / 0.04);
+  --nga-card-bg:           color-mix(in oklab, var(--nga-color-card, #FFFFFF) 78%, transparent);
+  --nga-card-fg:           var(--nga-color-card-foreground, #1A1714);
+  --nga-card-border:       color-mix(in oklab, var(--nga-color-border, #DED4C5) 70%, transparent);
+  --nga-card-border-hover: var(--nga-color-border-strong, #C5B7A1);
+  --nga-card-radius:       var(--nga-radius-lg, 10px);
+  --nga-card-shadow:       0 1px 0 rgba(26, 23, 20, 0.04), inset 0 1px 0 rgba(255, 255, 255, 0.8);
+  --nga-card-shadow-hover: 0 4px 12px rgba(26, 23, 20, 0.08), 0 1px 2px rgba(26, 23, 20, 0.04);
+  --nga-card-blur:         blur(16px) saturate(150%);
+  --nga-card-transition:   border-color var(--nga-dur-base, 180ms) var(--nga-ease-out, ease), box-shadow var(--nga-dur-base, 180ms) var(--nga-ease-out, ease), transform var(--nga-dur-base, 180ms) var(--nga-ease-out, ease);
+}
+
+.dark {
+  --nga-card-bg:     color-mix(in oklab, var(--nga-color-card) 82%, transparent);
+  --nga-card-border: color-mix(in oklab, var(--nga-color-border) 60%, transparent);
+  --nga-card-shadow: 0 1px 0 rgba(0, 0, 0, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.05);
 }
 
 /* ── Card ───────────────────────────────────────────────────── */
@@ -17,10 +27,25 @@
   display: flex;
   flex-direction: column;
   background: var(--nga-card-bg);
+  backdrop-filter: var(--nga-card-blur);
+  -webkit-backdrop-filter: var(--nga-card-blur);
   color: var(--nga-card-fg);
   border: 1px solid var(--nga-card-border);
   border-radius: var(--nga-card-radius);
   box-shadow: var(--nga-card-shadow);
+  transition: var(--nga-card-transition);
+}
+
+.nga-card[role="button"],
+.nga-card--interactive {
+  cursor: pointer;
+}
+
+.nga-card[role="button"]:hover,
+.nga-card--interactive:hover {
+  border-color: var(--nga-card-border-hover);
+  box-shadow: var(--nga-card-shadow-hover);
+  transform: translateY(-1px);
 }
 
 /* ── Header ─────────────────────────────────────────────────── */
@@ -35,14 +60,14 @@
 .nga-card-title {
   font-size: 0.9375rem;
   font-weight: var(--nga-font-weight-semibold, 600);
-  line-height: var(--nga-leading-tight, 1.25);
-  letter-spacing: -0.01em;
+  line-height: var(--nga-leading-snug, 1.25);
+  letter-spacing: var(--nga-tracking-snug, -0.01em);
 }
 
 /* ── Description ────────────────────────────────────────────── */
 .nga-card-description {
   font-size: 0.8125rem;
-  color: var(--nga-color-muted-foreground, oklch(54% 0.006 85));
+  color: var(--nga-color-muted-foreground, #87735A);
   line-height: 1.4;
 }
 

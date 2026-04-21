@@ -5,14 +5,13 @@
    ============================================================= */
 
 :root {
-  --nga-checkbox-radius:       var(--nga-radius-sm, 0.25rem);
-  --nga-checkbox-transition:   background 150ms ease, border-color 150ms ease, box-shadow 150ms ease;
-  --nga-checkbox-focus-color:  var(--nga-color-ring, oklch(76% 0.068 68));
+  --nga-checkbox-radius:       var(--nga-radius-sm, 4px);
+  --nga-checkbox-transition:   background var(--nga-dur-base, 180ms) var(--nga-ease-out, ease), border-color var(--nga-dur-base, 180ms) var(--nga-ease-out, ease), box-shadow var(--nga-dur-base, 180ms) var(--nga-ease-out, ease);
 
-  --nga-checkbox-bg:           var(--nga-color-background, oklch(100% 0 0));
-  --nga-checkbox-border:       var(--nga-color-border, oklch(82% 0.003 85));
-  --nga-checkbox-checked-bg:   var(--nga-color-primary, oklch(13% 0.002 85));
-  --nga-checkbox-checked-fg:   var(--nga-color-primary-foreground, oklch(100% 0 0));
+  --nga-checkbox-bg:           var(--nga-color-background, #FAF8F5);
+  --nga-checkbox-border:       var(--nga-color-border-strong, #C5B7A1);
+  --nga-checkbox-checked-bg:   var(--nga-color-primary, #1A1714);
+  --nga-checkbox-checked-fg:   var(--nga-color-primary-foreground, #FFFFFF);
 
   --nga-checkbox-size-sm: 0.875rem;
   --nga-checkbox-size-md: 1rem;
@@ -25,7 +24,7 @@
   -webkit-appearance: none;
   position: relative;
   flex-shrink: 0;
-  border: 1.5px solid var(--nga-checkbox-border);
+  border: 1px solid var(--nga-checkbox-border);
   border-radius: var(--nga-checkbox-radius);
   background: var(--nga-checkbox-bg);
   transition: var(--nga-checkbox-transition);
@@ -34,8 +33,7 @@
 }
 
 .nga-checkbox:focus-visible {
-  outline: 2px solid var(--nga-checkbox-focus-color);
-  outline-offset: 2px;
+  box-shadow: var(--nga-glow-ember, 0 0 0 4px rgba(240, 107, 0, 0.18));
 }
 
 .nga-checkbox:disabled {

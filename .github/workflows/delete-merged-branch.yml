@@ -10,10 +10,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Delete branch
-        uses: actions/github-script@v8
+        uses: actions/github-script@v9
         with:
           script: |
-            const protected = ['main', 'alpha', 'beta', 'rc'];
+            const protected = ['main', 'lts', 'rc'];
             const branch = context.payload.pull_request.head.ref;
 
             if (protected.includes(branch)) {

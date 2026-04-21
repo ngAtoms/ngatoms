@@ -1,226 +1,215 @@
-<div class="hero">
-  <img class="hero-logo hero-logo--dark" src="assets/ngatoms-logo-w.svg" alt="NgAtoms logo" />
-  <img class="hero-logo hero-logo--light" src="assets/ngatoms-logo-b.svg" alt="NgAtoms logo" />
-  <h1 class="hero-title">NgAtoms</h1>
-  <p class="hero-tagline">Angular UI primitives you own. Copy them into your project, no runtime dependency, full control.</p>
+<div class="gs-layout">
+
+  <!-- ── Main content ─────────────────────────────────────────── -->
+  <main class="gs-main">
+
+    <!-- Hero -->
+    <section class="gs-hero">
+      <div class="gs-hero-bg" aria-hidden="true"></div>
+      <div class="gs-hero-lockup">
+        <img
+          class="gs-hero-logo"
+          src="assets/ngatoms-logo-b.svg"
+          alt="ngAtoms logo"
+        />
+        <span class="gs-hero-wordmark"><span class="gs-accent">ng</span>Atoms</span>
+      </div>
+      <h1 class="gs-title">
+        Get started.
+      </h1>
+      <p class="gs-subtitle">
+        Angular UI primitives you own. Install a CLI, copy components into your project,
+        and ship — <strong>no runtime dependency, full control</strong>.
+      </p>
+      <div class="gs-chips">
+        <span class="chip"><i class="ph ph-clock"></i> ~ 2 min</span>
+        <span class="chip"><i class="ph ph-angular-logo"></i> Angular 17+</span>
+        <span class="chip chip--subtle"><i class="ph ph-node-js-logo"></i> Node 18+</span>
+        <span class="chip chip--subtle"><i class="ph ph-github-logo"></i> ngatoms.com</span>
+      </div>
+    </section>
+
+    <!-- ── Editorial steps ──────────────────────────────────── -->
+    <div class="gs-steps">
+
+      <!-- Step 1: Install -->
+      <section id="install" class="gs-step">
+        <div class="gs-step-rail"></div>
+        <div class="gs-step-num">1</div>
+        <div class="gs-step-body">
+          <h3 class="gs-step-title">Install the CLI</h3>
+          <p class="gs-step-summary">
+            Install globally once. Use <code>npx ngatoms</code> if you prefer not to install globally.
+          </p>
+          <nga-tabs [defaultValue]="pmTabs[0].label" variant="pills" class="pm-tabs">
+            <div ngAtomsTabList>
+              @for (tab of pmTabs; track tab.label) {
+                <button ngAtomsTabTrigger [value]="tab.label">{{ tab.label }}</button>
+              }
+            </div>
+            @for (tab of pmTabs; track tab.label) {
+              <div ngAtomsTabPanel [value]="tab.label">
+                <app-code-block [code]="tab.code" language="bash" />
+              </div>
+            }
+          </nga-tabs>
+        </div>
+      </section>
+
+      <!-- Step 2: Init -->
+      <section id="init" class="gs-step">
+        <div class="gs-step-rail"></div>
+        <div class="gs-step-num">2</div>
+        <div class="gs-step-body">
+          <h3 class="gs-step-title">Initialize your project</h3>
+          <p class="gs-step-summary">
+            Run once at the root of your Angular workspace. It asks three short questions and sets
+            up a config file and an optional design token theme.
+          </p>
+          <app-code-block [code]="initOutput" language="bash" />
+          <div class="callout callout--info">
+            <i class="ph ph-info"></i>
+            <div>
+              <code>init</code> never overwrites existing files — if a conflict is detected, it prompts before
+              touching anything.
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Step 3: Add -->
+      <section id="add" class="gs-step">
+        <div class="gs-step-rail"></div>
+        <div class="gs-step-num">3</div>
+        <div class="gs-step-body">
+          <h3 class="gs-step-title">Add a component</h3>
+          <p class="gs-step-summary">
+            Components are copied into your <code>src/components/</code> directory. From that point on they are
+            yours — edit, delete, rename, fork.
+          </p>
+          <app-code-block [code]="addOutput" language="bash" />
+          <div class="callout callout--tip">
+            <i class="ph ph-lightning"></i>
+            <div>
+              You can add multiple components at once: <code>ngatoms add button input select</code>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Step 4: Use -->
+      <section id="use" class="gs-step">
+        <div class="gs-step-rail"></div>
+        <div class="gs-step-num">4</div>
+        <div class="gs-step-body">
+          <h3 class="gs-step-title">Use it in a template</h3>
+          <p class="gs-step-summary">
+            Import the standalone directive and add it to your component's
+            <code>imports</code> array. No module, no provider, no extra setup.
+          </p>
+          <app-code-block [code]="importCode" language="typescript" />
+        </div>
+      </section>
+
+      <!-- Step 5: Done -->
+      <section id="done" class="gs-step gs-step--last">
+        <div class="gs-step-num">5</div>
+        <div class="gs-step-body">
+          <h3 class="gs-step-title">You're done.</h3>
+          <p class="gs-step-summary">
+            No build steps to configure. No runtime wrapper. No version mismatches.
+            The source lives in your repo — open it, read it, adapt it.
+          </p>
+          <div class="gs-ctas">
+            <a routerLink="/button" class="btn-primary">
+              Browse components <i class="ph ph-arrow-right"></i>
+            </a>
+            <a href="https://github.com/ngAtoms/ngatoms" target="_blank" class="btn-secondary">
+              <i class="ph ph-github-logo"></i> View source
+            </a>
+          </div>
+        </div>
+      </section>
+
+    </div><!-- /gs-steps -->
+
+    <!-- ── Theming ──────────────────────────────────────────── -->
+    <section id="theme" class="gs-section">
+      <h2 class="gs-section-h2">Theming</h2>
+      <p class="gs-lede">
+        Every color, radius, and font is a CSS variable in <code>src/themes/default.css</code>,
+        generated by <code>ngatoms init</code>. Edit it freely — the whole system reflows.
+      </p>
+      <app-code-block [code]="themeCode" language="css" />
+      <div class="callout callout--tip" style="margin-top: 12px;">
+        <i class="ph ph-moon"></i>
+        <div>
+          Dark mode is a <code>.dark</code> class on <code>&lt;html&gt;</code> or <code>&lt;body&gt;</code>.
+          Toggle it with one line: <code>document.documentElement.classList.toggle('dark')</code>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── Components table ─────────────────────────────────── -->
+    <section id="components" class="gs-section">
+      <h2 class="gs-section-h2">Components</h2>
+      <p class="gs-lede">
+        {{ components.length }} primitives available today, more on the way.
+        All are Angular standalone directives/components — no runtime dependencies.
+      </p>
+
+      <div class="comp-table-wrap">
+        <table class="comp-table">
+          <thead>
+            <tr>
+              <th>Component</th>
+              <th>Description</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (c of components; track c.name) {
+              <tr>
+                <td>
+                  @if (c.route) {
+                    <a [routerLink]="c.route" class="comp-link">{{ c.name }}</a>
+                  } @else {
+                    <span class="comp-name">{{ c.name }}</span>
+                  }
+                </td>
+                <td class="comp-desc">{{ c.description }}</td>
+                <td>
+                  <span [class]="'status-badge status-' + c.status">{{ c.status }}</span>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Prev / Next nav -->
+    <nav class="gs-prevnext">
+      <a class="gs-prevnext-item">
+        <span class="gs-prevnext-dir">← PREVIOUS</span>
+        <span class="gs-prevnext-label">Introduction</span>
+      </a>
+      <a routerLink="/button" class="gs-prevnext-item gs-prevnext-item--right">
+        <span class="gs-prevnext-dir">NEXT →</span>
+        <span class="gs-prevnext-label gs-prevnext-label--accent">Button</span>
+      </a>
+    </nav>
+
+  </main>
+
+  <!-- ── Right TOC ─────────────────────────────────────────── -->
+  <app-toc [items]="tocItems">
+    <div class="gs-toc-callout">
+      <p class="gs-toc-callout-text">All source is ~400 lines per component. Nothing is hidden.</p>
+      <a href="https://github.com/ngAtoms/ngatoms" target="_blank" class="gs-toc-callout-link">
+        <i class="ph ph-github-logo"></i> Browse source
+      </a>
+    </div>
+  </app-toc>
+
 </div>
-
-<section class="gs-section">
-  <h2 class="gs-section-title">Installation</h2>
-  <p class="gs-desc">Install the NgAtoms CLI globally or use it with <code class="inline-code">npx</code>.</p>
-  <pre class="code-block"><code>npm install -g ngatoms</code></pre>
-</section>
-
-<section class="gs-section">
-  <h2 class="gs-section-title">Initialize your project</h2>
-  <p class="gs-desc">Run <code class="inline-code">init</code> inside your Angular project root. This creates an <code class="inline-code">ngatoms.json</code> config and optionally copies the design tokens CSS into your project.</p>
-  <pre class="code-block"><code>ngatoms init</code></pre>
-</section>
-
-<section class="gs-section">
-  <h2 class="gs-section-title">Add a component</h2>
-  <p class="gs-desc">Use <code class="inline-code">add</code> to copy a component's source files directly into your project. You own the code — edit it freely.</p>
-  <pre class="code-block"><code>ngatoms add button</code></pre>
-</section>
-
-<section class="gs-section">
-  <h2 class="gs-section-title">Components</h2>
-  <div class="component-table-wrap">
-    <table class="component-table">
-      <thead>
-        <tr>
-          <th>Component</th>
-          <th>Description</th>
-          <th>Status</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td><a routerLink="/accordion" class="component-link">accordion</a></td>
-          <td>Collapsible items, single or multiple mode</td>
-          <td><span class="status-badge status-alpha">alpha</span></td>
-        </tr>
-        <tr>
-          <td><a routerLink="/alert" class="component-link">alert</a></td>
-          <td>Feedback messages — 5 variants</td>
-          <td><span class="status-badge status-alpha">alpha</span></td>
-        </tr>
-        <tr>
-          <td><a routerLink="/avatar" class="component-link">avatar</a></td>
-          <td>Image with fallback initials or icon</td>
-          <td><span class="status-badge status-alpha">alpha</span></td>
-        </tr>
-        <tr>
-          <td><a routerLink="/badge" class="component-link">badge</a></td>
-          <td>Labels — 5 variants</td>
-          <td><span class="status-badge status-alpha">alpha</span></td>
-        </tr>
-        <tr>
-          <td><a routerLink="/button" class="component-link">button</a></td>
-          <td>5 variants, 5 sizes, loading state, icon support</td>
-          <td><span class="status-badge status-alpha">alpha</span></td>
-        </tr>
-        <tr>
-          <td><a routerLink="/card" class="component-link">card</a></td>
-          <td>Container with header, content, footer slots</td>
-          <td><span class="status-badge status-alpha">alpha</span></td>
-        </tr>
-        <tr>
-          <td><a routerLink="/checkbox" class="component-link">checkbox</a></td>
-          <td>Checked, unchecked, and indeterminate states</td>
-          <td><span class="status-badge status-alpha">alpha</span></td>
-        </tr>
-        <tr>
-          <td><a routerLink="/date-picker" class="component-link">date-picker</a></td>
-          <td>Custom calendar overlay — single/range, min/max, i18n, month/year picker</td>
-          <td><span class="status-badge status-alpha">alpha</span></td>
-        </tr>
-        <tr>
-          <td><a routerLink="/dialog" class="component-link">dialog</a></td>
-          <td>Modal using native &lt;dialog&gt;, focus trap, backdrop</td>
-          <td><span class="status-badge status-alpha">alpha</span></td>
-        </tr>
-        <tr>
-          <td><a routerLink="/dropdown-menu" class="component-link">dropdown-menu</a></td>
-          <td>Contextual action menu — 4 placements, flip, icons, keyboard navigation</td>
-          <td><span class="status-badge status-alpha">alpha</span></td>
-        </tr>
-        <tr>
-          <td><a routerLink="/input" class="component-link">input</a></td>
-          <td>3 variants, 5 sizes, invalid state</td>
-          <td><span class="status-badge status-alpha">alpha</span></td>
-        </tr>
-        <tr>
-          <td><a routerLink="/number-input" class="component-link">number-input</a></td>
-          <td>Numeric input with increment/decrement controls</td>
-          <td><span class="status-badge status-alpha">alpha</span></td>
-        </tr>
-        <tr>
-          <td><a routerLink="/popover" class="component-link">popover</a></td>
-          <td>Floating content anchored to a trigger — 4 placements, flip</td>
-          <td><span class="status-badge status-alpha">alpha</span></td>
-        </tr>
-        <tr>
-          <td><a routerLink="/progress" class="component-link">progress</a></td>
-          <td>Progress bar — determinate and indeterminate</td>
-          <td><span class="status-badge status-alpha">alpha</span></td>
-        </tr>
-        <tr>
-          <td><a routerLink="/radio-group" class="component-link">radio-group</a></td>
-          <td>Radio button group with keyboard navigation</td>
-          <td><span class="status-badge status-alpha">alpha</span></td>
-        </tr>
-        <tr>
-          <td><a routerLink="/select" class="component-link">select</a></td>
-          <td>Styled native select — 3 variants, 5 sizes</td>
-          <td><span class="status-badge status-alpha">alpha</span></td>
-        </tr>
-        <tr>
-          <td><a routerLink="/separator" class="component-link">separator</a></td>
-          <td>Horizontal or vertical divider</td>
-          <td><span class="status-badge status-alpha">alpha</span></td>
-        </tr>
-        <tr>
-          <td><a routerLink="/spinner" class="component-link">spinner</a></td>
-          <td>Loading spinner</td>
-          <td><span class="status-badge status-alpha">alpha</span></td>
-        </tr>
-        <tr>
-          <td><a routerLink="/switch" class="component-link">switch</a></td>
-          <td>Toggle switch — 3 sizes</td>
-          <td><span class="status-badge status-alpha">alpha</span></td>
-        </tr>
-        <tr>
-          <td><a routerLink="/tabs" class="component-link">tabs</a></td>
-          <td>Underline and pills variants, keyboard navigation</td>
-          <td><span class="status-badge status-alpha">alpha</span></td>
-        </tr>
-        <tr>
-          <td><a routerLink="/textarea" class="component-link">textarea</a></td>
-          <td>Multiline input with auto-resize</td>
-          <td><span class="status-badge status-alpha">alpha</span></td>
-        </tr>
-        <tr>
-          <td><a routerLink="/tooltip" class="component-link">tooltip</a></td>
-          <td>Floating label — 4 placements, viewport clamping</td>
-          <td><span class="status-badge status-alpha">alpha</span></td>
-        </tr>
-        <tr>
-          <td><span class="component-name">breadcrumb</span></td>
-          <td>Hierarchical navigation trail</td>
-          <td><span class="status-badge status-planned">planned</span></td>
-        </tr>
-        <tr>
-          <td><span class="component-name">code-block</span></td>
-          <td>Syntax-highlighted code display</td>
-          <td><span class="status-badge status-planned">planned</span></td>
-        </tr>
-        <tr>
-          <td><span class="component-name">color-picker</span></td>
-          <td>HSL/hex color selector</td>
-          <td><span class="status-badge status-planned">planned</span></td>
-        </tr>
-        <tr>
-          <td><span class="component-name">combobox</span></td>
-          <td>Text input with filtered dropdown</td>
-          <td><span class="status-badge status-planned">planned</span></td>
-        </tr>
-        <tr>
-          <td><span class="component-name">context-menu</span></td>
-          <td>Right-click triggered menu</td>
-          <td><span class="status-badge status-planned">planned</span></td>
-        </tr>
-        <tr>
-          <td><span class="component-name">drawer</span></td>
-          <td>Side-panel overlay</td>
-          <td><span class="status-badge status-planned">planned</span></td>
-        </tr>
-        <tr>
-          <td><span class="component-name">file-upload</span></td>
-          <td>Drag-and-drop file input zone</td>
-          <td><span class="status-badge status-planned">planned</span></td>
-        </tr>
-        <tr>
-          <td><span class="component-name">pagination</span></td>
-          <td>Page navigation controls</td>
-          <td><span class="status-badge status-planned">planned</span></td>
-        </tr>
-        <tr>
-          <td><span class="component-name">rating</span></td>
-          <td>Star rating input</td>
-          <td><span class="status-badge status-planned">planned</span></td>
-        </tr>
-        <tr>
-          <td><span class="component-name">skeleton</span></td>
-          <td>Placeholder loading shimmer</td>
-          <td><span class="status-badge status-planned">planned</span></td>
-        </tr>
-        <tr>
-          <td><span class="component-name">slider</span></td>
-          <td>Range slider — single and dual thumb</td>
-          <td><span class="status-badge status-planned">planned</span></td>
-        </tr>
-        <tr>
-          <td><span class="component-name">stepper</span></td>
-          <td>Multi-step wizard progress indicator</td>
-          <td><span class="status-badge status-planned">planned</span></td>
-        </tr>
-        <tr>
-          <td><span class="component-name">tag-input</span></td>
-          <td>Input that creates removable tag chips</td>
-          <td><span class="status-badge status-planned">planned</span></td>
-        </tr>
-        <tr>
-          <td><span class="component-name">timeline</span></td>
-          <td>Vertical event timeline</td>
-          <td><span class="status-badge status-planned">planned</span></td>
-        </tr>
-        <tr>
-          <td><span class="component-name">tree</span></td>
-          <td>Collapsible tree view</td>
-          <td><span class="status-badge status-planned">planned</span></td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-</section>

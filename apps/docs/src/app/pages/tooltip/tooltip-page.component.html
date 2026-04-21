@@ -1,63 +1,150 @@
-<app-component-demo [files]="codeFiles">
-  <header class="page-header">
-    <h1 class="page-title">Tooltip</h1>
-    <p class="page-desc">A floating label that appears on hover or focus. Appended to <code class="inline-code">document.body</code> for reliable stacking.</p>
-  </header>
+<div class="cp-layout">
 
-  <section class="showcase-section">
-    <h2 class="section-title">Placements</h2>
-    <div class="placement-grid">
-      <button ngAtomsButton variant="outline"
-        [ngAtomsTooltip]="'Appears above'" placement="top">
-        Top
-      </button>
-      <button ngAtomsButton variant="outline"
-        [ngAtomsTooltip]="'Appears below'" placement="bottom">
-        Bottom
-      </button>
-      <button ngAtomsButton variant="outline"
-        [ngAtomsTooltip]="'Appears to the left'" placement="left">
-        Left
-      </button>
-      <button ngAtomsButton variant="outline"
-        [ngAtomsTooltip]="'Appears to the right'" placement="right">
-        Right
-      </button>
-    </div>
-  </section>
+    <main class="cp-main">
 
-  <section class="showcase-section">
-    <h2 class="section-title">On different elements</h2>
-    <div class="row-group">
-      <button ngAtomsButton
-        [ngAtomsTooltip]="'Save your changes'">
-        Save
-      </button>
+        <header class="cp-header">
+            <div class="cp-eyebrow">Components / Overlays</div>
+            <h1 class="cp-title">Tooltip</h1>
+            <p class="cp-lede">A floating label that appears on hover or keyboard focus. Appended to <code class="cp-code">document.body</code> via <code class="cp-code">position: fixed</code> for reliable stacking at any nesting depth.</p>
+            <div class="cp-chips">
+                <span ngAtomsBadge variant="default"><i class="ph ph-angular-logo"></i> ngAtoms v0.3+</span>
+                <span ngAtomsBadge variant="default"><i class="ph ph-package"></i> ngatoms add tooltip</span>
+                <span ngAtomsBadge variant="success"><i class="ph ph-check-circle"></i> Stable</span>
+                <a ngAtomsBadge variant="outline" href="https://github.com/ngAtoms/ngatoms/tree/rc/packages/primitives/src/tooltip" target="_blank">
+                    <i class="ph ph-arrow-square-out"></i> Source
+                </a>
+            </div>
+        </header>
 
-      <button ngAtomsButton variant="ghost"
-        [ngAtomsTooltip]="'Remove this item permanently'" placement="bottom">
-        Delete
-      </button>
+        <!-- Hero preview -->
+        <preview-card>
+            <ng-container preview>
+                <button ngAtomsButton [ngAtomsTooltip]="'Save your changes'">Save</button>
+                <button ngAtomsButton variant="secondary" [ngAtomsTooltip]="'Discard unsaved changes'" placement="bottom">Cancel</button>
+                <button ngAtomsButton variant="ghost" [ngAtomsTooltip]="'Open settings menu'" placement="right">Settings</button>
+            </ng-container>
+            <ng-container code>
+                <app-code-block [code]="heroCode" language="html" />
+            </ng-container>
+        </preview-card>
 
-      <span ngAtomsBadge variant="secondary"
-        [ngAtomsTooltip]="'This feature is in early access'">
-        Beta
-      </span>
+        <!-- Usage -->
+        <section id="usage">
+            <h2 class="cp-h2">Usage</h2>
+            <p class="cp-p">Add the tooltip to your project and apply it as an attribute directive.</p>
+            <div class="inline-terminal">
+                <span class="inline-terminal-dollar">$</span>
+                <span class="inline-terminal-cmd">ngatoms add tooltip</span>
+            </div>
+            <p class="cp-p" style="margin-top: 14px;">Import <code class="cp-code">NgAtomsTooltipDirective</code> in your component:</p>
+            <app-code-block [code]="usageCode" language="typescript" />
+        </section>
 
-      <span class="hint-text"
-        [ngAtomsTooltip]="'Unique identifier assigned at account creation'" placement="right">
-        User ID <span class="hint-icon">?</span>
-      </span>
-    </div>
-  </section>
+        <!-- Placements -->
+        <section id="placements">
+            <h2 class="cp-h2">Placements</h2>
+            <p class="cp-p">The tooltip auto-positions to the specified side. <strong>top</strong> is the default.</p>
+            <preview-card>
+                <ng-container preview>
+                    <div class="placement-row">
+                        <button ngAtomsButton variant="outline" [ngAtomsTooltip]="'Appears above'" placement="top">Top</button>
+                        <button ngAtomsButton variant="outline" [ngAtomsTooltip]="'Appears below'" placement="bottom">Bottom</button>
+                        <button ngAtomsButton variant="outline" [ngAtomsTooltip]="'Appears to the left'" placement="left">Left</button>
+                        <button ngAtomsButton variant="outline" [ngAtomsTooltip]="'Appears to the right'" placement="right">Right</button>
+                    </div>
+                </ng-container>
+                <ng-container code>
+                    <app-code-block [code]="placementsCode" language="html" />
+                </ng-container>
+            </preview-card>
+        </section>
 
-  <section class="showcase-section">
-    <h2 class="section-title">Long content</h2>
-    <div class="row-group">
-      <button ngAtomsButton variant="outline"
-        [ngAtomsTooltip]="'Two-factor authentication adds a second layer of security by requiring a verification code in addition to your password.'">
-        Two-factor auth
-      </button>
-    </div>
-  </section>
-</app-component-demo>
+        <!-- On different elements -->
+        <section id="elements">
+            <h2 class="cp-h2">On different elements</h2>
+            <p class="cp-p">Apply <code class="cp-code">ngAtomsTooltip</code> to any element — buttons, badges, spans, or custom components.</p>
+            <preview-card>
+                <ng-container preview>
+                    <button ngAtomsButton [ngAtomsTooltip]="'Save your changes'">Save</button>
+                    <button ngAtomsButton variant="ghost" [ngAtomsTooltip]="'Remove this item permanently'" placement="bottom">Delete</button>
+                    <span ngAtomsBadge variant="ember" [ngAtomsTooltip]="'This feature is in early access'">Beta</span>
+                </ng-container>
+                <ng-container code>
+                    <app-code-block [code]="elementsCode" language="html" />
+                </ng-container>
+            </preview-card>
+        </section>
+
+        <!-- Long content -->
+        <section id="long">
+            <h2 class="cp-h2">Long content</h2>
+            <p class="cp-p">Tooltips wrap at <code class="cp-code">max-width: 16.25rem</code> by default. Use them for brief contextual descriptions, not for multi-paragraph content — use a Popover for that.</p>
+            <preview-card>
+                <ng-container preview>
+                    <button ngAtomsButton variant="outline"
+                        [ngAtomsTooltip]="'Two-factor authentication adds a second layer of security by requiring a verification code in addition to your password.'">
+                        Two-factor auth
+                    </button>
+                </ng-container>
+                <ng-container code>
+                    <app-code-block [code]="longCode" language="html" />
+                </ng-container>
+            </preview-card>
+        </section>
+
+        <!-- API -->
+        <section id="api">
+            <h2 class="cp-h2">API</h2>
+            <p class="cp-p">Inputs on <code class="cp-code">ngAtomsTooltip</code>.</p>
+            <div class="props-table">
+                <div class="props-table-header">
+                    <span>Prop</span>
+                    <span>Type</span>
+                    <span>Default</span>
+                    <span>Description</span>
+                </div>
+                @for (prop of props; track prop.name) {
+                    <div class="props-table-row">
+                        <code class="props-name">{{ prop.name }}</code>
+                        <code class="props-type">{{ prop.type }}</code>
+                        <code class="props-default">{{ prop.defaultVal }}</code>
+                        <span class="props-desc">{{ prop.description }}</span>
+                    </div>
+                }
+            </div>
+        </section>
+
+        <!-- Accessibility -->
+        <section id="a11y">
+            <h2 class="cp-h2">Accessibility</h2>
+            <p class="cp-p">Tooltips supplement visible labels — they should not be the only way to communicate critical information.</p>
+            <ul class="a11y-list">
+                @for (item of a11yItems; track item.title) {
+                    <li class="a11y-item">
+                        <div class="a11y-icon"><i [class]="'ph ph-' + item.icon"></i></div>
+                        <div class="a11y-body">
+                            <div class="a11y-title">{{ item.title }}</div>
+                            <div class="a11y-desc">{{ item.body }}</div>
+                        </div>
+                    </li>
+                }
+            </ul>
+        </section>
+
+        <!-- Prev / Next -->
+        <nav class="cp-prevnext">
+            <a routerLink="/badge" class="cp-prevnext-item">
+                <span class="cp-prevnext-dir">← PREVIOUS</span>
+                <span class="cp-prevnext-label">Badge</span>
+            </a>
+            <a routerLink="/popover" class="cp-prevnext-item cp-prevnext-item--right">
+                <span class="cp-prevnext-dir">NEXT →</span>
+                <span class="cp-prevnext-label cp-prevnext-label--accent">Popover</span>
+            </a>
+        </nav>
+
+    </main>
+
+    <app-toc [items]="tocItems" />
+
+</div>

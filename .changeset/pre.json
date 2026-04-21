@@ -1,5 +1,5 @@
 {
-  "mode": "pre",
+  "mode": "exit",
   "tag": "rc",
   "initialVersions": {
     "@ngatoms/ngatoms-docs": "0.0.2",
@@ -16,9 +16,11 @@
     "cli-update-check",
     "date-picker",
     "dropdown-menu",
+    "ember-design-system",
     "fix-getref-tag-format",
     "fix-lint-readme-updates",
     "init-fetch-tokens",
+    "overlay-reposition-on-scroll",
     "readme-component-status-v2",
     "readme-component-status",
     "registry-status-field"

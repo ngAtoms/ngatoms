@@ -1,4 +1,4 @@
-import { Component, signal, effect, inject, DOCUMENT } from '@angular/core';
+import { Component, signal, effect, inject, DOCUMENT, AfterViewInit, OnDestroy } from '@angular/core';
 import { RouterOutlet, RouterLink, RouterLinkActive } from '@angular/router';
 
 @Component({
@@ -8,10 +8,14 @@ import { RouterOutlet, RouterLink, RouterLinkActive } from '@angular/router';
   templateUrl: './app.component.html',
   styleUrl: './app.component.css',
 })
-export class AppComponent {
+export class AppComponent implements AfterViewInit, OnDestroy {
   private readonly document = inject(DOCUMENT);
 
   readonly isDark = signal(true);
+  readonly scrolled = signal(false);
+  readonly mobileNavOpen = signal(false);
+
+  private readonly onScroll = () => this.scrolled.set(this.document.documentElement.scrollTop > 4);
 
   constructor() {
     effect(() => {
@@ -19,7 +23,25 @@ export class AppComponent {
     });
   }
 
+  ngAfterViewInit() {
+    this.document.defaultView?.addEventListener('scroll', this.onScroll, { passive: true });
+  }
+
+  ngOnDestroy() {
+    this.document.defaultView?.removeEventListener('scroll', this.onScroll);
+  }
+
   toggleTheme(): void {
     this.isDark.update(v => !v);
+  }
+
+  toggleMobileNav(): void {
+    this.mobileNavOpen.update(v => !v);
+  }
+
+  onSidebarNavClick(event: MouseEvent): void {
+    if ((event.target as HTMLElement).closest('a')) {
+      this.mobileNavOpen.set(false);
+    }
   }
 }

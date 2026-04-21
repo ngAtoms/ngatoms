@@ -1,85 +1,194 @@
-<app-component-demo [files]="codeFiles">
-  <header class="page-header">
-    <h1 class="page-title">Checkbox</h1>
-    <p class="page-desc">A control that allows the user to toggle between checked, unchecked, and indeterminate states.</p>
-  </header>
+<div class="cp-layout">
 
-  <section class="showcase-section">
-    <h2 class="section-title">States</h2>
-    <div class="states-grid">
-      <div class="state-item">
-        <span class="state-label">Unchecked</span>
-        <label class="check-label">
-          <input ngAtomsCheckbox [(checked)]="unchecked" />
-          <span>Unchecked</span>
-        </label>
-      </div>
-      <div class="state-item">
-        <span class="state-label">Checked</span>
-        <label class="check-label">
-          <input ngAtomsCheckbox [(checked)]="checked" />
-          <span>Checked</span>
-        </label>
-      </div>
-      <div class="state-item">
-        <span class="state-label">Indeterminate</span>
-        <label class="check-label">
-          <input ngAtomsCheckbox [indeterminate]="true" />
-          <span>Indeterminate</span>
-        </label>
-      </div>
-      <div class="state-item">
-        <span class="state-label">Disabled</span>
-        <label class="check-label">
-          <input ngAtomsCheckbox [checked]="true" disabled />
-          <span>Disabled</span>
-        </label>
-      </div>
-    </div>
-  </section>
+    <main class="cp-main">
 
-  <section class="showcase-section">
-    <h2 class="section-title">Sizes</h2>
-    <div class="sizes-grid">
-      <div class="size-item">
-        <span class="size-label">sm</span>
-        <label class="check-label">
-          <input ngAtomsCheckbox size="sm" [checked]="true" />
-          <span>Small</span>
-        </label>
-      </div>
-      <div class="size-item">
-        <span class="size-label">md</span>
-        <label class="check-label">
-          <input ngAtomsCheckbox size="md" [checked]="true" />
-          <span>Medium</span>
-        </label>
-      </div>
-      <div class="size-item">
-        <span class="size-label">lg</span>
-        <label class="check-label">
-          <input ngAtomsCheckbox size="lg" [checked]="true" />
-          <span>Large</span>
-        </label>
-      </div>
-    </div>
-  </section>
+        <header class="cp-header">
+            <div class="cp-eyebrow">Components / Forms</div>
+            <h1 class="cp-title">Checkbox</h1>
+            <p class="cp-lede">
+                A control that allows the user to toggle between checked, unchecked, and indeterminate states.
+                Three sizes, full signal binding, and keyboard-accessible.
+            </p>
+            <div class="cp-chips">
+                <span ngAtomsBadge variant="default"><i class="ph ph-angular-logo"></i> ngAtoms v0.3+</span>
+                <span ngAtomsBadge variant="default"><i class="ph ph-package"></i> ngatoms add checkbox</span>
+                <span ngAtomsBadge variant="success"><i class="ph ph-check-circle"></i> Stable</span>
+                <a ngAtomsBadge variant="outline" href="https://github.com/ngAtoms/ngatoms/tree/rc/packages/primitives/src/checkbox" target="_blank">
+                    <i class="ph ph-arrow-square-out"></i> Source
+                </a>
+            </div>
+        </header>
 
-  <section class="showcase-section">
-    <h2 class="section-title">In a list</h2>
-    <div class="check-list">
-      <label class="check-label">
-        <input ngAtomsCheckbox [checked]="true" />
-        <span>Accept terms and conditions</span>
-      </label>
-      <label class="check-label">
-        <input ngAtomsCheckbox [checked]="true" />
-        <span>Subscribe to newsletter</span>
-      </label>
-      <label class="check-label">
-        <input ngAtomsCheckbox />
-        <span>Enable two-factor authentication</span>
-      </label>
-    </div>
-  </section>
-</app-component-demo>
+        <!-- Hero preview -->
+        <preview-card>
+            <ng-container preview>
+                <label class="check-label">
+                    <input ngAtomsCheckbox [(checked)]="heroChecked" />
+                    <span>Accept terms and conditions</span>
+                </label>
+            </ng-container>
+            <ng-container code>
+                <app-code-block [code]="heroCode" language="html" />
+            </ng-container>
+        </preview-card>
+
+        <!-- Usage -->
+        <section id="usage">
+            <h2 class="cp-h2">Usage</h2>
+            <p class="cp-p">Add the checkbox to your project and import the standalone directive wherever you need it.</p>
+            <div class="inline-terminal">
+                <span class="inline-terminal-dollar">$</span>
+                <span class="inline-terminal-cmd">ngatoms add checkbox</span>
+            </div>
+            <p class="cp-p" style="margin-top: 14px;">Then import into your component:</p>
+            <app-code-block [code]="usageCode" language="typescript" />
+        </section>
+
+        <!-- States -->
+        <section id="states">
+            <h2 class="cp-h2">States</h2>
+            <p class="cp-p">
+                Bind <code class="cp-code">[(checked)]</code> for two-way signal binding. Use
+                <code class="cp-code">[indeterminate]="true"</code> for partial selection, and the native
+                <code class="cp-code">disabled</code> attribute to prevent interaction.
+            </p>
+            <preview-card>
+                <ng-container preview>
+                    <div class="states-row">
+                        <label class="check-label">
+                            <input ngAtomsCheckbox [(checked)]="stateUnchecked" />
+                            <span>Unchecked</span>
+                        </label>
+                        <label class="check-label">
+                            <input ngAtomsCheckbox [(checked)]="stateChecked" />
+                            <span>Checked</span>
+                        </label>
+                        <label class="check-label">
+                            <input ngAtomsCheckbox [indeterminate]="true" />
+                            <span>Indeterminate</span>
+                        </label>
+                        <label class="check-label">
+                            <input ngAtomsCheckbox [checked]="true" disabled />
+                            <span>Disabled</span>
+                        </label>
+                    </div>
+                </ng-container>
+                <ng-container code>
+                    <app-code-block [code]="statesCode" language="html" />
+                </ng-container>
+            </preview-card>
+        </section>
+
+        <!-- Sizes -->
+        <section id="sizes">
+            <h2 class="cp-h2">Sizes</h2>
+            <p class="cp-p">
+                Three sizes. <strong>md</strong> is the default for most form fields. Use <strong>sm</strong>
+                for dense layouts and <strong>lg</strong> for touch targets or prominent settings.
+            </p>
+            <preview-card>
+                <ng-container preview>
+                    <div class="states-row">
+                        <label class="check-label">
+                            <input ngAtomsCheckbox size="sm" [checked]="true" />
+                            <span>Small</span>
+                        </label>
+                        <label class="check-label">
+                            <input ngAtomsCheckbox size="md" [checked]="true" />
+                            <span>Medium</span>
+                        </label>
+                        <label class="check-label">
+                            <input ngAtomsCheckbox size="lg" [checked]="true" />
+                            <span>Large</span>
+                        </label>
+                    </div>
+                </ng-container>
+                <ng-container code>
+                    <app-code-block [code]="sizesCode" language="html" />
+                </ng-container>
+            </preview-card>
+        </section>
+
+        <!-- In a list -->
+        <section id="in-a-list">
+            <h2 class="cp-h2">In a list</h2>
+            <p class="cp-p">Wrap each checkbox in a <code class="cp-code">&lt;label&gt;</code> to extend the tap target to the full row.</p>
+            <preview-card>
+                <ng-container preview>
+                    <div class="check-list">
+                        <label class="check-label">
+                            <input ngAtomsCheckbox [checked]="true" />
+                            <span>Accept terms and conditions</span>
+                        </label>
+                        <label class="check-label">
+                            <input ngAtomsCheckbox [checked]="true" />
+                            <span>Subscribe to newsletter</span>
+                        </label>
+                        <label class="check-label">
+                            <input ngAtomsCheckbox />
+                            <span>Enable two-factor authentication</span>
+                        </label>
+                    </div>
+                </ng-container>
+                <ng-container code>
+                    <app-code-block [code]="listCode" language="html" />
+                </ng-container>
+            </preview-card>
+        </section>
+
+        <!-- API -->
+        <section id="api">
+            <h2 class="cp-h2">API</h2>
+            <p class="cp-p">Inputs on <code class="cp-code">ngAtomsCheckbox</code>. The native <code class="cp-code">disabled</code> attribute passes through to the underlying input.</p>
+            <div class="props-table">
+                <div class="props-table-header">
+                    <span>Prop</span>
+                    <span>Type</span>
+                    <span>Default</span>
+                    <span>Description</span>
+                </div>
+                @for (prop of props; track prop.name) {
+                    <div class="props-table-row">
+                        <code class="props-name">{{ prop.name }}</code>
+                        <code class="props-type">{{ prop.type }}</code>
+                        <code class="props-default">{{ prop.defaultVal }}</code>
+                        <span class="props-desc">{{ prop.description }}</span>
+                    </div>
+                }
+            </div>
+        </section>
+
+        <!-- Accessibility -->
+        <section id="a11y">
+            <h2 class="cp-h2">Accessibility</h2>
+            <p class="cp-p">Built on a native <code class="cp-code">&lt;input type="checkbox"&gt;</code>, so browser and OS accessibility features work out of the box.</p>
+            <ul class="a11y-list">
+                @for (item of a11yItems; track item.title) {
+                    <li class="a11y-item">
+                        <div class="a11y-icon"><i [class]="'ph ph-' + item.icon"></i></div>
+                        <div class="a11y-body">
+                            <div class="a11y-title">{{ item.title }}</div>
+                            <div class="a11y-desc">{{ item.body }}</div>
+                        </div>
+                    </li>
+                }
+            </ul>
+        </section>
+
+        <!-- Prev / Next -->
+        <nav class="cp-prevnext">
+            <a routerLink="/radio-group" class="cp-prevnext-item">
+                <span class="cp-prevnext-dir">← PREVIOUS</span>
+                <span class="cp-prevnext-label">Radio Group</span>
+            </a>
+            <a routerLink="/input" class="cp-prevnext-item cp-prevnext-item--right">
+                <span class="cp-prevnext-dir">NEXT →</span>
+                <span class="cp-prevnext-label cp-prevnext-label--accent">Input</span>
+            </a>
+        </nav>
+
+    </main>
+
+    <app-toc [items]="tocItems" />
+
+</div>

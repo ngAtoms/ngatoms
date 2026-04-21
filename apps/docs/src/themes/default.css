@@ -1,90 +1,127 @@
+@import url('https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&display=swap');
 /* =============================================================
    NgAtoms Design Tokens
    Two-tier system: primitives → semantic roles
    Dark mode: add .dark class to <html> or <body>
    ============================================================= */
 
+/* ── Fonts (self-hosted variable fonts) ───────────────────── */
+@font-face {
+    font-family: 'Inter';
+    font-style: normal;
+    font-weight: 100 900;
+    font-display: swap;
+    src: url('/assets/Inter-VariableFont_opsz_wght.ttf') format('truetype');
+}
+@font-face {
+    font-family: 'Inter';
+    font-style: italic;
+    font-weight: 100 900;
+    font-display: swap;
+    src: url('/assets/Inter-Italic-VariableFont_opsz_wght.ttf') format('truetype');
+}
+@font-face {
+    font-family: 'JetBrains Mono';
+    font-style: normal;
+    font-weight: 100 900;
+    font-display: swap;
+    src: url('/assets/JetBrainsMono-VariableFont_wght.ttf') format('truetype');
+}
+@font-face {
+    font-family: 'JetBrains Mono';
+    font-style: italic;
+    font-weight: 100 900;
+    font-display: swap;
+    src: url('/assets/JetBrainsMono-Italic-VariableFont_wght.ttf') format('truetype');
+}
+
 /* ── Primitives ───────────────────────────────────────────── */
 :root {
-  /* Neutral gray (warm undertone — H 85°, very low chroma) */
-  --nga-gray-50:  oklch(98% 0.002 85);
-  --nga-gray-100: oklch(96% 0.003 85);
-  --nga-gray-200: oklch(92% 0.004 85);
-  --nga-gray-300: oklch(85% 0.005 85);
-  --nga-gray-400: oklch(71% 0.006 85);
-  --nga-gray-500: oklch(54% 0.006 85);
-  --nga-gray-600: oklch(40% 0.005 85);
-  --nga-gray-700: oklch(29% 0.004 85);
-  --nga-gray-800: oklch(20% 0.003 85);
-  --nga-gray-900: oklch(13% 0.002 85);
-  --nga-gray-950: oklch(8% 0.002 85);
+  /* Neutrals — warm stone (slight yellow bias, not pure gray) */
+  --nga-stone-50:  #FAF8F5;
+  --nga-stone-100: #F3EEE7;
+  --nga-stone-150: #EBE4D9;
+  --nga-stone-200: #DED4C5;
+  --nga-stone-300: #C5B7A1;
+  --nga-stone-400: #A89478;
+  --nga-stone-500: #87735A;
+  --nga-stone-600: #675848;
+  --nga-stone-700: #4A3F34;
+  --nga-stone-800: #2E2822;
+  --nga-stone-900: #1A1714;
+  --nga-stone-950: #0E0C0A;
 
-  /* Gold (warm amber accent — H shifts 80°→58° as it deepens) */
-  --nga-gold-50:  oklch(97% 0.016 80);
-  --nga-gold-100: oklch(91% 0.035 75);
-  --nga-gold-200: oklch(84% 0.058 72);
-  --nga-gold-300: oklch(76% 0.068 68);
-  --nga-gold-400: oklch(66% 0.068 62);
-  --nga-gold-500: oklch(50% 0.060 58);
+  /* Ember — warm orange accent (used sparingly, one CTA per screen) */
+  --nga-ember-50:  #FFF4E8;
+  --nga-ember-100: #FFE2C2;
+  --nga-ember-200: #FFC988;
+  --nga-ember-300: #FFA94D;
+  --nga-ember-400: #FF8A1F;
+  --nga-ember-500: #F06B00;
+  --nga-ember-600: #C75400;
+  --nga-ember-700: #9A4000;
+  --nga-ember-800: #6E2D00;
+  --nga-ember-900: #431B00;
 
-  /* Green (muted sage, success only — H 148°) */
-  --nga-green-50:  oklch(96% 0.010 148);
-  --nga-green-100: oklch(90% 0.022 148);
-  --nga-green-200: oklch(80% 0.038 148);
-  --nga-green-300: oklch(68% 0.050 148);
-  --nga-green-400: oklch(54% 0.052 148);
-  --nga-green-500: oklch(38% 0.046 148);
-
-  /* White & destructive red */
-  --nga-white:   oklch(100% 0 0);
-  --nga-red-600: oklch(47% 0.130 22);
+  /* Semantic status palette */
+  --nga-white:        #FFFFFF;
+  --nga-success-500:  #16A34A;
+  --nga-warning-500:  #EAB308;
+  --nga-danger-500:   #DC2626;
+  --nga-info-500:     #2563EB;
 }
 
 /* ── Semantic: Light mode (default) ───────────────────────── */
 :root {
   /* Surfaces */
-  --nga-color-background:            var(--nga-gray-50);
-  --nga-color-foreground:            var(--nga-gray-950);
+  --nga-color-background:            var(--nga-stone-50);
+  --nga-color-foreground:            var(--nga-stone-900);
 
   /* Primary action */
-  --nga-color-primary:               var(--nga-gray-900);
+  --nga-color-primary:               var(--nga-stone-900);
   --nga-color-primary-foreground:    var(--nga-white);
 
   /* Secondary action */
-  --nga-color-secondary:             var(--nga-gray-100);
-  --nga-color-secondary-foreground:  var(--nga-gray-900);
+  --nga-color-secondary:             var(--nga-stone-100);
+  --nga-color-secondary-foreground:  var(--nga-stone-900);
 
   /* Muted / subdued */
-  --nga-color-muted:                 var(--nga-gray-100);
-  --nga-color-muted-foreground:      var(--nga-gray-500);
+  --nga-color-muted:                 var(--nga-stone-100);
+  --nga-color-muted-foreground:      var(--nga-stone-500);
 
-  /* Accent (gold — use sparingly) */
-  --nga-color-accent:                var(--nga-gold-300);
-  --nga-color-accent-foreground:     var(--nga-gold-500);
+  /* Accent — Ember, high-intent, use once per screen */
+  --nga-color-accent:                var(--nga-ember-500);
+  --nga-color-accent-hover:          var(--nga-ember-600);
+  --nga-color-accent-foreground:     var(--nga-white);
+  --nga-color-accent-soft:           var(--nga-ember-50);
 
   /* Borders & rings */
-  --nga-color-border:                var(--nga-gray-200);
-  --nga-color-ring:                  var(--nga-gold-300);
+  --nga-color-border:                var(--nga-stone-200);
+  --nga-color-border-strong:         var(--nga-stone-300);
+  --nga-color-ring:                  var(--nga-ember-500);
 
-  /* Card */
+  /* Card / elevated surface */
   --nga-color-card:                  var(--nga-white);
-  --nga-color-card-foreground:       var(--nga-gray-950);
+  --nga-color-card-foreground:       var(--nga-stone-900);
 
-  /* Success */
-  --nga-color-success:               var(--nga-green-400);
+  /* Status */
+  --nga-color-success:               var(--nga-success-500);
   --nga-color-success-foreground:    var(--nga-white);
-
-  /* Destructive */
-  --nga-color-destructive:           var(--nga-red-600);
+  --nga-color-warning:               var(--nga-warning-500);
+  --nga-color-warning-foreground:    var(--nga-stone-900);
+  --nga-color-destructive:           var(--nga-danger-500);
   --nga-color-destructive-foreground: var(--nga-white);
+  --nga-color-info:                  var(--nga-info-500);
+  --nga-color-info-foreground:       var(--nga-white);
 
   /* Radius */
   --nga-radius-none: 0;
-  --nga-radius-sm:   0.25rem;
-  --nga-radius-md:   0.5rem;
-  --nga-radius-lg:   0.75rem;
-  --nga-radius-xl:   1rem;
-  --nga-radius-2xl:  1.5rem;
+  --nga-radius-xs:   2px;
+  --nga-radius-sm:   4px;
+  --nga-radius-md:   6px;
+  --nga-radius-lg:   10px;
+  --nga-radius-xl:   14px;
+  --nga-radius-2xl:  20px;
   --nga-radius-full: 9999px;
 
   /* Spacing (4px base) */
@@ -101,33 +138,71 @@
   --nga-space-20: 5rem;
   --nga-space-24: 6rem;
 
-  /* Typography */
-  --nga-font-sans: 'Inter', system-ui, -apple-system, sans-serif;
-  --nga-font-mono: ui-monospace, 'Cascadia Code', 'Fira Code', monospace;
+  /* Shadows — warm-tinted (rgba base: stone-900) */
+  --nga-shadow-xs: 0 1px 0 rgba(26, 23, 20, 0.04);
+  --nga-shadow-sm: 0 1px 2px rgba(26, 23, 20, 0.06), 0 1px 1px rgba(26, 23, 20, 0.04);
+  --nga-shadow-md: 0 4px 10px -2px rgba(26, 23, 20, 0.08), 0 2px 4px -2px rgba(26, 23, 20, 0.04);
+  --nga-shadow-lg: 0 12px 24px -6px rgba(26, 23, 20, 0.12), 0 4px 8px -4px rgba(26, 23, 20, 0.06);
+  --nga-shadow-xl: 0 24px 48px -12px rgba(26, 23, 20, 0.18);
+  --nga-glow-ember:      0 0 0 4px rgba(240, 107, 0, 0.18);
+  --nga-glow-ember-soft: 0 8px 32px -8px rgba(240, 107, 0, 0.35);
 
-  --nga-text-xs:   0.75rem;
-  --nga-text-sm:   0.875rem;
-  --nga-text-base: 1rem;
-  --nga-text-lg:   1.125rem;
-  --nga-text-xl:   1.25rem;
-  --nga-text-2xl:  1.5rem;
-  --nga-text-3xl:  1.875rem;
-  --nga-text-4xl:  2.25rem;
+  /* Typography — families */
+  --nga-font-sans:    'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --nga-font-mono:    'JetBrains Mono', ui-monospace, 'SF Mono', 'Cascadia Code', monospace;
+  --nga-font-display: 'Instrument Serif', ui-serif, Georgia, serif;
 
+  /* Typography — type scale */
+  --nga-text-2xs:  11px;
+  --nga-text-xs:   12px;
+  --nga-text-sm:   13px;
+  --nga-text-base: 15px;
+  --nga-text-md:   17px;
+  --nga-text-lg:   20px;
+  --nga-text-xl:   24px;
+  --nga-text-2xl:  30px;
+  --nga-text-3xl:  38px;
+  --nga-text-4xl:  48px;
+  --nga-text-5xl:  64px;
+  --nga-text-6xl:  84px;
+
+  /* Typography — weights */
   --nga-font-weight-normal:   400;
   --nga-font-weight-medium:   500;
   --nga-font-weight-semibold: 600;
   --nga-font-weight-bold:     700;
+  --nga-font-weight-black:    800;
 
-  --nga-leading-tight:   1.25;
-  --nga-leading-snug:    1.375;
+  /* Typography — line heights */
+  --nga-leading-tight:   1.1;
+  --nga-leading-snug:    1.25;
   --nga-leading-normal:  1.5;
-  --nga-leading-relaxed: 1.625;
+  --nga-leading-loose:   1.7;
 
+  /* Typography — letter spacing */
   --nga-tracking-tight:  -0.02em;
+  --nga-tracking-snug:   -0.01em;
   --nga-tracking-normal:  0em;
-  --nga-tracking-wide:    0.05em;
-  --nga-tracking-wider:   0.1em;
+  --nga-tracking-wide:    0.04em;
+  --nga-tracking-caps:    0.08em;
+
+  /* Motion */
+  --nga-ease-out:    cubic-bezier(0.2, 0.8, 0.2, 1);
+  --nga-ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  --nga-ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --nga-dur-fast:    120ms;
+  --nga-dur-base:    180ms;
+  --nga-dur-slow:    320ms;
+
+  /* Layout */
+  --nga-container-sm:  640px;
+  --nga-container-md:  768px;
+  --nga-container-lg:  1024px;
+  --nga-container-xl:  1280px;
+  --nga-container-2xl: 1440px;
+  --nga-sidebar-width: 260px;
+  --nga-toc-width:     220px;
+  --nga-nav-height:    56px;
 
   /* Component size scale (xs → xl) */
   --nga-size-font-xs: 11px;
@@ -152,38 +227,50 @@
 /* ── Semantic: Dark mode (.dark on <html> or <body>) ──────── */
 .dark {
   /* Surfaces */
-  --nga-color-background:            var(--nga-gray-950);
-  --nga-color-foreground:            var(--nga-gray-50);
+  --nga-color-background:            var(--nga-stone-950);
+  --nga-color-foreground:            #F3EEE7;
 
-  /* Primary action */
-  --nga-color-primary:               var(--nga-gray-100);
-  --nga-color-primary-foreground:    var(--nga-gray-900);
+  /* Primary action — near-white on dark */
+  --nga-color-primary:               var(--nga-stone-100);
+  --nga-color-primary-foreground:    var(--nga-stone-900);
 
   /* Secondary action */
-  --nga-color-secondary:             var(--nga-gray-800);
-  --nga-color-secondary-foreground:  var(--nga-gray-300);
+  --nga-color-secondary:             var(--nga-stone-800);
+  --nga-color-secondary-foreground:  var(--nga-stone-300);
 
   /* Muted / subdued */
-  --nga-color-muted:                 var(--nga-gray-800);
-  --nga-color-muted-foreground:      var(--nga-gray-500);
+  --nga-color-muted:                 var(--nga-stone-800);
+  --nga-color-muted-foreground:      var(--nga-stone-400);
 
-  /* Accent — gold steps up one shade for dark background contrast */
-  --nga-color-accent:                var(--nga-gold-400);
-  --nga-color-accent-foreground:     var(--nga-gold-50);
+  /* Accent — one step brighter on dark for legibility */
+  --nga-color-accent:                var(--nga-ember-400);
+  --nga-color-accent-hover:          var(--nga-ember-300);
+  --nga-color-accent-foreground:     var(--nga-white);
+  --nga-color-accent-soft:           rgba(255, 138, 31, 0.12);
 
   /* Borders & rings */
-  --nga-color-border:                var(--nga-gray-700);
-  --nga-color-ring:                  var(--nga-gold-400);
+  --nga-color-border:                #2A2520;
+  --nga-color-border-strong:         #3A332C;
+  --nga-color-ring:                  var(--nga-ember-400);
 
-  /* Card */
-  --nga-color-card:                  var(--nga-gray-900);
-  --nga-color-card-foreground:       var(--nga-gray-50);
+  /* Card / elevated surface */
+  --nga-color-card:                  var(--nga-stone-900);
+  --nga-color-card-foreground:       #F3EEE7;
 
-  /* Success */
-  --nga-color-success:               var(--nga-green-300);
-  --nga-color-success-foreground:    var(--nga-gray-950);
-
-  /* Destructive — same value, readable on dark */
-  --nga-color-destructive:           var(--nga-red-600);
+  /* Status */
+  --nga-color-success:               var(--nga-success-500);
+  --nga-color-success-foreground:    var(--nga-stone-950);
+  --nga-color-warning:               var(--nga-warning-500);
+  --nga-color-warning-foreground:    var(--nga-stone-950);
+  --nga-color-destructive:           var(--nga-danger-500);
   --nga-color-destructive-foreground: var(--nga-white);
+  --nga-color-info:                  var(--nga-info-500);
+  --nga-color-info-foreground:       var(--nga-white);
+
+  /* Shadows — deeper on dark backgrounds */
+  --nga-shadow-xs: 0 1px 0 rgba(0, 0, 0, 0.4);
+  --nga-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.5);
+  --nga-shadow-md: 0 4px 10px -2px rgba(0, 0, 0, 0.5);
+  --nga-shadow-lg: 0 12px 24px -6px rgba(0, 0, 0, 0.55);
+  --nga-shadow-xl: 0 24px 48px -12px rgba(0, 0, 0, 0.7);
 }

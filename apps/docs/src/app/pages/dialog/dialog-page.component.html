@@ -1,110 +1,177 @@
-<app-component-demo [files]="codeFiles">
-  <header class="page-header">
-    <h1 class="page-title">Dialog</h1>
-    <p class="page-desc">A modal window that appears in front of the main content. Uses the native <code class="inline-code">&lt;dialog&gt;</code> element for built-in focus trap and Escape key support.</p>
-  </header>
+<div class="cp-layout">
 
-  <section class="showcase-section">
-    <h2 class="section-title">Default</h2>
-    <div class="trigger-row">
-      <button ngAtomsButton (click)="editOpen.set(true)">Edit profile</button>
-    </div>
+  <main class="cp-main">
 
-    <nga-dialog [open]="editOpen()" (openChange)="editOpen.set($event)">
-      <div ngAtomsDialogHeader>
-        <div>
-          <h2 ngAtomsDialogTitle>Edit profile</h2>
-          <p ngAtomsDialogDescription>Update your display name and email address.</p>
-        </div>
-        <button ngAtomsDialogClose>
-          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
-            fill="none" stroke="currentColor" stroke-width="2.5"
-            stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-            <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
-          </svg>
+    <header class="cp-header">
+      <p class="cp-eyebrow">Components / Overlays</p>
+      <h1 class="cp-title">Dialog</h1>
+      <p class="cp-lede">A modal window using the native <code class="cp-code">&lt;dialog&gt;</code> element — built-in focus trap, Escape key, and frosted glass backdrop.</p>
+      <div class="cp-chips">
+        <span class="cp-chip"><i class="ph ph-package"></i> dialog</span>
+        <span class="cp-chip"><i class="ph ph-cursor-click"></i> Interactive</span>
+        <span class="cp-chip cp-chip--subtle"><i class="ph ph-check-circle"></i> Accessible</span>
+      </div>
+    </header>
+
+    <!-- Usage -->
+    <h2 id="usage" class="cp-h2">Usage</h2>
+    <div class="preview-card">
+      <div class="preview-card-tabs">
+        <button class="preview-tab" [class.preview-tab--active]="tab('hero') === 'preview'" (click)="setTab('hero', 'preview')">
+          <i class="ph ph-eye"></i> Preview
+        </button>
+        <button class="preview-tab" [class.preview-tab--active]="tab('hero') === 'code'" (click)="setTab('hero', 'code')">
+          <i class="ph ph-code"></i> Code
         </button>
       </div>
-      <div ngAtomsDialogBody>
-        <div class="form-field">
-          <label class="form-label">Display name</label>
-          <input class="form-input" type="text" value="Jane Smith" />
+      @if (tab('hero') === 'preview') {
+        <div class="preview-area">
+          <button ngAtomsButton (click)="editOpen.set(true)">Open dialog</button>
+          <nga-dialog [(open)]="editOpen">
+            <div ngAtomsDialogHeader>
+              <div>
+                <h2 ngAtomsDialogTitle>Edit profile</h2>
+                <p ngAtomsDialogDescription>Update your display name and email address.</p>
+              </div>
+              <button ngAtomsDialogClose>✕</button>
+            </div>
+            <div ngAtomsDialogBody>
+              <p style="font-size:14px;color:var(--nga-color-muted-foreground)">Dialog body content goes here.</p>
+            </div>
+            <div ngAtomsDialogFooter>
+              <button ngAtomsButton variant="outline" (click)="editOpen.set(false)">Cancel</button>
+              <button ngAtomsButton (click)="editOpen.set(false)">Save changes</button>
+            </div>
+          </nga-dialog>
         </div>
-        <div class="form-field">
-          <label class="form-label">Email</label>
-          <input class="form-input" type="email" value="jane@example.com" />
+      } @else {
+        <div class="preview-code">
+          <app-code-block [code]="basicCode" language="html" />
         </div>
-      </div>
-      <div ngAtomsDialogFooter>
-        <button ngAtomsButton variant="outline" (click)="editOpen.set(false)">Cancel</button>
-        <button ngAtomsButton (click)="editOpen.set(false)">Save changes</button>
-      </div>
-    </nga-dialog>
-  </section>
-
-  <section class="showcase-section">
-    <h2 class="section-title">Confirmation</h2>
-    <div class="trigger-row">
-      <button ngAtomsButton variant="destructive" (click)="confirmOpen.set(true)">Delete account</button>
+      }
     </div>
 
-    <nga-dialog [open]="confirmOpen()" (openChange)="confirmOpen.set($event)" size="sm">
-      <div ngAtomsDialogHeader>
-        <h2 ngAtomsDialogTitle>Delete account</h2>
-        <button ngAtomsDialogClose>
-          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
-            fill="none" stroke="currentColor" stroke-width="2.5"
-            stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-            <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
-          </svg>
+    <!-- Sizes -->
+    <h2 id="sizes" class="cp-h2">Sizes</h2>
+    <p class="cp-p">Control the max-width with the <code class="cp-code">size</code> input: <code class="cp-code">sm</code>, <code class="cp-code">md</code> (default), <code class="cp-code">lg</code>, <code class="cp-code">xl</code>.</p>
+    <div class="preview-card">
+      <div class="preview-card-tabs">
+        <button class="preview-tab" [class.preview-tab--active]="tab('sizes') === 'preview'" (click)="setTab('sizes', 'preview')">
+          <i class="ph ph-eye"></i> Preview
+        </button>
+        <button class="preview-tab" [class.preview-tab--active]="tab('sizes') === 'code'" (click)="setTab('sizes', 'code')">
+          <i class="ph ph-code"></i> Code
         </button>
       </div>
-      <div ngAtomsDialogBody>
-        <p ngAtomsDialogDescription>
-          This action cannot be undone. Your account and all associated data will be permanently removed.
-        </p>
-      </div>
-      <div ngAtomsDialogFooter>
-        <button ngAtomsButton variant="outline" (click)="confirmOpen.set(false)">Cancel</button>
-        <button ngAtomsButton variant="destructive" (click)="confirmOpen.set(false)">Delete account</button>
-      </div>
-    </nga-dialog>
-  </section>
-
-  <section class="showcase-section">
-    <h2 class="section-title">Large</h2>
-    <div class="trigger-row">
-      <button ngAtomsButton variant="outline" (click)="largeOpen.set(true)">View terms</button>
+      @if (tab('sizes') === 'preview') {
+        <div class="preview-area" style="gap: 12px;">
+          @for (s of ['sm','md','lg','xl']; track s) {
+            <button ngAtomsButton variant="outline" size="sm" (click)="largeOpen.set(true)">size={{ s }}</button>
+          }
+          <nga-dialog [(open)]="largeOpen" size="lg">
+            <div ngAtomsDialogHeader>
+              <div>
+                <h2 ngAtomsDialogTitle>Large dialog</h2>
+                <p ngAtomsDialogDescription>This dialog uses size="lg".</p>
+              </div>
+              <button ngAtomsDialogClose>✕</button>
+            </div>
+            <div ngAtomsDialogBody>Content area.</div>
+            <div ngAtomsDialogFooter>
+              <button ngAtomsButton (click)="largeOpen.set(false)">Close</button>
+            </div>
+          </nga-dialog>
+        </div>
+      } @else {
+        <div class="preview-code">
+          <app-code-block [code]="sizesCode" language="html" />
+        </div>
+      }
     </div>
 
-    <nga-dialog [open]="largeOpen()" (openChange)="largeOpen.set($event)" size="lg">
-      <div ngAtomsDialogHeader>
-        <div>
-          <h2 ngAtomsDialogTitle>Terms of service</h2>
-          <p ngAtomsDialogDescription>Last updated March 2026</p>
-        </div>
-        <button ngAtomsDialogClose>
-          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
-            fill="none" stroke="currentColor" stroke-width="2.5"
-            stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-            <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
-          </svg>
+    <!-- Confirm pattern -->
+    <h2 id="confirm" class="cp-h2">Confirm pattern</h2>
+    <p class="cp-p">A common destructive confirmation — no body, just a footer with cancel and confirm actions.</p>
+    <div class="preview-card">
+      <div class="preview-card-tabs">
+        <button class="preview-tab" [class.preview-tab--active]="tab('confirm') === 'preview'" (click)="setTab('confirm', 'preview')">
+          <i class="ph ph-eye"></i> Preview
+        </button>
+        <button class="preview-tab" [class.preview-tab--active]="tab('confirm') === 'code'" (click)="setTab('confirm', 'code')">
+          <i class="ph ph-code"></i> Code
         </button>
       </div>
-      <div ngAtomsDialogBody>
-        <p>By using this service you agree to the following terms and conditions. Please read them carefully before proceeding.</p>
-        <h4 class="terms-heading">1. Acceptance of terms</h4>
-        <p>Access to and use of this service is subject to your acceptance of and compliance with these terms. These terms apply to all visitors, users, and others who access or use the service.</p>
-        <h4 class="terms-heading">2. Use of the service</h4>
-        <p>You may use the service only for lawful purposes and in accordance with these terms. You agree not to use the service in any way that violates any applicable law or regulation.</p>
-        <h4 class="terms-heading">3. Intellectual property</h4>
-        <p>The service and its original content, features, and functionality are and will remain the exclusive property of the company. The service is protected by copyright, trademark, and other applicable laws.</p>
-        <h4 class="terms-heading">4. Termination</h4>
-        <p>We may terminate or suspend access to our service immediately, without prior notice, for any reason, including breach of these terms. Upon termination your right to use the service will cease immediately.</p>
+      @if (tab('confirm') === 'preview') {
+        <div class="preview-area">
+          <button ngAtomsButton variant="destructive" (click)="confirmOpen.set(true)">Delete item</button>
+          <nga-dialog [(open)]="confirmOpen" size="sm">
+            <div ngAtomsDialogHeader>
+              <div>
+                <h2 ngAtomsDialogTitle>Delete item?</h2>
+                <p ngAtomsDialogDescription>This action cannot be undone.</p>
+              </div>
+            </div>
+            <div ngAtomsDialogFooter>
+              <button ngAtomsButton variant="outline" (click)="confirmOpen.set(false)">Cancel</button>
+              <button ngAtomsButton variant="destructive" (click)="confirmOpen.set(false)">Delete</button>
+            </div>
+          </nga-dialog>
+        </div>
+      } @else {
+        <div class="preview-code">
+          <app-code-block [code]="confirmCode" language="html" />
+        </div>
+      }
+    </div>
+
+    <!-- Installation -->
+    <h2 id="install" class="cp-h2">Installation</h2>
+    <app-code-block [code]="installCode" language="bash" />
+    <app-code-block [code]="importCode" language="typescript" />
+
+    <!-- Props -->
+    <h2 id="props" class="cp-h2">Props</h2>
+    <div class="props-table">
+      <div class="props-table-header">
+        <span>Prop</span><span>Type</span><span>Default</span><span>Description</span>
       </div>
-      <div ngAtomsDialogFooter>
-        <button ngAtomsButton variant="outline" (click)="largeOpen.set(false)">Decline</button>
-        <button ngAtomsButton (click)="largeOpen.set(false)">Accept</button>
-      </div>
-    </nga-dialog>
-  </section>
-</app-component-demo>
+      @for (prop of props; track prop.name) {
+        <div class="props-table-row">
+          <span class="props-name">{{ prop.name }}</span>
+          <span class="props-type">{{ prop.type }}</span>
+          <span class="props-default">{{ prop.default }}</span>
+          <span class="props-desc">{{ prop.desc }}</span>
+        </div>
+      }
+    </div>
+
+    <!-- A11y -->
+    <h2 id="a11y" class="cp-h2">Accessibility</h2>
+    <ul class="a11y-list">
+      @for (item of a11yItems; track item.title) {
+        <li class="a11y-item">
+          <span class="a11y-icon"><i class="ph-bold {{ item.icon }}"></i></span>
+          <div>
+            <div class="a11y-title">{{ item.title }}</div>
+            <div class="a11y-desc">{{ item.desc }}</div>
+          </div>
+        </li>
+      }
+    </ul>
+
+    <nav class="cp-prevnext">
+      <a routerLink="/dropdown-menu" class="cp-prevnext-item">
+        <span class="cp-prevnext-dir">← PREVIOUS</span>
+        <span class="cp-prevnext-label">Dropdown Menu</span>
+      </a>
+      <a routerLink="/accordion" class="cp-prevnext-item cp-prevnext-item--right">
+        <span class="cp-prevnext-dir">NEXT →</span>
+        <span class="cp-prevnext-label cp-prevnext-label--accent">Accordion</span>
+      </a>
+    </nav>
+
+  </main>
+
+  <app-toc [items]="tocItems" />
+
+</div>

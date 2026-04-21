@@ -1,50 +1,183 @@
-<app-component-demo [files]="codeFiles">
-  <header class="page-header">
-    <h1 class="page-title">Input</h1>
-    <p class="page-desc">Text input field with multiple variants and sizes.</p>
-  </header>
+<div class="cp-layout">
 
-  <section class="showcase-section">
-    <h2 class="section-title">Variants × Sizes</h2>
-    <div class="grid-table">
-      <div class="grid-header">
-        <span></span>
-        @for (size of sizes; track size) {
-          <span class="col-label">{{ size }}</span>
-        }
-      </div>
-      @for (variant of variants; track variant) {
-        <div class="grid-row">
-          <span class="row-label">{{ variant }}</span>
-          @for (size of sizes; track size) {
-            <span class="cell">
-              <input ngAtomsInput [variant]="variant" [size]="size" placeholder="Placeholder" />
-            </span>
-          }
-        </div>
-      }
-    </div>
-  </section>
+    <main class="cp-main">
 
-  <section class="showcase-section">
-    <h2 class="section-title">States</h2>
-    <div class="states-grid">
-      <div class="state-item">
-        <span class="state-label">Default</span>
-        <input ngAtomsInput placeholder="Default input" />
-      </div>
-      <div class="state-item">
-        <span class="state-label">Invalid</span>
-        <input ngAtomsInput [invalid]="true" placeholder="Invalid input" />
-      </div>
-      <div class="state-item">
-        <span class="state-label">Disabled</span>
-        <input ngAtomsInput placeholder="Disabled input" disabled />
-      </div>
-      <div class="state-item">
-        <span class="state-label">Readonly</span>
-        <input ngAtomsInput value="Readonly value" readonly />
-      </div>
-    </div>
-  </section>
-</app-component-demo>
+        <header class="cp-header">
+            <div class="cp-eyebrow">Components / Forms</div>
+            <h1 class="cp-title">Input</h1>
+            <p class="cp-lede">
+                Text input field with three visual variants, five sizes, invalid state, and full native
+                attribute pass-through. Drop it on any <code class="cp-code-inline">&lt;input&gt;</code> element.
+            </p>
+            <div class="cp-chips">
+                <span ngAtomsBadge variant="default"><i class="ph ph-angular-logo"></i> ngAtoms v0.3+</span>
+                <span ngAtomsBadge variant="default"><i class="ph ph-package"></i> ngatoms add input</span>
+                <span ngAtomsBadge variant="success"><i class="ph ph-check-circle"></i> Stable</span>
+                <a ngAtomsBadge variant="outline" href="https://github.com/ngAtoms/ngatoms/tree/rc/packages/primitives/src/input" target="_blank">
+                    <i class="ph ph-arrow-square-out"></i> Source
+                </a>
+            </div>
+        </header>
+
+        <!-- Hero preview -->
+        <preview-card>
+            <ng-container preview>
+                <input ngAtomsInput placeholder="Enter your email…" style="width: 280px;" />
+            </ng-container>
+            <ng-container code>
+                <app-code-block [code]="heroCode" language="html" />
+            </ng-container>
+        </preview-card>
+
+        <!-- Usage -->
+        <section id="usage">
+            <h2 class="cp-h2">Usage</h2>
+            <p class="cp-p">Add the input to your project and import the standalone directive wherever you need it.</p>
+            <div class="inline-terminal">
+                <span class="inline-terminal-dollar">$</span>
+                <span class="inline-terminal-cmd">ngatoms add input</span>
+            </div>
+            <p class="cp-p" style="margin-top: 14px;">Then import into your component:</p>
+            <app-code-block [code]="usageCode" language="typescript" />
+        </section>
+
+        <!-- Variants -->
+        <section id="variants">
+            <h2 class="cp-h2">Variants</h2>
+            <p class="cp-p">
+                Three visual styles. <strong>default</strong> shows a clear border, <strong>filled</strong>
+                uses a subtle background without a border, and <strong>ghost</strong> is borderless for
+                inline editing contexts.
+            </p>
+            <preview-card>
+                <ng-container preview>
+                    <div class="inputs-col">
+                        @for (variant of variants; track variant) {
+                            <div class="input-row">
+                                <span class="input-label">{{ variant }}</span>
+                                <input ngAtomsInput [variant]="variant" placeholder="Placeholder" />
+                            </div>
+                        }
+                    </div>
+                </ng-container>
+                <ng-container code>
+                    <app-code-block [code]="variantsCode" language="html" />
+                </ng-container>
+            </preview-card>
+        </section>
+
+        <!-- Sizes -->
+        <section id="sizes">
+            <h2 class="cp-h2">Sizes</h2>
+            <p class="cp-p">
+                Five sizes from <strong>xs</strong> to <strong>xl</strong>. <strong>md</strong> is the default
+                and fits most form layouts.
+            </p>
+            <preview-card>
+                <ng-container preview>
+                    <div class="inputs-col">
+                        @for (size of sizes; track size) {
+                            <div class="input-row">
+                                <span class="input-label">{{ size }}</span>
+                                <input ngAtomsInput [size]="size" placeholder="Placeholder" />
+                            </div>
+                        }
+                    </div>
+                </ng-container>
+                <ng-container code>
+                    <app-code-block [code]="sizesCode" language="html" />
+                </ng-container>
+            </preview-card>
+        </section>
+
+        <!-- States -->
+        <section id="states">
+            <h2 class="cp-h2">States</h2>
+            <p class="cp-p">
+                Use <code class="cp-code">[invalid]="true"</code> for validation errors.
+                Native <code class="cp-code">disabled</code> and <code class="cp-code">readonly</code> attributes
+                pass through to the underlying element.
+            </p>
+            <preview-card>
+                <ng-container preview>
+                    <div class="inputs-col">
+                        <div class="input-row">
+                            <span class="input-label">Default</span>
+                            <input ngAtomsInput placeholder="Default input" />
+                        </div>
+                        <div class="input-row">
+                            <span class="input-label">Invalid</span>
+                            <input ngAtomsInput [invalid]="true" placeholder="Invalid input" />
+                        </div>
+                        <div class="input-row">
+                            <span class="input-label">Disabled</span>
+                            <input ngAtomsInput placeholder="Disabled input" disabled />
+                        </div>
+                        <div class="input-row">
+                            <span class="input-label">Readonly</span>
+                            <input ngAtomsInput value="Readonly value" readonly />
+                        </div>
+                    </div>
+                </ng-container>
+                <ng-container code>
+                    <app-code-block [code]="statesCode" language="html" />
+                </ng-container>
+            </preview-card>
+        </section>
+
+        <!-- API -->
+        <section id="api">
+            <h2 class="cp-h2">API</h2>
+            <p class="cp-p">Inputs on <code class="cp-code">ngAtomsInput</code>. All standard input attributes pass through to the underlying element.</p>
+            <div class="props-table">
+                <div class="props-table-header">
+                    <span>Prop</span>
+                    <span>Type</span>
+                    <span>Default</span>
+                    <span>Description</span>
+                </div>
+                @for (prop of props; track prop.name) {
+                    <div class="props-table-row">
+                        <code class="props-name">{{ prop.name }}</code>
+                        <code class="props-type">{{ prop.type }}</code>
+                        <code class="props-default">{{ prop.defaultVal }}</code>
+                        <span class="props-desc">{{ prop.description }}</span>
+                    </div>
+                }
+            </div>
+        </section>
+
+        <!-- Accessibility -->
+        <section id="a11y">
+            <h2 class="cp-h2">Accessibility</h2>
+            <p class="cp-p">Built on a native <code class="cp-code">&lt;input&gt;</code>. Associate a <code class="cp-code">&lt;label&gt;</code> or use <code class="cp-code">aria-label</code> for screen readers.</p>
+            <ul class="a11y-list">
+                @for (item of a11yItems; track item.title) {
+                    <li class="a11y-item">
+                        <div class="a11y-icon"><i [class]="'ph ph-' + item.icon"></i></div>
+                        <div class="a11y-body">
+                            <div class="a11y-title">{{ item.title }}</div>
+                            <div class="a11y-desc">{{ item.body }}</div>
+                        </div>
+                    </li>
+                }
+            </ul>
+        </section>
+
+        <!-- Prev / Next -->
+        <nav class="cp-prevnext">
+            <a routerLink="/checkbox" class="cp-prevnext-item">
+                <span class="cp-prevnext-dir">← PREVIOUS</span>
+                <span class="cp-prevnext-label">Checkbox</span>
+            </a>
+            <a routerLink="/select" class="cp-prevnext-item cp-prevnext-item--right">
+                <span class="cp-prevnext-dir">NEXT →</span>
+                <span class="cp-prevnext-label cp-prevnext-label--accent">Select</span>
+            </a>
+        </nav>
+
+    </main>
+
+    <app-toc [items]="tocItems" />
+
+</div>

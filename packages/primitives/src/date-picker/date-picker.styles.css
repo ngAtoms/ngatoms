@@ -29,10 +29,12 @@
   --nga-date-picker-trigger-invalid-border: var(--nga-color-destructive, oklch(47% 0.130 22));
 
   /* Panel */
-  --nga-date-picker-panel-bg:     var(--nga-color-card, oklch(100% 0 0));
-  --nga-date-picker-panel-border: var(--nga-color-border, oklch(92% 0.004 85));
+  --nga-date-picker-panel-bg:     color-mix(in oklab, var(--nga-color-card, #FFFFFF) 78%, transparent);
+  --nga-date-picker-panel-border: color-mix(in oklab, var(--nga-color-border, #DED4C5) 55%, transparent);
+  --nga-date-picker-panel-inset:  inset 0 1px 0 color-mix(in oklch, white 85%, transparent);
+  --nga-date-picker-panel-blur:   blur(20px) saturate(180%);
   --nga-date-picker-panel-radius: var(--nga-radius-md, 0.5rem);
-  --nga-date-picker-panel-shadow: 0 4px 24px oklch(0% 0 0 / 0.10), 0 1px 4px oklch(0% 0 0 / 0.06);
+  --nga-date-picker-panel-shadow: 0 8px 24px -4px color-mix(in oklch, oklch(13% 0.002 85) 10%, transparent), 0 2px 8px -2px color-mix(in oklch, oklch(13% 0.002 85) 6%, transparent);
   --nga-date-picker-panel-width:  280px;
   --nga-date-picker-panel-p:      0.75rem;
 
@@ -62,7 +64,11 @@
 }
 
 .dark {
-  --nga-date-picker-panel-shadow: 0 4px 24px oklch(0% 0 0 / 0.35), 0 1px 4px oklch(0% 0 0 / 0.18);
+  --nga-date-picker-panel-bg:     color-mix(in oklab, var(--nga-color-card) 82%, transparent);
+  --nga-date-picker-panel-border: color-mix(in oklab, white 14%, transparent);
+  --nga-date-picker-panel-inset:  inset 0 1px 0 color-mix(in oklch, white 7%, transparent);
+  --nga-date-picker-panel-blur:   blur(24px) saturate(200%) brightness(1.06);
+  --nga-date-picker-panel-shadow: 0 8px 32px color-mix(in oklch, black 45%, transparent), 0 2px 8px color-mix(in oklch, black 28%, transparent);
   --nga-date-picker-day-outside-fg: var(--nga-color-muted-foreground, oklch(45% 0.004 85));
 }
 
@@ -73,7 +79,7 @@
   justify-content: space-between;
   gap: 0.5rem;
   width: 100%;
-  border: 1.5px solid var(--nga-date-picker-trigger-border);
+  border: 1px solid var(--nga-date-picker-trigger-border);
   border-radius: var(--nga-date-picker-radius);
   background: var(--nga-date-picker-trigger-bg);
   color: var(--nga-date-picker-trigger-fg);
@@ -135,6 +141,38 @@
   color: var(--nga-date-picker-trigger-placeholder);
 }
 
+.nga-date-picker-clear {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 1.125rem;
+  height: 1.125rem;
+  border: none;
+  border-radius: var(--nga-date-picker-radius);
+  background: transparent;
+  color: var(--nga-date-picker-trigger-placeholder);
+  cursor: pointer;
+  padding: 0;
+  outline: none;
+  transition: color 120ms ease, background 120ms ease;
+}
+
+.nga-date-picker-clear svg {
+  width: 0.75rem;
+  height: 0.75rem;
+}
+
+.nga-date-picker-clear:hover {
+  color: var(--nga-date-picker-trigger-fg);
+  background: var(--nga-date-picker-day-hover-bg);
+}
+
+.nga-date-picker-clear:focus-visible {
+  outline: 2px solid var(--nga-date-picker-focus-color);
+  outline-offset: 1px;
+}
+
 .nga-date-picker-icon {
   flex-shrink: 0;
   width: 1rem;
@@ -142,16 +180,31 @@
   opacity: 0.6;
 }
 
+/* ── Screen-reader only utility ─────────────────────────────── */
+.nga-sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
 /* ── Panel ──────────────────────────────────────────────────── */
 .nga-date-picker-panel {
   position: fixed;
-  z-index: 9999;
+  z-index: 50;
   width: var(--nga-date-picker-panel-width);
   padding: var(--nga-date-picker-panel-p);
   background: var(--nga-date-picker-panel-bg);
+  backdrop-filter: var(--nga-date-picker-panel-blur);
+  -webkit-backdrop-filter: var(--nga-date-picker-panel-blur);
   border: 1px solid var(--nga-date-picker-panel-border);
   border-radius: var(--nga-date-picker-panel-radius);
-  box-shadow: var(--nga-date-picker-panel-shadow);
+  box-shadow: var(--nga-date-picker-panel-shadow), var(--nga-date-picker-panel-inset);
   display: none;
   box-sizing: border-box;
 }
@@ -253,7 +306,7 @@
   align-items: center;
   justify-content: center;
   height: 2.5rem;
-  border: 1.5px solid transparent;
+  border: 1px solid transparent;
   border-radius: var(--nga-date-picker-day-radius);
   background: transparent;
   color: var(--nga-date-picker-day-fg);
@@ -292,7 +345,7 @@
   align-items: center;
   justify-content: center;
   height: 2.5rem;
-  border: 1.5px solid transparent;
+  border: 1px solid transparent;
   border-radius: var(--nga-date-picker-day-radius);
   background: transparent;
   color: var(--nga-date-picker-day-fg);
@@ -320,6 +373,12 @@
 
 /* ── Grid ───────────────────────────────────────────────────── */
 .nga-date-picker-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.nga-date-picker-day-row {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
   gap: 2px;
@@ -343,7 +402,7 @@
   justify-content: center;
   width: 100%;
   height: var(--nga-date-picker-day-size);
-  border: 1.5px solid transparent;
+  border: 1px solid transparent;
   border-radius: var(--nga-date-picker-day-radius);
   background: transparent;
   color: var(--nga-date-picker-day-fg);
@@ -441,7 +500,7 @@
   justify-content: center;
   height: 1.75rem;
   padding: 0 0.75rem;
-  border: 1.5px solid var(--nga-date-picker-panel-border);
+  border: 1px solid var(--nga-date-picker-panel-border);
   border-radius: var(--nga-date-picker-day-radius);
   background: transparent;
   color: var(--nga-date-picker-day-fg);
@@ -462,4 +521,21 @@
 .nga-date-picker-today-btn:focus-visible {
   outline: 2px solid var(--nga-date-picker-focus-color);
   outline-offset: 2px;
+}
+
+/* ── Reduced motion ─────────────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  .nga-date-picker-panel--open {
+    animation: none;
+  }
+  .nga-date-picker-trigger,
+  .nga-date-picker-day,
+  .nga-date-picker-nav,
+  .nga-date-picker-header-btn,
+  .nga-date-picker-clear,
+  .nga-date-picker-month-cell,
+  .nga-date-picker-year-cell,
+  .nga-date-picker-today-btn {
+    transition: none;
+  }
 }

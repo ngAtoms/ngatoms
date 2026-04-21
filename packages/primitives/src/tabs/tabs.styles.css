@@ -5,8 +5,7 @@
    ============================================================= */
 
 :root {
-  --nga-tabs-transition: color 150ms ease, background 150ms ease, border-color 150ms ease, box-shadow 150ms ease;
-  --nga-tabs-focus-ring: var(--nga-color-ring, oklch(76% 0.068 68));
+  --nga-tabs-transition: color var(--nga-dur-base, 180ms) var(--nga-ease-out, ease), background var(--nga-dur-base, 180ms) var(--nga-ease-out, ease), border-color var(--nga-dur-base, 180ms) var(--nga-ease-out, ease), box-shadow var(--nga-dur-base, 180ms) var(--nga-ease-out, ease);
 }
 
 /* ── Root ───────────────────────────────────────────────────── */
@@ -35,13 +34,12 @@
   background: transparent;
   transition: var(--nga-tabs-transition);
   outline: none;
-  color: var(--nga-color-muted-foreground, oklch(54% 0.006 85));
+  color: var(--nga-color-muted-foreground, #87735A);
 }
 
 .nga-tab-trigger:focus-visible {
-  outline: 2px solid var(--nga-tabs-focus-ring);
-  outline-offset: 2px;
-  border-radius: var(--nga-radius-sm, 0.25rem);
+  box-shadow: var(--nga-glow-ember, 0 0 0 4px rgba(240, 107, 0, 0.18));
+  border-radius: var(--nga-radius-sm, 4px);
 }
 
 .nga-tab-trigger:disabled {
@@ -63,7 +61,7 @@
    ════════════════════════════════════════════════════════════ */
 .nga-tabs--underline .nga-tab-list {
   gap: 0;
-  border-bottom: 1px solid var(--nga-color-border, oklch(92% 0.004 85));
+  border-bottom: 1px solid var(--nga-color-border, #DED4C5);
 }
 
 .nga-tabs--underline .nga-tab-trigger {
@@ -73,12 +71,12 @@
 }
 
 .nga-tabs--underline .nga-tab-trigger:hover:not(:disabled) {
-  color: var(--nga-color-foreground, oklch(13% 0.002 85));
+  color: var(--nga-color-foreground, #1A1714);
 }
 
 .nga-tabs--underline .nga-tab-trigger--active {
-  color: var(--nga-color-foreground, oklch(13% 0.002 85));
-  border-bottom-color: var(--nga-color-foreground, oklch(13% 0.002 85));
+  color: var(--nga-color-foreground, #1A1714);
+  border-bottom-color: var(--nga-color-accent, #F06B00);
 }
 
 .nga-tabs--underline .nga-tab-panel {
@@ -90,26 +88,26 @@
    ════════════════════════════════════════════════════════════ */
 .nga-tabs--pills .nga-tab-list {
   gap: 0;
-  background: var(--nga-color-muted, oklch(96% 0.003 85));
-  border-radius: var(--nga-radius-md, 0.5rem);
+  background: var(--nga-color-muted, #F3EEE7);
+  border-radius: var(--nga-radius-md, 6px);
   padding: 3px;
   width: fit-content;
 }
 
 .nga-tabs--pills .nga-tab-trigger {
   padding: 0.375rem 0.875rem;
-  border-radius: calc(var(--nga-radius-md, 0.5rem) - 2px);
+  border-radius: calc(var(--nga-radius-md, 6px) - 2px);
 }
 
 .nga-tabs--pills .nga-tab-trigger:hover:not(:disabled):not(.nga-tab-trigger--active) {
-  color: var(--nga-color-foreground, oklch(13% 0.002 85));
-  background: color-mix(in oklch, var(--nga-color-muted, oklch(96% 0.003 85)) 50%, transparent);
+  color: var(--nga-color-foreground, #1A1714);
+  background: color-mix(in srgb, var(--nga-color-muted, #F3EEE7) 50%, transparent);
 }
 
 .nga-tabs--pills .nga-tab-trigger--active {
-  color: var(--nga-color-foreground, oklch(13% 0.002 85));
-  background: var(--nga-color-background, oklch(100% 0 0));
-  box-shadow: 0 1px 3px oklch(0% 0 0 / 0.10), 0 1px 2px oklch(0% 0 0 / 0.06);
+  color: var(--nga-color-foreground, #1A1714);
+  background: var(--nga-color-background, #FAF8F5);
+  box-shadow: var(--nga-shadow-sm, 0 1px 2px rgba(26, 23, 20, 0.06), 0 1px 1px rgba(26, 23, 20, 0.04));
 }
 
 .nga-tabs--pills .nga-tab-panel {

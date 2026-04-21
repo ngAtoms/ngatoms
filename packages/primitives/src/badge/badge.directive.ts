@@ -9,10 +9,12 @@ import {
 
 export type NgAtomsBadgeVariant =
   | 'default'
-  | 'secondary'
-  | 'outline'
+  | 'ember'
+  | 'success'
+  | 'warning'
   | 'destructive'
-  | 'success';
+  | 'solid'
+  | 'outline';
 
 @Directive({
   selector: '[ngAtomsBadge]',

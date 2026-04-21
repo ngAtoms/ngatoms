@@ -4,45 +4,88 @@
      @import '@/path/to/badge.styles.css';
    ============================================================= */
 
-/* ── Custom properties (override at :root or component level) ─ */
 :root {
   --nga-badge-font-size:   var(--nga-size-font-xs, 11px);
   --nga-badge-font-weight: var(--nga-font-weight-semibold, 600);
-  --nga-badge-padding:     0.125rem 0.5rem;
+  --nga-badge-padding:     2px 8px;
   --nga-badge-radius:      var(--nga-radius-full, 9999px);
-  --nga-badge-transition:  background 150ms ease, color 150ms ease, border-color 150ms ease;
+  --nga-badge-transition:
+    background   var(--nga-dur-base, 180ms) var(--nga-ease-out, ease),
+    color        var(--nga-dur-base, 180ms) var(--nga-ease-out, ease),
+    border-color var(--nga-dur-base, 180ms) var(--nga-ease-out, ease);
 
-  /* Variant: default */
-  --nga-badge-default-bg:   var(--nga-color-primary, oklch(13% 0.002 85));
-  --nga-badge-default-fg:   var(--nga-color-primary-foreground, oklch(100% 0 0));
+  /* Variant: default — neutral stone */
+  --nga-badge-default-bg:  var(--nga-stone-150, #EBE4D9);
+  --nga-badge-default-fg:  var(--nga-stone-700, #4A3F34);
 
-  /* Variant: secondary */
-  --nga-badge-secondary-bg: var(--nga-color-secondary, oklch(96% 0.003 85));
-  --nga-badge-secondary-fg: var(--nga-color-secondary-foreground, oklch(13% 0.002 85));
+  /* Variant: ember — warm accent */
+  --nga-badge-ember-bg:    var(--nga-ember-100, #FFE2C2);
+  --nga-badge-ember-fg:    var(--nga-ember-700, #9A4000);
+
+  /* Variant: success — green tint */
+  --nga-badge-success-bg:  #DCFCE7;
+  --nga-badge-success-fg:  #15803D;
+
+  /* Variant: warning — amber tint */
+  --nga-badge-warning-bg:  #FEF3C7;
+  --nga-badge-warning-fg:  #92400E;
+
+  /* Variant: destructive — red tint */
+  --nga-badge-destructive-bg: #FEE2E2;
+  --nga-badge-destructive-fg: #B91C1C;
+
+  /* Variant: solid — high contrast */
+  --nga-badge-solid-bg:    var(--nga-stone-900, #1A1714);
+  --nga-badge-solid-fg:    var(--nga-stone-50,  #FAF8F5);
 
   /* Variant: outline */
-  --nga-badge-outline-border: var(--nga-color-border, oklch(82% 0.003 85));
-  --nga-badge-outline-fg:     var(--nga-color-foreground, oklch(13% 0.002 85));
+  --nga-badge-outline-border: var(--nga-color-border-strong, #C5B7A1);
+  --nga-badge-outline-fg:     var(--nga-color-foreground, #1A1714);
+}
 
-  /* Variant: destructive */
-  --nga-badge-destructive-bg: var(--nga-color-destructive, oklch(47% 0.130 22));
-  --nga-badge-destructive-fg: var(--nga-color-destructive-foreground, oklch(100% 0 0));
+.dark {
+  /* default */
+  --nga-badge-default-bg:  var(--nga-stone-800, #2E2822);
+  --nga-badge-default-fg:  var(--nga-stone-300, #C5B7A1);
 
-  /* Variant: success */
-  --nga-badge-success-bg: var(--nga-color-success, oklch(54% 0.052 148));
-  --nga-badge-success-fg: var(--nga-color-success-foreground, oklch(100% 0 0));
+  /* ember */
+  --nga-badge-ember-bg:    rgba(240, 107, 0, 0.15);
+  --nga-badge-ember-fg:    var(--nga-ember-300, #FFA94D);
+
+  /* success */
+  --nga-badge-success-bg:  rgba(22, 163, 74, 0.15);
+  --nga-badge-success-fg:  #4ADE80;
+
+  /* warning */
+  --nga-badge-warning-bg:  rgba(234, 179, 8, 0.15);
+  --nga-badge-warning-fg:  #FCD34D;
+
+  /* destructive */
+  --nga-badge-destructive-bg: rgba(220, 38, 38, 0.15);
+  --nga-badge-destructive-fg: #F87171;
+
+  /* solid */
+  --nga-badge-solid-bg:    var(--nga-stone-100, #F3EEE7);
+  --nga-badge-solid-fg:    var(--nga-stone-900, #1A1714);
+
+  /* outline */
+  --nga-badge-outline-border: var(--nga-color-border-strong, #3A332C);
+  --nga-badge-outline-fg:     var(--nga-color-foreground, #F3EEE7);
 }
 
 /* ── Base ───────────────────────────────────────────────────── */
 .nga-badge {
   display: inline-flex;
   align-items: center;
-  border: 1.5px solid transparent;
+  gap: 4px;
+  border: 1px solid transparent;
   border-radius: var(--nga-badge-radius);
   padding: var(--nga-badge-padding);
+  font-family: var(--nga-font-sans, inherit);
   font-size: var(--nga-badge-font-size);
   font-weight: var(--nga-badge-font-weight);
-  line-height: 1.5;
+  line-height: 1.4;
+  letter-spacing: 0.01em;
   white-space: nowrap;
   transition: var(--nga-badge-transition);
 }
@@ -53,15 +96,19 @@
   color: var(--nga-badge-default-fg);
 }
 
-.nga-badge--secondary {
-  background: var(--nga-badge-secondary-bg);
-  color: var(--nga-badge-secondary-fg);
+.nga-badge--ember {
+  background: var(--nga-badge-ember-bg);
+  color: var(--nga-badge-ember-fg);
 }
 
-.nga-badge--outline {
-  background: transparent;
-  color: var(--nga-badge-outline-fg);
-  border-color: var(--nga-badge-outline-border);
+.nga-badge--success {
+  background: var(--nga-badge-success-bg);
+  color: var(--nga-badge-success-fg);
+}
+
+.nga-badge--warning {
+  background: var(--nga-badge-warning-bg);
+  color: var(--nga-badge-warning-fg);
 }
 
 .nga-badge--destructive {
@@ -69,7 +116,13 @@
   color: var(--nga-badge-destructive-fg);
 }
 
-.nga-badge--success {
-  background: var(--nga-badge-success-bg);
-  color: var(--nga-badge-success-fg);
+.nga-badge--solid {
+  background: var(--nga-badge-solid-bg);
+  color: var(--nga-badge-solid-fg);
+}
+
+.nga-badge--outline {
+  background: transparent;
+  color: var(--nga-badge-outline-fg);
+  border-color: var(--nga-badge-outline-border);
 }

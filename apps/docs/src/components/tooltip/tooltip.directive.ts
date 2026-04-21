@@ -50,6 +50,13 @@ export class NgAtomsTooltipDirective implements OnDestroy {
     this.hide();
   }
 
+  @HostListener('window:scroll')
+  onWindowScroll(): void {
+    if (this.tooltipEl) {
+      this.position();
+    }
+  }
+
   private show(): void {
     this.tooltipEl = this.renderer.createElement('div');
     this.renderer.addClass(this.tooltipEl, 'nga-tooltip');
@@ -60,38 +67,42 @@ export class NgAtomsTooltipDirective implements OnDestroy {
     this.renderer.appendChild(this.document.body, this.tooltipEl);
 
     requestAnimationFrame(() => {
-      if (!this.tooltipEl) return;
-      const gap = 8;
-      const trigger = this.el.nativeElement.getBoundingClientRect();
-      const tip = this.tooltipEl.getBoundingClientRect();
-      let top = 0;
-      let left = 0;
-
-      switch (this.placement()) {
-        case 'top':
-          top = trigger.top - tip.height - gap;
-          left = trigger.left + trigger.width / 2 - tip.width / 2;
-          break;
-        case 'bottom':
-          top = trigger.bottom + gap;
-          left = trigger.left + trigger.width / 2 - tip.width / 2;
-          break;
-        case 'left':
-          top = trigger.top + trigger.height / 2 - tip.height / 2;
-          left = trigger.left - tip.width - gap;
-          break;
-        case 'right':
-          top = trigger.top + trigger.height / 2 - tip.height / 2;
-          left = trigger.right + gap;
-          break;
-      }
-
-      top = Math.max(8, Math.min(top, window.innerHeight - tip.height - 8));
-      left = Math.max(8, Math.min(left, window.innerWidth - tip.width - 8));
-
-      this.renderer.setStyle(this.tooltipEl, 'top', `${top}px`);
-      this.renderer.setStyle(this.tooltipEl, 'left', `${left}px`);
+      this.position();
     });
+  }
+
+  private position(): void {
+    if (!this.tooltipEl) return;
+    const gap = 8;
+    const trigger = this.el.nativeElement.getBoundingClientRect();
+    const tip = this.tooltipEl.getBoundingClientRect();
+    let top = 0;
+    let left = 0;
+
+    switch (this.placement()) {
+      case 'top':
+        top = trigger.top - tip.height - gap;
+        left = trigger.left + trigger.width / 2 - tip.width / 2;
+        break;
+      case 'bottom':
+        top = trigger.bottom + gap;
+        left = trigger.left + trigger.width / 2 - tip.width / 2;
+        break;
+      case 'left':
+        top = trigger.top + trigger.height / 2 - tip.height / 2;
+        left = trigger.left - tip.width - gap;
+        break;
+      case 'right':
+        top = trigger.top + trigger.height / 2 - tip.height / 2;
+        left = trigger.right + gap;
+        break;
+    }
+
+    top = Math.max(8, Math.min(top, window.innerHeight - tip.height - 8));
+    left = Math.max(8, Math.min(left, window.innerWidth - tip.width - 8));
+
+    this.renderer.setStyle(this.tooltipEl, 'top', `${top}px`);
+    this.renderer.setStyle(this.tooltipEl, 'left', `${left}px`);
   }
 
   private hide(): void {

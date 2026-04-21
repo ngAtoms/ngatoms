@@ -1,6 +1,6 @@
 {
   "name": "@ngatoms/ngatoms-tokens",
-  "version": "0.1.0",
+  "version": "0.2.0-rc.0",
   "description": "Design tokens for NgAtoms",
   "author": "Lázaro Dutra",
   "license": "MIT",
@@ -10,5 +10,8 @@
   ],
   "scripts": {
     "build": "node -e \"console.log('tokens build placeholder')\""
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }
