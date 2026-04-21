@@ -1,13 +1,7 @@
 import {Component, input, signal} from "@angular/core";
-import {CodeBlockComponent} from "../code-block/code-block.component";
-import {NgAtomsButtonDirective} from "../button";
 
 @Component({
   selector: "preview-card",
-    imports: [
-
-
-    ],
   templateUrl: "./preview-card.html",
   styleUrl: "./preview-card.css",
 })
