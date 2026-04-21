@@ -1,5 +1,26 @@
 # ngatoms
 
+## 0.3.0
+
+### Minor Changes
+
+- 4938fd9: Add popover primitive
+- 4938fd9: feat(primitives): add date-picker directive with 3 variants, 5 sizes, invalid state, and webkit normalizations
+- 4938fd9: feat(primitives): add dropdown-menu component with keyboard navigation and item variants
+- 518e661: feat(primitives): overlays (date-picker, dropdown-menu, popover, select, tooltip) now reposition on scroll instead of closing. Overlay service gains a `closeOnScroll` option; panel `z-index` normalized to 50.
+- 4938fd9: feat(cli): add status field to registry entries and warn when adding alpha components
+
+### Patch Changes
+
+- eddd7b2: feat(cli): allow shorthand `npx ngatoms <component>` as alias for `npx ngatoms add <component>`
+- eddd7b2: feat(cli): add colored status badge to component status warning — amber background for alpha, green for stable
+- f8fc330: feat(cli): check for newer version on startup and warn user with upgrade hint
+- eddd7b2: fix(cli): align getRef() tag format with changesets convention (ngatoms@x.y.z) and push tags after publish
+- 4938fd9: fix(date-picker): remove unused MONTHS constant to resolve lint errors; update README and docs component table — promote date-picker, dropdown-menu, and popover to alpha, remove tier column, sort alphabetically
+- c1b5aa5: `init` now fetches `tokens.css` from GitHub instead of writing a hardcoded theme template, so the generated theme always reflects the current brand palette.
+- 60d551e: Add full component status table with descriptions and tier groupings to README
+- 60d551e: Add component status table to README showing available and coming-soon components
+
 ## 0.3.0-rc.1
 
 ### Minor Changes
