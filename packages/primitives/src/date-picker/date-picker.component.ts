@@ -34,9 +34,6 @@ export interface NgAtomsCalendarDay {
 
 export type NgAtomsDatePickerView = 'days' | 'months' | 'years';
 
-
-const MONTHS_SHORT = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-
 @Component({
   selector: 'nga-date-picker',
   standalone: true,
