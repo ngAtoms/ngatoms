@@ -43,10 +43,10 @@ jobs:
       - name: Build
         run: npm run build --if-present
 
-  release-stable:
-    name: Stable Release
+  release:
+    name: Release (${{ github.ref_name }})
     needs: ci
-    if: github.event_name == 'push' && github.ref_name == 'main'
+    if: github.event_name == 'push' && contains(fromJSON('["main","lts","rc"]'), github.ref_name)
     runs-on: ubuntu-latest
 
     permissions:
@@ -74,57 +74,8 @@ jobs:
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git config user.name "github-actions[bot]"
 
-      - name: Version packages
-        run: npm run version:packages
-
-      - name: Commit version bump
-        run: |
-          git add -A
-          git commit -m "chore: version packages" || echo "nothing to commit"
-
-      - name: Build packages
-        run: npm run build --if-present
-
-      - name: Publish packages
-        run: npm run publish:changesets
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-
-      - name: Push
-        run: git push --follow-tags
-
-  release-lts:
-    name: LTS Release
-    needs: ci
-    if: github.event_name == 'push' && github.ref_name == 'lts'
-    runs-on: ubuntu-latest
-
-    permissions:
-      contents: write
-      id-token: write
-
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v6
-        with:
-          fetch-depth: 0
-
-      - name: Setup Node
-        uses: actions/setup-node@v6
-        with:
-          node-version: 22
-          cache: npm
-          registry-url: https://registry.npmjs.org
-
-      - name: Install dependencies
-        run: npm ci
-
-      - name: Configure git
-        run: |
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          git config user.name "github-actions[bot]"
-
-      - name: Enter LTS mode
+      - name: Enter LTS pre-release mode
+        if: github.ref_name == 'lts'
         run: npm run pre:enter:lts
 
       - name: Version packages
@@ -138,7 +89,7 @@ jobs:
       - name: Build packages
         run: npm run build --if-present
 
-      - name: Publish LTS packages
+      - name: Publish
         run: npm run publish:changesets
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
@@ -146,60 +97,10 @@ jobs:
       - name: Push
         run: git push --follow-tags
 
-      - name: Exit LTS mode
-        if: always()
+      - name: Exit LTS pre-release mode
+        if: always() && github.ref_name == 'lts'
         run: |
           npm run pre:exit
           git add -A
           git commit -m "chore: exit prerelease mode" || echo "nothing to commit"
           git push
-
-  release-rc:
-    name: RC Release
-    needs: ci
-    if: github.event_name == 'push' && github.ref_name == 'rc'
-    runs-on: ubuntu-latest
-
-    permissions:
-      contents: write
-      id-token: write
-
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v6
-        with:
-          fetch-depth: 0
-
-      - name: Setup Node
-        uses: actions/setup-node@v6
-        with:
-          node-version: 22
-          cache: npm
-          registry-url: https://registry.npmjs.org
-
-      - name: Install dependencies
-        run: npm ci
-
-      - name: Configure git
-        run: |
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          git config user.name "github-actions[bot]"
-
-      - name: Version packages
-        run: npm run version:packages
-
-      - name: Commit version bump
-        run: |
-          git add -A
-          git commit -m "chore: version packages" || echo "nothing to commit"
-
-      - name: Build packages
-        run: npm run build --if-present
-
-      - name: Publish RC packages
-        run: npm run publish:changesets
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-
-      - name: Push
-        run: git push --follow-tags
