@@ -43,6 +43,6 @@
     "globals": "^17.5.0",
     "rxjs": "^7.8.0",
     "typescript": "~5.9.0",
-    "typescript-eslint": "^8.58.2"
+    "typescript-eslint": "^8.59.4"
   }
 }
