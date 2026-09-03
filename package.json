@@ -36,7 +36,7 @@
     "@angular/core": "^21.2.9",
     "@angular/platform-browser": "^21.2.9",
     "@angular/router": "^21.2.9",
-    "@changesets/cli": "^2.31.0",
+    "@changesets/cli": "^2.31.1",
     "@eslint/js": "^10.0.1",
     "@phosphor-icons/web": "^2.1.2",
     "eslint": "^10.2.1",
