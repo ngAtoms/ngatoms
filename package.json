@@ -25,11 +25,11 @@
     "publish:rc:dry": "node tools/scripts/publish.mjs --channel rc --dry-run"
   },
   "devDependencies": {
-    "@angular-devkit/build-angular": "^21.2.22",
+    "@angular-devkit/build-angular": "^21.2.23",
     "@angular-eslint/eslint-plugin": "^21.4.0",
     "@angular-eslint/eslint-plugin-template": "^21.4.0",
     "@angular-eslint/template-parser": "^21.4.0",
-    "@angular/cli": "^21.2.22",
+    "@angular/cli": "^21.2.23",
     "@angular/common": "^21.2.22",
     "@angular/compiler": "^21.2.22",
     "@angular/compiler-cli": "^21.2.22",
