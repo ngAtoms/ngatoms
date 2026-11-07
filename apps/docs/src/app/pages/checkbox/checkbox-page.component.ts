@@ -1,22 +1,30 @@
-import { Component, signal } from '@angular/core';
-import { RouterLink } from '@angular/router';
-import { NgAtomsCheckboxDirective } from '../../../components/checkbox';
-import { NgAtomsBadgeDirective } from '../../../components/badge';
-import { CodeBlockComponent } from '../../../components/code-block/code-block.component';
-import { TocComponent } from '../../../components/toc/toc.component';
-import { PreviewCard } from '../../../components/preview-card/preview-card';
+import { Component, signal, ChangeDetectionStrategy } from "@angular/core";
+import { RouterLink } from "@angular/router";
+import { NgAtomsCheckboxDirective } from "../../../components/checkbox";
+import { NgAtomsBadgeDirective } from "../../../components/badge";
+import { CodeBlockComponent } from "../../../components/code-block/code-block.component";
+import { TocComponent } from "../../../components/toc/toc.component";
+import { PreviewCard } from "../../../components/preview-card/preview-card";
 
 @Component({
-  selector: 'app-checkbox-page',
+  selector: "app-checkbox-page",
   standalone: true,
-  imports: [RouterLink, NgAtomsCheckboxDirective, NgAtomsBadgeDirective, CodeBlockComponent, TocComponent, PreviewCard],
-  templateUrl: './checkbox-page.component.html',
-  styleUrl: './checkbox-page.component.css',
+  imports: [
+    RouterLink,
+    NgAtomsCheckboxDirective,
+    NgAtomsBadgeDirective,
+    CodeBlockComponent,
+    TocComponent,
+    PreviewCard,
+  ],
+  templateUrl: "./checkbox-page.component.html",
+  changeDetection: ChangeDetectionStrategy.Eager,
+  styleUrl: "./checkbox-page.component.css",
 })
 export class CheckboxPageComponent {
-  readonly heroChecked  = signal(false);
+  readonly heroChecked = signal(false);
   readonly stateUnchecked = signal(false);
-  readonly stateChecked   = signal(true);
+  readonly stateChecked = signal(true);
 
   readonly heroCode = `<label>
   <input ngAtomsCheckbox [(checked)]="isAccepted" />
@@ -93,23 +101,51 @@ export class MyComponent {
 </label>`;
 
   readonly props = [
-    { name: 'checked',       type: 'boolean (model)',    defaultVal: 'false', description: 'Two-way binding for the checked state. Use [(checked)].' },
-    { name: 'indeterminate', type: 'boolean',            defaultVal: 'false', description: 'Shows the mixed/partial state. Does not affect the checked model.' },
-    { name: 'size',          type: `'sm' | 'md' | 'lg'`, defaultVal: `'md'`, description: 'Size preset for the checkbox control.' },
+    {
+      name: "checked",
+      type: "boolean (model)",
+      defaultVal: "false",
+      description: "Two-way binding for the checked state. Use [(checked)].",
+    },
+    {
+      name: "indeterminate",
+      type: "boolean",
+      defaultVal: "false",
+      description:
+        "Shows the mixed/partial state. Does not affect the checked model.",
+    },
+    {
+      name: "size",
+      type: `'sm' | 'md' | 'lg'`,
+      defaultVal: `'md'`,
+      description: "Size preset for the checkbox control.",
+    },
   ];
 
   readonly a11yItems = [
-    { icon: 'keyboard',      title: 'Keyboard',         body: 'Space toggles the focused checkbox. Tab moves between checkboxes in source order.' },
-    { icon: 'tag',           title: 'Labels',           body: 'Always wrap in a <label> or use aria-label. The label text becomes the accessible name.' },
-    { icon: 'minus-circle',  title: 'Indeterminate',    body: 'Sets aria-checked="mixed" so screen readers announce the partial state correctly.' },
+    {
+      icon: "keyboard",
+      title: "Keyboard",
+      body: "Space toggles the focused checkbox. Tab moves between checkboxes in source order.",
+    },
+    {
+      icon: "tag",
+      title: "Labels",
+      body: "Always wrap in a <label> or use aria-label. The label text becomes the accessible name.",
+    },
+    {
+      icon: "minus-circle",
+      title: "Indeterminate",
+      body: 'Sets aria-checked="mixed" so screen readers announce the partial state correctly.',
+    },
   ];
 
   readonly tocItems = [
-    { id: 'usage',     label: 'Usage' },
-    { id: 'states',    label: 'States' },
-    { id: 'sizes',     label: 'Sizes' },
-    { id: 'in-a-list', label: 'In a list' },
-    { id: 'api',       label: 'API' },
-    { id: 'a11y',      label: 'Accessibility' },
+    { id: "usage", label: "Usage" },
+    { id: "states", label: "States" },
+    { id: "sizes", label: "Sizes" },
+    { id: "in-a-list", label: "In a list" },
+    { id: "api", label: "API" },
+    { id: "a11y", label: "Accessibility" },
   ];
 }

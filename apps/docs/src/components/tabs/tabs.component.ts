@@ -3,9 +3,10 @@ import {
   effect,
   input,
   signal,
-} from '@angular/core';
+  ChangeDetectionStrategy,
+} from "@angular/core";
 
-export type NgAtomsTabsVariant = 'underline' | 'pills';
+export type NgAtomsTabsVariant = "underline" | "pills";
 
 export class NgAtomsTabTriggerDirectiveRef {
   value!: () => string;
@@ -13,21 +14,22 @@ export class NgAtomsTabTriggerDirectiveRef {
 }
 
 @Component({
-  selector: 'nga-tabs',
+  selector: "nga-tabs",
   standalone: true,
-  templateUrl: './tabs.component.html',
-  styleUrl: './tabs.component.css',
+  templateUrl: "./tabs.component.html",
+  styleUrl: "./tabs.component.css",
+  changeDetection: ChangeDetectionStrategy.Eager,
   host: {
-    class: 'nga-tabs',
-    '[class.nga-tabs--underline]': "variant() === 'underline'",
-    '[class.nga-tabs--pills]': "variant() === 'pills'",
+    class: "nga-tabs",
+    "[class.nga-tabs--underline]": "variant() === 'underline'",
+    "[class.nga-tabs--pills]": "variant() === 'pills'",
   },
 })
 export class NgAtomsTabsComponent {
-  readonly defaultValue = input<string>('');
-  readonly variant = input<NgAtomsTabsVariant>('underline');
+  readonly defaultValue = input<string>("");
+  readonly variant = input<NgAtomsTabsVariant>("underline");
 
-  readonly activeTab = signal<string>('');
+  readonly activeTab = signal<string>("");
 
   private readonly _triggers: NgAtomsTabTriggerDirectiveRef[] = [];
 
@@ -57,15 +59,21 @@ export class NgAtomsTabsComponent {
   }
 
   navigateNext(): void {
-    const idx = this._triggers.findIndex(t => t.value() === this.activeTab());
+    const idx = this._triggers.findIndex((t) => t.value() === this.activeTab());
     const next = this._triggers[(idx + 1) % this._triggers.length];
-    if (next) { this.setActive(next.value()); next.focus(); }
+    if (next) {
+      this.setActive(next.value());
+      next.focus();
+    }
   }
 
   navigatePrev(): void {
-    const idx = this._triggers.findIndex(t => t.value() === this.activeTab());
-    const prev = this._triggers[(idx - 1 + this._triggers.length) % this._triggers.length];
-    if (prev) { this.setActive(prev.value()); prev.focus(); }
+    const idx = this._triggers.findIndex((t) => t.value() === this.activeTab());
+    const prev =
+      this._triggers[(idx - 1 + this._triggers.length) % this._triggers.length];
+    if (prev) {
+      this.setActive(prev.value());
+      prev.focus();
+    }
   }
-
 }

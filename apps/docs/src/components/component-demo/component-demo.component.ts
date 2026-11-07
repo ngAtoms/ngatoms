@@ -1,4 +1,4 @@
-import { Component, input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 import { NgAtomsTabsComponent } from '../tabs/tabs.component';
 import { NgAtomsTabListDirective } from '../tabs/tab-list.directive';
 import { NgAtomsTabTriggerDirective } from '../tabs/tab-trigger.directive';
@@ -23,6 +23,7 @@ export interface CodeFile {
   ],
   templateUrl: './component-demo.component.html',
   styleUrl: './component-demo.component.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
 })
 export class ComponentDemoComponent {
   files = input<CodeFile[]>([]);

@@ -1,19 +1,27 @@
-import { Component } from '@angular/core';
-import { RouterLink } from '@angular/router';
-import { NgAtomsSpinnerDirective } from '../../../components/spinner';
-import { NgAtomsBadgeDirective } from '../../../components/badge';
-import { CodeBlockComponent } from '../../../components/code-block/code-block.component';
-import { TocComponent } from '../../../components/toc/toc.component';
-import { PreviewCard } from '../../../components/preview-card/preview-card';
+import { Component, ChangeDetectionStrategy } from "@angular/core";
+import { RouterLink } from "@angular/router";
+import { NgAtomsSpinnerDirective } from "../../../components/spinner";
+import { NgAtomsBadgeDirective } from "../../../components/badge";
+import { CodeBlockComponent } from "../../../components/code-block/code-block.component";
+import { TocComponent } from "../../../components/toc/toc.component";
+import { PreviewCard } from "../../../components/preview-card/preview-card";
 
-const SIZES = ['sm', 'md', 'lg'] as const;
+const SIZES = ["sm", "md", "lg"] as const;
 
 @Component({
-  selector: 'app-spinner-page',
+  selector: "app-spinner-page",
   standalone: true,
-  imports: [RouterLink, NgAtomsSpinnerDirective, NgAtomsBadgeDirective, CodeBlockComponent, TocComponent, PreviewCard],
-  templateUrl: './spinner-page.component.html',
-  styleUrl: './spinner-page.component.css',
+  imports: [
+    RouterLink,
+    NgAtomsSpinnerDirective,
+    NgAtomsBadgeDirective,
+    CodeBlockComponent,
+    TocComponent,
+    PreviewCard,
+  ],
+  templateUrl: "./spinner-page.component.html",
+  changeDetection: ChangeDetectionStrategy.Eager,
+  styleUrl: "./spinner-page.component.css",
 })
 export class SpinnerPageComponent {
   readonly sizes = SIZES;
@@ -43,20 +51,37 @@ export class MyComponent {}`;
 <span ngAtomsSpinner style="color: var(--nga-color-success)"></span>`;
 
   readonly props = [
-    { name: 'size', type: `'sm' | 'md' | 'lg'`, defaultVal: `'md'`, description: 'Size of the spinning indicator.' },
+    {
+      name: "size",
+      type: `'sm' | 'md' | 'lg'`,
+      defaultVal: `'md'`,
+      description: "Size of the spinning indicator.",
+    },
   ];
 
   readonly a11yItems = [
-    { icon: 'speaker-high', title: 'Live region',   body: 'role="status" acts as a polite live region — screen readers announce "Loading" without interrupting the current speech.' },
-    { icon: 'tag',          title: 'Custom label',  body: 'Override aria-label to describe the specific operation: <span ngAtomsSpinner aria-label="Uploading file"></span>.' },
-    { icon: 'eye-slash',    title: 'Hide when done', body: 'Remove or hide the spinner when the operation completes. A persistent spinner is confusing for screen reader users.' },
+    {
+      icon: "speaker-high",
+      title: "Live region",
+      body: 'role="status" acts as a polite live region — screen readers announce "Loading" without interrupting the current speech.',
+    },
+    {
+      icon: "tag",
+      title: "Custom label",
+      body: 'Override aria-label to describe the specific operation: <span ngAtomsSpinner aria-label="Uploading file"></span>.',
+    },
+    {
+      icon: "eye-slash",
+      title: "Hide when done",
+      body: "Remove or hide the spinner when the operation completes. A persistent spinner is confusing for screen reader users.",
+    },
   ];
 
   readonly tocItems = [
-    { id: 'usage',  label: 'Usage' },
-    { id: 'sizes',  label: 'Sizes' },
-    { id: 'colors', label: 'Colors' },
-    { id: 'api',    label: 'API' },
-    { id: 'a11y',   label: 'Accessibility' },
+    { id: "usage", label: "Usage" },
+    { id: "sizes", label: "Sizes" },
+    { id: "colors", label: "Colors" },
+    { id: "api", label: "API" },
+    { id: "a11y", label: "Accessibility" },
   ];
 }

@@ -6,22 +6,25 @@ import {
   input,
   model,
   viewChild,
-} from '@angular/core';
+  ChangeDetectionStrategy,
+} from "@angular/core";
 
-export type NgAtomsDialogSize = 'sm' | 'md' | 'lg' | 'xl';
+export type NgAtomsDialogSize = "sm" | "md" | "lg" | "xl";
 
 @Component({
-  selector: 'nga-dialog',
+  selector: "nga-dialog",
   standalone: true,
-  templateUrl: './dialog.component.html',
-  styleUrl: './dialog.component.css',
-  host: { class: 'nga-dialog-root' },
+  templateUrl: "./dialog.component.html",
+  styleUrl: "./dialog.component.css",
+  changeDetection: ChangeDetectionStrategy.Eager,
+  host: { class: "nga-dialog-root" },
 })
 export class NgAtomsDialogComponent implements OnDestroy {
-  private readonly dialogEl = viewChild.required<ElementRef<HTMLDialogElement>>('dialogEl');
+  private readonly dialogEl =
+    viewChild.required<ElementRef<HTMLDialogElement>>("dialogEl");
 
   readonly open = model<boolean>(false);
-  readonly size = input<NgAtomsDialogSize>('md');
+  readonly size = input<NgAtomsDialogSize>("md");
 
   constructor() {
     effect(() => {
