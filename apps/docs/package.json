@@ -1,6 +1,6 @@
 {
   "name": "@ngatoms/ngatoms-docs",
-  "version": "0.0.2",
+  "version": "1.0.0-rc.0",
   "private": true,
   "description": "NgAtoms playground app",
   "author": "Lázaro Dutra",

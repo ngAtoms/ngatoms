@@ -1,6 +1,6 @@
 {
   "name": "@ngatoms/ngatoms-utils",
-  "version": "0.0.2",
+  "version": "1.0.0-rc.0",
   "description": "Shared utilities for NgAtoms",
   "private": true,
   "author": "Lázaro Dutra",
