@@ -5,6 +5,11 @@
   "author": "Lázaro Dutra",
   "license": "MIT",
   "type": "module",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ngAtoms/ngatoms.git",
+    "directory": "packages/tokens"
+  },
   "files": [
     "src"
   ],
