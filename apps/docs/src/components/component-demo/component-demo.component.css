@@ -42,7 +42,7 @@
   width: 6px;
   height: 6px;
   border-radius: 50%;
-  background: var(--nga-green-300);
+  background: var(--nga-stone-700, #404040);
 }
 
 .demo-col--code .demo-label::before {
@@ -50,7 +50,7 @@
   font-family: monospace;
   font-size: 0.625rem;
   font-weight: var(--nga-font-weight-bold, 700);
-  color: var(--nga-gold-400);
+  color: var(--nga-stone-500, #6E6E6E);
   letter-spacing: 0;
 }
 

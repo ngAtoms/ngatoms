@@ -6,11 +6,11 @@
 
 :root {
   --nga-number-input-radius:     var(--nga-radius-md, 6px);
-  --nga-number-input-border:     var(--nga-color-border, #DED4C5);
-  --nga-number-input-bg:         var(--nga-color-background, #FAF8F5);
-  --nga-number-input-fg:         var(--nga-color-foreground, #1A1714);
-  --nga-number-input-btn-bg:     var(--nga-color-muted, #F3EEE7);
-  --nga-number-input-btn-hover:  var(--nga-color-secondary, #EBE4D9);
+  --nga-number-input-border:     var(--nga-color-border, #CCCCCC);
+  --nga-number-input-bg:         var(--nga-color-background, #E6E6E6);
+  --nga-number-input-fg:         var(--nga-color-foreground, #1A1A1A);
+  --nga-number-input-btn-bg:     var(--nga-color-muted, #DEDEDE);
+  --nga-number-input-btn-hover:  var(--nga-color-secondary, #D6D6D6);
   --nga-number-input-transition: border-color var(--nga-dur-base, 180ms) var(--nga-ease-out, ease), box-shadow var(--nga-dur-base, 180ms) var(--nga-ease-out, ease);
 
   --nga-number-input-height-sm: 2rem;
@@ -38,8 +38,8 @@
 }
 
 .nga-number-input:focus-within {
-  border-color: var(--nga-color-ring, #F06B00);
-  box-shadow: var(--nga-glow-ember, 0 0 0 4px rgba(240, 107, 0, 0.18));
+  border-color: var(--nga-color-ring, #333333);
+  box-shadow: var(--nga-glow-ember, 0 0 0 4px rgba(26, 26, 26, 0.16));
 }
 
 /* ── Buttons ────────────────────────────────────────────────── */

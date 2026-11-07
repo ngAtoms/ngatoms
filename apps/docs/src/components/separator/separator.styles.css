@@ -5,7 +5,7 @@
    ============================================================= */
 
 :root {
-  --nga-separator-color: var(--nga-color-border, #DED4C5);
+  --nga-separator-color: var(--nga-color-border, #CCCCCC);
   --nga-separator-size:  1px;
 }
 

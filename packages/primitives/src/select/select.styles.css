@@ -10,46 +10,46 @@
   --nga-select-transition:   border-color var(--nga-dur-base, 180ms) var(--nga-ease-out, ease), box-shadow var(--nga-dur-base, 180ms) var(--nga-ease-out, ease), background var(--nga-dur-base, 180ms) var(--nga-ease-out, ease);
 
   /* Variant: default */
-  --nga-select-default-bg:           var(--nga-color-background, #FAF8F5);
-  --nga-select-default-fg:           var(--nga-color-foreground, #1A1714);
-  --nga-select-default-border:       var(--nga-color-border, #DED4C5);
-  --nga-select-default-border-hover: var(--nga-color-primary, #1A1714);
+  --nga-select-default-bg:           var(--nga-color-background, #E6E6E6);
+  --nga-select-default-fg:           var(--nga-color-foreground, #1A1A1A);
+  --nga-select-default-border:       var(--nga-color-border, #CCCCCC);
+  --nga-select-default-border-hover: var(--nga-color-primary, #1A1A1A);
 
   /* Variant: filled */
-  --nga-select-filled-bg:           var(--nga-color-secondary, #F3EEE7);
-  --nga-select-filled-fg:           var(--nga-color-secondary-foreground, #1A1714);
+  --nga-select-filled-bg:           var(--nga-color-secondary, #DEDEDE);
+  --nga-select-filled-fg:           var(--nga-color-secondary-foreground, #1A1A1A);
   --nga-select-filled-border:       transparent;
-  --nga-select-filled-border-hover: var(--nga-color-primary, #1A1714);
-  --nga-select-filled-bg-hover:     color-mix(in oklch, var(--nga-select-filled-bg) 85%, black);
+  --nga-select-filled-border-hover: var(--nga-color-primary, #1A1A1A);
+  --nga-select-filled-bg-hover:     color-mix(in oklch, var(--nga-select-filled-bg) 85%, #1A1A1A);
 
   /* Variant: ghost */
   --nga-select-ghost-bg:           transparent;
-  --nga-select-ghost-fg:           var(--nga-color-foreground, #1A1714);
+  --nga-select-ghost-fg:           var(--nga-color-foreground, #1A1A1A);
   --nga-select-ghost-border:       transparent;
-  --nga-select-ghost-border-hover: var(--nga-color-border, #DED4C5);
+  --nga-select-ghost-border-hover: var(--nga-color-border, #CCCCCC);
 
   /* Invalid */
-  --nga-select-invalid-border:     var(--nga-color-destructive, #DC2626);
+  --nga-select-invalid-border:     var(--nga-color-destructive, #1A1A1A);
 
   /* Panel */
-  --nga-select-panel-bg:     color-mix(in oklab, var(--nga-color-card, #FFFFFF) 78%, transparent);
-  --nga-select-panel-border: color-mix(in oklab, var(--nga-color-border, #DED4C5) 55%, transparent);
-  --nga-select-panel-inset:  inset 0 1px 0 color-mix(in oklch, white 85%, transparent);
+  --nga-select-panel-bg:     color-mix(in oklab, var(--nga-color-card, #E6E6E6) 78%, transparent);
+  --nga-select-panel-border: color-mix(in oklab, var(--nga-color-border, #CCCCCC) 55%, transparent);
+  --nga-select-panel-inset:  inset 0 1px 0 color-mix(in oklch, #E6E6E6 85%, transparent);
   --nga-select-panel-blur:   blur(20px) saturate(180%);
-  --nga-select-panel-shadow: 0 8px 24px -4px color-mix(in oklch, oklch(10% 0.01 60) 10%, transparent),
-                             0 2px 8px -2px  color-mix(in oklch, oklch(10% 0.01 60) 6%, transparent);
+  --nga-select-panel-shadow: 0 8px 24px -4px color-mix(in oklch, oklch(10% 0 0) 10%, transparent),
+                             0 2px 8px -2px  color-mix(in oklch, oklch(10% 0 0) 6%, transparent);
 
   /* Options — selected uses accent tint + accent text for WCAG AA compliance */
-  --nga-select-option-hover-bg:    var(--nga-color-muted, #F3EEE7);
-  --nga-select-option-selected-bg: color-mix(in oklch, var(--nga-color-accent, #F06B00) 10%, transparent);
-  --nga-select-option-selected-fg: var(--nga-color-accent, #F06B00);
+  --nga-select-option-hover-bg:    var(--nga-color-muted, #DEDEDE);
+  --nga-select-option-selected-bg: color-mix(in oklch, var(--nga-color-accent, #333333) 10%, transparent);
+  --nga-select-option-selected-fg: var(--nga-color-accent, #333333);
 }
 
 /* ── Dark mode ──────────────────────────────────────────────── */
 .dark {
-  --nga-select-filled-bg-hover:    color-mix(in oklch, var(--nga-select-filled-bg) 82%, white);
+  --nga-select-filled-bg-hover:    color-mix(in oklch, var(--nga-select-filled-bg) 82%, #E6E6E6);
   --nga-select-panel-bg:           color-mix(in oklab, var(--nga-color-card) 82%, transparent);
-  --nga-select-panel-border:       color-mix(in oklab, white 14%, transparent);
+  --nga-select-panel-border:       color-mix(in oklab, #E6E6E6 14%, transparent);
   --nga-select-panel-blur:         blur(24px) saturate(200%) brightness(1.06);
 }
 
@@ -95,7 +95,7 @@
 }
 
 .nga-select-trigger:focus-visible {
-  box-shadow: 0 0 0 4px color-mix(in oklch, var(--nga-color-accent, #F06B00) 18%, transparent);
+  box-shadow: 0 0 0 4px color-mix(in oklch, var(--nga-color-accent, #333333) 18%, transparent);
 }
 
 .nga-select-trigger:disabled {
@@ -104,7 +104,7 @@
 }
 
 .nga-select-placeholder {
-  color: var(--nga-color-muted-foreground, #87735A);
+  color: var(--nga-color-muted-foreground, #6E6E6E);
 }
 
 /* ── Chevron ────────────────────────────────────────────────── */
@@ -133,7 +133,7 @@
 }
 .nga-select-trigger--default:hover:not(:disabled) { border-color: var(--nga-select-default-border-hover); }
 .nga-select-trigger--default.nga-select-trigger--open,
-.nga-select-trigger--default:focus-visible { border-color: var(--nga-color-ring, #F06B00); }
+.nga-select-trigger--default:focus-visible { border-color: var(--nga-color-ring, #333333); }
 
 /* ── Variant: filled ────────────────────────────────────────── */
 .nga-select-trigger--filled {
@@ -146,7 +146,7 @@
   border-color: var(--nga-select-filled-border-hover);
 }
 .nga-select-trigger--filled.nga-select-trigger--open,
-.nga-select-trigger--filled:focus-visible { border-color: var(--nga-color-ring, #F06B00); }
+.nga-select-trigger--filled:focus-visible { border-color: var(--nga-color-ring, #333333); }
 
 /* ── Variant: ghost ─────────────────────────────────────────── */
 .nga-select-trigger--ghost {
@@ -156,12 +156,12 @@
 }
 .nga-select-trigger--ghost:hover:not(:disabled) { border-color: var(--nga-select-ghost-border-hover); }
 .nga-select-trigger--ghost.nga-select-trigger--open,
-.nga-select-trigger--ghost:focus-visible { border-color: var(--nga-color-ring, #F06B00); }
+.nga-select-trigger--ghost:focus-visible { border-color: var(--nga-color-ring, #333333); }
 
 /* ── Invalid ────────────────────────────────────────────────── */
 .nga-select-trigger--invalid { border-color: var(--nga-select-invalid-border) !important; }
 .nga-select-trigger--invalid:focus-visible {
-  box-shadow: 0 0 0 4px color-mix(in oklch, var(--nga-color-destructive, #DC2626) 18%, transparent);
+  box-shadow: 0 0 0 4px color-mix(in oklch, var(--nga-color-destructive, #1A1A1A) 18%, transparent);
 }
 
 /* ── Panel ──────────────────────────────────────────────────── */
@@ -211,7 +211,7 @@
 
 .nga-select-search-icon {
   flex-shrink: 0;
-  color: var(--nga-color-muted-foreground, #87735A);
+  color: var(--nga-color-muted-foreground, #6E6E6E);
 }
 
 .nga-select-search {
@@ -221,12 +221,12 @@
   background: transparent;
   font-family: inherit;
   font-size: var(--nga-size-font-sm, 13px);
-  color: var(--nga-color-foreground, #1A1714);
+  color: var(--nga-color-foreground, #1A1A1A);
   line-height: 1.5;
 }
 
 .nga-select-search::placeholder {
-  color: var(--nga-color-muted-foreground, #87735A);
+  color: var(--nga-color-muted-foreground, #6E6E6E);
 }
 
 /* ── Options ────────────────────────────────────────────────── */
@@ -253,7 +253,7 @@
   cursor: pointer;
   transition: background var(--nga-dur-fast, 120ms) var(--nga-ease-out, ease),
               color var(--nga-dur-fast, 120ms) var(--nga-ease-out, ease);
-  color: var(--nga-color-foreground, #1A1714);
+  color: var(--nga-color-foreground, #1A1A1A);
   user-select: none;
 }
 
@@ -270,7 +270,7 @@
 
 .nga-select-option--selected.nga-select-option--focused,
 .nga-select-option--selected:hover:not(.nga-select-option--disabled) {
-  background: color-mix(in oklch, var(--nga-color-accent, #F06B00) 15%, transparent);
+  background: color-mix(in oklch, var(--nga-color-accent, #333333) 15%, transparent);
 }
 
 .nga-select-option--disabled {
@@ -293,5 +293,5 @@
   padding: 0.75rem 0.625rem;
   text-align: center;
   font-size: var(--nga-size-font-sm, 13px);
-  color: var(--nga-color-muted-foreground, #87735A);
+  color: var(--nga-color-muted-foreground, #6E6E6E);
 }

@@ -97,7 +97,7 @@ section {
   user-select: none;
 }
 
-.inline-terminal-cmd { color: #FFA94D; }
+.inline-terminal-cmd { color: #8A8A8A; }
 
 .props-table {
   border: 1px solid color-mix(in oklab, var(--nga-color-border) 70%, transparent);

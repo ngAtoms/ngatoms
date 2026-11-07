@@ -27,21 +27,21 @@
 
 /* ── Code panel theme tokens ────────────────────────────────── */
 :root {
-  --code-panel-bg:        #000000;
-  --code-panel-header-bg: #0d0d0d;
+  --code-panel-bg:        #1A1A1A;
+  --code-panel-header-bg: #1A1A1A;
   --code-panel-border:    #1a1a1a;
-  --code-panel-muted:     #555555;
+  --code-panel-muted:     #6E6E6E;
   --code-tab-active-bg:   #1a1a1a;
-  --code-tab-active-fg:   #cccccc;
+  --code-tab-active-fg:   #CCCCCC;
 }
 
 :root:not(.dark) {
-  --code-panel-bg:        #f6f8fa;
-  --code-panel-header-bg: #eaeef2;
-  --code-panel-border:    #d0d7de;
-  --code-panel-muted:     #57606a;
-  --code-tab-active-bg:   #ffffff;
-  --code-tab-active-fg:   #24292f;
+  --code-panel-bg:        #E6E6E6;
+  --code-panel-header-bg: #D6D6D6;
+  --code-panel-border:    #CCCCCC;
+  --code-panel-muted:     #6E6E6E;
+  --code-tab-active-bg:   #E6E6E6;
+  --code-tab-active-fg:   #1A1A1A;
 }
 
 *, *::before, *::after {
