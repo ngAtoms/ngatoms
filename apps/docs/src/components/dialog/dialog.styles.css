@@ -102,6 +102,16 @@
   padding: 1.375rem 1.375rem 0;
 }
 
+/* Description sits in the header. Give it air before the body, and more
+   when the footer follows immediately (confirm pattern, no body). */
+.nga-dialog-header:has(.nga-dialog-description):has(+ .nga-dialog-body) {
+  padding-bottom: 0.25rem;
+}
+
+.nga-dialog-header:has(.nga-dialog-description):has(+ .nga-dialog-footer) {
+  padding-bottom: 1.5rem;
+}
+
 /* ── Title ──────────────────────────────────────────────────── */
 .nga-dialog-title {
   font-size: var(--nga-text-base, 15px);
@@ -122,7 +132,7 @@
 
 /* ── Body ───────────────────────────────────────────────────── */
 .nga-dialog-body {
-  padding: 1.25rem 1.375rem;
+  padding: 1.5rem 1.375rem 1.75rem;
   overflow-y: auto;
   flex: 1;
   font-size: var(--nga-size-font-sm, 13px);
@@ -138,7 +148,7 @@
   align-items: center;
   justify-content: flex-end;
   gap: 0.625rem;
-  padding: 1rem 1.375rem;
+  padding: 1.125rem 1.375rem;
   border-top: 1px solid var(--nga-dialog-footer-border);
   background: var(--nga-dialog-footer-bg);
 }
