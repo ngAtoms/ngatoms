@@ -10,13 +10,13 @@
   --nga-select-transition:   border-color var(--nga-dur-base, 180ms) var(--nga-ease-out, ease), box-shadow var(--nga-dur-base, 180ms) var(--nga-ease-out, ease), background var(--nga-dur-base, 180ms) var(--nga-ease-out, ease);
 
   /* Variant: default */
-  --nga-select-default-bg:           var(--nga-color-background, #E6E6E6);
+  --nga-select-default-bg:           var(--nga-color-background, #F7F8FA);
   --nga-select-default-fg:           var(--nga-color-foreground, #1A1A1A);
   --nga-select-default-border:       var(--nga-color-border, #CCCCCC);
   --nga-select-default-border-hover: var(--nga-color-primary, #1A1A1A);
 
   /* Variant: filled */
-  --nga-select-filled-bg:           var(--nga-color-secondary, #DEDEDE);
+  --nga-select-filled-bg:           var(--nga-color-secondary, #F2F4F6);
   --nga-select-filled-fg:           var(--nga-color-secondary-foreground, #1A1A1A);
   --nga-select-filled-border:       transparent;
   --nga-select-filled-border-hover: var(--nga-color-primary, #1A1A1A);
@@ -32,24 +32,24 @@
   --nga-select-invalid-border:     var(--nga-color-destructive, #1A1A1A);
 
   /* Panel */
-  --nga-select-panel-bg:     color-mix(in oklab, var(--nga-color-card, #E6E6E6) 78%, transparent);
+  --nga-select-panel-bg:     color-mix(in oklab, var(--nga-color-card, #F7F8FA) 78%, transparent);
   --nga-select-panel-border: color-mix(in oklab, var(--nga-color-border, #CCCCCC) 55%, transparent);
-  --nga-select-panel-inset:  inset 0 1px 0 color-mix(in oklch, #E6E6E6 85%, transparent);
+  --nga-select-panel-inset:  inset 0 1px 0 color-mix(in oklch, #F7F8FA 85%, transparent);
   --nga-select-panel-blur:   blur(20px) saturate(180%);
   --nga-select-panel-shadow: 0 8px 24px -4px color-mix(in oklch, oklch(10% 0 0) 10%, transparent),
                              0 2px 8px -2px  color-mix(in oklch, oklch(10% 0 0) 6%, transparent);
 
   /* Options — selected uses accent tint + accent text for WCAG AA compliance */
-  --nga-select-option-hover-bg:    var(--nga-color-muted, #DEDEDE);
+  --nga-select-option-hover-bg:    var(--nga-color-muted, #F2F4F6);
   --nga-select-option-selected-bg: color-mix(in oklch, var(--nga-color-accent, #333333) 10%, transparent);
   --nga-select-option-selected-fg: var(--nga-color-accent, #333333);
 }
 
 /* ── Dark mode ──────────────────────────────────────────────── */
 .dark {
-  --nga-select-filled-bg-hover:    color-mix(in oklch, var(--nga-select-filled-bg) 82%, #E6E6E6);
+  --nga-select-filled-bg-hover:    color-mix(in oklch, var(--nga-select-filled-bg) 82%, #F7F8FA);
   --nga-select-panel-bg:           color-mix(in oklab, var(--nga-color-card) 82%, transparent);
-  --nga-select-panel-border:       color-mix(in oklab, #E6E6E6 14%, transparent);
+  --nga-select-panel-border:       color-mix(in oklab, #F7F8FA 14%, transparent);
   --nga-select-panel-blur:         blur(24px) saturate(200%) brightness(1.06);
 }
 

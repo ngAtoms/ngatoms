@@ -6,11 +6,11 @@
 
 /* ── Primitives ───────────────────────────────────────────── */
 :root {
-  /* Neutrals — ink scale. Extremes sit at 80–90% of black or white, never #000 or #fff. */
-  --nga-stone-50:  #E6E6E6; /* 90% white */
-  --nga-stone-100: #DEDEDE; /* 87% */
-  --nga-stone-150: #D6D6D6; /* 84% */
-  --nga-stone-200: #CCCCCC; /* 80% */
+  /* Neutrals — ink scale. Blacks stay at 80–90%. Whites are a cool frost, not pure #fff. */
+  --nga-stone-50:  #F7F8FA; /* frost paper */
+  --nga-stone-100: #F2F4F6;
+  --nga-stone-150: #E7EAEF;
+  --nga-stone-200: #D8DDE3;
   --nga-stone-300: #B3B3B3; /* 70% */
   --nga-stone-400: #8A8A8A; /* 54% */
   --nga-stone-500: #6E6E6E; /* 43% */
@@ -21,8 +21,8 @@
   --nga-stone-950: #1A1A1A; /* 90% black */
 
   /* Ink ramp — neutral accent. The ember name stays so existing tokens keep working. */
-  --nga-ember-50:  #E6E6E6;
-  --nga-ember-100: #D6D6D6;
+  --nga-ember-50:  #F7F8FA;
+  --nga-ember-100: #E7EAEF;
   --nga-ember-200: #B3B3B3;
   --nga-ember-300: #8A8A8A;
   --nga-ember-400: #555555;
@@ -33,7 +33,7 @@
   --nga-ember-900: #141414;
 
   /* Paper and status, expressed as gray steps rather than hue */
-  --nga-white:        #E6E6E6;
+  --nga-white:        #F7F8FA;
   --nga-success-500:  #404040;
   --nga-warning-500:  #6E6E6E;
   --nga-danger-500:   #1A1A1A;
@@ -42,7 +42,7 @@
 
 /* ── Semantic: Light mode (default) ───────────────────────── */
 :root {
-  /* Surfaces — page sits a step under the paper card */
+  /* Surfaces — page sits a step under the frost paper */
   --nga-color-background:            var(--nga-stone-100);
   --nga-color-foreground:            var(--nga-stone-950);
 
@@ -51,11 +51,11 @@
   --nga-color-primary-foreground:    var(--nga-white);
 
   /* Secondary action */
-  --nga-color-secondary:             var(--nga-stone-100);
+  --nga-color-secondary:             var(--nga-stone-150);
   --nga-color-secondary-foreground:  var(--nga-stone-900);
 
   /* Muted / subdued */
-  --nga-color-muted:                 var(--nga-stone-100);
+  --nga-color-muted:                 var(--nga-stone-150);
   --nga-color-muted-foreground:      var(--nga-stone-500);
 
   /* Accent — ink, one step off the page text */
@@ -80,6 +80,8 @@
   --nga-color-warning-foreground:    var(--nga-stone-900);
   --nga-color-destructive:           var(--nga-danger-500);
   --nga-color-destructive-foreground: var(--nga-white);
+  --nga-color-destructive-hover:     var(--nga-stone-800);
+  --nga-color-destructive-active:    #141414;
   --nga-color-info:                  var(--nga-info-500);
   --nga-color-info-foreground:       var(--nga-white);
 
@@ -107,14 +109,20 @@
   --nga-space-20: 5rem;
   --nga-space-24: 6rem;
 
-  /* Shadows — neutral ink, never pure black */
+  /* Shadows — neutral ink on light paper */
   --nga-shadow-xs: 0 1px 0 rgba(26, 26, 26, 0.04);
+  --nga-color-scrim: rgba(26, 26, 26, 0.40);
   --nga-shadow-sm: 0 1px 2px rgba(26, 26, 26, 0.06), 0 1px 1px rgba(26, 26, 26, 0.04);
   --nga-shadow-md: 0 4px 10px -2px rgba(26, 26, 26, 0.08), 0 2px 4px -2px rgba(26, 26, 26, 0.04);
   --nga-shadow-lg: 0 12px 24px -6px rgba(26, 26, 26, 0.12), 0 4px 8px -4px rgba(26, 26, 26, 0.06);
   --nga-shadow-xl: 0 24px 48px -12px rgba(26, 26, 26, 0.18);
   --nga-glow-ember:      0 0 0 4px rgba(26, 26, 26, 0.16);
   --nga-glow-ember-soft: 0 8px 32px -8px rgba(26, 26, 26, 0.22);
+
+  /* Frost — milky glass. Blur only reads when a surface sits over the page. */
+  --nga-frost-blur:        blur(22px) saturate(180%);
+  --nga-color-frost:       color-mix(in oklab, #FCFCFD 72%, transparent);
+  --nga-color-frost-strong: color-mix(in oklab, #FFFFFF 78%, transparent);
 
   /* Typography — families */
   --nga-font-sans:    'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
@@ -197,10 +205,10 @@
 .dark {
   /* Surfaces */
   --nga-color-background:            var(--nga-stone-950);
-  --nga-color-foreground:            #E6E6E6;
+  --nga-color-foreground:            #F5F6F8;
 
   /* Primary action — paper on ink */
-  --nga-color-primary:               #E6E6E6;
+  --nga-color-primary:               #F5F6F8;
   --nga-color-primary-foreground:    var(--nga-stone-950);
 
   /* Secondary action */
@@ -215,7 +223,7 @@
   --nga-color-accent:                var(--nga-stone-200);
   --nga-color-accent-hover:          var(--nga-stone-100);
   --nga-color-accent-foreground:     var(--nga-stone-950);
-  --nga-color-accent-soft:           rgba(230, 230, 230, 0.12);
+  --nga-color-accent-soft:           rgba(245, 246, 248, 0.14);
 
   /* Borders & rings */
   --nga-color-border:                #333333;
@@ -224,24 +232,31 @@
 
   /* Card / elevated surface */
   --nga-color-card:                  var(--nga-stone-900);
-  --nga-color-card-foreground:       #E6E6E6;
+  --nga-color-card-foreground:       #F5F6F8;
 
   /* Status — lighter grays so they stay visible on the dark page */
   --nga-color-success:               #B3B3B3;
   --nga-color-success-foreground:    var(--nga-stone-950);
   --nga-color-warning:               #CCCCCC;
   --nga-color-warning-foreground:    var(--nga-stone-950);
-  --nga-color-destructive:           #E6E6E6;
+  --nga-color-destructive:           #F5F6F8;
   --nga-color-destructive-foreground: var(--nga-stone-950);
+  --nga-color-destructive-hover:     #FFFFFF;
+  --nga-color-destructive-active:    var(--nga-stone-200);
   --nga-color-info:                  #8A8A8A;
-  --nga-color-info-foreground:       #E6E6E6;
+  --nga-color-info-foreground:       #F5F6F8;
 
-  /* Shadows — ink, not pure black */
-  --nga-shadow-xs: 0 1px 0 rgba(26, 26, 26, 0.4);
-  --nga-shadow-sm: 0 1px 2px rgba(26, 26, 26, 0.5);
-  --nga-shadow-md: 0 4px 10px -2px rgba(26, 26, 26, 0.5);
-  --nga-shadow-lg: 0 12px 24px -6px rgba(26, 26, 26, 0.55);
-  --nga-shadow-xl: 0 24px 48px -12px rgba(26, 26, 26, 0.7);
-  --nga-glow-ember:      0 0 0 4px rgba(230, 230, 230, 0.2);
-  --nga-glow-ember-soft: 0 8px 32px -8px rgba(230, 230, 230, 0.16);
+  /* Frost on dark stays translucent ink */
+  --nga-color-frost:        color-mix(in oklab, var(--nga-stone-950) 74%, transparent);
+  --nga-color-frost-strong: color-mix(in oklab, var(--nga-stone-900) 82%, transparent);
+
+  /* Shadows sit darker than the 90% black page, or they disappear into it */
+  --nga-shadow-xs: 0 1px 0 rgba(0, 0, 0, 0.55);
+  --nga-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.55);
+  --nga-shadow-md: 0 4px 10px -2px rgba(0, 0, 0, 0.62);
+  --nga-shadow-lg: 0 12px 24px -6px rgba(0, 0, 0, 0.66);
+  --nga-shadow-xl: 0 24px 48px -12px rgba(0, 0, 0, 0.72);
+  --nga-color-scrim: rgba(0, 0, 0, 0.58);
+  --nga-glow-ember:      0 0 0 4px rgba(245, 246, 248, 0.22);
+  --nga-glow-ember-soft: 0 8px 32px -8px rgba(245, 246, 248, 0.16);
 }

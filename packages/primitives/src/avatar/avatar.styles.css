@@ -7,7 +7,7 @@
 /* ── Custom properties ──────────────────────────────────────── */
 :root {
   --nga-avatar-radius:       var(--nga-radius-full, 9999px);
-  --nga-avatar-bg:           var(--nga-color-muted, #DEDEDE);
+  --nga-avatar-bg:           var(--nga-color-muted, #F2F4F6);
   --nga-avatar-fg:           var(--nga-color-muted-foreground, #6E6E6E);
   --nga-avatar-border:       var(--nga-color-border, #CCCCCC);
   --nga-avatar-font-weight:  var(--nga-font-weight-semibold, 600);

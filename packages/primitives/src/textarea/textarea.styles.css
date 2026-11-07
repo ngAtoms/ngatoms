@@ -25,14 +25,14 @@
   --nga-textarea-font-size-xl: var(--nga-size-font-xl, 18px);
 
   /* Variant: default */
-  --nga-textarea-default-bg:           var(--nga-color-background, #E6E6E6);
+  --nga-textarea-default-bg:           var(--nga-color-background, #F7F8FA);
   --nga-textarea-default-fg:           var(--nga-color-foreground, #1A1A1A);
   --nga-textarea-default-border:       var(--nga-color-border, #CCCCCC);
   --nga-textarea-default-border-hover: var(--nga-color-primary, #1A1A1A);
   --nga-textarea-default-placeholder:  var(--nga-color-muted-foreground, #6E6E6E);
 
   /* Variant: filled */
-  --nga-textarea-filled-bg:           var(--nga-color-secondary, #DEDEDE);
+  --nga-textarea-filled-bg:           var(--nga-color-secondary, #F2F4F6);
   --nga-textarea-filled-fg:           var(--nga-color-secondary-foreground, #1A1A1A);
   --nga-textarea-filled-border:       transparent;
   --nga-textarea-filled-border-hover: var(--nga-color-primary, #1A1A1A);
@@ -51,7 +51,7 @@
 }
 
 .dark {
-  --nga-textarea-filled-bg-hover: color-mix(in srgb, var(--nga-textarea-filled-bg) 82%, #E6E6E6);
+  --nga-textarea-filled-bg-hover: color-mix(in srgb, var(--nga-textarea-filled-bg) 82%, #F7F8FA);
 }
 
 /* ── Base ───────────────────────────────────────────────────── */

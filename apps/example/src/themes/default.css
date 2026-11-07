@@ -7,7 +7,7 @@
   /* ─── Global tokens ─────────────────────── */
   --nga-radius-md: 0.5rem;
   --nga-color-primary: #333333;
-  --nga-color-primary-foreground: #E6E6E6;
+  --nga-color-primary-foreground: #F7F8FA;
 
   /* ─── Button ────────────────────────────── */
   --nga-btn-radius: var(--nga-radius-md, 0.5rem);
@@ -43,7 +43,7 @@
 
   /* Variant: primary */
   --nga-btn-primary-bg:        var(--nga-color-primary, #333333);
-  --nga-btn-primary-fg:        var(--nga-color-primary-foreground, #E6E6E6);
+  --nga-btn-primary-fg:        var(--nga-color-primary-foreground, #F7F8FA);
   --nga-btn-primary-bg-hover:  color-mix(in srgb, var(--nga-btn-primary-bg) 85%, #1A1A1A);
   --nga-btn-primary-bg-active: color-mix(in srgb, var(--nga-btn-primary-bg) 75%, #1A1A1A);
 
@@ -59,14 +59,14 @@
   --nga-btn-ghost-bg-active:   color-mix(in srgb, var(--nga-btn-ghost-fg) 20%, transparent);
 
   /* Variant: secondary */
-  --nga-btn-secondary-bg:        #E6E6E6;
+  --nga-btn-secondary-bg:        #F7F8FA;
   --nga-btn-secondary-fg:        #333333;
-  --nga-btn-secondary-bg-hover:  #D6D6D6;
+  --nga-btn-secondary-bg-hover:  #E7EAEF;
   --nga-btn-secondary-bg-active: #CCCCCC;
 
   /* Variant: destructive */
   --nga-btn-destructive-bg:        #1A1A1A;
-  --nga-btn-destructive-fg:        #E6E6E6;
-  --nga-btn-destructive-bg-hover:  #1A1A1A;
+  --nga-btn-destructive-fg:        #F7F8FA;
+  --nga-btn-destructive-bg-hover:  #333333;
   --nga-btn-destructive-bg-active: #141414;
 }

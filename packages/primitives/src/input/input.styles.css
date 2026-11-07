@@ -26,14 +26,14 @@
   --nga-input-font-size-xl: var(--nga-size-font-xl, 18px);
 
   /* Variant: default */
-  --nga-input-default-bg:           var(--nga-color-background, #E6E6E6);
+  --nga-input-default-bg:           var(--nga-color-background, #F7F8FA);
   --nga-input-default-fg:           var(--nga-color-foreground, #1A1A1A);
   --nga-input-default-border:       var(--nga-color-border, #CCCCCC);
   --nga-input-default-border-hover: var(--nga-color-primary, #1A1A1A);
   --nga-input-default-placeholder:  var(--nga-color-muted-foreground, #6E6E6E);
 
   /* Variant: filled */
-  --nga-input-filled-bg:           var(--nga-color-secondary, #DEDEDE);
+  --nga-input-filled-bg:           var(--nga-color-secondary, #F2F4F6);
   --nga-input-filled-fg:           var(--nga-color-secondary-foreground, #1A1A1A);
   --nga-input-filled-border:       transparent;
   --nga-input-filled-border-hover: var(--nga-color-primary, #1A1A1A);
@@ -54,7 +54,7 @@
 
 /* ── Dark mode token overrides ──────────────────────────────── */
 .dark {
-  --nga-input-filled-bg-hover: color-mix(in srgb, var(--nga-input-filled-bg) 82%, #E6E6E6);
+  --nga-input-filled-bg-hover: color-mix(in srgb, var(--nga-input-filled-bg) 82%, #F7F8FA);
 }
 
 /* ── Base ───────────────────────────────────────────────────── */

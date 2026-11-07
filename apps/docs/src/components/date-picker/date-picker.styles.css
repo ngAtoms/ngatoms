@@ -29,7 +29,7 @@
   --nga-date-picker-trigger-invalid-border: var(--nga-color-destructive, oklch(47% 0 0));
 
   /* Panel */
-  --nga-date-picker-panel-bg:     color-mix(in oklab, var(--nga-color-card, #E6E6E6) 78%, transparent);
+  --nga-date-picker-panel-bg:     color-mix(in oklab, var(--nga-color-card, #F7F8FA) 78%, transparent);
   --nga-date-picker-panel-border: color-mix(in oklab, var(--nga-color-border, #CCCCCC) 55%, transparent);
   --nga-date-picker-panel-inset:  inset 0 1px 0 rgba(230, 230, 230, 0.85);
   --nga-date-picker-panel-blur:   blur(20px) saturate(180%);
@@ -65,7 +65,7 @@
 
 .dark {
   --nga-date-picker-panel-bg:     color-mix(in oklab, var(--nga-color-card) 82%, transparent);
-  --nga-date-picker-panel-border: color-mix(in oklab, #E6E6E6 14%, transparent);
+  --nga-date-picker-panel-border: color-mix(in oklab, #F7F8FA 14%, transparent);
   --nga-date-picker-panel-inset:  inset 0 1px 0 rgba(230, 230, 230, 0.07);
   --nga-date-picker-panel-blur:   blur(24px) saturate(200%) brightness(1.06);
   --nga-date-picker-panel-shadow: 0 8px 32px rgba(26, 26, 26, 0.45), 0 2px 8px rgba(26, 26, 26, 0.28);

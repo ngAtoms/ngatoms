@@ -3,9 +3,9 @@
     border-radius: var(--nga-radius-lg);
     overflow: hidden;
     margin: 16px 0 8px;
-    background: color-mix(in oklab, var(--nga-color-card) 65%, transparent);
-    backdrop-filter: blur(16px) saturate(150%);
-    -webkit-backdrop-filter: blur(16px) saturate(150%);
+    background: var(--nga-color-frost-strong);
+    backdrop-filter: var(--nga-frost-blur);
+    -webkit-backdrop-filter: var(--nga-frost-blur);
     box-shadow: 0 1px 3px rgba(0,0,0,0.06), 0 4px 16px rgba(0,0,0,0.04);
 }
 
@@ -67,14 +67,18 @@
     flex-wrap: wrap;
     background:
             radial-gradient(circle at 1px 1px, var(--nga-color-border) 1px, transparent 0) 0 0 / 16px 16px,
-            var(--nga-color-background);
+            var(--nga-color-frost-strong);
+    backdrop-filter: var(--nga-frost-blur);
+    -webkit-backdrop-filter: var(--nga-frost-blur);
 }
 
 .preview-area-content {
     display: flex;
     align-items: center;
     gap: 10px;
-    background: var(--nga-color-background);
+    background: var(--nga-color-frost-strong);
+    backdrop-filter: var(--nga-frost-blur);
+    -webkit-backdrop-filter: var(--nga-frost-blur);
     border-radius: var(--nga-radius-md);
     border: 1px solid var(--nga-color-border);
     padding: var(--nga-space-8);

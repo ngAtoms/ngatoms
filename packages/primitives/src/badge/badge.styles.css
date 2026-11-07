@@ -15,19 +15,19 @@
     border-color var(--nga-dur-base, 180ms) var(--nga-ease-out, ease);
 
   /* Variant: default — neutral stone */
-  --nga-badge-default-bg:  var(--nga-stone-150, #D6D6D6);
+  --nga-badge-default-bg:  var(--nga-stone-150, #E7EAEF);
   --nga-badge-default-fg:  var(--nga-stone-700, #404040);
 
   /* Variant: ember — warm accent */
-  --nga-badge-ember-bg:    var(--nga-ember-100, #D6D6D6);
+  --nga-badge-ember-bg:    var(--nga-ember-100, #E7EAEF);
   --nga-badge-ember-fg:    var(--nga-ember-700, #1F1F1F);
 
   /* Variant: success — green tint */
-  --nga-badge-success-bg:  #DEDEDE;
+  --nga-badge-success-bg:  #F2F4F6;
   --nga-badge-success-fg:  #262626;
 
   /* Variant: warning — amber tint */
-  --nga-badge-warning-bg:  #D6D6D6;
+  --nga-badge-warning-bg:  #E7EAEF;
   --nga-badge-warning-fg:  #1A1A1A;
 
   /* Variant: destructive — red tint */
@@ -36,7 +36,7 @@
 
   /* Variant: solid — high contrast */
   --nga-badge-solid-bg:    var(--nga-stone-900, #1A1A1A);
-  --nga-badge-solid-fg:    var(--nga-stone-50,  #E6E6E6);
+  --nga-badge-solid-fg:    var(--nga-stone-50,  #F7F8FA);
 
   /* Variant: outline */
   --nga-badge-outline-border: var(--nga-color-border-strong, #B3B3B3);
@@ -62,15 +62,15 @@
 
   /* destructive */
   --nga-badge-destructive-bg: rgba(26, 26, 26, 0.18);
-  --nga-badge-destructive-fg: #E6E6E6;
+  --nga-badge-destructive-fg: #F7F8FA;
 
   /* solid */
-  --nga-badge-solid-bg:    var(--nga-stone-100, #DEDEDE);
+  --nga-badge-solid-bg:    var(--nga-stone-100, #F2F4F6);
   --nga-badge-solid-fg:    var(--nga-stone-900, #1A1A1A);
 
   /* outline */
   --nga-badge-outline-border: var(--nga-color-border-strong, #404040);
-  --nga-badge-outline-fg:     var(--nga-color-foreground, #DEDEDE);
+  --nga-badge-outline-fg:     var(--nga-color-foreground, #F2F4F6);
 }
 
 /* ── Base ───────────────────────────────────────────────────── */

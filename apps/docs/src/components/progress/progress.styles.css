@@ -69,7 +69,7 @@
 
 /* ── Variants ───────────────────────────────────────────────── */
 .nga-progress--default {
-  background: var(--nga-color-muted, #DEDEDE);
+  background: var(--nga-color-muted, #F2F4F6);
   --nga-progress-c1: var(--nga-color-primary, #1A1A1A);
   --nga-progress-c2: var(--nga-color-muted-foreground, #6E6E6E);
 }
@@ -89,5 +89,5 @@
 .nga-progress--destructive {
   background: rgba(26, 26, 26, 0.18);
   --nga-progress-c1: #1A1A1A;
-  --nga-progress-c2: #DEDEDE;
+  --nga-progress-c2: #F2F4F6;
 }

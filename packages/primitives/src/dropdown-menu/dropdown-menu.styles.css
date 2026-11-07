@@ -6,7 +6,7 @@
 
 :root {
   /* Light — warm frosted glass */
-  --nga-dropdown-bg:          color-mix(in oklab, var(--nga-color-card, #E6E6E6) 78%, transparent);
+  --nga-dropdown-bg:          color-mix(in oklab, var(--nga-color-card, #F7F8FA) 78%, transparent);
   --nga-dropdown-border:      color-mix(in oklab, var(--nga-color-border, #CCCCCC) 55%, transparent);
   --nga-dropdown-radius:      var(--nga-radius-md, 6px);
   --nga-dropdown-shadow:      0 8px 24px -4px rgba(26, 26, 26, 0.10), 0 2px 8px -2px rgba(26, 26, 26, 0.06);
@@ -33,8 +33,8 @@
 .dark {
   /* Dark — deep frosted glass */
   --nga-dropdown-bg:     color-mix(in oklab, var(--nga-color-card) 82%, transparent);
-  --nga-dropdown-border: color-mix(in oklab, #E6E6E6 14%, transparent);
-  --nga-dropdown-shadow: 0 8px 32px rgba(26, 26, 26, 0.45), 0 2px 8px rgba(26, 26, 26, 0.28);
+  --nga-dropdown-border: color-mix(in oklab, #F7F8FA 14%, transparent);
+  --nga-dropdown-shadow: 0 8px 32px rgba(0, 0, 0, 0.55), 0 2px 8px rgba(0, 0, 0, 0.36);
   --nga-dropdown-inset:  inset 0 1px 0 rgba(230, 230, 230, 0.07);
   --nga-dropdown-blur:   blur(24px) saturate(200%) brightness(1.06);
 }

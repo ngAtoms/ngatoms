@@ -286,7 +286,7 @@
   gap: 6px;
   padding: 8px 14px;
   background: var(--nga-color-accent);
-  color: #E6E6E6;
+  color: var(--nga-color-accent-foreground);
   border: none;
   border-radius: var(--nga-radius-md);
   font-size: 14px;

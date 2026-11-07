@@ -49,7 +49,7 @@
 }
 
 .nga-accordion-trigger:hover {
-  background: var(--nga-color-muted, #DEDEDE);
+  background: var(--nga-color-muted, #F2F4F6);
 }
 
 .nga-accordion-trigger:focus-visible {
