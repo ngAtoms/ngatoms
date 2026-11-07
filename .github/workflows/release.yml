@@ -89,11 +89,24 @@ jobs:
       - name: Build packages
         run: npm run build --if-present
 
-      - name: Publish
+      - name: Stage packages for approval
         run: |
           npm install -g npm@12
+          real="$(command -v npm)"
+          mkdir -p "$RUNNER_TEMP/npm-bin"
+          cp tools/scripts/npm-stage-publish-wrapper.sh "$RUNNER_TEMP/npm-bin/npm"
+          chmod +x "$RUNNER_TEMP/npm-bin/npm"
+          export NGATOMS_REAL_NPM="$real"
+          export PATH="$RUNNER_TEMP/npm-bin:$PATH"
+          hash -r
           npm --version
           npm run publish:changesets
+          {
+            echo "### Packages staged"
+            echo "These versions are not public yet. Approve each one with 2FA:"
+            echo "1. On npmjs.com, open the package and use the Staged Packages tab."
+            echo "2. Or locally, after \`npm login\`: \`npm stage list <package>\` and then \`npm stage approve <stage-id>\`."
+          } >> "$GITHUB_STEP_SUMMARY"
 
       - name: Push
         run: git push --follow-tags

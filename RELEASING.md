@@ -11,11 +11,13 @@ Direct publish from a 2FA-bypass granular token is being removed. Each public pa
 | Organization or user | `ngAtoms` |
 | Repository | `ngatoms` |
 | Workflow filename | `release.yml` |
-| Allowed action | direct `npm publish` |
+| Allowed action | leave direct `npm publish` unchecked |
 
-Allow direct publish. This workflow runs `npm publish` and sets the channel tag (`latest`, `lts`, or `rc`) in that same publish. A new trusted publisher must complete its first successful publish within 2 days.
+`npm stage publish` is always allowed. Leave direct publish unchecked so the workflow cannot skip approval. The release job stages each package with the channel tag (`latest`, `lts`, or `rc`). A version becomes public only after a maintainer approves it with 2FA, on the package's Staged Packages tab or with `npm stage approve <stage-id>`.
 
-Packages that publish today: `ngatoms` and `@ngatoms/ngatoms-tokens`. The release job installs npm 12 before publishing so the CLI can use OIDC. `id-token: write` is already set on the job.
+A new trusted publisher must complete its first successful stage within 2 days.
+
+Packages that publish today: `ngatoms` and `@ngatoms/ngatoms-tokens`. The release job installs npm 12 before staging so the CLI can use OIDC. `id-token: write` is already set on the job.
 
 ## Changesets
 

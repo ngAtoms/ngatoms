@@ -97,7 +97,7 @@ The project supports multiple release channels via branch strategy:
 
 ## npm Publishing
 
-- CI publishes with npm trusted publishing (GitHub Actions OIDC) from `.github/workflows/release.yml`. Do not add an npm token, and do not use a 2FA-bypass granular access token for publish.
+- CI stages releases with npm trusted publishing (GitHub Actions OIDC) from `.github/workflows/release.yml`. A maintainer approves each version with 2FA. Do not add an npm token, do not enable direct `npm publish` on the trusted publisher, and do not use a 2FA-bypass granular access token.
 
 ## CI/CD
 
