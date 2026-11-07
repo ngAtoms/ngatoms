@@ -286,7 +286,7 @@
   gap: 6px;
   padding: 8px 14px;
   background: var(--nga-color-accent);
-  color: #fff;
+  color: var(--nga-color-accent-foreground);
   border: none;
   border-radius: var(--nga-radius-md);
   font-size: 14px;
@@ -406,7 +406,7 @@ section {
 }
 
 .dark .gs-card-icon {
-  background: rgba(255, 138, 31, 0.12);
+  background: rgba(230, 230, 230, 0.12);
   color: var(--nga-ember-400);
 }
 
@@ -618,7 +618,7 @@ section {
 
 :host-context(.dark) .status-alpha {
   color: var(--nga-ember-400);
-  background: rgba(240, 107, 0, 0.15);
+  background: rgba(26, 26, 26, 0.12);
 }
 
 .status-stable {

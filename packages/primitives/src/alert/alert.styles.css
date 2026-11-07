@@ -10,51 +10,51 @@
   --nga-alert-blur:    blur(14px) saturate(150%);
 
   /* Variant: default */
-  --nga-alert-default-bg:     color-mix(in oklab, var(--nga-color-card, #FFFFFF) 78%, transparent);
-  --nga-alert-default-fg:     var(--nga-color-foreground, #1A1714);
-  --nga-alert-default-border: color-mix(in oklab, var(--nga-color-border, #DED4C5) 70%, transparent);
+  --nga-alert-default-bg:     color-mix(in oklab, var(--nga-color-card, #F7F8FA) 78%, transparent);
+  --nga-alert-default-fg:     var(--nga-color-foreground, #1A1A1A);
+  --nga-alert-default-border: color-mix(in oklab, var(--nga-color-border, #CCCCCC) 70%, transparent);
 
   /* Variant: info */
-  --nga-alert-info-bg:     color-mix(in oklab, #EFF6FF 78%, transparent);
-  --nga-alert-info-fg:     #1D4ED8;
-  --nga-alert-info-border: color-mix(in oklab, #BFDBFE 80%, transparent);
+  --nga-alert-info-bg:     color-mix(in oklab, #F7F8FA 78%, transparent);
+  --nga-alert-info-fg:     #333333;
+  --nga-alert-info-border: color-mix(in oklab, #CCCCCC 80%, transparent);
 
   /* Variant: success */
-  --nga-alert-success-bg:     color-mix(in oklab, #F0FDF4 78%, transparent);
-  --nga-alert-success-fg:     #15803D;
-  --nga-alert-success-border: color-mix(in oklab, #BBF7D0 80%, transparent);
+  --nga-alert-success-bg:     color-mix(in oklab, #F2F4F6 78%, transparent);
+  --nga-alert-success-fg:     #262626;
+  --nga-alert-success-border: color-mix(in oklab, #B3B3B3 80%, transparent);
 
   /* Variant: warning */
-  --nga-alert-warning-bg:     color-mix(in oklab, #FEFCE8 78%, transparent);
-  --nga-alert-warning-fg:     #A16207;
-  --nga-alert-warning-border: color-mix(in oklab, #FEF08A 80%, transparent);
+  --nga-alert-warning-bg:     color-mix(in oklab, #E7EAEF 78%, transparent);
+  --nga-alert-warning-fg:     #1A1A1A;
+  --nga-alert-warning-border: color-mix(in oklab, #8A8A8A 80%, transparent);
 
   /* Variant: destructive */
-  --nga-alert-destructive-bg:     color-mix(in oklab, #FEF2F2 78%, transparent);
-  --nga-alert-destructive-fg:     #B91C1C;
-  --nga-alert-destructive-border: color-mix(in oklab, #FECACA 80%, transparent);
+  --nga-alert-destructive-bg:     color-mix(in oklab, #CCCCCC 78%, transparent);
+  --nga-alert-destructive-fg:     #1A1A1A;
+  --nga-alert-destructive-border: color-mix(in oklab, #8A8A8A 80%, transparent);
 }
 
 .dark {
   /* Variant: info */
-  --nga-alert-info-bg:     rgba(29, 78, 216, 0.12);
-  --nga-alert-info-fg:     #93C5FD;
-  --nga-alert-info-border: rgba(29, 78, 216, 0.25);
+  --nga-alert-info-bg:     rgba(26, 26, 26, 0.06);
+  --nga-alert-info-fg:     #B3B3B3;
+  --nga-alert-info-border: rgba(26, 26, 26, 0.14);
 
   /* Variant: success */
-  --nga-alert-success-bg:     rgba(21, 128, 61, 0.12);
-  --nga-alert-success-fg:     #86EFAC;
-  --nga-alert-success-border: rgba(21, 128, 61, 0.25);
+  --nga-alert-success-bg:     rgba(26, 26, 26, 0.08);
+  --nga-alert-success-fg:     #8A8A8A;
+  --nga-alert-success-border: rgba(26, 26, 26, 0.16);
 
   /* Variant: warning */
-  --nga-alert-warning-bg:     rgba(161, 98, 7, 0.12);
-  --nga-alert-warning-fg:     #FDE047;
-  --nga-alert-warning-border: rgba(161, 98, 7, 0.25);
+  --nga-alert-warning-bg:     rgba(26, 26, 26, 0.10);
+  --nga-alert-warning-fg:     #CCCCCC;
+  --nga-alert-warning-border: rgba(26, 26, 26, 0.18);
 
   /* Variant: destructive */
-  --nga-alert-destructive-bg:     rgba(185, 28, 28, 0.12);
-  --nga-alert-destructive-fg:     #FCA5A5;
-  --nga-alert-destructive-border: rgba(185, 28, 28, 0.25);
+  --nga-alert-destructive-bg:     rgba(26, 26, 26, 0.12);
+  --nga-alert-destructive-fg:     #F2F4F6;
+  --nga-alert-destructive-border: rgba(26, 26, 26, 0.22);
 }
 
 /* ── Base ───────────────────────────────────────────────────── */

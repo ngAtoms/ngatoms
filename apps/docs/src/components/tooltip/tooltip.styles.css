@@ -5,8 +5,8 @@
    ============================================================= */
 
 :root {
-  --nga-tooltip-bg:      color-mix(in oklab, var(--nga-color-foreground, #1A1714) 90%, transparent);
-  --nga-tooltip-fg:      var(--nga-color-background, #FAF8F5);
+  --nga-tooltip-bg:      color-mix(in oklab, var(--nga-color-foreground, #1A1A1A) 90%, transparent);
+  --nga-tooltip-fg:      var(--nga-color-background, #F7F8FA);
   --nga-tooltip-radius:  var(--nga-radius-sm, 4px);
   --nga-tooltip-arrow:   6px;
   --nga-tooltip-blur:    blur(12px) saturate(160%);

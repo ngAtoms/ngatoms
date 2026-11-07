@@ -8,10 +8,10 @@
   --nga-checkbox-radius:       var(--nga-radius-sm, 4px);
   --nga-checkbox-transition:   background var(--nga-dur-base, 180ms) var(--nga-ease-out, ease), border-color var(--nga-dur-base, 180ms) var(--nga-ease-out, ease), box-shadow var(--nga-dur-base, 180ms) var(--nga-ease-out, ease);
 
-  --nga-checkbox-bg:           var(--nga-color-background, #FAF8F5);
-  --nga-checkbox-border:       var(--nga-color-border-strong, #C5B7A1);
-  --nga-checkbox-checked-bg:   var(--nga-color-primary, #1A1714);
-  --nga-checkbox-checked-fg:   var(--nga-color-primary-foreground, #FFFFFF);
+  --nga-checkbox-bg:           var(--nga-color-background, #F7F8FA);
+  --nga-checkbox-border:       var(--nga-color-border-strong, #B3B3B3);
+  --nga-checkbox-checked-bg:   var(--nga-color-primary, #1A1A1A);
+  --nga-checkbox-checked-fg:   var(--nga-color-primary-foreground, #F7F8FA);
 
   --nga-checkbox-size-sm: 0.875rem;
   --nga-checkbox-size-md: 1rem;
@@ -33,7 +33,7 @@
 }
 
 .nga-checkbox:focus-visible {
-  box-shadow: var(--nga-glow-ember, 0 0 0 4px rgba(240, 107, 0, 0.18));
+  box-shadow: var(--nga-glow-ember, 0 0 0 4px rgba(26, 26, 26, 0.16));
 }
 
 .nga-checkbox:disabled {

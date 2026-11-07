@@ -34,11 +34,11 @@
   background: transparent;
   transition: var(--nga-tabs-transition);
   outline: none;
-  color: var(--nga-color-muted-foreground, #87735A);
+  color: var(--nga-color-muted-foreground, #6E6E6E);
 }
 
 .nga-tab-trigger:focus-visible {
-  box-shadow: var(--nga-glow-ember, 0 0 0 4px rgba(240, 107, 0, 0.18));
+  box-shadow: var(--nga-glow-ember, 0 0 0 4px rgba(26, 26, 26, 0.16));
   border-radius: var(--nga-radius-sm, 4px);
 }
 
@@ -61,7 +61,7 @@
    ════════════════════════════════════════════════════════════ */
 .nga-tabs--underline .nga-tab-list {
   gap: 0;
-  border-bottom: 1px solid var(--nga-color-border, #DED4C5);
+  border-bottom: 1px solid var(--nga-color-border, #CCCCCC);
 }
 
 .nga-tabs--underline .nga-tab-trigger {
@@ -71,12 +71,12 @@
 }
 
 .nga-tabs--underline .nga-tab-trigger:hover:not(:disabled) {
-  color: var(--nga-color-foreground, #1A1714);
+  color: var(--nga-color-foreground, #1A1A1A);
 }
 
 .nga-tabs--underline .nga-tab-trigger--active {
-  color: var(--nga-color-foreground, #1A1714);
-  border-bottom-color: var(--nga-color-accent, #F06B00);
+  color: var(--nga-color-foreground, #1A1A1A);
+  border-bottom-color: var(--nga-color-accent, #333333);
 }
 
 .nga-tabs--underline .nga-tab-panel {
@@ -88,7 +88,7 @@
    ════════════════════════════════════════════════════════════ */
 .nga-tabs--pills .nga-tab-list {
   gap: 0;
-  background: var(--nga-color-muted, #F3EEE7);
+  background: var(--nga-color-muted, #F2F4F6);
   border-radius: var(--nga-radius-md, 6px);
   padding: 3px;
   width: fit-content;
@@ -100,14 +100,14 @@
 }
 
 .nga-tabs--pills .nga-tab-trigger:hover:not(:disabled):not(.nga-tab-trigger--active) {
-  color: var(--nga-color-foreground, #1A1714);
-  background: color-mix(in srgb, var(--nga-color-muted, #F3EEE7) 50%, transparent);
+  color: var(--nga-color-foreground, #1A1A1A);
+  background: color-mix(in srgb, var(--nga-color-muted, #F2F4F6) 50%, transparent);
 }
 
 .nga-tabs--pills .nga-tab-trigger--active {
-  color: var(--nga-color-foreground, #1A1714);
-  background: var(--nga-color-background, #FAF8F5);
-  box-shadow: var(--nga-shadow-sm, 0 1px 2px rgba(26, 23, 20, 0.06), 0 1px 1px rgba(26, 23, 20, 0.04));
+  color: var(--nga-color-foreground, #1A1A1A);
+  background: var(--nga-color-background, #F7F8FA);
+  box-shadow: var(--nga-shadow-sm, 0 1px 2px rgba(26, 26, 26, 0.06), 0 1px 1px rgba(26, 26, 26, 0.04));
 }
 
 .nga-tabs--pills .nga-tab-panel {

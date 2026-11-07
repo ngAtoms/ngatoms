@@ -7,9 +7,9 @@
 /* ── Custom properties ──────────────────────────────────────── */
 :root {
   --nga-avatar-radius:       var(--nga-radius-full, 9999px);
-  --nga-avatar-bg:           var(--nga-color-muted, #F3EEE7);
-  --nga-avatar-fg:           var(--nga-color-muted-foreground, #87735A);
-  --nga-avatar-border:       var(--nga-color-border, #DED4C5);
+  --nga-avatar-bg:           var(--nga-color-muted, #F2F4F6);
+  --nga-avatar-fg:           var(--nga-color-muted-foreground, #6E6E6E);
+  --nga-avatar-border:       var(--nga-color-border, #CCCCCC);
   --nga-avatar-font-weight:  var(--nga-font-weight-semibold, 600);
 
   --nga-avatar-size-sm: 1.75rem;

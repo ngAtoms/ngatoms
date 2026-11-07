@@ -27,21 +27,21 @@
 
 /* ── Code panel theme tokens ────────────────────────────────── */
 :root {
-  --code-panel-bg:        #000000;
-  --code-panel-header-bg: #0d0d0d;
-  --code-panel-border:    #1a1a1a;
-  --code-panel-muted:     #555555;
-  --code-tab-active-bg:   #1a1a1a;
-  --code-tab-active-fg:   #cccccc;
+  --code-panel-bg:        #121212;
+  --code-panel-header-bg: #1C1C1C;
+  --code-panel-border:    #333333;
+  --code-panel-muted:     #8A8A8A;
+  --code-tab-active-bg:   #2A2A2A;
+  --code-tab-active-fg:   #F5F6F8;
 }
 
 :root:not(.dark) {
-  --code-panel-bg:        #f6f8fa;
-  --code-panel-header-bg: #eaeef2;
-  --code-panel-border:    #d0d7de;
-  --code-panel-muted:     #57606a;
-  --code-tab-active-bg:   #ffffff;
-  --code-tab-active-fg:   #24292f;
+  --code-panel-bg:        #F7F8FA;
+  --code-panel-header-bg: #F2F4F6;
+  --code-panel-border:    #D8DDE3;
+  --code-panel-muted:     #6E6E6E;
+  --code-tab-active-bg:   #FFFFFF;
+  --code-tab-active-fg:   #1A1A1A;
 }
 
 *, *::before, *::after {
@@ -55,11 +55,19 @@ html, body {
 }
 
 body {
-  background: var(--nga-color-background);
+  background-color: var(--nga-color-background);
+  background-image:
+    radial-gradient(1100px 560px at 6% -10%, rgba(255, 255, 255, 0.96), transparent 58%),
+    radial-gradient(820px 480px at 100% 0%, rgba(255, 255, 255, 0.72), transparent 54%);
+  background-attachment: fixed;
   color: var(--nga-color-foreground);
   font-family: var(--nga-font-sans), serif;
   font-size: var(--nga-text-base, 15px);
   line-height: var(--nga-leading-normal, 1.5);
+}
+
+html.dark body {
+  background-image: none;
 }
 
 a {

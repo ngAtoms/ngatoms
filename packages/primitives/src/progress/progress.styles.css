@@ -32,7 +32,7 @@
   width: 100%;
   border-radius: var(--nga-progress-radius);
   overflow: hidden;
-  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.08);
+  box-shadow: inset 0 1px 2px rgba(26, 26, 26, 0.08);
 }
 
 /* ── Determinate fill ───────────────────────────────────────── */
@@ -69,25 +69,25 @@
 
 /* ── Variants ───────────────────────────────────────────────── */
 .nga-progress--default {
-  background: var(--nga-color-muted, #F3EEE7);
-  --nga-progress-c1: var(--nga-color-primary, #1A1714);
-  --nga-progress-c2: var(--nga-color-muted-foreground, #87735A);
+  background: var(--nga-color-muted, #F2F4F6);
+  --nga-progress-c1: var(--nga-color-primary, #1A1A1A);
+  --nga-progress-c2: var(--nga-color-muted-foreground, #6E6E6E);
 }
 
 .nga-progress--accent {
-  background: rgba(255, 169, 77, 0.25);
-  --nga-progress-c1: #F06B00;
-  --nga-progress-c2: #FFC988;
+  background: rgba(26, 26, 26, 0.12);
+  --nga-progress-c1: #333333;
+  --nga-progress-c2: #B3B3B3;
 }
 
 .nga-progress--success {
-  background: rgba(22, 163, 74, 0.15);
-  --nga-progress-c1: #16A34A;
-  --nga-progress-c2: #86EFAC;
+  background: rgba(26, 26, 26, 0.10);
+  --nga-progress-c1: #404040;
+  --nga-progress-c2: #8A8A8A;
 }
 
 .nga-progress--destructive {
-  background: rgba(220, 38, 38, 0.15);
-  --nga-progress-c1: #DC2626;
-  --nga-progress-c2: #FCA5A5;
+  background: rgba(26, 26, 26, 0.18);
+  --nga-progress-c1: #1A1A1A;
+  --nga-progress-c2: #F2F4F6;
 }

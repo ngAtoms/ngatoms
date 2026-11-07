@@ -39,49 +39,49 @@
   --nga-btn-spinner-size-xl: var(--nga-size-spinner-xl, 18px);
 
   /* Variant: primary — Ember accent, the one high-intent CTA */
-  --nga-btn-primary-bg:        var(--nga-color-accent, #F06B00);
-  --nga-btn-primary-fg:        var(--nga-color-accent-foreground, #FFFFFF);
-  --nga-btn-primary-bg-hover:  var(--nga-color-accent-hover, #C75400);
-  --nga-btn-primary-bg-active: var(--nga-color-accent-active, #9A4000);
+  --nga-btn-primary-bg:        var(--nga-color-accent, #333333);
+  --nga-btn-primary-fg:        var(--nga-color-accent-foreground, #F7F8FA);
+  --nga-btn-primary-bg-hover:  var(--nga-color-accent-hover, #262626);
+  --nga-btn-primary-bg-active: var(--nga-color-accent-active, #1F1F1F);
 
   /* Variant: secondary — white surface + subtle border */
-  --nga-btn-secondary-bg:        var(--nga-color-card, #FFFFFF);
-  --nga-btn-secondary-fg:        var(--nga-color-foreground, #1A1714);
-  --nga-btn-secondary-border:    var(--nga-color-border, #DED4C5);
-  --nga-btn-secondary-bg-hover:  var(--nga-stone-150, #EBE4D9);
-  --nga-btn-secondary-border-hover: var(--nga-color-border-strong, #C5B7A1);
+  --nga-btn-secondary-bg:        var(--nga-color-card, #F7F8FA);
+  --nga-btn-secondary-fg:        var(--nga-color-foreground, #1A1A1A);
+  --nga-btn-secondary-border:    var(--nga-color-border, #CCCCCC);
+  --nga-btn-secondary-bg-hover:  var(--nga-stone-150, #E7EAEF);
+  --nga-btn-secondary-border-hover: var(--nga-color-border-strong, #B3B3B3);
 
   /* Variant: outline — transparent + stronger border */
-  --nga-btn-outline-border:    var(--nga-color-border-strong, #C5B7A1);
-  --nga-btn-outline-fg:        var(--nga-color-foreground, #1A1714);
-  --nga-btn-outline-bg-hover:  var(--nga-stone-150, #EBE4D9);
+  --nga-btn-outline-border:    var(--nga-color-border-strong, #B3B3B3);
+  --nga-btn-outline-fg:        var(--nga-color-foreground, #1A1A1A);
+  --nga-btn-outline-bg-hover:  var(--nga-stone-150, #E7EAEF);
 
   /* Variant: ghost — no border, no bg */
-  --nga-btn-ghost-fg:          var(--nga-color-foreground, #1A1714);
-  --nga-btn-ghost-bg-hover:    var(--nga-stone-150, #EBE4D9);
+  --nga-btn-ghost-fg:          var(--nga-color-foreground, #1A1A1A);
+  --nga-btn-ghost-bg-hover:    var(--nga-stone-150, #E7EAEF);
 
   /* Variant: destructive */
-  --nga-btn-destructive-bg:        var(--nga-color-destructive, #DC2626);
-  --nga-btn-destructive-fg:        var(--nga-color-destructive-foreground, #FFFFFF);
-  --nga-btn-destructive-bg-hover:  var(--nga-color-destructive-hover, #B91C1C);
-  --nga-btn-destructive-bg-active: var(--nga-color-destructive-active, #991B1B);
+  --nga-btn-destructive-bg:        var(--nga-color-destructive, #1A1A1A);
+  --nga-btn-destructive-fg:        var(--nga-color-destructive-foreground, #F7F8FA);
+  --nga-btn-destructive-bg-hover:  var(--nga-color-destructive-hover, #333333);
+  --nga-btn-destructive-bg-active: var(--nga-color-destructive-active, #141414);
 }
 
 /* ── Dark mode token overrides ──────────────────────────────── */
 .dark {
-  --nga-btn-primary-bg:        var(--nga-color-accent, #FF8A1F);
-  --nga-btn-primary-bg-hover:  var(--nga-color-accent-hover, #FFA94D);
-  --nga-btn-primary-bg-active: var(--nga-color-accent-active, #E07000);
+  --nga-btn-primary-bg:        var(--nga-color-accent, #6E6E6E);
+  --nga-btn-primary-bg-hover:  var(--nga-color-accent-hover, #8A8A8A);
+  --nga-btn-primary-bg-active: var(--nga-color-accent-active, #F7F8FA);
 
-  --nga-btn-secondary-bg:           var(--nga-color-card, #1A1714);
-  --nga-btn-secondary-border:       var(--nga-color-border, #2A2520);
-  --nga-btn-secondary-bg-hover:     var(--nga-stone-800, #2E2822);
-  --nga-btn-secondary-border-hover: var(--nga-color-border-strong, #3A332C);
+  --nga-btn-secondary-bg:           var(--nga-color-card, #1A1A1A);
+  --nga-btn-secondary-border:       var(--nga-color-border, #333333);
+  --nga-btn-secondary-bg-hover:     var(--nga-stone-800, #333333);
+  --nga-btn-secondary-border-hover: var(--nga-color-border-strong, #404040);
 
-  --nga-btn-outline-border:   var(--nga-color-border-strong, #3A332C);
-  --nga-btn-outline-bg-hover: var(--nga-stone-800, #2E2822);
+  --nga-btn-outline-border:   var(--nga-color-border-strong, #404040);
+  --nga-btn-outline-bg-hover: var(--nga-stone-800, #333333);
 
-  --nga-btn-ghost-bg-hover: var(--nga-stone-800, #2E2822);
+  --nga-btn-ghost-bg-hover: var(--nga-stone-800, #333333);
 }
 
 /* ── Base ───────────────────────────────────────────────────── */
@@ -107,7 +107,7 @@
 }
 
 .nga-btn:focus-visible {
-  box-shadow: var(--nga-glow-ember, 0 0 0 4px color-mix(in oklch, var(--nga-color-accent, #F06B00) 18%, transparent));
+  box-shadow: var(--nga-glow-ember, 0 0 0 4px color-mix(in oklch, var(--nga-color-accent, #333333) 18%, transparent));
 }
 
 .nga-btn[aria-disabled="true"],
