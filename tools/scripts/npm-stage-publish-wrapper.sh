@@ -18,4 +18,22 @@ for arg in "$@"; do
   fi
 done
 
-exec "$real" stage publish "${args[@]}"
+lock="${NGATOMS_STAGE_LOCK:-${RUNNER_TEMP:-/tmp}/ngatoms-npm-stage.lock}"
+mkdir -p "$(dirname "$lock")"
+exec 9>"$lock"
+flock 9
+
+set +e
+output="$("$real" stage publish "${args[@]}" 2>&1)"
+code=$?
+set -e
+printf '%s\n' "$output"
+if [[ "$code" -eq 0 ]]; then
+  exit 0
+fi
+# A rerun finds the version already waiting for approval. Rejecting it needs 2FA.
+if [[ "$output" == *"Cannot stage previously published version"* || "$output" == *"previously staged version"* ]]; then
+  echo "ngatoms: this version is already staged; leaving it for approval"
+  exit 0
+fi
+exit "$code"
