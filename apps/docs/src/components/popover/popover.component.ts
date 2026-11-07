@@ -11,25 +11,27 @@ import {
   model,
   signal,
   viewChild,
-} from '@angular/core';
-import { DOCUMENT } from '@angular/common';
-import { NgAtomsOverlayService } from '../overlay/overlay.service';
+  ChangeDetectionStrategy,
+} from "@angular/core";
+import { DOCUMENT } from "@angular/common";
+import { NgAtomsOverlayService } from "../overlay/overlay.service";
 
-export type NgAtomsPopoverPlacement = 'top' | 'bottom' | 'left' | 'right';
+export type NgAtomsPopoverPlacement = "top" | "bottom" | "left" | "right";
 
 const OPPOSITE: Record<NgAtomsPopoverPlacement, NgAtomsPopoverPlacement> = {
-  top: 'bottom',
-  bottom: 'top',
-  left: 'right',
-  right: 'left',
+  top: "bottom",
+  bottom: "top",
+  left: "right",
+  right: "left",
 };
 
 @Component({
-  selector: 'nga-popover',
+  selector: "nga-popover",
   standalone: true,
-  templateUrl: './popover.component.html',
-  styleUrl: './popover.component.css',
-  host: { class: 'nga-popover-root' },
+  templateUrl: "./popover.component.html",
+  styleUrl: "./popover.component.css",
+  changeDetection: ChangeDetectionStrategy.Eager,
+  host: { class: "nga-popover-root" },
 })
 export class NgAtomsPopoverComponent implements OnDestroy {
   private readonly el = inject(ElementRef<HTMLElement>);
@@ -38,17 +40,20 @@ export class NgAtomsPopoverComponent implements OnDestroy {
   private readonly overlay = inject(NgAtomsOverlayService);
 
   readonly open = model<boolean>(false);
-  readonly placement = input<NgAtomsPopoverPlacement>('bottom');
+  readonly placement = input<NgAtomsPopoverPlacement>("bottom");
 
-  readonly panelEl = viewChild.required<ElementRef<HTMLElement>>('panelEl');
+  readonly panelEl = viewChild.required<ElementRef<HTMLElement>>("panelEl");
 
-  readonly activePlacement = signal<NgAtomsPopoverPlacement>('bottom');
+  readonly activePlacement = signal<NgAtomsPopoverPlacement>("bottom");
 
   private deregister: (() => void) | null = null;
 
   constructor() {
     afterNextRender(() => {
-      this.renderer.appendChild(this.document.body, this.panelEl().nativeElement);
+      this.renderer.appendChild(
+        this.document.body,
+        this.panelEl().nativeElement
+      );
     });
     effect(() => {
       if (this.open()) {
@@ -64,7 +69,7 @@ export class NgAtomsPopoverComponent implements OnDestroy {
     });
   }
 
-  @HostListener('window:scroll')
+  @HostListener("window:scroll")
   onWindowScroll(): void {
     if (this.open()) {
       this.position();
@@ -72,7 +77,7 @@ export class NgAtomsPopoverComponent implements OnDestroy {
   }
 
   toggle(): void {
-    this.open.update(v => !v);
+    this.open.update((v) => !v);
     if (this.open()) {
       requestAnimationFrame(() => this.position());
     }
@@ -86,25 +91,25 @@ export class NgAtomsPopoverComponent implements OnDestroy {
     p: NgAtomsPopoverPlacement,
     triggerRect: DOMRect,
     panelRect: DOMRect,
-    gap: number,
+    gap: number
   ): { top: number; left: number } {
     switch (p) {
-      case 'bottom':
+      case "bottom":
         return {
           top: triggerRect.bottom + gap,
           left: triggerRect.left + triggerRect.width / 2 - panelRect.width / 2,
         };
-      case 'top':
+      case "top":
         return {
           top: triggerRect.top - panelRect.height - gap,
           left: triggerRect.left + triggerRect.width / 2 - panelRect.width / 2,
         };
-      case 'left':
+      case "left":
         return {
           top: triggerRect.top + triggerRect.height / 2 - panelRect.height / 2,
           left: triggerRect.left - panelRect.width - gap,
         };
-      case 'right':
+      case "right":
         return {
           top: triggerRect.top + triggerRect.height / 2 - panelRect.height / 2,
           left: triggerRect.right + gap,
@@ -112,7 +117,12 @@ export class NgAtomsPopoverComponent implements OnDestroy {
     }
   }
 
-  private fits(top: number, left: number, panelRect: DOMRect, margin: number): boolean {
+  private fits(
+    top: number,
+    left: number,
+    panelRect: DOMRect,
+    margin: number
+  ): boolean {
     return (
       top >= margin &&
       left >= margin &&
@@ -131,28 +141,54 @@ export class NgAtomsPopoverComponent implements OnDestroy {
     const preferred = this.placement();
     const fallback = OPPOSITE[preferred];
 
-    const preferredCoords = this.computeCoords(preferred, triggerRect, panelRect, gap);
-    const fallbackCoords = this.computeCoords(fallback, triggerRect, panelRect, gap);
+    const preferredCoords = this.computeCoords(
+      preferred,
+      triggerRect,
+      panelRect,
+      gap
+    );
+    const fallbackCoords = this.computeCoords(
+      fallback,
+      triggerRect,
+      panelRect,
+      gap
+    );
 
     let resolved: NgAtomsPopoverPlacement;
     let top: number;
     let left: number;
 
-    if (this.fits(preferredCoords.top, preferredCoords.left, panelRect, margin)) {
+    if (
+      this.fits(preferredCoords.top, preferredCoords.left, panelRect, margin)
+    ) {
       resolved = preferred;
       ({ top, left } = preferredCoords);
-    } else if (this.fits(fallbackCoords.top, fallbackCoords.left, panelRect, margin)) {
+    } else if (
+      this.fits(fallbackCoords.top, fallbackCoords.left, panelRect, margin)
+    ) {
       resolved = fallback;
       ({ top, left } = fallbackCoords);
     } else {
       resolved = preferred;
-      top = Math.max(margin, Math.min(preferredCoords.top, window.innerHeight - panelRect.height - margin));
-      left = Math.max(margin, Math.min(preferredCoords.left, window.innerWidth - panelRect.width - margin));
+      top = Math.max(
+        margin,
+        Math.min(
+          preferredCoords.top,
+          window.innerHeight - panelRect.height - margin
+        )
+      );
+      left = Math.max(
+        margin,
+        Math.min(
+          preferredCoords.left,
+          window.innerWidth - panelRect.width - margin
+        )
+      );
     }
 
     this.activePlacement.set(resolved);
-    this.renderer.setStyle(panel, 'top', `${top}px`);
-    this.renderer.setStyle(panel, 'left', `${left}px`);
+    this.renderer.setStyle(panel, "top", `${top}px`);
+    this.renderer.setStyle(panel, "left", `${left}px`);
   }
 
   ngOnDestroy(): void {

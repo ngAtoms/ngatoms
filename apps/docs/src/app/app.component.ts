@@ -1,12 +1,22 @@
-import { Component, signal, effect, inject, DOCUMENT, AfterViewInit, OnDestroy } from '@angular/core';
-import { RouterOutlet, RouterLink, RouterLinkActive } from '@angular/router';
+import {
+  Component,
+  signal,
+  effect,
+  inject,
+  DOCUMENT,
+  AfterViewInit,
+  OnDestroy,
+  ChangeDetectionStrategy,
+} from "@angular/core";
+import { RouterOutlet, RouterLink, RouterLinkActive } from "@angular/router";
 
 @Component({
-  selector: 'app-root',
+  selector: "app-root",
   standalone: true,
   imports: [RouterOutlet, RouterLink, RouterLinkActive],
-  templateUrl: './app.component.html',
-  styleUrl: './app.component.css',
+  templateUrl: "./app.component.html",
+  changeDetection: ChangeDetectionStrategy.Eager,
+  styleUrl: "./app.component.css",
 })
 export class AppComponent implements AfterViewInit, OnDestroy {
   private readonly document = inject(DOCUMENT);
@@ -15,32 +25,35 @@ export class AppComponent implements AfterViewInit, OnDestroy {
   readonly scrolled = signal(false);
   readonly mobileNavOpen = signal(false);
 
-  private readonly onScroll = () => this.scrolled.set(this.document.documentElement.scrollTop > 4);
+  private readonly onScroll = () =>
+    this.scrolled.set(this.document.documentElement.scrollTop > 4);
 
   constructor() {
     effect(() => {
-      this.document.documentElement.classList.toggle('dark', this.isDark());
+      this.document.documentElement.classList.toggle("dark", this.isDark());
     });
   }
 
   ngAfterViewInit() {
-    this.document.defaultView?.addEventListener('scroll', this.onScroll, { passive: true });
+    this.document.defaultView?.addEventListener("scroll", this.onScroll, {
+      passive: true,
+    });
   }
 
   ngOnDestroy() {
-    this.document.defaultView?.removeEventListener('scroll', this.onScroll);
+    this.document.defaultView?.removeEventListener("scroll", this.onScroll);
   }
 
   toggleTheme(): void {
-    this.isDark.update(v => !v);
+    this.isDark.update((v) => !v);
   }
 
   toggleMobileNav(): void {
-    this.mobileNavOpen.update(v => !v);
+    this.mobileNavOpen.update((v) => !v);
   }
 
   onSidebarNavClick(event: MouseEvent): void {
-    if ((event.target as HTMLElement).closest('a')) {
+    if ((event.target as HTMLElement).closest("a")) {
       this.mobileNavOpen.set(false);
     }
   }

@@ -1,14 +1,14 @@
-import { Component } from '@angular/core';
-import { RouterLink } from '@angular/router';
-import { NgAtomsTooltipDirective } from '../../../components/tooltip';
-import { NgAtomsButtonDirective } from '../../../components/button';
-import { NgAtomsBadgeDirective } from '../../../components/badge';
-import { CodeBlockComponent } from '../../../components/code-block/code-block.component';
-import { TocComponent } from '../../../components/toc/toc.component';
-import { PreviewCard } from '../../../components/preview-card/preview-card';
+import { Component, ChangeDetectionStrategy } from "@angular/core";
+import { RouterLink } from "@angular/router";
+import { NgAtomsTooltipDirective } from "../../../components/tooltip";
+import { NgAtomsButtonDirective } from "../../../components/button";
+import { NgAtomsBadgeDirective } from "../../../components/badge";
+import { CodeBlockComponent } from "../../../components/code-block/code-block.component";
+import { TocComponent } from "../../../components/toc/toc.component";
+import { PreviewCard } from "../../../components/preview-card/preview-card";
 
 @Component({
-  selector: 'app-tooltip-page',
+  selector: "app-tooltip-page",
   standalone: true,
   imports: [
     RouterLink,
@@ -19,8 +19,9 @@ import { PreviewCard } from '../../../components/preview-card/preview-card';
     TocComponent,
     PreviewCard,
   ],
-  templateUrl: './tooltip-page.component.html',
-  styleUrl: './tooltip-page.component.css',
+  templateUrl: "./tooltip-page.component.html",
+  changeDetection: ChangeDetectionStrategy.Eager,
+  styleUrl: "./tooltip-page.component.css",
 })
 export class TooltipPageComponent {
   readonly heroCode = `<button ngAtomsButton [ngAtomsTooltip]="'Save your changes'">
@@ -67,24 +68,56 @@ export class MyComponent {}`;
 </button>`;
 
   readonly props = [
-    { name: 'ngAtomsTooltip', type: 'string',                                    defaultVal: '—',       description: 'Text to display in the tooltip. Falsy values disable the tooltip.' },
-    { name: 'placement',      type: `'top' | 'bottom' | 'left' | 'right'`,       defaultVal: `'top'`,   description: 'Which side the tooltip appears on relative to the trigger.' },
-    { name: 'delay',          type: 'number',                                     defaultVal: '300',     description: 'Milliseconds to wait before showing the tooltip on hover.' },
+    {
+      name: "ngAtomsTooltip",
+      type: "string",
+      defaultVal: "—",
+      description:
+        "Text to display in the tooltip. Falsy values disable the tooltip.",
+    },
+    {
+      name: "placement",
+      type: `'top' | 'bottom' | 'left' | 'right'`,
+      defaultVal: `'top'`,
+      description: "Which side the tooltip appears on relative to the trigger.",
+    },
+    {
+      name: "delay",
+      type: "number",
+      defaultVal: "300",
+      description: "Milliseconds to wait before showing the tooltip on hover.",
+    },
   ];
 
   readonly a11yItems = [
-    { icon: 'keyboard',   title: 'Keyboard focus', body: 'Tooltips appear on both hover and keyboard focus, so keyboard-only users get the same contextual information.' },
-    { icon: 'text-aa',    title: 'Accessible name', body: 'Use tooltips on icon-only buttons to provide an accessible name (in addition to aria-label for robustness).' },
-    { icon: 'prohibit',   title: 'Interactive content', body: 'Tooltips are pointer-events:none and cannot contain interactive elements. Use a Popover for rich content.' },
-    { icon: 'arrows-out-simple', title: 'Repositioning', body: 'The tooltip remains visible and automatically repositions itself when the page is scrolled, staying anchored to its trigger.' },
+    {
+      icon: "keyboard",
+      title: "Keyboard focus",
+      body: "Tooltips appear on both hover and keyboard focus, so keyboard-only users get the same contextual information.",
+    },
+    {
+      icon: "text-aa",
+      title: "Accessible name",
+      body: "Use tooltips on icon-only buttons to provide an accessible name (in addition to aria-label for robustness).",
+    },
+    {
+      icon: "prohibit",
+      title: "Interactive content",
+      body: "Tooltips are pointer-events:none and cannot contain interactive elements. Use a Popover for rich content.",
+    },
+    {
+      icon: "arrows-out-simple",
+      title: "Repositioning",
+      body: "The tooltip remains visible and automatically repositions itself when the page is scrolled, staying anchored to its trigger.",
+    },
   ];
 
   readonly tocItems = [
-    { id: 'usage',      label: 'Usage' },
-    { id: 'placements', label: 'Placements' },
-    { id: 'elements',   label: 'On different elements' },
-    { id: 'long',       label: 'Long content' },
-    { id: 'api',        label: 'API' },
-    { id: 'a11y',       label: 'Accessibility' },
+    { id: "usage", label: "Usage" },
+    { id: "placements", label: "Placements" },
+    { id: "elements", label: "On different elements" },
+    { id: "long", label: "Long content" },
+    { id: "api", label: "API" },
+    { id: "a11y", label: "Accessibility" },
   ];
 }
