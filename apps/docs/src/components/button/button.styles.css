@@ -42,7 +42,7 @@
   --nga-btn-primary-bg:        var(--nga-color-accent, #333333);
   --nga-btn-primary-fg:        var(--nga-color-accent-foreground, #F7F8FA);
   --nga-btn-primary-bg-hover:  var(--nga-color-accent-hover, #262626);
-  --nga-btn-primary-bg-active: #1F1F1F;
+  --nga-btn-primary-bg-active: var(--nga-color-accent-active, #1F1F1F);
 
   /* Variant: secondary — white surface + subtle border */
   --nga-btn-secondary-bg:        var(--nga-color-card, #F7F8FA);
@@ -71,7 +71,7 @@
 .dark {
   --nga-btn-primary-bg:       var(--nga-color-accent, #6E6E6E);
   --nga-btn-primary-bg-hover: var(--nga-color-accent-hover, #8A8A8A);
-  --nga-btn-primary-bg-active: var(--nga-color-accent-hover, #F2F4F6);
+  --nga-btn-primary-bg-active: var(--nga-color-accent-active, #FFFFFF);
 
   --nga-btn-secondary-bg:           var(--nga-color-card, #1A1A1A);
   --nga-btn-secondary-border:       var(--nga-color-border, #333333);

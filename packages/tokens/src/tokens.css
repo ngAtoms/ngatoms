@@ -61,6 +61,7 @@
   /* Accent — ink, one step off the page text */
   --nga-color-accent:                var(--nga-ember-500);
   --nga-color-accent-hover:          var(--nga-ember-600);
+  --nga-color-accent-active:         var(--nga-ember-700);
   --nga-color-accent-foreground:     var(--nga-white);
   --nga-color-accent-soft:           var(--nga-stone-150);
 
@@ -222,6 +223,7 @@
   /* Accent — light ink so it reads on a 90% black page */
   --nga-color-accent:                var(--nga-stone-200);
   --nga-color-accent-hover:          var(--nga-stone-100);
+  --nga-color-accent-active:         #FFFFFF;
   --nga-color-accent-foreground:     var(--nga-stone-950);
   --nga-color-accent-soft:           rgba(245, 246, 248, 0.14);
 
