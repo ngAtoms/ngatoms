@@ -1,5 +1,15 @@
-import { Component, input, signal, OnInit, OnDestroy, inject, PLATFORM_ID, NgZone } from '@angular/core';
-import { isPlatformBrowser } from '@angular/common';
+import {
+  Component,
+  input,
+  signal,
+  OnInit,
+  OnDestroy,
+  inject,
+  PLATFORM_ID,
+  NgZone,
+  ChangeDetectionStrategy,
+} from "@angular/core";
+import { isPlatformBrowser } from "@angular/common";
 
 export interface TocItem {
   id: string;
@@ -7,10 +17,11 @@ export interface TocItem {
 }
 
 @Component({
-  selector: 'app-toc',
+  selector: "app-toc",
   standalone: true,
-  templateUrl: './toc.component.html',
-  styleUrl: './toc.component.css',
+  templateUrl: "./toc.component.html",
+  changeDetection: ChangeDetectionStrategy.Eager,
+  styleUrl: "./toc.component.css",
 })
 export class TocComponent implements OnInit, OnDestroy {
   private platformId = inject(PLATFORM_ID);
@@ -18,7 +29,7 @@ export class TocComponent implements OnInit, OnDestroy {
 
   readonly items = input.required<TocItem[]>();
 
-  activeTocId = signal('');
+  activeTocId = signal("");
 
   private onScroll = () => {
     const offset = 56 + 32;
@@ -36,14 +47,19 @@ export class TocComponent implements OnInit, OnDestroy {
     const tocItems = this.items();
     if (tocItems.length) this.activeTocId.set(tocItems[0].id);
     if (!isPlatformBrowser(this.platformId)) return;
-    this.zone.runOutsideAngular(() => window.addEventListener('scroll', this.onScroll, { passive: true }));
+    this.zone.runOutsideAngular(() =>
+      window.addEventListener("scroll", this.onScroll, { passive: true })
+    );
   }
 
   ngOnDestroy() {
-    if (isPlatformBrowser(this.platformId)) window.removeEventListener('scroll', this.onScroll);
+    if (isPlatformBrowser(this.platformId))
+      window.removeEventListener("scroll", this.onScroll);
   }
 
   scrollTo(id: string) {
-    document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    document
+      .getElementById(id)
+      ?.scrollIntoView({ behavior: "smooth", block: "start" });
   }
 }

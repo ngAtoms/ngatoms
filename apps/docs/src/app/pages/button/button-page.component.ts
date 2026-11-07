@@ -1,16 +1,24 @@
-import { Component, signal } from '@angular/core';
-import { RouterLink } from '@angular/router';
-import { NgAtomsButtonDirective } from '../../../components/button';
-import { CodeBlockComponent } from '../../../components/code-block/code-block.component';
-import { NgAtomsBadgeDirective } from '../../../components/badge';
-import {TocComponent} from "../../../components/toc/toc.component";
-import {PreviewCard} from "../../../components/preview-card/preview-card";
+import { Component, signal, ChangeDetectionStrategy } from "@angular/core";
+import { RouterLink } from "@angular/router";
+import { NgAtomsButtonDirective } from "../../../components/button";
+import { CodeBlockComponent } from "../../../components/code-block/code-block.component";
+import { NgAtomsBadgeDirective } from "../../../components/badge";
+import { TocComponent } from "../../../components/toc/toc.component";
+import { PreviewCard } from "../../../components/preview-card/preview-card";
 @Component({
-  selector: 'app-button-page',
+  selector: "app-button-page",
   standalone: true,
-    imports: [RouterLink, NgAtomsButtonDirective, CodeBlockComponent, NgAtomsBadgeDirective, TocComponent, PreviewCard],
-  templateUrl: './button-page.component.html',
-  styleUrl: './button-page.component.css',
+  imports: [
+    RouterLink,
+    NgAtomsButtonDirective,
+    CodeBlockComponent,
+    NgAtomsBadgeDirective,
+    TocComponent,
+    PreviewCard,
+  ],
+  templateUrl: "./button-page.component.html",
+  changeDetection: ChangeDetectionStrategy.Eager,
+  styleUrl: "./button-page.component.css",
 })
 export class ButtonPageComponent {
   loadingDemo = signal(false);
@@ -46,7 +54,7 @@ export class AppExample {
   save() { /* ... */ }
 }`;
 
-  readonly usageInstallCode = 'ngatoms add button';
+  readonly usageInstallCode = "ngatoms add button";
 
   readonly usageImportCode = `import { Component } from '@angular/core';
 import { NgAtomsButtonDirective } from './ui/button';
@@ -187,38 +195,89 @@ export class ContactForm {
   /* ── Props table ───────────────────────────────────────────── */
 
   readonly props = [
-    { name: 'variant',   type: `'primary' | 'secondary' | 'outline' | 'ghost' | 'destructive'`, defaultVal: `'primary'`,  description: 'Visual weight of the button.' },
-    { name: 'size',      type: `'xs' | 'sm' | 'md' | 'lg' | 'xl'`,                             defaultVal: `'md'`,       description: 'Sizing preset. Affects padding and font-size.' },
-    { name: 'disabled',  type: 'boolean',                                                        defaultVal: 'false',      description: 'Prevents interaction and removes the button from tab order.' },
-    { name: 'loading',   type: 'boolean',                                                        defaultVal: 'false',      description: 'Shows a spinner, disables interactions, sets aria-busy="true".' },
-    { name: 'fullWidth', type: 'boolean',                                                        defaultVal: 'false',      description: 'Stretches the button to 100% of its container width.' },
-    { name: 'type',      type: `'button' | 'submit' | 'reset'`,                                 defaultVal: `'button'`,   description: 'Native button type attribute.' },
+    {
+      name: "variant",
+      type: `'primary' | 'secondary' | 'outline' | 'ghost' | 'destructive'`,
+      defaultVal: `'primary'`,
+      description: "Visual weight of the button.",
+    },
+    {
+      name: "size",
+      type: `'xs' | 'sm' | 'md' | 'lg' | 'xl'`,
+      defaultVal: `'md'`,
+      description: "Sizing preset. Affects padding and font-size.",
+    },
+    {
+      name: "disabled",
+      type: "boolean",
+      defaultVal: "false",
+      description:
+        "Prevents interaction and removes the button from tab order.",
+    },
+    {
+      name: "loading",
+      type: "boolean",
+      defaultVal: "false",
+      description:
+        'Shows a spinner, disables interactions, sets aria-busy="true".',
+    },
+    {
+      name: "fullWidth",
+      type: "boolean",
+      defaultVal: "false",
+      description: "Stretches the button to 100% of its container width.",
+    },
+    {
+      name: "type",
+      type: `'button' | 'submit' | 'reset'`,
+      defaultVal: `'button'`,
+      description: "Native button type attribute.",
+    },
   ];
 
   /* ── A11y items ────────────────────────────────────────────── */
 
   readonly a11yItems = [
-    { icon: 'keyboard',     title: 'Keyboard',      body: 'Activates on Space and Enter. Tab order follows source order; disabled buttons are skipped.' },
-    { icon: 'spinner-gap',  title: 'Loading state', body: 'Sets aria-busy="true" and disables pointer events without removing focus — screen readers announce the state change.' },
-    { icon: 'ear',          title: 'Icon-only buttons', body: 'Require an aria-label. The docs lint will warn if a button has no accessible text content.' },
-    { icon: 'eye',          title: 'Focus ring',    body: 'Visible on keyboard focus, suppressed on mouse click. Honors the user\'s forced-color-scheme preference.' },
-    { icon: 'circle-half',  title: 'Contrast',      body: 'All variant + state combinations pass WCAG 2.2 AA against their intended surface in both light and dark themes.' },
+    {
+      icon: "keyboard",
+      title: "Keyboard",
+      body: "Activates on Space and Enter. Tab order follows source order; disabled buttons are skipped.",
+    },
+    {
+      icon: "spinner-gap",
+      title: "Loading state",
+      body: 'Sets aria-busy="true" and disables pointer events without removing focus — screen readers announce the state change.',
+    },
+    {
+      icon: "ear",
+      title: "Icon-only buttons",
+      body: "Require an aria-label. The docs lint will warn if a button has no accessible text content.",
+    },
+    {
+      icon: "eye",
+      title: "Focus ring",
+      body: "Visible on keyboard focus, suppressed on mouse click. Honors the user's forced-color-scheme preference.",
+    },
+    {
+      icon: "circle-half",
+      title: "Contrast",
+      body: "All variant + state combinations pass WCAG 2.2 AA against their intended surface in both light and dark themes.",
+    },
   ];
 
   /* ── TOC ───────────────────────────────────────────────────── */
 
   readonly tocItems = [
-    { id: 'usage',    label: 'Usage' },
-    { id: 'variants', label: 'Variants' },
-    { id: 'sizes',    label: 'Sizes' },
-    { id: 'with-icon', label: 'With icon' },
-    { id: 'loading',  label: 'Loading' },
-    { id: 'disabled', label: 'Disabled' },
-    { id: 'as-link',  label: 'As link' },
-    { id: 'api',      label: 'API' },
-    { id: 'a11y',     label: 'Accessibility' },
-    { id: 'recipes',  label: 'Recipes' },
-    { id: 'recipe-error', label: '↳ Error handling' },
+    { id: "usage", label: "Usage" },
+    { id: "variants", label: "Variants" },
+    { id: "sizes", label: "Sizes" },
+    { id: "with-icon", label: "With icon" },
+    { id: "loading", label: "Loading" },
+    { id: "disabled", label: "Disabled" },
+    { id: "as-link", label: "As link" },
+    { id: "api", label: "API" },
+    { id: "a11y", label: "Accessibility" },
+    { id: "recipes", label: "Recipes" },
+    { id: "recipe-error", label: "↳ Error handling" },
   ];
-
 }

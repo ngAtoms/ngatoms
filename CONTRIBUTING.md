@@ -47,7 +47,7 @@ ngatoms/
 │  ├─ tokens         # @ngatoms/ngatoms-tokens — CSS design tokens
 │  └─ utils          # @ngatoms/ngatoms-utils — shared utilities
 ├─ apps/
-│  └─ docs           # Documentation site (Angular 21) → ngatoms.com
+│  └─ docs           # Documentation site (Angular 22) → ngatoms.com
 ├─ registry/
 │  └─ registry.json  # Component registry read by the CLI
 └─ tools/            # Build and publishing scripts

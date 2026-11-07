@@ -1,16 +1,16 @@
-import { Component } from '@angular/core';
-import { RouterLink } from '@angular/router';
-import { NgAtomsTabsComponent } from '../../../components/tabs/tabs.component';
-import { NgAtomsTabListDirective } from '../../../components/tabs/tab-list.directive';
-import { NgAtomsTabTriggerDirective } from '../../../components/tabs/tab-trigger.directive';
-import { NgAtomsTabPanelDirective } from '../../../components/tabs/tab-panel.directive';
-import { NgAtomsBadgeDirective } from '../../../components/badge';
-import { CodeBlockComponent } from '../../../components/code-block/code-block.component';
-import { TocComponent } from '../../../components/toc/toc.component';
-import { PreviewCard } from '../../../components/preview-card/preview-card';
+import { Component, ChangeDetectionStrategy } from "@angular/core";
+import { RouterLink } from "@angular/router";
+import { NgAtomsTabsComponent } from "../../../components/tabs/tabs.component";
+import { NgAtomsTabListDirective } from "../../../components/tabs/tab-list.directive";
+import { NgAtomsTabTriggerDirective } from "../../../components/tabs/tab-trigger.directive";
+import { NgAtomsTabPanelDirective } from "../../../components/tabs/tab-panel.directive";
+import { NgAtomsBadgeDirective } from "../../../components/badge";
+import { CodeBlockComponent } from "../../../components/code-block/code-block.component";
+import { TocComponent } from "../../../components/toc/toc.component";
+import { PreviewCard } from "../../../components/preview-card/preview-card";
 
 @Component({
-  selector: 'app-tabs-page',
+  selector: "app-tabs-page",
   standalone: true,
   imports: [
     RouterLink,
@@ -23,8 +23,9 @@ import { PreviewCard } from '../../../components/preview-card/preview-card';
     TocComponent,
     PreviewCard,
   ],
-  templateUrl: './tabs-page.component.html',
-  styleUrl: './tabs-page.component.css',
+  templateUrl: "./tabs-page.component.html",
+  changeDetection: ChangeDetectionStrategy.Eager,
+  styleUrl: "./tabs-page.component.css",
 })
 export class TabsPageComponent {
   readonly heroCode = `<nga-tabs defaultValue="account">
@@ -82,22 +83,50 @@ export class MyComponent {}`;
 </nga-tabs>`;
 
   readonly props = [
-    { name: 'defaultValue', type: 'string',                   defaultVal: '—',           description: 'The value of the tab that is active on initial render.' },
-    { name: 'value',        type: 'string',                   defaultVal: '—',           description: 'Controlled active tab value. Use with (valueChange) for two-way binding.' },
-    { name: 'variant',      type: `'underline' | 'pills'`,    defaultVal: `'underline'`, description: 'Visual style of the tab list.' },
+    {
+      name: "defaultValue",
+      type: "string",
+      defaultVal: "—",
+      description: "The value of the tab that is active on initial render.",
+    },
+    {
+      name: "value",
+      type: "string",
+      defaultVal: "—",
+      description:
+        "Controlled active tab value. Use with (valueChange) for two-way binding.",
+    },
+    {
+      name: "variant",
+      type: `'underline' | 'pills'`,
+      defaultVal: `'underline'`,
+      description: "Visual style of the tab list.",
+    },
   ];
 
   readonly a11yItems = [
-    { icon: 'tabs',     title: 'ARIA roles',    body: 'role="tablist", role="tab", and role="tabpanel" are set automatically. aria-selected and aria-controls wire each trigger to its panel.' },
-    { icon: 'keyboard', title: 'Keyboard',      body: 'Arrow Left / Right moves focus between tabs. Home / End jump to the first or last tab. Space or Enter activates a focused tab.' },
-    { icon: 'eye-slash', title: 'Hidden panels', body: 'Inactive panels are hidden with aria-hidden="true" so screen readers only announce the visible panel content.' },
+    {
+      icon: "tabs",
+      title: "ARIA roles",
+      body: 'role="tablist", role="tab", and role="tabpanel" are set automatically. aria-selected and aria-controls wire each trigger to its panel.',
+    },
+    {
+      icon: "keyboard",
+      title: "Keyboard",
+      body: "Arrow Left / Right moves focus between tabs. Home / End jump to the first or last tab. Space or Enter activates a focused tab.",
+    },
+    {
+      icon: "eye-slash",
+      title: "Hidden panels",
+      body: 'Inactive panels are hidden with aria-hidden="true" so screen readers only announce the visible panel content.',
+    },
   ];
 
   readonly tocItems = [
-    { id: 'usage',     label: 'Usage' },
-    { id: 'underline', label: 'Underline' },
-    { id: 'pills',     label: 'Pills' },
-    { id: 'api',       label: 'API' },
-    { id: 'a11y',      label: 'Accessibility' },
+    { id: "usage", label: "Usage" },
+    { id: "underline", label: "Underline" },
+    { id: "pills", label: "Pills" },
+    { id: "api", label: "API" },
+    { id: "a11y", label: "Accessibility" },
   ];
 }

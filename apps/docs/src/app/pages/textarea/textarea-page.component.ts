@@ -1,24 +1,32 @@
-import { Component } from '@angular/core';
-import { RouterLink } from '@angular/router';
-import { NgAtomsTextareaDirective } from '../../../components/textarea';
-import { NgAtomsBadgeDirective } from '../../../components/badge';
-import { CodeBlockComponent } from '../../../components/code-block/code-block.component';
-import { TocComponent } from '../../../components/toc/toc.component';
-import { PreviewCard } from '../../../components/preview-card/preview-card';
+import { Component, ChangeDetectionStrategy } from "@angular/core";
+import { RouterLink } from "@angular/router";
+import { NgAtomsTextareaDirective } from "../../../components/textarea";
+import { NgAtomsBadgeDirective } from "../../../components/badge";
+import { CodeBlockComponent } from "../../../components/code-block/code-block.component";
+import { TocComponent } from "../../../components/toc/toc.component";
+import { PreviewCard } from "../../../components/preview-card/preview-card";
 
-const VARIANTS = ['default', 'filled', 'ghost'] as const;
-const SIZES    = ['xs', 'sm', 'md', 'lg', 'xl'] as const;
+const VARIANTS = ["default", "filled", "ghost"] as const;
+const SIZES = ["xs", "sm", "md", "lg", "xl"] as const;
 
 @Component({
-  selector: 'app-textarea-page',
+  selector: "app-textarea-page",
   standalone: true,
-  imports: [RouterLink, NgAtomsTextareaDirective, NgAtomsBadgeDirective, CodeBlockComponent, TocComponent, PreviewCard],
-  templateUrl: './textarea-page.component.html',
-  styleUrl: './textarea-page.component.css',
+  imports: [
+    RouterLink,
+    NgAtomsTextareaDirective,
+    NgAtomsBadgeDirective,
+    CodeBlockComponent,
+    TocComponent,
+    PreviewCard,
+  ],
+  templateUrl: "./textarea-page.component.html",
+  changeDetection: ChangeDetectionStrategy.Eager,
+  styleUrl: "./textarea-page.component.css",
 })
 export class TextareaPageComponent {
   readonly variants = VARIANTS;
-  readonly sizes    = SIZES;
+  readonly sizes = SIZES;
 
   readonly heroCode = `<textarea ngAtomsTextarea placeholder="Enter your message…"></textarea>`;
 
@@ -54,24 +62,56 @@ export class MyComponent {}`;
 <textarea ngAtomsTextarea [autoResize]="true" placeholder="Type to auto-resize…"></textarea>`;
 
   readonly props = [
-    { name: 'variant',    type: `'default' | 'filled' | 'ghost'`,   defaultVal: `'default'`, description: 'Visual style of the textarea.' },
-    { name: 'size',       type: `'xs' | 'sm' | 'md' | 'lg' | 'xl'`, defaultVal: `'md'`,      description: 'Sizing preset — affects padding and font size.' },
-    { name: 'invalid',    type: 'boolean',                            defaultVal: 'false',     description: 'Applies error styling and sets aria-invalid="true".' },
-    { name: 'autoResize', type: 'boolean',                            defaultVal: 'false',     description: 'Grows the textarea height automatically as the user types.' },
+    {
+      name: "variant",
+      type: `'default' | 'filled' | 'ghost'`,
+      defaultVal: `'default'`,
+      description: "Visual style of the textarea.",
+    },
+    {
+      name: "size",
+      type: `'xs' | 'sm' | 'md' | 'lg' | 'xl'`,
+      defaultVal: `'md'`,
+      description: "Sizing preset — affects padding and font size.",
+    },
+    {
+      name: "invalid",
+      type: "boolean",
+      defaultVal: "false",
+      description: 'Applies error styling and sets aria-invalid="true".',
+    },
+    {
+      name: "autoResize",
+      type: "boolean",
+      defaultVal: "false",
+      description: "Grows the textarea height automatically as the user types.",
+    },
   ];
 
   readonly a11yItems = [
-    { icon: 'tag',      title: 'Labels',   body: 'Associate a <label for="…"> or use aria-label / aria-labelledby. Placeholder text is not a substitute for a label.' },
-    { icon: 'warning',  title: 'Invalid',  body: 'Setting [invalid]="true" adds aria-invalid="true" so screen readers surface the error state. Pair with an error message via aria-describedby.' },
-    { icon: 'keyboard', title: 'Keyboard', body: 'All standard textarea interactions are preserved — Tab focuses the field, Enter inserts a line break, and the user can resize with native drag handle unless overridden.' },
+    {
+      icon: "tag",
+      title: "Labels",
+      body: 'Associate a <label for="…"> or use aria-label / aria-labelledby. Placeholder text is not a substitute for a label.',
+    },
+    {
+      icon: "warning",
+      title: "Invalid",
+      body: 'Setting [invalid]="true" adds aria-invalid="true" so screen readers surface the error state. Pair with an error message via aria-describedby.',
+    },
+    {
+      icon: "keyboard",
+      title: "Keyboard",
+      body: "All standard textarea interactions are preserved — Tab focuses the field, Enter inserts a line break, and the user can resize with native drag handle unless overridden.",
+    },
   ];
 
   readonly tocItems = [
-    { id: 'usage',    label: 'Usage' },
-    { id: 'variants', label: 'Variants' },
-    { id: 'sizes',    label: 'Sizes' },
-    { id: 'states',   label: 'States' },
-    { id: 'api',      label: 'API' },
-    { id: 'a11y',     label: 'Accessibility' },
+    { id: "usage", label: "Usage" },
+    { id: "variants", label: "Variants" },
+    { id: "sizes", label: "Sizes" },
+    { id: "states", label: "States" },
+    { id: "api", label: "API" },
+    { id: "a11y", label: "Accessibility" },
   ];
 }

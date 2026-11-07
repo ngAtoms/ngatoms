@@ -1,23 +1,31 @@
-import { Component, signal } from '@angular/core';
-import { RouterLink } from '@angular/router';
-import { NgAtomsNumberInputComponent } from '../../../components/number-input';
-import { NgAtomsBadgeDirective } from '../../../components/badge';
-import { CodeBlockComponent } from '../../../components/code-block/code-block.component';
-import { TocComponent } from '../../../components/toc/toc.component';
-import { PreviewCard } from '../../../components/preview-card/preview-card';
+import { Component, signal, ChangeDetectionStrategy } from "@angular/core";
+import { RouterLink } from "@angular/router";
+import { NgAtomsNumberInputComponent } from "../../../components/number-input";
+import { NgAtomsBadgeDirective } from "../../../components/badge";
+import { CodeBlockComponent } from "../../../components/code-block/code-block.component";
+import { TocComponent } from "../../../components/toc/toc.component";
+import { PreviewCard } from "../../../components/preview-card/preview-card";
 
 @Component({
-  selector: 'app-number-input-page',
+  selector: "app-number-input-page",
   standalone: true,
-  imports: [RouterLink, NgAtomsNumberInputComponent, NgAtomsBadgeDirective, CodeBlockComponent, TocComponent, PreviewCard],
-  templateUrl: './number-input-page.component.html',
-  styleUrl: './number-input-page.component.css',
+  imports: [
+    RouterLink,
+    NgAtomsNumberInputComponent,
+    NgAtomsBadgeDirective,
+    CodeBlockComponent,
+    TocComponent,
+    PreviewCard,
+  ],
+  templateUrl: "./number-input-page.component.html",
+  changeDetection: ChangeDetectionStrategy.Eager,
+  styleUrl: "./number-input-page.component.css",
 })
 export class NumberInputPageComponent {
-  readonly heroVal   = signal(1);
-  readonly sizeVal   = signal(5);
+  readonly heroVal = signal(1);
+  readonly sizeVal = signal(5);
   readonly ratingVal = signal(5);
-  readonly tempVal   = signal(20.5);
+  readonly tempVal = signal(20.5);
 
   readonly heroCode = `<nga-number-input [(value)]="qty" [min]="0" [max]="99" />`;
 
@@ -46,27 +54,74 @@ export class MyComponent {
   readonly disabledCode = `<nga-number-input [value]="42" [disabled]="true" />`;
 
   readonly props = [
-    { name: 'value',    type: 'number (model)',             defaultVal: '0',        description: 'Two-way binding for the numeric value. Use [(value)].' },
-    { name: 'min',      type: 'number',                     defaultVal: '-Infinity', description: 'Minimum allowed value. Decrement is disabled when at min.' },
-    { name: 'max',      type: 'number',                     defaultVal: 'Infinity',  description: 'Maximum allowed value. Increment is disabled when at max.' },
-    { name: 'step',     type: 'number',                     defaultVal: '1',         description: 'Amount added/subtracted on each increment/decrement.' },
-    { name: 'size',     type: `'sm' | 'md' | 'lg'`,         defaultVal: `'md'`,     description: 'Size preset for the control.' },
-    { name: 'disabled', type: 'boolean',                    defaultVal: 'false',     description: 'Prevents all interaction.' },
-    { name: 'invalid',  type: 'boolean',                    defaultVal: 'false',     description: 'Applies error styling to the input.' },
+    {
+      name: "value",
+      type: "number (model)",
+      defaultVal: "0",
+      description: "Two-way binding for the numeric value. Use [(value)].",
+    },
+    {
+      name: "min",
+      type: "number",
+      defaultVal: "-Infinity",
+      description: "Minimum allowed value. Decrement is disabled when at min.",
+    },
+    {
+      name: "max",
+      type: "number",
+      defaultVal: "Infinity",
+      description: "Maximum allowed value. Increment is disabled when at max.",
+    },
+    {
+      name: "step",
+      type: "number",
+      defaultVal: "1",
+      description: "Amount added/subtracted on each increment/decrement.",
+    },
+    {
+      name: "size",
+      type: `'sm' | 'md' | 'lg'`,
+      defaultVal: `'md'`,
+      description: "Size preset for the control.",
+    },
+    {
+      name: "disabled",
+      type: "boolean",
+      defaultVal: "false",
+      description: "Prevents all interaction.",
+    },
+    {
+      name: "invalid",
+      type: "boolean",
+      defaultVal: "false",
+      description: "Applies error styling to the input.",
+    },
   ];
 
   readonly a11yItems = [
-    { icon: 'keyboard',  title: 'Keyboard',   body: 'Arrow Up/Down increment and decrement the value. The text field is editable directly; values outside min/max are clamped on blur.' },
-    { icon: 'tag',       title: 'Labels',     body: 'Provide a visible <label> or aria-label so screen readers announce the field name alongside the current value.' },
-    { icon: 'lock',      title: 'Boundaries', body: 'Increment/decrement buttons acquire aria-disabled when the value is at its boundary, preventing confusing interactions.' },
+    {
+      icon: "keyboard",
+      title: "Keyboard",
+      body: "Arrow Up/Down increment and decrement the value. The text field is editable directly; values outside min/max are clamped on blur.",
+    },
+    {
+      icon: "tag",
+      title: "Labels",
+      body: "Provide a visible <label> or aria-label so screen readers announce the field name alongside the current value.",
+    },
+    {
+      icon: "lock",
+      title: "Boundaries",
+      body: "Increment/decrement buttons acquire aria-disabled when the value is at its boundary, preventing confusing interactions.",
+    },
   ];
 
   readonly tocItems = [
-    { id: 'usage',       label: 'Usage' },
-    { id: 'sizes',       label: 'Sizes' },
-    { id: 'constraints', label: 'Min, max, and step' },
-    { id: 'disabled',    label: 'Disabled' },
-    { id: 'api',         label: 'API' },
-    { id: 'a11y',        label: 'Accessibility' },
+    { id: "usage", label: "Usage" },
+    { id: "sizes", label: "Sizes" },
+    { id: "constraints", label: "Min, max, and step" },
+    { id: "disabled", label: "Disabled" },
+    { id: "api", label: "API" },
+    { id: "a11y", label: "Accessibility" },
   ];
 }

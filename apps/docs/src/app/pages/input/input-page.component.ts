@@ -1,24 +1,32 @@
-import { Component } from '@angular/core';
-import { RouterLink } from '@angular/router';
-import { NgAtomsInputDirective } from '../../../components/input';
-import { NgAtomsBadgeDirective } from '../../../components/badge';
-import { CodeBlockComponent } from '../../../components/code-block/code-block.component';
-import { TocComponent } from '../../../components/toc/toc.component';
-import { PreviewCard } from '../../../components/preview-card/preview-card';
+import { Component, ChangeDetectionStrategy } from "@angular/core";
+import { RouterLink } from "@angular/router";
+import { NgAtomsInputDirective } from "../../../components/input";
+import { NgAtomsBadgeDirective } from "../../../components/badge";
+import { CodeBlockComponent } from "../../../components/code-block/code-block.component";
+import { TocComponent } from "../../../components/toc/toc.component";
+import { PreviewCard } from "../../../components/preview-card/preview-card";
 
-const VARIANTS = ['default', 'filled', 'ghost'] as const;
-const SIZES    = ['xs', 'sm', 'md', 'lg', 'xl'] as const;
+const VARIANTS = ["default", "filled", "ghost"] as const;
+const SIZES = ["xs", "sm", "md", "lg", "xl"] as const;
 
 @Component({
-  selector: 'app-input-page',
+  selector: "app-input-page",
   standalone: true,
-  imports: [RouterLink, NgAtomsInputDirective, NgAtomsBadgeDirective, CodeBlockComponent, TocComponent, PreviewCard],
-  templateUrl: './input-page.component.html',
-  styleUrl: './input-page.component.css',
+  imports: [
+    RouterLink,
+    NgAtomsInputDirective,
+    NgAtomsBadgeDirective,
+    CodeBlockComponent,
+    TocComponent,
+    PreviewCard,
+  ],
+  templateUrl: "./input-page.component.html",
+  changeDetection: ChangeDetectionStrategy.Eager,
+  styleUrl: "./input-page.component.css",
 })
 export class InputPageComponent {
   readonly variants = VARIANTS;
-  readonly sizes    = SIZES;
+  readonly sizes = SIZES;
 
   readonly heroCode = `<input ngAtomsInput placeholder="Enter your email…" />`;
 
@@ -47,23 +55,50 @@ export class MyComponent {}`;
 <input ngAtomsInput value="Readonly value" readonly />`;
 
   readonly props = [
-    { name: 'variant', type: `'default' | 'filled' | 'ghost'`,       defaultVal: `'default'`, description: 'Visual style of the input.' },
-    { name: 'size',    type: `'xs' | 'sm' | 'md' | 'lg' | 'xl'`,     defaultVal: `'md'`,      description: 'Sizing preset — affects height and font size.' },
-    { name: 'invalid', type: 'boolean',                                defaultVal: 'false',     description: 'Applies error styling and sets aria-invalid="true".' },
+    {
+      name: "variant",
+      type: `'default' | 'filled' | 'ghost'`,
+      defaultVal: `'default'`,
+      description: "Visual style of the input.",
+    },
+    {
+      name: "size",
+      type: `'xs' | 'sm' | 'md' | 'lg' | 'xl'`,
+      defaultVal: `'md'`,
+      description: "Sizing preset — affects height and font size.",
+    },
+    {
+      name: "invalid",
+      type: "boolean",
+      defaultVal: "false",
+      description: 'Applies error styling and sets aria-invalid="true".',
+    },
   ];
 
   readonly a11yItems = [
-    { icon: 'tag',        title: 'Labels',      body: 'Associate a <label for="…"> or use aria-label / aria-labelledby. Placeholder text is not a substitute for a label.' },
-    { icon: 'warning',    title: 'Invalid',     body: 'Setting [invalid]="true" adds aria-invalid="true" so screen readers surface the error state. Pair with an error message using aria-describedby.' },
-    { icon: 'keyboard',   title: 'Keyboard',    body: 'All standard input keyboard interactions are preserved. Tab focuses the field; the user can edit with arrow keys and shortcuts.' },
+    {
+      icon: "tag",
+      title: "Labels",
+      body: 'Associate a <label for="…"> or use aria-label / aria-labelledby. Placeholder text is not a substitute for a label.',
+    },
+    {
+      icon: "warning",
+      title: "Invalid",
+      body: 'Setting [invalid]="true" adds aria-invalid="true" so screen readers surface the error state. Pair with an error message using aria-describedby.',
+    },
+    {
+      icon: "keyboard",
+      title: "Keyboard",
+      body: "All standard input keyboard interactions are preserved. Tab focuses the field; the user can edit with arrow keys and shortcuts.",
+    },
   ];
 
   readonly tocItems = [
-    { id: 'usage',    label: 'Usage' },
-    { id: 'variants', label: 'Variants' },
-    { id: 'sizes',    label: 'Sizes' },
-    { id: 'states',   label: 'States' },
-    { id: 'api',      label: 'API' },
-    { id: 'a11y',     label: 'Accessibility' },
+    { id: "usage", label: "Usage" },
+    { id: "variants", label: "Variants" },
+    { id: "sizes", label: "Sizes" },
+    { id: "states", label: "States" },
+    { id: "api", label: "API" },
+    { id: "a11y", label: "Accessibility" },
   ];
 }
