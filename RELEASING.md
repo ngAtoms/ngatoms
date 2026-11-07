@@ -1,6 +1,21 @@
 # Releasing NgAtoms
 
-NgAtoms uses **Changesets + GitHub Actions** for automated releases. No npm token is required — publishing uses npm trusted publishing via GitHub Actions.
+NgAtoms uses **Changesets + GitHub Actions** for automated releases. Publishing uses npm trusted publishing (OIDC). The release job does not use an npm token.
+
+## Trusted publisher
+
+Direct publish from a 2FA-bypass granular token is being removed. Each public package needs a trusted publisher on npmjs.com, created while signed in with 2FA:
+
+| Field | Value |
+|---|---|
+| Organization or user | `ngAtoms` |
+| Repository | `ngatoms` |
+| Workflow filename | `release.yml` |
+| Allowed action | direct `npm publish` |
+
+Allow direct publish. This workflow runs `npm publish` and sets the channel tag (`latest`, `lts`, or `rc`) in that same publish. A new trusted publisher must complete its first successful publish within 2 days.
+
+Packages that publish today: `ngatoms` and `@ngatoms/ngatoms-tokens`. The release job installs npm 12 before publishing so the CLI can use OIDC. `id-token: write` is already set on the job.
 
 ## Changesets
 

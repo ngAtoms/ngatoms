@@ -90,9 +90,10 @@ jobs:
         run: npm run build --if-present
 
       - name: Publish
-        run: npm run publish:changesets
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: |
+          npm install -g npm@12
+          npm --version
+          npm run publish:changesets
 
       - name: Push
         run: git push --follow-tags
