@@ -37,45 +37,45 @@
 
 /* ── Primitives ───────────────────────────────────────────── */
 :root {
-  /* Neutrals — warm stone (slight yellow bias, not pure gray) */
-  --nga-stone-50:  #FAF8F5;
-  --nga-stone-100: #F3EEE7;
-  --nga-stone-150: #EBE4D9;
-  --nga-stone-200: #DED4C5;
-  --nga-stone-300: #C5B7A1;
-  --nga-stone-400: #A89478;
-  --nga-stone-500: #87735A;
-  --nga-stone-600: #675848;
-  --nga-stone-700: #4A3F34;
-  --nga-stone-800: #2E2822;
-  --nga-stone-900: #1A1714;
-  --nga-stone-950: #0E0C0A;
+  /* Neutrals — ink scale. Extremes sit at 80–90% of black or white, never #000 or #fff. */
+  --nga-stone-50:  #E6E6E6; /* 90% white */
+  --nga-stone-100: #DEDEDE; /* 87% */
+  --nga-stone-150: #D6D6D6; /* 84% */
+  --nga-stone-200: #CCCCCC; /* 80% */
+  --nga-stone-300: #B3B3B3; /* 70% */
+  --nga-stone-400: #8A8A8A; /* 54% */
+  --nga-stone-500: #6E6E6E; /* 43% */
+  --nga-stone-600: #555555; /* 33% */
+  --nga-stone-700: #404040; /* 25% */
+  --nga-stone-800: #333333; /* 80% black */
+  --nga-stone-900: #262626; /* 85% black */
+  --nga-stone-950: #1A1A1A; /* 90% black */
 
-  /* Ember — warm orange accent (used sparingly, one CTA per screen) */
-  --nga-ember-50:  #FFF4E8;
-  --nga-ember-100: #FFE2C2;
-  --nga-ember-200: #FFC988;
-  --nga-ember-300: #FFA94D;
-  --nga-ember-400: #FF8A1F;
-  --nga-ember-500: #F06B00;
-  --nga-ember-600: #C75400;
-  --nga-ember-700: #9A4000;
-  --nga-ember-800: #6E2D00;
-  --nga-ember-900: #431B00;
+  /* Ink ramp — neutral accent. The ember name stays so existing tokens keep working. */
+  --nga-ember-50:  #E6E6E6;
+  --nga-ember-100: #D6D6D6;
+  --nga-ember-200: #B3B3B3;
+  --nga-ember-300: #8A8A8A;
+  --nga-ember-400: #555555;
+  --nga-ember-500: #333333;
+  --nga-ember-600: #262626;
+  --nga-ember-700: #1F1F1F;
+  --nga-ember-800: #1A1A1A;
+  --nga-ember-900: #141414;
 
-  /* Semantic status palette */
-  --nga-white:        #FFFFFF;
-  --nga-success-500:  #16A34A;
-  --nga-warning-500:  #EAB308;
-  --nga-danger-500:   #DC2626;
-  --nga-info-500:     #2563EB;
+  /* Paper and status, expressed as gray steps rather than hue */
+  --nga-white:        #E6E6E6;
+  --nga-success-500:  #404040;
+  --nga-warning-500:  #6E6E6E;
+  --nga-danger-500:   #1A1A1A;
+  --nga-info-500:     #555555;
 }
 
 /* ── Semantic: Light mode (default) ───────────────────────── */
 :root {
-  /* Surfaces */
-  --nga-color-background:            var(--nga-stone-50);
-  --nga-color-foreground:            var(--nga-stone-900);
+  /* Surfaces — page sits a step under the paper card */
+  --nga-color-background:            var(--nga-stone-100);
+  --nga-color-foreground:            var(--nga-stone-950);
 
   /* Primary action */
   --nga-color-primary:               var(--nga-stone-900);
@@ -89,11 +89,11 @@
   --nga-color-muted:                 var(--nga-stone-100);
   --nga-color-muted-foreground:      var(--nga-stone-500);
 
-  /* Accent — Ember, high-intent, use once per screen */
+  /* Accent — ink, one step off the page text */
   --nga-color-accent:                var(--nga-ember-500);
   --nga-color-accent-hover:          var(--nga-ember-600);
   --nga-color-accent-foreground:     var(--nga-white);
-  --nga-color-accent-soft:           var(--nga-ember-50);
+  --nga-color-accent-soft:           var(--nga-stone-150);
 
   /* Borders & rings */
   --nga-color-border:                var(--nga-stone-200);
@@ -138,14 +138,14 @@
   --nga-space-20: 5rem;
   --nga-space-24: 6rem;
 
-  /* Shadows — warm-tinted (rgba base: stone-900) */
-  --nga-shadow-xs: 0 1px 0 rgba(26, 23, 20, 0.04);
-  --nga-shadow-sm: 0 1px 2px rgba(26, 23, 20, 0.06), 0 1px 1px rgba(26, 23, 20, 0.04);
-  --nga-shadow-md: 0 4px 10px -2px rgba(26, 23, 20, 0.08), 0 2px 4px -2px rgba(26, 23, 20, 0.04);
-  --nga-shadow-lg: 0 12px 24px -6px rgba(26, 23, 20, 0.12), 0 4px 8px -4px rgba(26, 23, 20, 0.06);
-  --nga-shadow-xl: 0 24px 48px -12px rgba(26, 23, 20, 0.18);
-  --nga-glow-ember:      0 0 0 4px rgba(240, 107, 0, 0.18);
-  --nga-glow-ember-soft: 0 8px 32px -8px rgba(240, 107, 0, 0.35);
+  /* Shadows — neutral ink, never pure black */
+  --nga-shadow-xs: 0 1px 0 rgba(26, 26, 26, 0.04);
+  --nga-shadow-sm: 0 1px 2px rgba(26, 26, 26, 0.06), 0 1px 1px rgba(26, 26, 26, 0.04);
+  --nga-shadow-md: 0 4px 10px -2px rgba(26, 26, 26, 0.08), 0 2px 4px -2px rgba(26, 26, 26, 0.04);
+  --nga-shadow-lg: 0 12px 24px -6px rgba(26, 26, 26, 0.12), 0 4px 8px -4px rgba(26, 26, 26, 0.06);
+  --nga-shadow-xl: 0 24px 48px -12px rgba(26, 26, 26, 0.18);
+  --nga-glow-ember:      0 0 0 4px rgba(26, 26, 26, 0.16);
+  --nga-glow-ember-soft: 0 8px 32px -8px rgba(26, 26, 26, 0.22);
 
   /* Typography — families */
   --nga-font-sans:    'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
@@ -228,49 +228,51 @@
 .dark {
   /* Surfaces */
   --nga-color-background:            var(--nga-stone-950);
-  --nga-color-foreground:            #F3EEE7;
+  --nga-color-foreground:            #E6E6E6;
 
-  /* Primary action — near-white on dark */
-  --nga-color-primary:               var(--nga-stone-100);
-  --nga-color-primary-foreground:    var(--nga-stone-900);
+  /* Primary action — paper on ink */
+  --nga-color-primary:               #E6E6E6;
+  --nga-color-primary-foreground:    var(--nga-stone-950);
 
   /* Secondary action */
   --nga-color-secondary:             var(--nga-stone-800);
-  --nga-color-secondary-foreground:  var(--nga-stone-300);
+  --nga-color-secondary-foreground:  var(--nga-stone-200);
 
   /* Muted / subdued */
   --nga-color-muted:                 var(--nga-stone-800);
-  --nga-color-muted-foreground:      var(--nga-stone-400);
+  --nga-color-muted-foreground:      var(--nga-stone-300);
 
-  /* Accent — one step brighter on dark for legibility */
-  --nga-color-accent:                var(--nga-ember-400);
-  --nga-color-accent-hover:          var(--nga-ember-300);
-  --nga-color-accent-foreground:     var(--nga-white);
-  --nga-color-accent-soft:           rgba(255, 138, 31, 0.12);
+  /* Accent — light ink so it reads on a 90% black page */
+  --nga-color-accent:                var(--nga-stone-200);
+  --nga-color-accent-hover:          var(--nga-stone-100);
+  --nga-color-accent-foreground:     var(--nga-stone-950);
+  --nga-color-accent-soft:           rgba(230, 230, 230, 0.12);
 
   /* Borders & rings */
-  --nga-color-border:                #2A2520;
-  --nga-color-border-strong:         #3A332C;
-  --nga-color-ring:                  var(--nga-ember-400);
+  --nga-color-border:                #333333;
+  --nga-color-border-strong:         #404040;
+  --nga-color-ring:                  var(--nga-stone-200);
 
   /* Card / elevated surface */
   --nga-color-card:                  var(--nga-stone-900);
-  --nga-color-card-foreground:       #F3EEE7;
+  --nga-color-card-foreground:       #E6E6E6;
 
-  /* Status */
-  --nga-color-success:               var(--nga-success-500);
+  /* Status — lighter grays so they stay visible on the dark page */
+  --nga-color-success:               #B3B3B3;
   --nga-color-success-foreground:    var(--nga-stone-950);
-  --nga-color-warning:               var(--nga-warning-500);
+  --nga-color-warning:               #CCCCCC;
   --nga-color-warning-foreground:    var(--nga-stone-950);
-  --nga-color-destructive:           var(--nga-danger-500);
-  --nga-color-destructive-foreground: var(--nga-white);
-  --nga-color-info:                  var(--nga-info-500);
-  --nga-color-info-foreground:       var(--nga-white);
+  --nga-color-destructive:           #E6E6E6;
+  --nga-color-destructive-foreground: var(--nga-stone-950);
+  --nga-color-info:                  #8A8A8A;
+  --nga-color-info-foreground:       #E6E6E6;
 
-  /* Shadows — deeper on dark backgrounds */
-  --nga-shadow-xs: 0 1px 0 rgba(0, 0, 0, 0.4);
-  --nga-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.5);
-  --nga-shadow-md: 0 4px 10px -2px rgba(0, 0, 0, 0.5);
-  --nga-shadow-lg: 0 12px 24px -6px rgba(0, 0, 0, 0.55);
-  --nga-shadow-xl: 0 24px 48px -12px rgba(0, 0, 0, 0.7);
+  /* Shadows — ink, not pure black */
+  --nga-shadow-xs: 0 1px 0 rgba(26, 26, 26, 0.4);
+  --nga-shadow-sm: 0 1px 2px rgba(26, 26, 26, 0.5);
+  --nga-shadow-md: 0 4px 10px -2px rgba(26, 26, 26, 0.5);
+  --nga-shadow-lg: 0 12px 24px -6px rgba(26, 26, 26, 0.55);
+  --nga-shadow-xl: 0 24px 48px -12px rgba(26, 26, 26, 0.7);
+  --nga-glow-ember:      0 0 0 4px rgba(230, 230, 230, 0.2);
+  --nga-glow-ember-soft: 0 8px 32px -8px rgba(230, 230, 230, 0.16);
 }

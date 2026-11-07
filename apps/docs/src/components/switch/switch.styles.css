@@ -7,9 +7,9 @@
 :root {
   --nga-switch-transition:   background var(--nga-dur-base, 180ms) var(--nga-ease-out, ease);
 
-  --nga-switch-bg:           var(--nga-color-border, #DED4C5);
-  --nga-switch-checked-bg:   var(--nga-color-accent, #F06B00);
-  --nga-switch-thumb-bg:     #FFFFFF;
+  --nga-switch-bg:           var(--nga-color-border, #CCCCCC);
+  --nga-switch-checked-bg:   var(--nga-color-accent, #333333);
+  --nga-switch-thumb-bg:     #E6E6E6;
   --nga-switch-thumb-inset:  0.125rem;
   --nga-switch-thumb-size:   1rem;
 
@@ -51,12 +51,12 @@
   height: var(--nga-switch-thumb-size);
   border-radius: 9999px;
   background: var(--nga-switch-thumb-bg);
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 1px 3px rgba(26, 26, 26, 0.2);
   transition: left var(--nga-dur-base, 180ms) var(--nga-ease-spring, cubic-bezier(0.34, 1.56, 0.64, 1));
 }
 
 .nga-switch:focus-visible {
-  box-shadow: var(--nga-glow-ember, 0 0 0 4px rgba(240, 107, 0, 0.18));
+  box-shadow: var(--nga-glow-ember, 0 0 0 4px rgba(26, 26, 26, 0.16));
 }
 
 .nga-switch:disabled {

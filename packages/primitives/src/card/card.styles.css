@@ -5,13 +5,13 @@
    ============================================================= */
 
 :root {
-  --nga-card-bg:           color-mix(in oklab, var(--nga-color-card, #FFFFFF) 78%, transparent);
-  --nga-card-fg:           var(--nga-color-card-foreground, #1A1714);
-  --nga-card-border:       color-mix(in oklab, var(--nga-color-border, #DED4C5) 70%, transparent);
-  --nga-card-border-hover: var(--nga-color-border-strong, #C5B7A1);
+  --nga-card-bg:           color-mix(in oklab, var(--nga-color-card, #E6E6E6) 78%, transparent);
+  --nga-card-fg:           var(--nga-color-card-foreground, #1A1A1A);
+  --nga-card-border:       color-mix(in oklab, var(--nga-color-border, #CCCCCC) 70%, transparent);
+  --nga-card-border-hover: var(--nga-color-border-strong, #B3B3B3);
   --nga-card-radius:       var(--nga-radius-lg, 10px);
-  --nga-card-shadow:       0 1px 0 rgba(26, 23, 20, 0.04), inset 0 1px 0 rgba(255, 255, 255, 0.8);
-  --nga-card-shadow-hover: 0 4px 12px rgba(26, 23, 20, 0.08), 0 1px 2px rgba(26, 23, 20, 0.04);
+  --nga-card-shadow:       0 1px 0 rgba(26, 26, 26, 0.04), inset 0 1px 0 rgba(230, 230, 230, 0.8);
+  --nga-card-shadow-hover: 0 4px 12px rgba(26, 26, 26, 0.08), 0 1px 2px rgba(26, 26, 26, 0.04);
   --nga-card-blur:         blur(16px) saturate(150%);
   --nga-card-transition:   border-color var(--nga-dur-base, 180ms) var(--nga-ease-out, ease), box-shadow var(--nga-dur-base, 180ms) var(--nga-ease-out, ease), transform var(--nga-dur-base, 180ms) var(--nga-ease-out, ease);
 }
@@ -19,7 +19,7 @@
 .dark {
   --nga-card-bg:     color-mix(in oklab, var(--nga-color-card) 82%, transparent);
   --nga-card-border: color-mix(in oklab, var(--nga-color-border) 60%, transparent);
-  --nga-card-shadow: 0 1px 0 rgba(0, 0, 0, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  --nga-card-shadow: 0 1px 0 rgba(26, 26, 26, 0.2), inset 0 1px 0 rgba(230, 230, 230, 0.05);
 }
 
 /* ── Card ───────────────────────────────────────────────────── */
@@ -67,7 +67,7 @@
 /* ── Description ────────────────────────────────────────────── */
 .nga-card-description {
   font-size: 0.8125rem;
-  color: var(--nga-color-muted-foreground, #87735A);
+  color: var(--nga-color-muted-foreground, #6E6E6E);
   line-height: 1.4;
 }
 

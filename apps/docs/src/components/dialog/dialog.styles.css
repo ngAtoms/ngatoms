@@ -6,28 +6,28 @@
 
 :root {
   /* Light */
-  --nga-dialog-panel-bg:     color-mix(in oklab, var(--nga-color-card, #FFFFFF) 80%, transparent);
-  --nga-dialog-panel-border: color-mix(in oklab, var(--nga-color-border, #DED4C5) 55%, transparent);
-  --nga-dialog-panel-inset:  inset 0 1px 0 rgba(255, 255, 255, 0.9);
+  --nga-dialog-panel-bg:     color-mix(in oklab, var(--nga-color-card, #E6E6E6) 80%, transparent);
+  --nga-dialog-panel-border: color-mix(in oklab, var(--nga-color-border, #CCCCCC) 55%, transparent);
+  --nga-dialog-panel-inset:  inset 0 1px 0 rgba(230, 230, 230, 0.9);
   --nga-dialog-panel-blur:   blur(28px) saturate(180%);
-  --nga-dialog-footer-bg:    color-mix(in oklab, var(--nga-color-muted, #F3EEE7) 60%, transparent);
-  --nga-dialog-footer-border: color-mix(in oklab, var(--nga-color-border, #DED4C5) 50%, transparent);
-  --nga-dialog-shadow:       0 24px 48px -8px rgba(26, 23, 20, 0.16), 0 8px 16px -4px rgba(26, 23, 20, 0.08);
+  --nga-dialog-footer-bg:    color-mix(in oklab, var(--nga-color-muted, #DEDEDE) 60%, transparent);
+  --nga-dialog-footer-border: color-mix(in oklab, var(--nga-color-border, #CCCCCC) 50%, transparent);
+  --nga-dialog-shadow:       0 24px 48px -8px rgba(26, 26, 26, 0.16), 0 8px 16px -4px rgba(26, 26, 26, 0.08);
   --nga-dialog-radius:       var(--nga-radius-lg, 10px);
-  --nga-dialog-backdrop:     rgba(0, 0, 0, 0.32);
+  --nga-dialog-backdrop:     rgba(26, 26, 26, 0.32);
   --nga-dialog-backdrop-blur: blur(10px) saturate(140%);
 }
 
 .dark {
   /* Dark */
   --nga-dialog-panel-bg:     color-mix(in oklab, var(--nga-color-card) 84%, transparent);
-  --nga-dialog-panel-border: color-mix(in oklab, white 14%, transparent);
-  --nga-dialog-panel-inset:  inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  --nga-dialog-panel-border: color-mix(in oklab, #E6E6E6 14%, transparent);
+  --nga-dialog-panel-inset:  inset 0 1px 0 rgba(230, 230, 230, 0.08);
   --nga-dialog-panel-blur:   blur(32px) saturate(220%) brightness(1.08);
   --nga-dialog-footer-bg:    color-mix(in oklab, var(--nga-color-muted) 50%, transparent);
-  --nga-dialog-footer-border: color-mix(in oklab, white 10%, transparent);
-  --nga-dialog-shadow:       0 24px 64px rgba(0, 0, 0, 0.55), 0 8px 24px rgba(0, 0, 0, 0.35);
-  --nga-dialog-backdrop:     rgba(0, 0, 0, 0.60);
+  --nga-dialog-footer-border: color-mix(in oklab, #E6E6E6 10%, transparent);
+  --nga-dialog-shadow:       0 24px 64px rgba(26, 26, 26, 0.55), 0 8px 24px rgba(26, 26, 26, 0.35);
+  --nga-dialog-backdrop:     rgba(26, 26, 26, 0.60);
   --nga-dialog-backdrop-blur: blur(12px) saturate(160%);
 }
 
@@ -107,7 +107,7 @@
   font-size: var(--nga-text-base, 15px);
   font-weight: var(--nga-font-weight-semibold, 600);
   letter-spacing: var(--nga-tracking-snug, -0.01em);
-  color: var(--nga-color-foreground, #1A1714);
+  color: var(--nga-color-foreground, #1A1A1A);
   margin: 0;
   line-height: 1.3;
 }
@@ -115,7 +115,7 @@
 /* ── Description ────────────────────────────────────────────── */
 .nga-dialog-description {
   font-size: 0.84375rem;
-  color: var(--nga-color-muted-foreground, #87735A);
+  color: var(--nga-color-muted-foreground, #6E6E6E);
   margin: 0.25rem 0 0;
   line-height: 1.5;
 }
@@ -126,7 +126,7 @@
   overflow-y: auto;
   flex: 1;
   font-size: var(--nga-size-font-sm, 13px);
-  color: var(--nga-color-foreground, #1A1714);
+  color: var(--nga-color-foreground, #1A1A1A);
   line-height: 1.6;
   scrollbar-width: thin;
   scrollbar-color: var(--nga-color-border) transparent;
@@ -154,7 +154,7 @@
   border: none;
   border-radius: var(--nga-radius-sm, 4px);
   background: transparent;
-  color: var(--nga-color-muted-foreground, #87735A);
+  color: var(--nga-color-muted-foreground, #6E6E6E);
   cursor: pointer;
   padding: 0;
   transition: background var(--nga-dur-base, 180ms) var(--nga-ease-out, ease), color var(--nga-dur-base, 180ms) var(--nga-ease-out, ease);
@@ -162,10 +162,10 @@
 }
 
 .nga-dialog-close:hover {
-  background: var(--nga-color-muted, #F3EEE7);
-  color: var(--nga-color-foreground, #1A1714);
+  background: var(--nga-color-muted, #DEDEDE);
+  color: var(--nga-color-foreground, #1A1A1A);
 }
 
 .nga-dialog-close:focus-visible {
-  box-shadow: var(--nga-glow-ember, 0 0 0 4px rgba(240, 107, 0, 0.18));
+  box-shadow: var(--nga-glow-ember, 0 0 0 4px rgba(26, 26, 26, 0.16));
 }

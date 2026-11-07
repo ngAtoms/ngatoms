@@ -5,7 +5,7 @@
    ============================================================= */
 
 :root {
-  --nga-accordion-border:     var(--nga-color-border, #DED4C5);
+  --nga-accordion-border:     var(--nga-color-border, #CCCCCC);
   --nga-accordion-radius:     var(--nga-radius-md, 6px);
   --nga-accordion-transition: grid-template-rows var(--nga-dur-slow, 320ms) var(--nga-ease-out, ease);
 }
@@ -40,7 +40,7 @@
   font-family: inherit;
   font-size: var(--nga-size-font-md, 14px);
   font-weight: 500;
-  color: var(--nga-color-foreground, #1A1714);
+  color: var(--nga-color-foreground, #1A1A1A);
   text-align: left;
   cursor: pointer;
   outline: none;
@@ -49,11 +49,11 @@
 }
 
 .nga-accordion-trigger:hover {
-  background: var(--nga-color-muted, #F3EEE7);
+  background: var(--nga-color-muted, #DEDEDE);
 }
 
 .nga-accordion-trigger:focus-visible {
-  box-shadow: inset var(--nga-glow-ember, 0 0 0 4px rgba(240, 107, 0, 0.18));
+  box-shadow: inset var(--nga-glow-ember, 0 0 0 4px rgba(26, 26, 26, 0.16));
 }
 
 /* Chevron icon */
@@ -96,6 +96,6 @@
 .nga-accordion-content {
   padding: 0 1.125rem 1rem;
   font-size: var(--nga-size-font-sm, 13px);
-  color: var(--nga-color-muted-foreground, #87735A);
+  color: var(--nga-color-muted-foreground, #6E6E6E);
   line-height: 1.6;
 }

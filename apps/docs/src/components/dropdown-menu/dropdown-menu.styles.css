@@ -6,11 +6,11 @@
 
 :root {
   /* Light — warm frosted glass */
-  --nga-dropdown-bg:          color-mix(in oklab, var(--nga-color-card, #FFFFFF) 78%, transparent);
-  --nga-dropdown-border:      color-mix(in oklab, var(--nga-color-border, #DED4C5) 55%, transparent);
+  --nga-dropdown-bg:          color-mix(in oklab, var(--nga-color-card, #E6E6E6) 78%, transparent);
+  --nga-dropdown-border:      color-mix(in oklab, var(--nga-color-border, #CCCCCC) 55%, transparent);
   --nga-dropdown-radius:      var(--nga-radius-md, 6px);
-  --nga-dropdown-shadow:      0 8px 24px -4px rgba(26, 23, 20, 0.10), 0 2px 8px -2px rgba(26, 23, 20, 0.06);
-  --nga-dropdown-inset:       inset 0 1px 0 rgba(255, 255, 255, 0.85);
+  --nga-dropdown-shadow:      0 8px 24px -4px rgba(26, 26, 26, 0.10), 0 2px 8px -2px rgba(26, 26, 26, 0.06);
+  --nga-dropdown-inset:       inset 0 1px 0 rgba(230, 230, 230, 0.85);
   --nga-dropdown-blur:        blur(20px) saturate(180%);
   --nga-dropdown-padding:     0.25rem;
   --nga-dropdown-min-width:   10rem;
@@ -19,23 +19,23 @@
   --nga-dropdown-item-px:               0.625rem;
   --nga-dropdown-item-radius:           calc(var(--nga-radius-md, 6px) - 2px);
   --nga-dropdown-item-gap:              0.5rem;
-  --nga-dropdown-item-color:            var(--nga-color-foreground, #1A1714);
-  --nga-dropdown-item-hover-bg:         color-mix(in oklab, var(--nga-color-foreground, #1A1714) 7%, transparent);
-  --nga-dropdown-item-focus-bg:         color-mix(in oklab, var(--nga-color-foreground, #1A1714) 7%, transparent);
+  --nga-dropdown-item-color:            var(--nga-color-foreground, #1A1A1A);
+  --nga-dropdown-item-hover-bg:         color-mix(in oklab, var(--nga-color-foreground, #1A1A1A) 7%, transparent);
+  --nga-dropdown-item-focus-bg:         color-mix(in oklab, var(--nga-color-foreground, #1A1A1A) 7%, transparent);
   --nga-dropdown-item-disabled-opacity: 0.45;
-  --nga-dropdown-item-destructive-color: var(--nga-color-destructive, #DC2626);
+  --nga-dropdown-item-destructive-color: var(--nga-color-destructive, #1A1A1A);
 
-  --nga-dropdown-label-color:      var(--nga-color-muted-foreground, #87735A);
+  --nga-dropdown-label-color:      var(--nga-color-muted-foreground, #6E6E6E);
   --nga-dropdown-label-size:       var(--nga-text-xs, 12px);
-  --nga-dropdown-separator-color:  color-mix(in oklab, var(--nga-color-border, #DED4C5) 60%, transparent);
+  --nga-dropdown-separator-color:  color-mix(in oklab, var(--nga-color-border, #CCCCCC) 60%, transparent);
 }
 
 .dark {
   /* Dark — deep frosted glass */
   --nga-dropdown-bg:     color-mix(in oklab, var(--nga-color-card) 82%, transparent);
-  --nga-dropdown-border: color-mix(in oklab, white 14%, transparent);
-  --nga-dropdown-shadow: 0 8px 32px rgba(0, 0, 0, 0.45), 0 2px 8px rgba(0, 0, 0, 0.28);
-  --nga-dropdown-inset:  inset 0 1px 0 rgba(255, 255, 255, 0.07);
+  --nga-dropdown-border: color-mix(in oklab, #E6E6E6 14%, transparent);
+  --nga-dropdown-shadow: 0 8px 32px rgba(26, 26, 26, 0.45), 0 2px 8px rgba(26, 26, 26, 0.28);
+  --nga-dropdown-inset:  inset 0 1px 0 rgba(230, 230, 230, 0.07);
   --nga-dropdown-blur:   blur(24px) saturate(200%) brightness(1.06);
 }
 

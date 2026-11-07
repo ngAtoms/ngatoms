@@ -26,35 +26,35 @@
   --nga-input-font-size-xl: var(--nga-size-font-xl, 18px);
 
   /* Variant: default */
-  --nga-input-default-bg:           var(--nga-color-background, #FAF8F5);
-  --nga-input-default-fg:           var(--nga-color-foreground, #1A1714);
-  --nga-input-default-border:       var(--nga-color-border, #DED4C5);
-  --nga-input-default-border-hover: var(--nga-color-primary, #1A1714);
-  --nga-input-default-placeholder:  var(--nga-color-muted-foreground, #87735A);
+  --nga-input-default-bg:           var(--nga-color-background, #E6E6E6);
+  --nga-input-default-fg:           var(--nga-color-foreground, #1A1A1A);
+  --nga-input-default-border:       var(--nga-color-border, #CCCCCC);
+  --nga-input-default-border-hover: var(--nga-color-primary, #1A1A1A);
+  --nga-input-default-placeholder:  var(--nga-color-muted-foreground, #6E6E6E);
 
   /* Variant: filled */
-  --nga-input-filled-bg:           var(--nga-color-secondary, #F3EEE7);
-  --nga-input-filled-fg:           var(--nga-color-secondary-foreground, #1A1714);
+  --nga-input-filled-bg:           var(--nga-color-secondary, #DEDEDE);
+  --nga-input-filled-fg:           var(--nga-color-secondary-foreground, #1A1A1A);
   --nga-input-filled-border:       transparent;
-  --nga-input-filled-border-hover: var(--nga-color-primary, #1A1714);
-  --nga-input-filled-placeholder:  var(--nga-color-muted-foreground, #87735A);
-  --nga-input-filled-bg-hover:     color-mix(in srgb, var(--nga-input-filled-bg) 85%, black);
+  --nga-input-filled-border-hover: var(--nga-color-primary, #1A1A1A);
+  --nga-input-filled-placeholder:  var(--nga-color-muted-foreground, #6E6E6E);
+  --nga-input-filled-bg-hover:     color-mix(in srgb, var(--nga-input-filled-bg) 85%, #1A1A1A);
 
   /* Variant: ghost */
   --nga-input-ghost-bg:           transparent;
-  --nga-input-ghost-fg:           var(--nga-color-foreground, #1A1714);
+  --nga-input-ghost-fg:           var(--nga-color-foreground, #1A1A1A);
   --nga-input-ghost-border:       transparent;
-  --nga-input-ghost-border-hover: var(--nga-color-border, #DED4C5);
-  --nga-input-ghost-placeholder:  var(--nga-color-muted-foreground, #87735A);
+  --nga-input-ghost-border-hover: var(--nga-color-border, #CCCCCC);
+  --nga-input-ghost-placeholder:  var(--nga-color-muted-foreground, #6E6E6E);
 
   /* Invalid state */
-  --nga-input-invalid-border:     var(--nga-color-destructive, #DC2626);
-  --nga-input-invalid-focus-ring: var(--nga-color-destructive, #DC2626);
+  --nga-input-invalid-border:     var(--nga-color-destructive, #1A1A1A);
+  --nga-input-invalid-focus-ring: var(--nga-color-destructive, #1A1A1A);
 }
 
 /* ── Dark mode token overrides ──────────────────────────────── */
 .dark {
-  --nga-input-filled-bg-hover: color-mix(in srgb, var(--nga-input-filled-bg) 82%, white);
+  --nga-input-filled-bg-hover: color-mix(in srgb, var(--nga-input-filled-bg) 82%, #E6E6E6);
 }
 
 /* ── Base ───────────────────────────────────────────────────── */
@@ -77,7 +77,7 @@
 }
 
 .nga-input:focus-visible {
-  box-shadow: var(--nga-glow-ember, 0 0 0 4px rgba(240, 107, 0, 0.18));
+  box-shadow: var(--nga-glow-ember, 0 0 0 4px rgba(26, 26, 26, 0.16));
 }
 
 .nga-input:disabled {
@@ -104,7 +104,7 @@
 }
 .nga-input--default::placeholder { color: var(--nga-input-default-placeholder); }
 .nga-input--default:hover:not(:disabled):not([readonly]) { border-color: var(--nga-input-default-border-hover); }
-.nga-input--default:focus-visible { border-color: var(--nga-color-ring, #F06B00); }
+.nga-input--default:focus-visible { border-color: var(--nga-color-ring, #333333); }
 
 /* ── Variant: filled ────────────────────────────────────────── */
 .nga-input--filled {
@@ -117,7 +117,7 @@
   background: var(--nga-input-filled-bg-hover);
   border-color: var(--nga-input-filled-border-hover);
 }
-.nga-input--filled:focus-visible { border-color: var(--nga-color-ring, #F06B00); }
+.nga-input--filled:focus-visible { border-color: var(--nga-color-ring, #333333); }
 
 /* ── Variant: ghost ─────────────────────────────────────────── */
 .nga-input--ghost {
@@ -127,10 +127,10 @@
 }
 .nga-input--ghost::placeholder { color: var(--nga-input-ghost-placeholder); }
 .nga-input--ghost:hover:not(:disabled):not([readonly]) { border-color: var(--nga-input-ghost-border-hover); }
-.nga-input--ghost:focus-visible { border-color: var(--nga-color-ring, #F06B00); }
+.nga-input--ghost:focus-visible { border-color: var(--nga-color-ring, #333333); }
 
 /* ── Invalid state ──────────────────────────────────────────── */
 .nga-input--invalid { border-color: var(--nga-input-invalid-border) !important; }
 .nga-input--invalid:focus-visible {
-  box-shadow: 0 0 0 4px rgba(220, 38, 38, 0.18);
+  box-shadow: 0 0 0 4px rgba(26, 26, 26, 0.18);
 }
