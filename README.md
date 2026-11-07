@@ -14,7 +14,7 @@
 <p align="center">
   <a href="https://ngatoms.com"><img src="https://img.shields.io/badge/docs-ngatoms.com-blue" alt="Documentation" /></a>
   <a href="https://www.npmjs.com/package/ngatoms"><img src="https://img.shields.io/npm/v/ngatoms?label=npm" alt="npm version" /></a>
-  <img src="https://img.shields.io/badge/Angular-21+-red" alt="Angular 21+" />
+  <img src="https://img.shields.io/badge/Angular-22+-red" alt="Angular 22+" />
   <img src="https://img.shields.io/badge/license-MIT-blue" alt="MIT license" />
 </p>
 

@@ -9,9 +9,10 @@ import {
   model,
   signal,
   viewChild,
-} from '@angular/core';
-import { NgClass } from '@angular/common';
-import { NgAtomsOverlayService } from '../overlay/overlay.service';
+  ChangeDetectionStrategy,
+} from "@angular/core";
+import { NgClass } from "@angular/common";
+import { NgAtomsOverlayService } from "../overlay/overlay.service";
 
 export interface NgAtomsSelectOption {
   value: string;
@@ -19,37 +20,39 @@ export interface NgAtomsSelectOption {
   disabled?: boolean;
 }
 
-export type NgAtomsSelectVariant = 'default' | 'filled' | 'ghost';
-export type NgAtomsSelectSize = 'xs' | 'sm' | 'md' | 'lg' | 'xl';
+export type NgAtomsSelectVariant = "default" | "filled" | "ghost";
+export type NgAtomsSelectSize = "xs" | "sm" | "md" | "lg" | "xl";
 
 @Component({
-  selector: 'nga-select',
+  selector: "nga-select",
   standalone: true,
   imports: [NgClass],
-  host: { class: 'nga-select-root' },
-  templateUrl: './select.component.html',
-  styleUrl: './select.component.css',
+  host: { class: "nga-select-root" },
+  templateUrl: "./select.component.html",
+  changeDetection: ChangeDetectionStrategy.Eager,
+  styleUrl: "./select.component.css",
 })
 export class NgAtomsSelectComponent implements AfterViewChecked {
   private readonly el = inject(ElementRef);
   private readonly overlay = inject(NgAtomsOverlayService);
   private deregister: (() => void) | null = null;
 
-  readonly searchInputEl = viewChild<ElementRef<HTMLInputElement>>('searchInput');
+  readonly searchInputEl =
+    viewChild<ElementRef<HTMLInputElement>>("searchInput");
 
   readonly options = input<NgAtomsSelectOption[]>([]);
-  readonly placeholder = input<string>('Select...');
+  readonly placeholder = input<string>("Select...");
   readonly multiple = input<boolean>(false);
   readonly searchable = input<boolean>(false);
   readonly disabled = input<boolean>(false);
   readonly invalid = input<boolean>(false);
-  readonly variant = input<NgAtomsSelectVariant>('default');
-  readonly size = input<NgAtomsSelectSize>('md');
+  readonly variant = input<NgAtomsSelectVariant>("default");
+  readonly size = input<NgAtomsSelectSize>("md");
 
   readonly value = model<string | string[] | null>(null);
 
   readonly isOpen = signal(false);
-  readonly searchQuery = signal('');
+  readonly searchQuery = signal("");
   readonly focusedIndex = signal(-1);
   readonly panelAbove = signal(false);
 
@@ -58,13 +61,13 @@ export class NgAtomsSelectComponent implements AfterViewChecked {
   readonly filteredOptions = computed(() => {
     const query = this.searchQuery().toLowerCase().trim();
     if (!query) return this.options();
-    return this.options().filter(o => o.label.toLowerCase().includes(query));
+    return this.options().filter((o) => o.label.toLowerCase().includes(query));
   });
 
   readonly hasValue = computed(() => {
     const val = this.value();
     if (this.multiple()) return Array.isArray(val) && val.length > 0;
-    return val !== null && val !== undefined && val !== '';
+    return val !== null && val !== undefined && val !== "";
   });
 
   readonly displayValue = computed(() => {
@@ -73,24 +76,26 @@ export class NgAtomsSelectComponent implements AfterViewChecked {
     if (this.multiple()) {
       const values = (Array.isArray(val) ? val : []) as string[];
       if (values.length === 0) return this.placeholder();
-      if (values.length === 1) return opts.find(o => o.value === values[0])?.label ?? values[0];
+      if (values.length === 1)
+        return opts.find((o) => o.value === values[0])?.label ?? values[0];
       return `${values.length} selected`;
     }
     if (!val) return this.placeholder();
-    return opts.find(o => o.value === (val as string))?.label ?? String(val);
+    return opts.find((o) => o.value === (val as string))?.label ?? String(val);
   });
 
   readonly triggerClasses = computed(() => ({
-    'nga-select-trigger': true,
+    "nga-select-trigger": true,
     [`nga-select-trigger--${this.variant()}`]: true,
     [`nga-select-trigger--${this.size()}`]: true,
-    'nga-select-trigger--open': this.isOpen(),
-    'nga-select-trigger--invalid': this.invalid(),
+    "nga-select-trigger--open": this.isOpen(),
+    "nga-select-trigger--invalid": this.invalid(),
   }));
 
   isSelected(optValue: string): boolean {
     const val = this.value();
-    if (this.multiple()) return (Array.isArray(val) ? val : []).includes(optValue);
+    if (this.multiple())
+      return (Array.isArray(val) ? val : []).includes(optValue);
     return val === optValue;
   }
 
@@ -110,7 +115,7 @@ export class NgAtomsSelectComponent implements AfterViewChecked {
     }
   }
 
-  @HostListener('window:scroll')
+  @HostListener("window:scroll")
   onWindowScroll(): void {
     if (this.isOpen()) {
       this.computePanelPosition();
@@ -119,7 +124,7 @@ export class NgAtomsSelectComponent implements AfterViewChecked {
 
   close(): void {
     this.isOpen.set(false);
-    this.searchQuery.set('');
+    this.searchQuery.set("");
     this.focusedIndex.set(-1);
     this.deregister?.();
     this.deregister = null;
@@ -128,9 +133,15 @@ export class NgAtomsSelectComponent implements AfterViewChecked {
   selectOption(option: NgAtomsSelectOption): void {
     if (option.disabled) return;
     if (this.multiple()) {
-      const current = (Array.isArray(this.value()) ? this.value() : []) as string[];
+      const current = (
+        Array.isArray(this.value()) ? this.value() : []
+      ) as string[];
       const idx = current.indexOf(option.value);
-      this.value.set(idx >= 0 ? current.filter(v => v !== option.value) : [...current, option.value]);
+      this.value.set(
+        idx >= 0
+          ? current.filter((v) => v !== option.value)
+          : [...current, option.value]
+      );
     } else {
       this.value.set(option.value);
       this.close();
@@ -143,15 +154,17 @@ export class NgAtomsSelectComponent implements AfterViewChecked {
   }
 
   onTriggerKeydown(event: KeyboardEvent): void {
-    if (['ArrowDown', 'ArrowUp', 'Enter', ' '].includes(event.key)) {
+    if (["ArrowDown", "ArrowUp", "Enter", " "].includes(event.key)) {
       event.preventDefault();
       if (!this.isOpen()) {
         this.toggleOpen();
       } else {
         const opts = this.filteredOptions();
-        if (event.key === 'ArrowDown') this.focusedIndex.update(i => Math.min(i + 1, opts.length - 1));
-        if (event.key === 'ArrowUp') this.focusedIndex.update(i => Math.max(i - 1, 0));
-        if (event.key === 'Enter' || event.key === ' ') {
+        if (event.key === "ArrowDown")
+          this.focusedIndex.update((i) => Math.min(i + 1, opts.length - 1));
+        if (event.key === "ArrowUp")
+          this.focusedIndex.update((i) => Math.max(i - 1, 0));
+        if (event.key === "Enter" || event.key === " ") {
           const idx = this.focusedIndex();
           if (idx >= 0 && idx < opts.length) this.selectOption(opts[idx]);
         }
@@ -161,13 +174,13 @@ export class NgAtomsSelectComponent implements AfterViewChecked {
 
   onPanelKeydown(event: KeyboardEvent): void {
     const opts = this.filteredOptions();
-    if (event.key === 'ArrowDown') {
+    if (event.key === "ArrowDown") {
       event.preventDefault();
-      this.focusedIndex.update(i => Math.min(i + 1, opts.length - 1));
-    } else if (event.key === 'ArrowUp') {
+      this.focusedIndex.update((i) => Math.min(i + 1, opts.length - 1));
+    } else if (event.key === "ArrowUp") {
       event.preventDefault();
-      this.focusedIndex.update(i => Math.max(i - 1, 0));
-    } else if (event.key === 'Enter') {
+      this.focusedIndex.update((i) => Math.max(i - 1, 0));
+    } else if (event.key === "Enter") {
       event.preventDefault();
       const idx = this.focusedIndex();
       if (idx >= 0 && idx < opts.length) this.selectOption(opts[idx]);
@@ -189,5 +202,4 @@ export class NgAtomsSelectComponent implements AfterViewChecked {
     const spaceBelow = window.innerHeight - rect.bottom;
     this.panelAbove.set(spaceBelow < 240 && rect.top > spaceBelow);
   }
-
 }

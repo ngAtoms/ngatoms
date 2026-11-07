@@ -3,17 +3,19 @@ import {
   computed,
   inject,
   input,
-} from '@angular/core';
-import { NgAtomsAccordionComponent } from './accordion.component';
+  ChangeDetectionStrategy,
+} from "@angular/core";
+import { NgAtomsAccordionComponent } from "./accordion.component";
 
 @Component({
-  selector: 'nga-accordion-item',
+  selector: "nga-accordion-item",
   standalone: true,
-  templateUrl: './accordion-item.component.html',
-  styleUrl: './accordion-item.component.css',
+  templateUrl: "./accordion-item.component.html",
+  styleUrl: "./accordion-item.component.css",
+  changeDetection: ChangeDetectionStrategy.Eager,
   host: {
-    class: 'nga-accordion-item',
-    '[class.nga-accordion-item--open]': 'isOpen()',
+    class: "nga-accordion-item",
+    "[class.nga-accordion-item--open]": "isOpen()",
   },
 })
 export class NgAtomsAccordionItemComponent {
@@ -21,10 +23,11 @@ export class NgAtomsAccordionItemComponent {
 
   readonly value = input.required<string>();
 
-  readonly isOpen = computed(() => this.accordion.openItems().has(this.value()));
+  readonly isOpen = computed(() =>
+    this.accordion.openItems().has(this.value())
+  );
 
   toggle(): void {
     this.accordion.toggle(this.value());
   }
-
 }

@@ -12,12 +12,13 @@ import {
   model,
   signal,
   viewChild,
-} from '@angular/core';
-import { DOCUMENT } from '@angular/common';
-import { NgAtomsOverlayService } from '../overlay/overlay.service';
+  ChangeDetectionStrategy,
+} from "@angular/core";
+import { DOCUMENT } from "@angular/common";
+import { NgAtomsOverlayService } from "../overlay/overlay.service";
 
-export type NgAtomsDropdownPlacement = 'top' | 'bottom' | 'left' | 'right';
-export type NgAtomsDropdownAlign = 'start' | 'center' | 'end';
+export type NgAtomsDropdownPlacement = "top" | "bottom" | "left" | "right";
+export type NgAtomsDropdownAlign = "start" | "center" | "end";
 
 export interface NgAtomsDropdownMenuContext {
   open: ReturnType<typeof model<boolean>>;
@@ -28,35 +29,42 @@ export interface NgAtomsDropdownMenuContext {
   focusPrev(current: HTMLElement): void;
 }
 
-export const NGA_DROPDOWN_MENU = new InjectionToken<NgAtomsDropdownMenuContext>('NGA_DROPDOWN_MENU');
+export const NGA_DROPDOWN_MENU = new InjectionToken<NgAtomsDropdownMenuContext>(
+  "NGA_DROPDOWN_MENU"
+);
 
 const OPPOSITE: Record<NgAtomsDropdownPlacement, NgAtomsDropdownPlacement> = {
-  top: 'bottom',
-  bottom: 'top',
-  left: 'right',
-  right: 'left',
+  top: "bottom",
+  bottom: "top",
+  left: "right",
+  right: "left",
 };
 
 @Component({
-  selector: 'nga-dropdown-menu',
+  selector: "nga-dropdown-menu",
   standalone: true,
-  templateUrl: './dropdown-menu.component.html',
-  styleUrl: './dropdown-menu.component.css',
-  host: { class: 'nga-dropdown-root' },
-  providers: [{ provide: NGA_DROPDOWN_MENU, useExisting: NgAtomsDropdownMenuComponent }],
+  templateUrl: "./dropdown-menu.component.html",
+  styleUrl: "./dropdown-menu.component.css",
+  host: { class: "nga-dropdown-root" },
+  changeDetection: ChangeDetectionStrategy.Eager,
+  providers: [
+    { provide: NGA_DROPDOWN_MENU, useExisting: NgAtomsDropdownMenuComponent },
+  ],
 })
-export class NgAtomsDropdownMenuComponent implements NgAtomsDropdownMenuContext, OnDestroy {
+export class NgAtomsDropdownMenuComponent
+  implements NgAtomsDropdownMenuContext, OnDestroy
+{
   private readonly el = inject(ElementRef<HTMLElement>);
   private readonly renderer = inject(Renderer2);
   private readonly document = inject(DOCUMENT);
   private readonly overlay = inject(NgAtomsOverlayService);
 
   readonly open = model<boolean>(false);
-  readonly placement = input<NgAtomsDropdownPlacement>('bottom');
-  readonly align = input<NgAtomsDropdownAlign>('start');
-  readonly activePlacement = signal<NgAtomsDropdownPlacement>('bottom');
+  readonly placement = input<NgAtomsDropdownPlacement>("bottom");
+  readonly align = input<NgAtomsDropdownAlign>("start");
+  readonly activePlacement = signal<NgAtomsDropdownPlacement>("bottom");
 
-  readonly panelEl = viewChild.required<ElementRef<HTMLElement>>('panelEl');
+  readonly panelEl = viewChild.required<ElementRef<HTMLElement>>("panelEl");
 
   private deregister: (() => void) | null = null;
 
@@ -77,11 +85,14 @@ export class NgAtomsDropdownMenuComponent implements NgAtomsDropdownMenuContext,
       }
     });
     afterNextRender(() => {
-      this.renderer.appendChild(this.document.body, this.panelEl().nativeElement);
+      this.renderer.appendChild(
+        this.document.body,
+        this.panelEl().nativeElement
+      );
     });
   }
 
-  @HostListener('window:scroll')
+  @HostListener("window:scroll")
   onWindowScroll(): void {
     if (this.open()) {
       this.position();
@@ -89,7 +100,7 @@ export class NgAtomsDropdownMenuComponent implements NgAtomsDropdownMenuContext,
   }
 
   toggle(): void {
-    this.open.update(v => !v);
+    this.open.update((v) => !v);
     if (this.open()) {
       requestAnimationFrame(() => {
         this.position();
@@ -113,8 +124,8 @@ export class NgAtomsDropdownMenuComponent implements NgAtomsDropdownMenuContext,
   private items(): HTMLElement[] {
     return Array.from(
       this.panelEl().nativeElement.querySelectorAll<HTMLElement>(
-        '.nga-dropdown-item:not([aria-disabled="true"])',
-      ),
+        '.nga-dropdown-item:not([aria-disabled="true"])'
+      )
     );
   }
 
@@ -144,26 +155,35 @@ export class NgAtomsDropdownMenuComponent implements NgAtomsDropdownMenuContext,
     a: NgAtomsDropdownAlign,
     tr: DOMRect,
     pr: DOMRect,
-    gap: number,
+    gap: number
   ): { top: number; left: number } {
-    if (p === 'left' || p === 'right') {
-      const left = p === 'left' ? tr.left - pr.width - gap : tr.right + gap;
+    if (p === "left" || p === "right") {
+      const left = p === "left" ? tr.left - pr.width - gap : tr.right + gap;
       const top =
-        a === 'start' ? tr.top :
-        a === 'end'   ? tr.bottom - pr.height :
-                        tr.top + tr.height / 2 - pr.height / 2;
+        a === "start"
+          ? tr.top
+          : a === "end"
+          ? tr.bottom - pr.height
+          : tr.top + tr.height / 2 - pr.height / 2;
       return { top, left };
     }
 
-    const top = p === 'bottom' ? tr.bottom + gap : tr.top - pr.height - gap;
+    const top = p === "bottom" ? tr.bottom + gap : tr.top - pr.height - gap;
     const left =
-      a === 'start' ? tr.left :
-      a === 'end'   ? tr.right - pr.width :
-                      tr.left + tr.width / 2 - pr.width / 2;
+      a === "start"
+        ? tr.left
+        : a === "end"
+        ? tr.right - pr.width
+        : tr.left + tr.width / 2 - pr.width / 2;
     return { top, left };
   }
 
-  private fits(top: number, left: number, pr: DOMRect, margin: number): boolean {
+  private fits(
+    top: number,
+    left: number,
+    pr: DOMRect,
+    margin: number
+  ): boolean {
     return (
       top >= margin &&
       left >= margin &&
@@ -197,13 +217,19 @@ export class NgAtomsDropdownMenuComponent implements NgAtomsDropdownMenuContext,
       ({ top, left } = fc);
     } else {
       resolved = p;
-      top = Math.max(margin, Math.min(pc.top, window.innerHeight - pr.height - margin));
-      left = Math.max(margin, Math.min(pc.left, window.innerWidth - pr.width - margin));
+      top = Math.max(
+        margin,
+        Math.min(pc.top, window.innerHeight - pr.height - margin)
+      );
+      left = Math.max(
+        margin,
+        Math.min(pc.left, window.innerWidth - pr.width - margin)
+      );
     }
 
     this.activePlacement.set(resolved);
-    this.renderer.setStyle(panel, 'top', `${top}px`);
-    this.renderer.setStyle(panel, 'left', `${left}px`);
+    this.renderer.setStyle(panel, "top", `${top}px`);
+    this.renderer.setStyle(panel, "left", `${left}px`);
   }
 
   ngOnDestroy(): void {

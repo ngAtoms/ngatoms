@@ -23,7 +23,7 @@ npm workspaces monorepo with the following packages:
 | `packages/primitives` | `@ngatoms/ngatoms-primitives` | Angular UI primitive components |
 | `packages/tokens` | `@ngatoms/ngatoms-tokens` | Design tokens / CSS variables |
 | `packages/utils` | `@ngatoms/ngatoms-utils` | Shared utilities |
-| `apps/docs` | `@ngatoms/ngatoms-docs` | Angular 21 interactive docs — deployed to `ngatoms.com` via Cloudflare Pages |
+| `apps/docs` | `@ngatoms/ngatoms-docs` | Angular 22 interactive docs — deployed to `ngatoms.com` via Cloudflare Pages |
 | `registry/` | — | Component registry metadata (`registry.json`) |
 
 ## Common Commands
