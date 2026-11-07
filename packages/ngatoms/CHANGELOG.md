@@ -1,5 +1,15 @@
 # ngatoms
 
+## 1.0.0-rc.0
+
+### Major Changes
+
+- Release 1.0.0. The rc channel moves off the 0.x line.
+
+### Minor Changes
+
+- 19c6fd6: chore: require Angular 22+ (peerDependencies bumped from >=21)
+
 ## 0.3.0-rc.1
 
 ### Minor Changes

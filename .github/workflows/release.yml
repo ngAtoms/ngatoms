@@ -92,6 +92,11 @@ jobs:
       - name: Stage packages for approval
         run: |
           npm install -g npm@12
+          # setup-node writes an empty _authToken. npm then reports E401
+          # and does not use the Actions OIDC token.
+          if [[ -n "${NPM_CONFIG_USERCONFIG:-}" && -f "$NPM_CONFIG_USERCONFIG" ]]; then
+            sed -i '/_authToken/d' "$NPM_CONFIG_USERCONFIG"
+          fi
           real="$(command -v npm)"
           mkdir -p "$RUNNER_TEMP/npm-bin"
           cp tools/scripts/npm-stage-publish-wrapper.sh "$RUNNER_TEMP/npm-bin/npm"

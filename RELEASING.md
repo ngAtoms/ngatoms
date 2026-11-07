@@ -17,7 +17,23 @@ Direct publish from a 2FA-bypass granular token is being removed. Each public pa
 
 A new trusted publisher must complete its first successful stage within 2 days.
 
-Packages that publish today: `ngatoms` and `@ngatoms/ngatoms-tokens`. The release job installs npm 12 before staging so the CLI can use OIDC. `id-token: write` is already set on the job.
+Every workspace package is on `1.0.0-rc.0`. Only these two are published:
+
+| Package | npm name | Why it publishes |
+|---|---|---|
+| `packages/ngatoms` | `ngatoms` | The CLI people run with `npx ngatoms` |
+| `packages/tokens` | `@ngatoms/ngatoms-tokens` | The design tokens |
+
+These stay private, at the same version:
+
+| Package | Why it stays private |
+|---|---|
+| `packages/primitives` | Components are copied into the consumer project. They are not a runtime dependency. |
+| `packages/cli` | Placeholder. The published CLI is `ngatoms`. |
+| `packages/utils` | Empty shared module. No public API yet. |
+| `apps/docs` | The documentation site. It deploys to ngatoms.com, not to npm. |
+
+The release job installs npm 12 before staging so the CLI can use OIDC. `id-token: write` is already set on the job.
 
 ## Changesets
 
