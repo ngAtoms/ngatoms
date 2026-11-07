@@ -95,147 +95,147 @@ export class AppComponent {}`;
       name: "accordion",
       route: "/accordion",
       description: "Collapsible items with single or multiple open modes.",
-      status: "alpha",
+      status: "stable",
     },
     {
       name: "alert",
       route: "/alert",
       description:
         "Feedback messages — 5 variants: default, info, success, warning, destructive.",
-      status: "alpha",
+      status: "stable",
     },
     {
       name: "avatar",
       route: "/avatar",
       description:
         "User avatar with image, initials fallback, and icon fallback. 4 sizes.",
-      status: "alpha",
+      status: "stable",
     },
     {
       name: "badge",
       route: "/badge",
       description:
-        "Labels — 5 variants: default, secondary, outline, destructive, success.",
-      status: "alpha",
+        "Labels — 7 variants: default, ember, success, warning, destructive, solid, outline.",
+      status: "stable",
     },
     {
       name: "button",
       route: "/button",
       description: "5 variants, 5 sizes, loading state, and icon support.",
-      status: "alpha",
+      status: "stable",
     },
     {
       name: "card",
       route: "/card",
       description:
         "Container with header, title, description, content, and footer slots.",
-      status: "alpha",
+      status: "stable",
     },
     {
       name: "checkbox",
       route: "/checkbox",
       description: "Checked, unchecked, and indeterminate states.",
-      status: "alpha",
+      status: "stable",
     },
     {
       name: "date-picker",
       route: "/date-picker",
       description:
         "Custom calendar overlay — single/range, min/max, month/year picker, i18n.",
-      status: "alpha",
+      status: "stable",
     },
     {
       name: "dialog",
       route: "/dialog",
       description:
         "Modal using native <dialog>, focus trap, backdrop, and size variants.",
-      status: "alpha",
+      status: "stable",
     },
     {
       name: "dropdown-menu",
       route: "/dropdown-menu",
       description:
         "Contextual action menu — 4 placements, flip, icons, keyboard navigation.",
-      status: "alpha",
+      status: "stable",
     },
     {
       name: "input",
       route: "/input",
       description: "3 variants, 5 sizes, invalid state.",
-      status: "alpha",
+      status: "stable",
     },
     {
       name: "number-input",
       route: "/number-input",
       description:
         "Numeric input with increment/decrement controls, min/max clamping, step.",
-      status: "alpha",
+      status: "stable",
     },
     {
       name: "popover",
       route: "/popover",
       description:
         "Floating panel anchored to a trigger — 4 placements, outside-click dismiss.",
-      status: "alpha",
+      status: "stable",
     },
     {
       name: "progress",
       route: "/progress",
       description:
         "Progress bar — determinate and indeterminate modes, 3 sizes.",
-      status: "alpha",
+      status: "stable",
     },
     {
       name: "radio-group",
       route: "/radio-group",
       description:
         "Radio button group with keyboard navigation, ARIA support, and 3 sizes.",
-      status: "alpha",
+      status: "stable",
     },
     {
       name: "select",
       route: "/select",
       description: "Styled native select — 3 variants, 5 sizes.",
-      status: "alpha",
+      status: "stable",
     },
     {
       name: "separator",
       route: "/separator",
       description: "Horizontal or vertical visual divider.",
-      status: "alpha",
+      status: "stable",
     },
     {
       name: "spinner",
       route: "/spinner",
       description: "Loading spinner — 3 sizes.",
-      status: "alpha",
+      status: "stable",
     },
     {
       name: "switch",
       route: "/switch",
       description: "Toggle switch for enabling/disabling a setting — 3 sizes.",
-      status: "alpha",
+      status: "stable",
     },
     {
       name: "tabs",
       route: "/tabs",
       description:
         "Underline and pills variants, keyboard navigation, and ARIA support.",
-      status: "alpha",
+      status: "stable",
     },
     {
       name: "textarea",
       route: "/textarea",
       description:
         "Multiline input with variants, sizes, invalid state, and auto-resize.",
-      status: "alpha",
+      status: "stable",
     },
     {
       name: "tooltip",
       route: "/tooltip",
       description:
         "Floating label — 4 placements, delay, and viewport clamping.",
-      status: "alpha",
+      status: "stable",
     },
     /* Planned */
     {
@@ -284,7 +284,36 @@ export class AppComponent {}`;
       description: "Input that creates removable tag chips.",
       status: "planned",
     },
+    {
+      name: "code-block",
+      description: "Syntax-highlighted code display.",
+      status: "planned",
+    },
+    {
+      name: "color-picker",
+      description: "HSL/hex color selector.",
+      status: "planned",
+    },
+    {
+      name: "rating",
+      description: "Star rating input.",
+      status: "planned",
+    },
+    {
+      name: "timeline",
+      description: "Vertical event timeline.",
+      status: "planned",
+    },
+    {
+      name: "tree",
+      description: "Collapsible tree view.",
+      status: "planned",
+    },
   ];
+
+  get availableCount(): number {
+    return this.components.filter((component) => component.status !== "planned").length;
+  }
 
   readonly tocItems = [
     { id: "install", label: "1 · Install" },
