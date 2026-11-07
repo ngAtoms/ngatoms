@@ -10,19 +10,25 @@
     "@ngatoms/ngatoms-utils": "0.0.2"
   },
   "changesets": [
+    "accent-active",
     "add-popover",
+    "angular-22-upgrade",
     "cli-shorthand-add",
     "cli-status-colors",
     "cli-update-check",
     "date-picker",
+    "dialog-description-space",
     "dropdown-menu",
     "ember-design-system",
     "fix-getref-tag-format",
     "fix-lint-readme-updates",
     "init-fetch-tokens",
+    "monochrome-palette",
     "overlay-reposition-on-scroll",
     "readme-component-status-v2",
     "readme-component-status",
-    "registry-status-field"
+    "registry-status-field",
+    "release-1-0",
+    "trusted-publishing-repository"
   ]
 }

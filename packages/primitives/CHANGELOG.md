@@ -1,5 +1,16 @@
 # @thereisnoplacelike/ngatoms-primitives
 
+## 0.2.0-rc.2
+
+### Minor Changes
+
+- 19c6fd6: chore: require Angular 22+ (peerDependencies bumped from >=21)
+- 3b480e9: Shift the design system to a neutral black-and-white palette. Ink stays near-black. Light surfaces are a cooler, whiter frost glass, and accent, status, and focus colors no longer use hue. Dark mode keeps text, switch thumbs, scrims, and elevation shadows readable against the near-black page.
+
+### Patch Changes
+
+- 3b480e9: Give dialog descriptions more room before the body and the footer, so confirm modals and dialog content do not sit against the footer.
+
 ## 0.2.0-rc.1
 
 ### Minor Changes
