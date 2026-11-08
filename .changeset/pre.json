@@ -30,6 +30,7 @@
     "registry-status-field",
     "release-1-0-private-packages",
     "release-1-0",
+    "stable-component-status",
     "trusted-publishing-repository"
   ]
 }

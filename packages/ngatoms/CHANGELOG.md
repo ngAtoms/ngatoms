@@ -1,5 +1,11 @@
 # ngatoms
 
+## 1.0.0-rc.1
+
+### Patch Changes
+
+- 9f68770: Mark the shipped components as stable in the registry now that the 1.0 line is published.
+
 ## 1.0.0-rc.0
 
 ### Major Changes
