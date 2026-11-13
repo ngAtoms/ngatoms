@@ -5,6 +5,41 @@ import angular from '@angular-eslint/eslint-plugin';
 import angularTemplate from '@angular-eslint/eslint-plugin-template';
 import angularTemplateParser from '@angular-eslint/template-parser';
 import globals from 'globals';
+import jsdoc from 'eslint-plugin-jsdoc';
+
+/**
+ * Local rule: documentation lives in JSDoc blocks, never in `//` comments.
+ * Directives the toolchain reads (`// @ts-…`, `// eslint-…`) are left alone.
+ */
+const noLineComments = {
+  meta: {
+    type: 'suggestion',
+    schema: [],
+    messages: { line: 'Line comments are not allowed. Document intent in the JSDoc header instead.' },
+  },
+  create(context) {
+    return {
+      Program() {
+        for (const comment of context.sourceCode.getAllComments()) {
+          const isDirective = /^\s*(@ts-|eslint-)/.test(comment.value);
+          if (comment.type === 'Line' && !isDirective) {
+            context.report({ loc: comment.loc, messageId: 'line' });
+          }
+        }
+      },
+    };
+  },
+};
+
+/**
+ * Code that follows the documentation standard: a `@file` header per file,
+ * a JSDoc header per function, and no line comments. It starts with the
+ * grid and will widen to every primitive.
+ */
+const DOCUMENTED_CODE = [
+  'packages/primitives/src/grid-core/**/*.ts',
+  'packages/primitives/src/grid/**/*.ts',
+];
 
 export default tseslint.config(
   // ── Ignored paths ─────────────────────────────────────────────
@@ -50,6 +85,52 @@ export default tseslint.config(
       '@angular-eslint/use-pipe-transform-interface': 'error',
       '@angular-eslint/use-lifecycle-interface': 'warn',
     },
+  },
+
+  // ── grid-core is framework-free: it must stay usable (and testable)
+  //    without Angular, so the renderer can be swapped or reused.
+  {
+    files: ['packages/primitives/src/grid-core/**/*.ts'],
+    rules: {
+      'no-restricted-imports': [
+        'error',
+        {
+          patterns: [
+            { group: ['@angular/*'], message: 'grid-core must not depend on Angular.' },
+          ],
+        },
+      ],
+    },
+  },
+
+  // ── Documentation standard (see CONTRIBUTING.md → Code Guidelines) ──
+  {
+    files: DOCUMENTED_CODE,
+    plugins: { jsdoc, ngatoms: { rules: { 'no-line-comments': noLineComments } } },
+    rules: {
+      'ngatoms/no-line-comments': 'error',
+      'jsdoc/require-file-overview': 'error',
+      'jsdoc/require-jsdoc': [
+        'error',
+        {
+          checkConstructors: false,
+          require: {
+            ArrowFunctionExpression: true,
+            ClassDeclaration: true,
+            FunctionDeclaration: true,
+            FunctionExpression: true,
+            MethodDefinition: true,
+          },
+        },
+      ],
+    },
+  },
+
+  // ── Specs and benchmarks keep the file header and the comment rule,
+  //    but their small local helpers do not each need a JSDoc block.
+  {
+    files: ['packages/primitives/src/grid-core/**/*.{spec,bench}.ts', 'packages/primitives/src/grid/**/*.spec.ts'],
+    rules: { 'jsdoc/require-jsdoc': 'off' },
   },
 
   // ── Spec files — relaxed rules ──────────────────────────────────

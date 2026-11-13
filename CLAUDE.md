@@ -8,6 +8,18 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - Follow branch promotion flow: `rc` → `lts` → `main`. NEVER merge or commit directly to `main`
 - Always create PRs for changes; do not push directly to protected branches
 
+## Code Standards
+
+These apply to all TypeScript in the library. They are enforced by ESLint for `packages/primitives/src/grid-core` and `packages/primitives/src/grid` today and will be extended to every primitive.
+
+- **KISS** — pick the simplest design that solves the problem in front of you. No speculative options, layers, or abstractions.
+- **SOLID** — one reason to change per function, class, and file. Depend on small interfaces (see the `InjectionToken` context pattern), not on concrete classes.
+- **Clean Code** — intention-revealing names, small functions, no dead code, no magic numbers (name the constant).
+- **No inline comments.** `//` comments are not allowed in TypeScript. If code needs explaining, first make it clearer (rename, extract a function); what still needs saying goes in the JSDoc header.
+- **Every file starts with a header**: a JSDoc block with `@file` stating what the file is responsible for.
+- **Every function, method, and class has a JSDoc header.** Keep it clean, correct, and pragmatic: say what it does and why it exists, plus any non-obvious behavior. Do not restate the signature, and do not add `@param`/`@returns` lines that only repeat names and types. Methods implementing an interface may use `/** @inheritdoc */`.
+- Interface members are documented with JSDoc where the name alone is not enough.
+
 ## Project Overview
 
 **NgAtoms** is a collection of Angular UI primitives designed to be copied directly into projects rather than installed as a library dependency. Core philosophy: no runtime UI dependencies, full project control.

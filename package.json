@@ -25,10 +25,10 @@
     "publish:rc:dry": "node tools/scripts/publish.mjs --channel rc --dry-run"
   },
   "devDependencies": {
-    "@angular/build": "^22.2.6",
     "@angular-eslint/eslint-plugin": "^22.6.0",
     "@angular-eslint/eslint-plugin-template": "^22.6.0",
     "@angular-eslint/template-parser": "^22.6.0",
+    "@angular/build": "^22.2.6",
     "@angular/cli": "^22.2.6",
     "@angular/common": "^22.2.5",
     "@angular/compiler": "^22.2.5",
@@ -40,9 +40,11 @@
     "@eslint/js": "^10.0.1",
     "@phosphor-icons/web": "^2.1.2",
     "eslint": "^10.11.0",
+    "eslint-plugin-jsdoc": "^65.4.5",
     "globals": "^17.13.0",
     "rxjs": "^7.8.0",
     "typescript": "~6.0.3",
-    "typescript-eslint": "^8.70.0"
+    "typescript-eslint": "^8.70.0",
+    "vitest": "^5.1.0"
   }
 }

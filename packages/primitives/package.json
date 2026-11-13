@@ -11,7 +11,9 @@
   ],
   "scripts": {
     "build": "ngc --noEmit -p tsconfig.json",
-    "lint": "eslint src/"
+    "lint": "eslint src/",
+    "test": "vitest run",
+    "bench": "vitest run --config vitest.bench.config.ts"
   },
   "peerDependencies": {
     "@angular/common": ">=22.0.0",
