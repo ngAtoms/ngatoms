@@ -1,0 +1,87 @@
+<form
+  #panel
+  class="nga-grid-filter"
+  role="dialog"
+  [attr.aria-label]="'Filter ' + column().header"
+  (submit)="$event.preventDefault(); submit()"
+>
+  @switch (column().filter) {
+    @case ('text') {
+      <select class="nga-grid-filter__field" aria-label="Condition" (change)="onTextOperator($event)">
+        @for (option of textOperators; track option.value) {
+          <option [value]="option.value" [selected]="option.value === textOperator()">{{ option.label }}</option>
+        }
+      </select>
+      @if (textOperator() !== 'empty') {
+        <input
+          class="nga-grid-filter__field"
+          type="text"
+          autocomplete="off"
+          placeholder="Value"
+          aria-label="Value"
+          [value]="text()"
+          (input)="onText($event)"
+        />
+      }
+    }
+    @case ('number') {
+      <select class="nga-grid-filter__field" aria-label="Condition" (change)="onNumberOperator($event)">
+        @for (option of numberOperators; track option.value) {
+          <option [value]="option.value" [selected]="option.value === numberOperator()">{{ option.label }}</option>
+        }
+      </select>
+      @if (numberOperator() !== 'empty') {
+        <input
+          class="nga-grid-filter__field"
+          type="number"
+          step="any"
+          [placeholder]="numberOperator() === 'between' ? 'From' : 'Value'"
+          [attr.aria-label]="numberOperator() === 'between' ? 'From' : 'Value'"
+          [value]="from() ?? ''"
+          (input)="onFrom($event)"
+        />
+      }
+      @if (numberOperator() === 'between') {
+        <input
+          class="nga-grid-filter__field"
+          type="number"
+          step="any"
+          placeholder="To"
+          aria-label="To"
+          [value]="to() ?? ''"
+          (input)="onTo($event)"
+        />
+      }
+    }
+    @case ('set') {
+      <input
+        class="nga-grid-filter__field"
+        type="search"
+        autocomplete="off"
+        placeholder="Search values"
+        aria-label="Search values"
+        [value]="search()"
+        (input)="onSearch($event)"
+      />
+      <label class="nga-grid-filter__option nga-grid-filter__option--all">
+        <input type="checkbox" [checked]="allSelected()" (change)="toggleAll()" />
+        <span>Select all</span>
+      </label>
+      <div class="nga-grid-filter__options" role="group" aria-label="Values">
+        @for (option of visibleOptions(); track option.value) {
+          <label class="nga-grid-filter__option">
+            <input type="checkbox" [checked]="isSelected(option)" (change)="toggleOption(option)" />
+            <span>{{ option.label }}</span>
+          </label>
+        } @empty {
+          <p class="nga-grid-filter__empty">No values</p>
+        }
+      </div>
+    }
+  }
+
+  <div class="nga-grid-filter__actions">
+    <button type="button" class="nga-grid-filter__button" (click)="clear()">Clear</button>
+    <button type="submit" class="nga-grid-filter__button nga-grid-filter__button--primary">Apply</button>
+  </div>
+</form>

@@ -1,0 +1,60 @@
+@for (item of rows(); track item.key) {
+  @let entry = item.entry;
+  <div
+    class="nga-grid__row"
+    role="row"
+    [class.nga-grid__row--total]="entry.kind === 'row' && entry.row.kind === 'total'"
+    [class.nga-grid__row--subtotal]="entry.kind === 'row' && entry.row.kind === 'subtotal'"
+    [class.nga-grid__row--parent]="entry.kind === 'row' && entry.hasChildren"
+    [class.nga-grid__row--dimmed]="entry.kind === 'row' && entry.dimmed"
+    [attr.aria-rowindex]="item.index + grid.headerDepth() + 1"
+    [attr.aria-level]="entry.kind === 'row' ? entry.level : null"
+    [attr.aria-expanded]="entry.kind === 'row' && entry.hasChildren ? entry.expanded : null"
+    [style.transform]="'translateY(' + item.top + 'px)'"
+  >
+    @for (col of columns(); track col.column.id) {
+      @if (entry.kind === 'row') {
+        @let view = grid.cell(entry.row, col.column);
+        <div
+          class="nga-grid__cell"
+          role="gridcell"
+          [class.nga-grid__cell--number]="view.numeric"
+          [class.nga-grid__cell--favorable]="view.tone === 'favorable'"
+          [class.nga-grid__cell--unfavorable]="view.tone === 'unfavorable'"
+          [attr.aria-colindex]="col.index + 1"
+          [style.left.px]="col.left"
+          [style.width.px]="col.width"
+        >
+          @if (col.column.tree) {
+            <span class="nga-grid__indent" [style.width.px]="indentOf(entry.level)"></span>
+            @if (entry.hasChildren) {
+              <button
+                type="button"
+                class="nga-grid__toggle"
+                tabindex="-1"
+                [class.nga-grid__toggle--open]="entry.expanded"
+                [attr.aria-label]="entry.expanded ? 'Collapse row' : 'Expand row'"
+                (click)="grid.toggleRow(entry.row)"
+              >
+                <svg viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M6 3.5L10.5 8 6 12.5" /></svg>
+              </button>
+            } @else {
+              <span class="nga-grid__toggle-spacer"></span>
+            }
+          }
+          <span class="nga-grid__cell-text">{{ view.text }}</span>
+        </div>
+      } @else {
+        <div
+          class="nga-grid__cell nga-grid__cell--placeholder"
+          role="gridcell"
+          [attr.aria-colindex]="col.index + 1"
+          [style.left.px]="col.left"
+          [style.width.px]="col.width"
+        >
+          <span class="nga-grid__placeholder-bar"></span>
+        </div>
+      }
+    }
+  </div>
+}

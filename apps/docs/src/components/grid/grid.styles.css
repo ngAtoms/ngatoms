@@ -1,0 +1,517 @@
+/* =============================================================
+   NgAtoms Grid — grid.styles.css
+   Import once in your global styles.css:
+     @import '@/path/to/grid.styles.css';
+   ============================================================= */
+
+:root {
+  --nga-grid-height:        30rem;
+  --nga-grid-radius:        var(--nga-radius-lg, 10px);
+  --nga-grid-font-size:     var(--nga-text-sm, 13px);
+  --nga-grid-cell-px:       0.75rem;
+
+  --nga-grid-bg:            var(--nga-color-card, #FBF8F1);
+  --nga-grid-fg:            var(--nga-color-foreground, #111111);
+  --nga-grid-muted:         var(--nga-color-muted-foreground, #756C5F);
+  --nga-grid-border:        var(--nga-color-border, #DDD4C1);
+  --nga-grid-row-border:    color-mix(in oklab, var(--nga-color-border, #DDD4C1) 55%, transparent);
+
+  /* Opaque, because pinned panes and the header sit over scrolling cells */
+  --nga-grid-header-bg:     color-mix(in oklab, var(--nga-color-muted, #EAE3D4) 55%, var(--nga-grid-bg));
+  --nga-grid-header-fg:     var(--nga-color-muted-foreground, #756C5F);
+  --nga-grid-row-hover-bg:  color-mix(in oklab, var(--nga-color-foreground, #111111) 4%, var(--nga-grid-bg));
+  --nga-grid-subtotal-bg:   color-mix(in oklab, var(--nga-color-muted, #EAE3D4) 35%, var(--nga-grid-bg));
+  --nga-grid-total-bg:      color-mix(in oklab, var(--nga-color-muted, #EAE3D4) 70%, var(--nga-grid-bg));
+  --nga-grid-total-border:  var(--nga-color-border-strong, #BDB29C);
+
+  --nga-grid-favorable:     var(--nga-color-success, #2B7A3B);
+  --nga-grid-unfavorable:   var(--nga-color-destructive, #C81E3A);
+  --nga-grid-pin-shadow:    rgba(17, 17, 17, 0.10);
+}
+
+.dark {
+  --nga-grid-pin-shadow:    rgba(0, 0, 0, 0.45);
+}
+
+/* ── Root ───────────────────────────────────────────────────── */
+.nga-grid {
+  display: block;
+  height: var(--nga-grid-height);
+  border: 1px solid var(--nga-grid-border);
+  border-radius: var(--nga-grid-radius);
+  background: var(--nga-grid-bg);
+  color: var(--nga-grid-fg);
+  font-size: var(--nga-grid-font-size);
+  font-variant-numeric: tabular-nums;
+  overflow: hidden;
+}
+
+/* ── Scroll viewport ────────────────────────────────────────── */
+.nga-grid__viewport {
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+  scrollbar-color: var(--nga-grid-border) transparent;
+}
+
+.nga-grid__canvas {
+  position: relative;
+  min-width: 100%;
+}
+
+/* ── Header and body bands ──────────────────────────────────── */
+.nga-grid__header,
+.nga-grid__body {
+  display: flex;
+  min-width: 100%;
+}
+
+.nga-grid__header {
+  position: sticky;
+  top: 0;
+  z-index: 3;
+  background: var(--nga-grid-header-bg);
+  border-bottom: 1px solid var(--nga-grid-border);
+  box-sizing: border-box;
+}
+
+.nga-grid__body {
+  position: relative;
+}
+
+/* ── Panes ──────────────────────────────────────────────────── */
+.nga-grid__pane {
+  position: relative;
+  display: block;
+  flex: none;
+  height: 100%;
+}
+
+/* Pinned panes stay put while the center scrolls underneath them */
+.nga-grid__pane--left,
+.nga-grid__pane--right {
+  position: sticky;
+  z-index: 2;
+  background: var(--nga-grid-bg);
+  transition: box-shadow var(--nga-dur-base, 180ms) var(--nga-ease-out, ease);
+}
+
+.nga-grid__pane--left  { left: 0; }
+.nga-grid__pane--right { right: 0; margin-left: auto; }
+
+.nga-grid__header .nga-grid__pane--left,
+.nga-grid__header .nga-grid__pane--right {
+  background: var(--nga-grid-header-bg);
+}
+
+/* A shadow appears on a pinned pane only while content is hidden behind it */
+.nga-grid--scrolled-start .nga-grid__pane--left {
+  box-shadow: 1px 0 0 var(--nga-grid-border), 6px 0 12px -6px var(--nga-grid-pin-shadow);
+}
+
+.nga-grid--scrolled-end .nga-grid__pane--right {
+  box-shadow: -1px 0 0 var(--nga-grid-border), -6px 0 12px -6px var(--nga-grid-pin-shadow);
+}
+
+/* ── Header cells ───────────────────────────────────────────── */
+.nga-grid__header-cell {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  padding: 0 var(--nga-grid-cell-px);
+  color: var(--nga-grid-header-fg);
+  font-size: var(--nga-text-xs, 12px);
+  font-weight: var(--nga-font-weight-semibold, 600);
+  white-space: nowrap;
+  box-sizing: border-box;
+  user-select: none;
+}
+
+.nga-grid__header-cell--number {
+  justify-content: flex-end;
+}
+
+/* Group headers are underlined, and their label sticks to the left edge
+   of the scrolling area so it stays readable while the group is only
+   partly in view. */
+.nga-grid__header-cell--group {
+  border-bottom: 1px solid var(--nga-grid-row-border);
+  border-left: 1px solid var(--nga-grid-row-border);
+  color: var(--nga-grid-fg);
+}
+
+.nga-grid__header-text {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.nga-grid__header-cell--group .nga-grid__header-text {
+  position: sticky;
+  left: calc(var(--nga-grid-pinned-left, 0px) + var(--nga-grid-cell-px));
+}
+
+/* ── Rows ───────────────────────────────────────────────────── */
+.nga-grid__row {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: var(--nga-grid-row-height);
+  border-bottom: 1px solid var(--nga-grid-row-border);
+  background: var(--nga-grid-bg);
+  box-sizing: border-box;
+  will-change: transform;
+}
+
+.nga-grid__row--parent {
+  font-weight: var(--nga-font-weight-medium, 500);
+}
+
+.nga-grid__row--subtotal {
+  background: var(--nga-grid-subtotal-bg);
+  font-weight: var(--nga-font-weight-semibold, 600);
+}
+
+.nga-grid__row--total {
+  background: var(--nga-grid-total-bg);
+  border-top: 1px solid var(--nga-grid-total-border);
+  font-weight: var(--nga-font-weight-bold, 700);
+}
+
+/* Context rows kept only because a descendant matches a filter */
+.nga-grid__row--dimmed .nga-grid__cell-text {
+  opacity: 0.55;
+}
+
+/* ── Cells ──────────────────────────────────────────────────── */
+.nga-grid__cell {
+  position: absolute;
+  top: 0;
+  display: flex;
+  align-items: center;
+  height: 100%;
+  padding: 0 var(--nga-grid-cell-px);
+  box-sizing: border-box;
+  white-space: nowrap;
+}
+
+.nga-grid__cell--number {
+  justify-content: flex-end;
+}
+
+.nga-grid__cell-text {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.nga-grid__cell--favorable   { color: var(--nga-grid-favorable); }
+.nga-grid__cell--unfavorable { color: var(--nga-grid-unfavorable); }
+
+/* ── Tree column ────────────────────────────────────────────── */
+.nga-grid__indent {
+  flex: none;
+}
+
+.nga-grid__toggle,
+.nga-grid__toggle-spacer {
+  flex: none;
+  width: 1.25rem;
+  height: 1.25rem;
+  margin-right: 0.25rem;
+}
+
+.nga-grid__toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  border: none;
+  border-radius: var(--nga-radius-sm, 4px);
+  background: transparent;
+  color: var(--nga-grid-muted);
+  cursor: pointer;
+  transition: background var(--nga-dur-fast, 120ms) var(--nga-ease-out, ease), color var(--nga-dur-fast, 120ms) var(--nga-ease-out, ease);
+}
+
+.nga-grid__toggle:hover {
+  background: color-mix(in oklab, var(--nga-grid-fg) 9%, transparent);
+  color: var(--nga-grid-fg);
+}
+
+.nga-grid__toggle svg {
+  width: 0.75rem;
+  height: 0.75rem;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.75;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  transition: transform var(--nga-dur-base, 180ms) var(--nga-ease-out, ease);
+}
+
+.nga-grid__toggle--open svg {
+  transform: rotate(90deg);
+}
+
+/* ── Placeholder rows (data not loaded yet) ─────────────────── */
+.nga-grid__placeholder-bar {
+  width: 60%;
+  height: 0.5rem;
+  border-radius: var(--nga-radius-full, 9999px);
+  background: color-mix(in oklab, var(--nga-grid-fg) 9%, transparent);
+}
+
+.nga-grid__cell--placeholder {
+  justify-content: flex-end;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nga-grid__toggle svg,
+  .nga-grid__pane--left,
+  .nga-grid__pane--right {
+    transition: none;
+  }
+}
+
+/* ── Sort and filter controls in leaf headers ───────────────── */
+.nga-grid__header-sort {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  min-width: 0;
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+}
+
+.nga-grid__header-sort:hover {
+  color: var(--nga-grid-fg);
+}
+
+/* The arrow shows on hover, and stays while the column is sorted */
+.nga-grid__sort-icon {
+  flex: none;
+  width: 0.75rem;
+  height: 0.75rem;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.75;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  opacity: 0;
+  transition: opacity var(--nga-dur-fast, 120ms) var(--nga-ease-out, ease), transform var(--nga-dur-base, 180ms) var(--nga-ease-out, ease);
+}
+
+.nga-grid__header-sort:hover .nga-grid__sort-icon {
+  opacity: 0.5;
+}
+
+.nga-grid__sort-icon--active,
+.nga-grid__header-sort:hover .nga-grid__sort-icon--active {
+  opacity: 1;
+  color: var(--nga-color-accent, #D9541E);
+}
+
+.nga-grid__sort-icon--desc {
+  transform: rotate(180deg);
+}
+
+.nga-grid__header-filter {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  width: 1.25rem;
+  height: 1.25rem;
+  margin-left: 0.25rem;
+  padding: 0;
+  border: none;
+  border-radius: var(--nga-radius-sm, 4px);
+  background: transparent;
+  color: inherit;
+  opacity: 0.45;
+  cursor: pointer;
+  transition: opacity var(--nga-dur-fast, 120ms) var(--nga-ease-out, ease), background var(--nga-dur-fast, 120ms) var(--nga-ease-out, ease);
+}
+
+.nga-grid__header-filter svg {
+  width: 0.75rem;
+  height: 0.75rem;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.5;
+  stroke-linejoin: round;
+}
+
+.nga-grid__header-filter:hover,
+.nga-grid__header-filter[aria-expanded='true'] {
+  opacity: 1;
+  background: color-mix(in oklab, var(--nga-grid-fg) 9%, transparent);
+}
+
+/* A filtered column is marked in the accent color, with the icon filled */
+.nga-grid__header-filter--active {
+  opacity: 1;
+  color: var(--nga-color-accent, #D9541E);
+}
+
+.nga-grid__header-filter--active svg {
+  fill: currentColor;
+}
+
+/* In text columns the filter button sits at the far end of the header */
+.nga-grid__header-cell:not(.nga-grid__header-cell--number) .nga-grid__header-filter {
+  margin-left: auto;
+}
+
+/* ── Empty state under an active filter ─────────────────────── */
+.nga-grid__empty {
+  position: sticky;
+  left: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 2.5rem 1rem;
+  color: var(--nga-grid-muted);
+}
+
+.nga-grid__empty-text {
+  margin: 0;
+}
+
+.nga-grid__empty-action,
+.nga-grid-filter__button {
+  height: 1.75rem;
+  padding: 0 0.75rem;
+  border: 1px solid var(--nga-grid-border);
+  border-radius: var(--nga-radius-md, 6px);
+  background: transparent;
+  color: var(--nga-grid-fg);
+  font: inherit;
+  font-size: var(--nga-text-xs, 12px);
+  font-weight: var(--nga-font-weight-medium, 500);
+  cursor: pointer;
+  transition: background var(--nga-dur-fast, 120ms) var(--nga-ease-out, ease);
+}
+
+.nga-grid__empty-action:hover,
+.nga-grid-filter__button:hover {
+  background: color-mix(in oklab, var(--nga-grid-fg) 7%, transparent);
+}
+
+/* ── Filter popover (rendered in <body>) ────────────────────── */
+.nga-grid-filter-host {
+  display: contents;
+}
+
+.nga-grid-filter {
+  position: fixed;
+  z-index: 50;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  width: 15rem;
+  padding: 0.75rem;
+  border: 1px solid var(--nga-grid-border);
+  border-radius: var(--nga-radius-lg, 10px);
+  background: var(--nga-grid-bg);
+  box-shadow: var(--nga-shadow-lg, 0 12px 24px -6px rgba(17, 17, 17, 0.12));
+  color: var(--nga-grid-fg);
+  font-size: var(--nga-text-sm, 13px);
+  box-sizing: border-box;
+  animation: nga-grid-filter-in var(--nga-dur-fast, 120ms) var(--nga-ease-out, ease);
+}
+
+@keyframes nga-grid-filter-in {
+  from { opacity: 0; transform: translateY(-4px); }
+  to   { opacity: 1; transform: none; }
+}
+
+.nga-grid-filter__field {
+  width: 100%;
+  height: 2rem;
+  padding: 0 0.5rem;
+  border: 1px solid var(--nga-grid-border);
+  border-radius: var(--nga-radius-md, 6px);
+  background: var(--nga-color-background, #F3EEE3);
+  color: inherit;
+  font: inherit;
+  box-sizing: border-box;
+  outline: none;
+  transition: border-color var(--nga-dur-base, 180ms) var(--nga-ease-out, ease), box-shadow var(--nga-dur-base, 180ms) var(--nga-ease-out, ease);
+}
+
+.nga-grid-filter__field:focus-visible {
+  border-color: var(--nga-color-ring, #D9541E);
+  box-shadow: var(--nga-glow-ember, 0 0 0 4px rgba(217, 84, 30, 0.24));
+}
+
+.nga-grid-filter__options {
+  display: flex;
+  flex-direction: column;
+  max-height: 11rem;
+  overflow-y: auto;
+  scrollbar-width: thin;
+}
+
+.nga-grid-filter__option {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-height: 1.75rem;
+  padding: 0 0.25rem;
+  border-radius: var(--nga-radius-sm, 4px);
+  cursor: pointer;
+}
+
+.nga-grid-filter__option:hover {
+  background: color-mix(in oklab, var(--nga-grid-fg) 6%, transparent);
+}
+
+.nga-grid-filter__option input {
+  accent-color: var(--nga-color-accent, #D9541E);
+}
+
+.nga-grid-filter__option--all {
+  border-bottom: 1px solid var(--nga-grid-row-border);
+  border-radius: 0;
+  font-weight: var(--nga-font-weight-medium, 500);
+}
+
+.nga-grid-filter__empty {
+  margin: 0;
+  padding: 0.5rem 0.25rem;
+  color: var(--nga-grid-muted);
+}
+
+.nga-grid-filter__actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+  padding-top: 0.25rem;
+}
+
+.nga-grid-filter__button--primary {
+  border-color: var(--nga-color-accent, #D9541E);
+  background: var(--nga-color-accent, #D9541E);
+  color: var(--nga-color-accent-foreground, #111111);
+}
+
+.nga-grid-filter__button--primary:hover {
+  background: var(--nga-color-accent-hover, #C4481A);
+}
+
+.nga-grid__header-sort:focus-visible,
+.nga-grid__header-filter:focus-visible,
+.nga-grid__empty-action:focus-visible,
+.nga-grid-filter__button:focus-visible {
+  outline: none;
+  box-shadow: var(--nga-glow-ember, 0 0 0 4px rgba(217, 84, 30, 0.24));
+}

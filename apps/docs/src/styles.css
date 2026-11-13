@@ -36,6 +36,7 @@
 @import './components/color-picker/color-picker.styles.css';
 @import './components/tree/tree.styles.css';
 @import './components/nga-code-block/code-block.styles.css';
+@import './components/grid/grid.styles.css';
 @import './components/code-block/code-block.styles.css';
 @import '@phosphor-icons/web/regular';
 @import '@phosphor-icons/web/bold';

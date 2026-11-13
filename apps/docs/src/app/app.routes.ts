@@ -192,4 +192,9 @@ export const routes: Routes = [
     loadComponent: () =>
       import('./pages/code-block/code-block-page.component').then(m => m.CodeBlockPageComponent),
   },
+  {
+    path: 'grid',
+    loadComponent: () =>
+      import('./pages/grid/grid-page.component').then(m => m.GridPageComponent),
+  },
 ];

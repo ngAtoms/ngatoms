@@ -1,0 +1,255 @@
+<div class="cp-layout">
+
+    <main class="cp-main">
+
+        <header class="cp-header">
+            <div class="cp-eyebrow">Components / Data</div>
+            <h1 class="cp-title">Grid</h1>
+            <p class="cp-lede">
+                A data grid for large, structured data: hierarchical rows, multi-level column headers,
+                pinned panes, number formatting, filters, sorting, and virtualization on both axes.
+                The app owns the data — the grid displays what it is given and applies no business rules.
+            </p>
+            <div class="cp-chips">
+                <span ngAtomsBadge variant="default"><i class="ph ph-angular-logo"></i> ngAtoms v1.0+</span>
+                <span ngAtomsBadge variant="warning"><i class="ph ph-hammer"></i> In development</span>
+                <a ngAtomsBadge variant="outline" href="https://github.com/ngAtoms/ngatoms/blob/rc/docs/adr/0001-data-grid.md" target="_blank" rel="noopener noreferrer">
+                    <i class="ph ph-arrow-square-out"></i> Decision record
+                </a>
+            </div>
+        </header>
+
+        <!-- Hero preview -->
+        <preview-card>
+            <ng-container preview>
+                <div class="grid-demo">
+                    <nga-grid
+                        [rows]="statementRows"
+                        [columns]="statementColumns"
+                        [(expanded)]="statementExpanded"
+                        locale="en-US"
+                        label="Income statement 2026"
+                    />
+                </div>
+            </ng-container>
+            <ng-container code>
+                <app-code-block [code]="heroCode" language="html" />
+            </ng-container>
+        </preview-card>
+
+        <!-- Usage -->
+        <section id="usage">
+            <h2 class="cp-h2">Usage</h2>
+            <p class="cp-p">The grid is in development and not in the registry yet. This page documents what is built so far: read-only rendering, filters and sorting. Editing comes next.</p>
+            <app-code-block [code]="usageCode" language="typescript" />
+        </section>
+
+        <!-- Simple headers -->
+        <section id="simple">
+            <h2 class="cp-h2">Simple headers</h2>
+            <p class="cp-p">
+                Groups, pinning and hierarchy are all optional. A plain list of leaf columns gives a single header row,
+                which is all a ledger, a lookup or an audit list needs.
+            </p>
+            <preview-card>
+                <ng-container preview>
+                    <div class="grid-demo">
+                        <nga-grid [rows]="ledgerRows" [columns]="ledgerColumns" locale="en-US" label="Cost center ledger" style="--nga-grid-height: 20rem" />
+                    </div>
+                </ng-container>
+                <ng-container code>
+                    <app-code-block [code]="codeSimple" language="typescript" />
+                </ng-container>
+            </preview-card>
+        </section>
+
+        <!-- Filters and sorting -->
+        <section id="filters">
+            <h2 class="cp-h2">Filters and sorting</h2>
+            <p class="cp-p">
+                Give a column a <code class="cp-code">filter</code> and its header shows a filter button: <strong>text</strong> and <strong>number</strong> offer conditions,
+                <strong>set</strong> lists the distinct values to tick. Mark it <code class="cp-code">sortable</code> and clicking the header cycles ascending, descending, unsorted.
+                Both are models, so the app can read, persist and restore them. Try the Account filter on the income statement at the top:
+                in a tree, the ancestors of a match stay visible, dimmed, and sorting orders siblings within each parent.
+            </p>
+            <preview-card [allowOverflow]="true" previewMinHeight="420px">
+                <ng-container preview>
+                    <div class="grid-demo">
+                        <div class="demo-row" style="margin-bottom: 12px">
+                            <p class="demo-note">{{ activeFilterCount }} active filters · sorted by {{ ledgerSort()[0]?.columnId ?? 'nothing' }} {{ ledgerSort()[0]?.direction ?? '' }}</p>
+                            <button ngAtomsButton size="sm" variant="outline" [disabled]="activeFilterCount === 0" (click)="ledgerFilters.set({})">Clear filters</button>
+                        </div>
+                        <nga-grid
+                            [rows]="ledgerRows"
+                            [columns]="ledgerInteractiveColumns"
+                            [(filters)]="ledgerFilters"
+                            [(sort)]="ledgerSort"
+                            locale="en-US"
+                            label="Cost center ledger"
+                            style="--nga-grid-height: 20rem"
+                        />
+                    </div>
+                </ng-container>
+                <ng-container code>
+                    <app-code-block [code]="codeFilters" language="typescript" />
+                </ng-container>
+            </preview-card>
+        </section>
+
+        <!-- Filtering on the server -->
+        <section id="external">
+            <h2 class="cp-h2">Filtering on the server</h2>
+            <p class="cp-p">
+                By default the grid filters and sorts the rows it holds. With <code class="cp-code">filterMode="external"</code> or <code class="cp-code">sortMode="external"</code>
+                it only shows the controls and reports the change; the app fetches and passes new rows in. Use it when the data is paged.
+                Filtering never recalculates a value: a parent keeps the total it was given. To show totals for the filtered rows, use external mode and return them.
+            </p>
+            <app-code-block [code]="codeExternal" language="typescript" />
+        </section>
+
+        <!-- Rows and hierarchy -->
+        <section id="rows">
+            <h2 class="cp-h2">Rows and hierarchy</h2>
+            <p class="cp-p">
+                Rows are a flat list. Each row has an <code class="cp-code">id</code>, your record in <code class="cp-code">data</code>, and an optional <code class="cp-code">parentId</code>.
+                The column marked <code class="cp-code">tree: true</code> shows the indentation and the expand toggle, and <code class="cp-code">[(expanded)]</code> holds the open rows.
+                Set <code class="cp-code">kind</code> to <strong>subtotal</strong> or <strong>total</strong> to style a row; the grid never computes one.
+            </p>
+            <app-code-block [code]="codeRows" language="typescript" />
+        </section>
+
+        <!-- Column groups and pinning -->
+        <section id="columns">
+            <h2 class="cp-h2">Column groups and pinning</h2>
+            <p class="cp-p">
+                Columns are a tree: a group spans its children, to any depth. Leaf columns can be pinned <strong>left</strong> or <strong>right</strong>;
+                pinned columns stay in view while the rest scrolls, and only the columns in view are rendered.
+            </p>
+            <app-code-block [code]="codeColumns" language="typescript" />
+        </section>
+
+        <!-- Number formatting -->
+        <section id="formatting">
+            <h2 class="cp-h2">Number formatting</h2>
+            <p class="cp-p">
+                A <code class="cp-code">format</code> is declarative and display-only. Set it on a column, and override it on a row when the row dictates the format —
+                the <strong>Operating margin</strong> line above is a percentage in every column. A column flagged <code class="cp-code">variance</code> is colored by the row's <code class="cp-code">favorable</code> direction:
+                spending over budget is bad news, revenue over budget is good news.
+            </p>
+            <app-code-block [code]="codeFormatting" language="typescript" />
+        </section>
+
+        <!-- Density -->
+        <section id="density">
+            <h2 class="cp-h2">Density</h2>
+            <p class="cp-p">
+                <strong>compact</strong> is the default and suits dense reports. <strong>comfortable</strong> gives rows more room.
+            </p>
+            <preview-card>
+                <ng-container preview>
+                    <div class="grid-demo">
+                        <div class="demo-row" style="margin-bottom: 12px">
+                            <button ngAtomsButton size="sm" [variant]="density() === 'compact' ? 'primary' : 'outline'" (click)="density.set('compact')">compact</button>
+                            <button ngAtomsButton size="sm" [variant]="density() === 'comfortable' ? 'primary' : 'outline'" (click)="density.set('comfortable')">comfortable</button>
+                        </div>
+                        <nga-grid
+                            [rows]="statementRows"
+                            [columns]="statementColumns"
+                            [(expanded)]="statementExpanded"
+                            [density]="density()"
+                            locale="en-US"
+                            label="Income statement 2026"
+                            style="--nga-grid-height: 20rem"
+                        />
+                    </div>
+                </ng-container>
+                <ng-container code>
+                    <app-code-block [code]="codeDensity" language="html" />
+                </ng-container>
+            </preview-card>
+        </section>
+
+        <!-- Scale -->
+        <section id="scale">
+            <h2 class="cp-h2">Scale</h2>
+            <p class="cp-p">
+                Rows and columns are both virtualized, so the DOM holds only what is on screen.
+                This grid has <strong>100,000 rows and 500 columns</strong> — fifty million cells — with every row expanded.
+            </p>
+            <preview-card>
+                <ng-container preview>
+                    <div class="grid-demo">
+                        <nga-grid
+                            [rows]="scaleRows"
+                            [columns]="scaleColumns"
+                            [(expanded)]="scaleExpanded"
+                            locale="en-US"
+                            label="Large data set"
+                        />
+                        <p class="demo-note" style="margin-top: 10px">{{ scaleRows.length.toLocaleString('en-US') }} rows × 501 columns</p>
+                    </div>
+                </ng-container>
+                <ng-container code>
+                    <app-code-block [code]="codeScale" language="html" />
+                </ng-container>
+            </preview-card>
+        </section>
+
+        <!-- API -->
+        <section id="api">
+            <h2 class="cp-h2">API</h2>
+            @for (group of propGroups; track group.target) {
+                <p class="cp-p">{{ group.kind }} on <code class="cp-code">{{ group.target }}</code>.</p>
+                <div class="props-table">
+                    <div class="props-table-header">
+                        <span>Prop</span>
+                        <span>Type</span>
+                        <span>Default</span>
+                        <span>Description</span>
+                    </div>
+                    @for (prop of group.props; track prop.name) {
+                        <div class="props-table-row">
+                            <code class="props-name">{{ prop.name }}</code>
+                            <code class="props-type">{{ prop.type }}</code>
+                            <code class="props-default">{{ prop.defaultVal }}</code>
+                            <span class="props-desc">{{ prop.description }}</span>
+                        </div>
+                    }
+                </div>
+            }
+        </section>
+
+        <!-- Accessibility -->
+        <section id="a11y">
+            <h2 class="cp-h2">Accessibility</h2>
+            <p class="cp-p">Keyboard navigation and the full screen-reader pass come with the next milestone. What is in place today:</p>
+            <ul class="a11y-list">
+                @for (item of a11yItems; track item.title) {
+                    <li class="a11y-item">
+                        <div class="a11y-icon"><i [class]="'ph ph-' + item.icon"></i></div>
+                        <div class="a11y-body">
+                            <div class="a11y-title">{{ item.title }}</div>
+                            <div class="a11y-desc">{{ item.body }}</div>
+                        </div>
+                    </li>
+                }
+            </ul>
+        </section>
+
+        <!-- Prev / Next -->
+        <nav class="cp-prevnext">
+            <a routerLink="/tree" class="cp-prevnext-item">
+                <span class="cp-prevnext-dir">← PREVIOUS</span>
+                <span class="cp-prevnext-label">Tree</span>
+            </a>
+            <a routerLink="/alert" class="cp-prevnext-item cp-prevnext-item--right">
+                <span class="cp-prevnext-dir">NEXT →</span>
+                <span class="cp-prevnext-label cp-prevnext-label--accent">Alert</span>
+            </a>
+        </nav>
+
+    </main>
+
+    <app-toc [items]="tocItems" />
+
+</div>

@@ -38,3 +38,4 @@ export * from './combobox';
 export * from './color-picker';
 export * from './tree';
 export * from './code-block';
+export * from './grid';
