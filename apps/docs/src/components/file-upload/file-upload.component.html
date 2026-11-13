@@ -1,0 +1,43 @@
+<label
+  class="nga-file-upload__zone"
+  (dragover)="onDragOver($event)"
+  (dragleave)="onDragLeave()"
+  (drop)="onDrop($event)"
+>
+  <input
+    #inputEl
+    class="nga-file-upload__input"
+    type="file"
+    [accept]="accept()"
+    [multiple]="multiple()"
+    [disabled]="disabled()"
+    [attr.aria-label]="label()"
+    (change)="onChange($event)"
+  />
+  <ng-content>
+    <svg class="nga-file-upload__icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+      <path d="M12 16V4M7 9l5-5 5 5M4 16v3a1 1 0 001 1h14a1 1 0 001-1v-3" />
+    </svg>
+    <span class="nga-file-upload__title">Drop files here or click to browse</span>
+  </ng-content>
+</label>
+
+@if (files().length) {
+  <ul class="nga-file-upload__list">
+    @for (file of files(); track $index) {
+      <li class="nga-file-upload__file">
+        <span class="nga-file-upload__file-name">{{ file.name }}</span>
+        <span class="nga-file-upload__file-size">{{ formatSize(file.size) }}</span>
+        <button
+          type="button"
+          class="nga-file-upload__remove"
+          [disabled]="disabled()"
+          [attr.aria-label]="'Remove ' + file.name"
+          (click)="remove($index)"
+        >
+          <svg viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M4.5 4.5l7 7M11.5 4.5l-7 7" /></svg>
+        </button>
+      </li>
+    }
+  </ul>
+}

@@ -1,0 +1,85 @@
+/* =============================================================
+   NgAtoms Rating — rating.styles.css
+   Import once in your global styles.css:
+     @import '@/path/to/rating.styles.css';
+   ============================================================= */
+
+:root {
+  --nga-rating-gap:          0.125rem;
+  --nga-rating-color:        var(--nga-color-border-strong, #B3B3B3);
+  --nga-rating-color-on:     var(--nga-color-accent, #333333);
+  --nga-rating-radius:       var(--nga-radius-sm, 4px);
+
+  --nga-rating-size-sm: 1rem;
+  --nga-rating-size-md: 1.25rem;
+  --nga-rating-size-lg: 1.75rem;
+}
+
+/* ── Root ───────────────────────────────────────────────────── */
+.nga-rating {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--nga-rating-gap);
+}
+
+/* ── Star ───────────────────────────────────────────────────── */
+.nga-rating__star {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.125rem;
+  border: none;
+  border-radius: var(--nga-rating-radius);
+  background: transparent;
+  color: var(--nga-rating-color);
+  cursor: pointer;
+  outline: none;
+  transition:
+    color var(--nga-dur-fast, 120ms) var(--nga-ease-out, ease),
+    transform var(--nga-dur-fast, 120ms) var(--nga-ease-out, ease);
+}
+
+.nga-rating__star svg {
+  display: block;
+  width: var(--nga-rating-star-size);
+  height: var(--nga-rating-star-size);
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.6;
+  stroke-linejoin: round;
+}
+
+.nga-rating__star--on {
+  color: var(--nga-rating-color-on);
+}
+
+.nga-rating__star--on svg {
+  fill: currentColor;
+}
+
+.nga-rating__star:hover:not(:disabled) {
+  transform: scale(1.12);
+}
+
+.nga-rating__star:focus-visible {
+  box-shadow: var(--nga-glow-ember, 0 0 0 4px rgba(26, 26, 26, 0.16));
+}
+
+/* ── States ─────────────────────────────────────────────────── */
+.nga-rating--readonly .nga-rating__star {
+  cursor: default;
+  pointer-events: none;
+}
+
+.nga-rating--disabled {
+  opacity: 0.5;
+}
+
+.nga-rating--disabled .nga-rating__star {
+  cursor: not-allowed;
+}
+
+/* ── Sizes ──────────────────────────────────────────────────── */
+.nga-rating--sm { --nga-rating-star-size: var(--nga-rating-size-sm); }
+.nga-rating--md { --nga-rating-star-size: var(--nga-rating-size-md); }
+.nga-rating--lg { --nga-rating-star-size: var(--nga-rating-size-lg); }

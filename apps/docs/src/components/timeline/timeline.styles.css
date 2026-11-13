@@ -1,0 +1,130 @@
+/* =============================================================
+   NgAtoms Timeline — timeline.styles.css
+   Import once in your global styles.css:
+     @import '@/path/to/timeline.styles.css';
+   ============================================================= */
+
+:root {
+  --nga-timeline-marker-size:    0.75rem;
+  --nga-timeline-marker-bg:      var(--nga-color-background, #F2F4F6);
+  --nga-timeline-marker-border:  var(--nga-color-border-strong, #B3B3B3);
+  --nga-timeline-marker-active:  var(--nga-color-accent, #333333);
+  --nga-timeline-line-color:     var(--nga-color-border, #D8DDE3);
+  --nga-timeline-line-width:     0.125rem;
+  --nga-timeline-gap:            0.875rem;
+  --nga-timeline-item-spacing:   1.5rem;
+  --nga-timeline-title-color:    var(--nga-color-foreground, #1A1A1A);
+  --nga-timeline-muted-color:    var(--nga-color-muted-foreground, #6E6E6E);
+}
+
+/* ── Root ───────────────────────────────────────────────────── */
+.nga-timeline {
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* ── Item ───────────────────────────────────────────────────── */
+.nga-timeline-item {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1.5rem 1fr;
+  column-gap: var(--nga-timeline-gap);
+  padding-bottom: var(--nga-timeline-item-spacing);
+}
+
+.nga-timeline-item:last-child {
+  padding-bottom: 0;
+}
+
+/* Connector line — runs from this marker down to the next one */
+.nga-timeline-item::before {
+  content: '';
+  position: absolute;
+  top: 1.5rem;
+  bottom: 0;
+  left: calc(0.75rem - var(--nga-timeline-line-width) / 2);
+  width: var(--nga-timeline-line-width);
+  border-radius: var(--nga-radius-full, 9999px);
+  background: var(--nga-timeline-line-color);
+}
+
+.nga-timeline-item:last-child::before {
+  display: none;
+}
+
+.nga-timeline-item--complete::before {
+  background: var(--nga-timeline-marker-active);
+}
+
+/* ── Marker ─────────────────────────────────────────────────── */
+.nga-timeline-marker {
+  grid-column: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  justify-self: center;
+  width: 1.5rem;
+  height: 1.5rem;
+  color: var(--nga-timeline-muted-color);
+  font-size: 0.875rem;
+  line-height: 1;
+}
+
+/* Empty marker renders as a dot */
+.nga-timeline-marker:empty::before {
+  content: '';
+  width: var(--nga-timeline-marker-size);
+  height: var(--nga-timeline-marker-size);
+  border-radius: var(--nga-radius-full, 9999px);
+  border: var(--nga-timeline-line-width) solid var(--nga-timeline-marker-border);
+  background: var(--nga-timeline-marker-bg);
+  box-sizing: border-box;
+}
+
+.nga-timeline-item--active .nga-timeline-marker,
+.nga-timeline-item--complete .nga-timeline-marker {
+  color: var(--nga-timeline-marker-active);
+}
+
+.nga-timeline-item--active .nga-timeline-marker:empty::before {
+  border-color: var(--nga-timeline-marker-active);
+  box-shadow: var(--nga-glow-ember, 0 0 0 4px rgba(26, 26, 26, 0.16));
+}
+
+.nga-timeline-item--complete .nga-timeline-marker:empty::before {
+  border-color: var(--nga-timeline-marker-active);
+  background: var(--nga-timeline-marker-active);
+}
+
+/* ── Content ────────────────────────────────────────────────── */
+.nga-timeline-content {
+  grid-column: 2;
+  min-width: 0;
+  padding-top: 0.125rem;
+}
+
+.nga-timeline-title {
+  margin: 0;
+  color: var(--nga-timeline-title-color);
+  font-size: var(--nga-text-sm, 13px);
+  font-weight: var(--nga-font-weight-semibold, 600);
+  line-height: 1.4;
+}
+
+.nga-timeline-time {
+  display: block;
+  color: var(--nga-timeline-muted-color);
+  font-family: var(--nga-font-mono, monospace);
+  font-size: var(--nga-text-2xs, 11px);
+  line-height: 1.6;
+}
+
+.nga-timeline-description {
+  margin: 0.25rem 0 0;
+  color: var(--nga-timeline-muted-color);
+  font-size: var(--nga-text-sm, 13px);
+  line-height: 1.55;
+}

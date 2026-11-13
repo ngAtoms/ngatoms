@@ -46,6 +46,12 @@ export class NgAtomsDropdownItemDirective {
     });
   }
 
+  /** Hover and keyboard share one highlight: the focused item. */
+  @HostListener('mouseenter')
+  onMouseEnter(): void {
+    if (!this.disabled()) this.el.nativeElement.focus({ preventScroll: true });
+  }
+
   @HostListener('click')
   onClick(): void {
     if (this.disabled()) return;

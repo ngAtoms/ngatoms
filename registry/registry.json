@@ -24,7 +24,7 @@
     },
     {
       "name": "badge",
-      "description": "A badge with 7 variants: default, ember, success, warning, destructive, solid, and outline.",
+      "description": "A badge with 8 variants: default, ember, success, warning, destructive, info, solid, and outline.",
       "status": "stable",
       "files": [
         "packages/primitives/src/badge/badge.directive.ts",
@@ -145,7 +145,10 @@
         "packages/primitives/src/select/select.styles.css",
         "packages/primitives/src/select/index.ts"
       ],
-      "cssImport": "select.styles.css"
+      "cssImport": "select.styles.css",
+      "registryDependencies": [
+        "overlay"
+      ]
     },
     {
       "name": "tabs",
@@ -244,7 +247,10 @@
         "packages/primitives/src/date-picker/date-picker.styles.css",
         "packages/primitives/src/date-picker/index.ts"
       ],
-      "cssImport": "date-picker.styles.css"
+      "cssImport": "date-picker.styles.css",
+      "registryDependencies": [
+        "overlay"
+      ]
     },
     {
       "name": "dropdown-menu",
@@ -261,7 +267,10 @@
         "packages/primitives/src/dropdown-menu/dropdown-menu.styles.css",
         "packages/primitives/src/dropdown-menu/index.ts"
       ],
-      "cssImport": "dropdown-menu.styles.css"
+      "cssImport": "dropdown-menu.styles.css",
+      "registryDependencies": [
+        "overlay"
+      ]
     },
     {
       "name": "popover",
@@ -275,7 +284,213 @@
         "packages/primitives/src/popover/popover.styles.css",
         "packages/primitives/src/popover/index.ts"
       ],
-      "cssImport": "popover.styles.css"
+      "cssImport": "popover.styles.css",
+      "registryDependencies": [
+        "overlay"
+      ]
+    },
+    {
+      "name": "overlay",
+      "description": "Shared overlay plumbing: global dismiss handling and panel positioning. Installed automatically as a dependency.",
+      "status": "stable",
+      "files": [
+        "packages/primitives/src/overlay/overlay.service.ts",
+        "packages/primitives/src/overlay/position.ts",
+        "packages/primitives/src/overlay/index.ts"
+      ]
+    },
+    {
+      "name": "skeleton",
+      "description": "Placeholder loading shimmer \u2014 text, circle, and rect variants.",
+      "status": "alpha",
+      "files": [
+        "packages/primitives/src/skeleton/skeleton.directive.ts",
+        "packages/primitives/src/skeleton/skeleton.styles.css",
+        "packages/primitives/src/skeleton/index.ts"
+      ],
+      "cssImport": "skeleton.styles.css"
+    },
+    {
+      "name": "breadcrumb",
+      "description": "Hierarchical navigation trail with links, separators, ellipsis, and current page.",
+      "status": "alpha",
+      "files": [
+        "packages/primitives/src/breadcrumb/breadcrumb.directive.ts",
+        "packages/primitives/src/breadcrumb/breadcrumb.styles.css",
+        "packages/primitives/src/breadcrumb/index.ts"
+      ],
+      "cssImport": "breadcrumb.styles.css"
+    },
+    {
+      "name": "timeline",
+      "description": "Vertical event timeline with markers, connectors, and item status.",
+      "status": "alpha",
+      "files": [
+        "packages/primitives/src/timeline/timeline.directive.ts",
+        "packages/primitives/src/timeline/timeline.styles.css",
+        "packages/primitives/src/timeline/index.ts"
+      ],
+      "cssImport": "timeline.styles.css"
+    },
+    {
+      "name": "rating",
+      "description": "Star rating input \u2014 3 sizes, readonly, keyboard navigation.",
+      "status": "alpha",
+      "files": [
+        "packages/primitives/src/rating/rating.component.ts",
+        "packages/primitives/src/rating/rating.component.html",
+        "packages/primitives/src/rating/rating.styles.css",
+        "packages/primitives/src/rating/index.ts"
+      ],
+      "cssImport": "rating.styles.css"
+    },
+    {
+      "name": "pagination",
+      "description": "Page navigation controls with sibling count and ellipsis.",
+      "status": "alpha",
+      "files": [
+        "packages/primitives/src/pagination/pagination.component.ts",
+        "packages/primitives/src/pagination/pagination.component.html",
+        "packages/primitives/src/pagination/pagination.styles.css",
+        "packages/primitives/src/pagination/index.ts"
+      ],
+      "cssImport": "pagination.styles.css"
+    },
+    {
+      "name": "stepper",
+      "description": "Multi-step progress indicator \u2014 horizontal or vertical, clickable steps, error state.",
+      "status": "alpha",
+      "files": [
+        "packages/primitives/src/stepper/step.component.ts",
+        "packages/primitives/src/stepper/stepper.component.ts",
+        "packages/primitives/src/stepper/step.component.html",
+        "packages/primitives/src/stepper/stepper.context.ts",
+        "packages/primitives/src/stepper/stepper.styles.css",
+        "packages/primitives/src/stepper/index.ts"
+      ],
+      "cssImport": "stepper.styles.css"
+    },
+    {
+      "name": "slider",
+      "description": "Range slider \u2014 single and dual thumb, min/max/step, keyboard support.",
+      "status": "alpha",
+      "files": [
+        "packages/primitives/src/slider/slider.component.ts",
+        "packages/primitives/src/slider/slider.component.html",
+        "packages/primitives/src/slider/slider.styles.css",
+        "packages/primitives/src/slider/index.ts"
+      ],
+      "cssImport": "slider.styles.css"
+    },
+    {
+      "name": "tag-input",
+      "description": "Input that creates removable tag chips, with max, duplicates guard, and paste splitting.",
+      "status": "alpha",
+      "files": [
+        "packages/primitives/src/tag-input/tag-input.component.ts",
+        "packages/primitives/src/tag-input/tag-input.component.html",
+        "packages/primitives/src/tag-input/tag-input.styles.css",
+        "packages/primitives/src/tag-input/index.ts"
+      ],
+      "cssImport": "tag-input.styles.css"
+    },
+    {
+      "name": "file-upload",
+      "description": "Drag-and-drop file input zone with accept, size, and count validation.",
+      "status": "alpha",
+      "files": [
+        "packages/primitives/src/file-upload/file-upload.component.ts",
+        "packages/primitives/src/file-upload/file-upload.component.html",
+        "packages/primitives/src/file-upload/file-upload.styles.css",
+        "packages/primitives/src/file-upload/index.ts"
+      ],
+      "cssImport": "file-upload.styles.css"
+    },
+    {
+      "name": "drawer",
+      "description": "Side-panel overlay on native <dialog> \u2014 4 sides, 4 sizes, focus trap.",
+      "status": "alpha",
+      "files": [
+        "packages/primitives/src/drawer/drawer.component.ts",
+        "packages/primitives/src/drawer/drawer.component.html",
+        "packages/primitives/src/drawer/drawer.component.css",
+        "packages/primitives/src/drawer/drawer.directive.ts",
+        "packages/primitives/src/drawer/drawer.styles.css",
+        "packages/primitives/src/drawer/index.ts"
+      ],
+      "cssImport": "drawer.styles.css"
+    },
+    {
+      "name": "context-menu",
+      "description": "Right-click triggered menu that reuses the dropdown-menu items.",
+      "status": "alpha",
+      "files": [
+        "packages/primitives/src/context-menu/context-menu.component.ts",
+        "packages/primitives/src/context-menu/context-menu.component.html",
+        "packages/primitives/src/context-menu/context-menu.component.css",
+        "packages/primitives/src/context-menu/context-menu-trigger.directive.ts",
+        "packages/primitives/src/context-menu/context-menu.styles.css",
+        "packages/primitives/src/context-menu/index.ts"
+      ],
+      "registryDependencies": [
+        "overlay",
+        "dropdown-menu"
+      ],
+      "cssImport": "context-menu.styles.css"
+    },
+    {
+      "name": "combobox",
+      "description": "Text input with a filtered listbox, keyboard navigation, and custom filter.",
+      "status": "alpha",
+      "files": [
+        "packages/primitives/src/combobox/combobox.component.ts",
+        "packages/primitives/src/combobox/combobox.component.html",
+        "packages/primitives/src/combobox/combobox.component.css",
+        "packages/primitives/src/combobox/combobox.styles.css",
+        "packages/primitives/src/combobox/index.ts"
+      ],
+      "registryDependencies": [
+        "overlay"
+      ],
+      "cssImport": "combobox.styles.css"
+    },
+    {
+      "name": "color-picker",
+      "description": "Saturation/brightness area, hue slider, hex field, and preset swatches.",
+      "status": "alpha",
+      "files": [
+        "packages/primitives/src/color-picker/color-picker.component.ts",
+        "packages/primitives/src/color-picker/color-picker.component.html",
+        "packages/primitives/src/color-picker/color-picker.styles.css",
+        "packages/primitives/src/color-picker/index.ts"
+      ],
+      "cssImport": "color-picker.styles.css"
+    },
+    {
+      "name": "tree",
+      "description": "Collapsible tree view with selection and full keyboard navigation.",
+      "status": "alpha",
+      "files": [
+        "packages/primitives/src/tree/tree-item.component.ts",
+        "packages/primitives/src/tree/tree.component.ts",
+        "packages/primitives/src/tree/tree-item.component.html",
+        "packages/primitives/src/tree/tree-item-icon.directive.ts",
+        "packages/primitives/src/tree/tree.styles.css",
+        "packages/primitives/src/tree/index.ts"
+      ],
+      "cssImport": "tree.styles.css"
+    },
+    {
+      "name": "code-block",
+      "description": "Code display with copy button, line numbers, and a pluggable highlighter.",
+      "status": "alpha",
+      "files": [
+        "packages/primitives/src/code-block/code-block.component.ts",
+        "packages/primitives/src/code-block/code-block.component.html",
+        "packages/primitives/src/code-block/code-block.styles.css",
+        "packages/primitives/src/code-block/index.ts"
+      ],
+      "cssImport": "code-block.styles.css"
     }
   ]
 }

@@ -1,0 +1,169 @@
+/* =============================================================
+   NgAtoms File Upload — file-upload.styles.css
+   Import once in your global styles.css:
+     @import '@/path/to/file-upload.styles.css';
+   ============================================================= */
+
+:root {
+  --nga-file-upload-radius:        var(--nga-radius-lg, 10px);
+  --nga-file-upload-border:        var(--nga-color-border-strong, #B3B3B3);
+  --nga-file-upload-border-active: var(--nga-color-accent, #333333);
+  --nga-file-upload-bg:            color-mix(in oklab, var(--nga-color-card, #F7F8FA) 60%, transparent);
+  --nga-file-upload-bg-active:     var(--nga-color-accent-soft, #E7EAEF);
+  --nga-file-upload-fg:            var(--nga-color-foreground, #1A1A1A);
+  --nga-file-upload-muted:         var(--nga-color-muted-foreground, #6E6E6E);
+  --nga-file-upload-padding:       1.75rem 1.25rem;
+
+  --nga-file-upload-file-bg:       color-mix(in oklab, var(--nga-color-card, #F7F8FA) 70%, transparent);
+  --nga-file-upload-file-border:   var(--nga-color-border, #D8DDE3);
+  --nga-file-upload-file-radius:   var(--nga-radius-md, 6px);
+}
+
+/* ── Root ───────────────────────────────────────────────────── */
+.nga-file-upload {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  width: 100%;
+}
+
+/* ── Drop zone ──────────────────────────────────────────────── */
+.nga-file-upload__zone {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: var(--nga-file-upload-padding);
+  border: 1px dashed var(--nga-file-upload-border);
+  border-radius: var(--nga-file-upload-radius);
+  background: var(--nga-file-upload-bg);
+  color: var(--nga-file-upload-muted);
+  font-size: var(--nga-text-sm, 13px);
+  text-align: center;
+  cursor: pointer;
+  transition:
+    border-color var(--nga-dur-base, 180ms) var(--nga-ease-out, ease),
+    background var(--nga-dur-base, 180ms) var(--nga-ease-out, ease),
+    box-shadow var(--nga-dur-base, 180ms) var(--nga-ease-out, ease);
+}
+
+.nga-file-upload:not(.nga-file-upload--disabled) .nga-file-upload__zone:hover,
+.nga-file-upload--dragover .nga-file-upload__zone {
+  border-color: var(--nga-file-upload-border-active);
+  background: var(--nga-file-upload-bg-active);
+  color: var(--nga-file-upload-fg);
+}
+
+.nga-file-upload__zone:focus-within {
+  border-color: var(--nga-color-ring, #333333);
+  box-shadow: var(--nga-glow-ember, 0 0 0 4px rgba(26, 26, 26, 0.16));
+}
+
+/* Native input stays focusable and clickable, just not visible */
+.nga-file-upload__input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.nga-file-upload__icon {
+  width: 1.5rem;
+  height: 1.5rem;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.nga-file-upload__title {
+  color: var(--nga-file-upload-fg);
+  font-weight: var(--nga-font-weight-medium, 500);
+}
+
+/* ── File list ──────────────────────────────────────────────── */
+.nga-file-upload__list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.nga-file-upload__file {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.375rem 0.375rem 0.375rem 0.75rem;
+  border: 1px solid var(--nga-file-upload-file-border);
+  border-radius: var(--nga-file-upload-file-radius);
+  background: var(--nga-file-upload-file-bg);
+  color: var(--nga-file-upload-fg);
+  font-size: var(--nga-text-sm, 13px);
+}
+
+.nga-file-upload__file-name {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.nga-file-upload__file-size {
+  flex-shrink: 0;
+  color: var(--nga-file-upload-muted);
+  font-family: var(--nga-font-mono, monospace);
+  font-size: var(--nga-text-2xs, 11px);
+}
+
+.nga-file-upload__remove {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 1.75rem;
+  height: 1.75rem;
+  padding: 0;
+  border: none;
+  border-radius: var(--nga-radius-sm, 4px);
+  background: transparent;
+  color: var(--nga-file-upload-muted);
+  cursor: pointer;
+  outline: none;
+  transition: background var(--nga-dur-fast, 120ms) var(--nga-ease-out, ease), color var(--nga-dur-fast, 120ms) var(--nga-ease-out, ease);
+}
+
+.nga-file-upload__remove svg {
+  width: 0.875rem;
+  height: 0.875rem;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.75;
+  stroke-linecap: round;
+}
+
+.nga-file-upload__remove:hover:not(:disabled) {
+  background: var(--nga-color-muted, #E7EAEF);
+  color: var(--nga-file-upload-fg);
+}
+
+.nga-file-upload__remove:focus-visible {
+  box-shadow: var(--nga-glow-ember, 0 0 0 4px rgba(26, 26, 26, 0.16));
+}
+
+/* ── Disabled ───────────────────────────────────────────────── */
+.nga-file-upload--disabled {
+  opacity: 0.5;
+}
+
+.nga-file-upload--disabled .nga-file-upload__zone,
+.nga-file-upload--disabled .nga-file-upload__remove {
+  cursor: not-allowed;
+}

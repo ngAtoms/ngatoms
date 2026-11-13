@@ -1,0 +1,12 @@
+<div class="nga-tree-item__row" (click)="onRowClick()">
+  <span class="nga-tree-item__caret" aria-hidden="true">
+    @if (hasChildren()) {
+      <svg viewBox="0 0 16 16" focusable="false"><path d="M6 3.5L10.5 8 6 12.5" /></svg>
+    }
+  </span>
+  <ng-content select="[ngAtomsTreeItemIcon]" />
+  <span class="nga-tree-item__label">{{ label() }}</span>
+</div>
+<div class="nga-tree-item__group" role="group" [hidden]="!hasChildren() || !expanded()">
+  <ng-content />
+</div>

@@ -1,0 +1,13 @@
+<ng-content select="[ngAtomsContextMenuTrigger]" />
+<div
+  #panelEl
+  class="nga-dropdown-panel nga-context-menu-panel"
+  [class.nga-dropdown-panel--open]="open()"
+  role="menu"
+  tabindex="-1"
+  [attr.aria-hidden]="!open() || null"
+  (contextmenu)="$event.preventDefault()"
+  (keydown)="onPanelKeydown($event)"
+>
+  <ng-content />
+</div>

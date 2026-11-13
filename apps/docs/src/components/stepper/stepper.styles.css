@@ -1,0 +1,211 @@
+/* =============================================================
+   NgAtoms Stepper — stepper.styles.css
+   Import once in your global styles.css:
+     @import '@/path/to/stepper.styles.css';
+   ============================================================= */
+
+:root {
+  --nga-stepper-gap:              0.75rem;
+  --nga-stepper-indicator-size:   1.75rem;
+  --nga-stepper-indicator-bg:     var(--nga-color-muted, #E7EAEF);
+  --nga-stepper-indicator-fg:     var(--nga-color-muted-foreground, #6E6E6E);
+  --nga-stepper-indicator-border: var(--nga-color-border, #D8DDE3);
+  --nga-stepper-active-bg:        var(--nga-color-accent, #333333);
+  --nga-stepper-active-fg:        var(--nga-color-accent-foreground, #F7F8FA);
+  --nga-stepper-error-color:      var(--nga-color-destructive, #1A1A1A);
+  --nga-stepper-line-color:       var(--nga-color-border, #D8DDE3);
+  --nga-stepper-line-width:       0.125rem;
+  --nga-stepper-label-color:      var(--nga-color-foreground, #1A1A1A);
+  --nga-stepper-muted-color:      var(--nga-color-muted-foreground, #6E6E6E);
+}
+
+/* ── Root ───────────────────────────────────────────────────── */
+.nga-stepper {
+  display: flex;
+  width: 100%;
+}
+
+.nga-stepper--horizontal {
+  flex-direction: row;
+  align-items: flex-start;
+}
+
+.nga-stepper--vertical {
+  flex-direction: column;
+}
+
+/* ── Step ───────────────────────────────────────────────────── */
+.nga-step {
+  display: flex;
+  min-width: 0;
+}
+
+.nga-stepper--horizontal .nga-step {
+  flex: 1;
+  align-items: center;
+  gap: var(--nga-stepper-gap);
+}
+
+.nga-stepper--horizontal .nga-step:last-child {
+  flex: 0 0 auto;
+}
+
+.nga-stepper--vertical .nga-step {
+  position: relative;
+  flex-direction: column;
+  padding-bottom: 1.5rem;
+}
+
+.nga-stepper--vertical .nga-step:last-child {
+  padding-bottom: 0;
+}
+
+/* ── Trigger ────────────────────────────────────────────────── */
+.nga-step__trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.625rem;
+  padding: 0;
+  border: none;
+  border-radius: var(--nga-radius-md, 6px);
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  outline: none;
+}
+
+/* Not clickable: stay fully legible, just not interactive */
+.nga-step__trigger:disabled {
+  cursor: default;
+}
+
+.nga-step--disabled .nga-step__trigger {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.nga-step__trigger:focus-visible {
+  box-shadow: var(--nga-glow-ember, 0 0 0 4px rgba(26, 26, 26, 0.16));
+}
+
+.nga-stepper--vertical .nga-step__trigger {
+  align-items: flex-start;
+}
+
+/* ── Indicator ──────────────────────────────────────────────── */
+.nga-step__indicator {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: var(--nga-stepper-indicator-size);
+  height: var(--nga-stepper-indicator-size);
+  border: 1px solid var(--nga-stepper-indicator-border);
+  border-radius: var(--nga-radius-full, 9999px);
+  background: var(--nga-stepper-indicator-bg);
+  color: var(--nga-stepper-indicator-fg);
+  font-size: var(--nga-text-xs, 12px);
+  font-weight: var(--nga-font-weight-semibold, 600);
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+  transition:
+    background var(--nga-dur-base, 180ms) var(--nga-ease-out, ease),
+    border-color var(--nga-dur-base, 180ms) var(--nga-ease-out, ease),
+    color var(--nga-dur-base, 180ms) var(--nga-ease-out, ease);
+}
+
+.nga-step__indicator svg {
+  width: 0.875rem;
+  height: 0.875rem;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.nga-step--active .nga-step__indicator,
+.nga-step--complete .nga-step__indicator {
+  border-color: var(--nga-stepper-active-bg);
+  background: var(--nga-stepper-active-bg);
+  color: var(--nga-stepper-active-fg);
+}
+
+.nga-step--active .nga-step__indicator {
+  box-shadow: var(--nga-glow-ember, 0 0 0 4px rgba(26, 26, 26, 0.16));
+}
+
+.nga-step--error .nga-step__indicator {
+  border-color: var(--nga-stepper-error-color);
+  border-style: dashed;
+  background: transparent;
+  color: var(--nga-stepper-error-color);
+}
+
+/* ── Text ───────────────────────────────────────────────────── */
+.nga-step__text {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.nga-step__label {
+  color: var(--nga-stepper-muted-color);
+  font-size: var(--nga-text-sm, 13px);
+  font-weight: var(--nga-font-weight-medium, 500);
+  line-height: 1.35;
+  white-space: nowrap;
+}
+
+.nga-step--active .nga-step__label,
+.nga-step--complete .nga-step__label,
+.nga-step--error .nga-step__label {
+  color: var(--nga-stepper-label-color);
+}
+
+.nga-step__description {
+  color: var(--nga-stepper-muted-color);
+  font-size: var(--nga-text-xs, 12px);
+  line-height: 1.4;
+}
+
+.nga-step__sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* ── Connector ──────────────────────────────────────────────── */
+.nga-step__connector {
+  background: var(--nga-stepper-line-color);
+  border-radius: var(--nga-radius-full, 9999px);
+  transition: background var(--nga-dur-base, 180ms) var(--nga-ease-out, ease);
+}
+
+.nga-step--complete .nga-step__connector {
+  background: var(--nga-stepper-active-bg);
+}
+
+.nga-step:last-child .nga-step__connector {
+  display: none;
+}
+
+.nga-stepper--horizontal .nga-step__connector {
+  flex: 1;
+  min-width: 1rem;
+  height: var(--nga-stepper-line-width);
+  margin-right: var(--nga-stepper-gap);
+}
+
+.nga-stepper--vertical .nga-step__connector {
+  position: absolute;
+  top: calc(var(--nga-stepper-indicator-size) + 0.25rem);
+  bottom: 0.25rem;
+  left: calc(var(--nga-stepper-indicator-size) / 2 - var(--nga-stepper-line-width) / 2);
+  width: var(--nga-stepper-line-width);
+}

@@ -1,0 +1,25 @@
+@if (showHeader()) {
+  <div class="nga-code-block__header">
+    <span class="nga-code-block__title">{{ title() }}</span>
+    @if (copyable()) {
+      <button
+        type="button"
+        class="nga-code-block__copy"
+        [attr.aria-label]="copied() ? copiedLabel() : copyLabel()"
+        (click)="copy()"
+      >
+        @if (copied()) {
+          <svg viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" /></svg>
+        } @else {
+          <svg viewBox="0 0 16 16" aria-hidden="true" focusable="false">
+            <rect x="5.5" y="5.5" width="8" height="8" rx="1.5" />
+            <path d="M10.5 5.5v-2a1 1 0 00-1-1h-6a1 1 0 00-1 1v6a1 1 0 001 1h2" />
+          </svg>
+        }
+      </button>
+    }
+  </div>
+}
+<!-- tabindex makes the scrollable region reachable by keyboard -->
+<pre class="nga-code-block__pre" tabindex="0">@if (lineNumbers()) {<span class="nga-code-block__gutter" aria-hidden="true">{{ gutter() }}</span>}@if (html(); as highlighted) {<code class="nga-code-block__code" [innerHTML]="highlighted"></code>} @else {<code class="nga-code-block__code">{{ source() }}</code>}</pre>
+<span class="nga-code-block__status" role="status">{{ copied() ? copiedLabel() : '' }}</span>

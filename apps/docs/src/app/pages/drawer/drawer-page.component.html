@@ -1,0 +1,187 @@
+<div class="cp-layout">
+
+    <main class="cp-main">
+
+        <header class="cp-header">
+            <div class="cp-eyebrow">Components / Overlays</div>
+            <h1 class="cp-title">Drawer</h1>
+            <p class="cp-lede">
+                A panel that slides in from an edge of the screen, over a backdrop.
+                Built on the native <code class="cp-code">&lt;dialog&gt;</code> element, so focus trapping and Escape come for free.
+            </p>
+            <div class="cp-chips">
+                <span ngAtomsBadge variant="default"><i class="ph ph-angular-logo"></i> ngAtoms v1.0+</span>
+                <span ngAtomsBadge variant="default"><i class="ph ph-package"></i> ngatoms add drawer</span>
+                <span ngAtomsBadge variant="warning"><i class="ph ph-flask"></i> Alpha</span>
+                <a ngAtomsBadge variant="outline" href="https://github.com/ngAtoms/ngatoms/tree/rc/packages/primitives/src/drawer" target="_blank" rel="noopener noreferrer">
+                    <i class="ph ph-arrow-square-out"></i> Source
+                </a>
+            </div>
+        </header>
+
+        <!-- Hero preview -->
+        <preview-card>
+            <ng-container preview>
+                <button ngAtomsButton variant="outline" (click)="heroOpen.set(true)">Open drawer</button>
+
+                <nga-drawer [(open)]="heroOpen" label="Edit profile">
+                    <div ngAtomsDrawerHeader>
+                        <div>
+                            <h2 ngAtomsDrawerTitle>Edit profile</h2>
+                            <p ngAtomsDrawerDescription>Changes are saved to your account.</p>
+                        </div>
+                        <button ngAtomsDrawerClose><i class="ph ph-x"></i></button>
+                    </div>
+                    <div ngAtomsDrawerBody>
+                        <p>Put a form, filters, or details here. The body scrolls when the content is taller than the screen.</p>
+                    </div>
+                    <div ngAtomsDrawerFooter>
+                        <button ngAtomsButton variant="ghost" (click)="heroOpen.set(false)">Cancel</button>
+                        <button ngAtomsButton (click)="heroOpen.set(false)">Save</button>
+                    </div>
+                </nga-drawer>
+            </ng-container>
+            <ng-container code>
+                <app-code-block [code]="heroCode" language="html" />
+            </ng-container>
+        </preview-card>
+
+        <!-- Usage -->
+        <section id="usage">
+            <h2 class="cp-h2">Usage</h2>
+            <p class="cp-p">Add the drawer to your project and import it wherever you need it.</p>
+            <div class="inline-terminal">
+                <span class="inline-terminal-dollar">$</span>
+                <span class="inline-terminal-cmd">ngatoms add drawer</span>
+            </div>
+            <p class="cp-p" style="margin-top: 14px;">Then import into your component:</p>
+            <app-code-block [code]="usageCode" language="typescript" />
+        </section>
+
+        <!-- Sides -->
+        <section id="sides">
+            <h2 class="cp-h2">Sides</h2>
+            <p class="cp-p">
+                <code class="cp-code">side</code> picks the edge the drawer slides from. <strong>right</strong> is the default.
+            </p>
+            <preview-card>
+                <ng-container preview>
+                    <div class="demo-row">
+                        <button ngAtomsButton variant="outline" size="sm" (click)="openSide('left')">left</button>
+                        <button ngAtomsButton variant="outline" size="sm" (click)="openSide('right')">right</button>
+                        <button ngAtomsButton variant="outline" size="sm" (click)="openSide('top')">top</button>
+                        <button ngAtomsButton variant="outline" size="sm" (click)="openSide('bottom')">bottom</button>
+                    </div>
+
+                    <nga-drawer [(open)]="sideOpen" [side]="side()" size="sm">
+                        <div ngAtomsDrawerHeader>
+                            <h2 ngAtomsDrawerTitle>side="{{ side() }}"</h2>
+                            <button ngAtomsDrawerClose><i class="ph ph-x"></i></button>
+                        </div>
+                        <div ngAtomsDrawerBody><p>Press Escape or click the backdrop to close.</p></div>
+                    </nga-drawer>
+                </ng-container>
+                <ng-container code>
+                    <app-code-block [code]="codeSides" language="html" />
+                </ng-container>
+            </preview-card>
+        </section>
+
+        <!-- Sizes -->
+        <section id="sizes">
+            <h2 class="cp-h2">Sizes</h2>
+            <p class="cp-p">
+                <code class="cp-code">size</code> sets the width of a left or right drawer, or the height of a top or bottom one.
+                <strong>full</strong> covers the whole screen.
+            </p>
+            <preview-card>
+                <ng-container preview>
+                    <div class="demo-row">
+                        <button ngAtomsButton variant="outline" size="sm" (click)="openSize('sm')">sm</button>
+                        <button ngAtomsButton variant="outline" size="sm" (click)="openSize('md')">md</button>
+                        <button ngAtomsButton variant="outline" size="sm" (click)="openSize('lg')">lg</button>
+                        <button ngAtomsButton variant="outline" size="sm" (click)="openSize('full')">full</button>
+                    </div>
+
+                    <nga-drawer [(open)]="sizeOpen" [size]="size()">
+                        <div ngAtomsDrawerHeader>
+                            <h2 ngAtomsDrawerTitle>size="{{ size() }}"</h2>
+                            <button ngAtomsDrawerClose><i class="ph ph-x"></i></button>
+                        </div>
+                        <div ngAtomsDrawerBody><p>Press Escape or click the backdrop to close.</p></div>
+                    </nga-drawer>
+                </ng-container>
+                <ng-container code>
+                    <app-code-block [code]="codeSizes" language="html" />
+                </ng-container>
+            </preview-card>
+        </section>
+
+        <!-- Dismissal -->
+        <section id="dismiss">
+            <h2 class="cp-h2">Dismissal</h2>
+            <p class="cp-p">
+                Clicking the backdrop closes the drawer. Set <code class="cp-code">[dismissible]="false"</code> to require an explicit action;
+                Escape still closes it, as it does for any native dialog.
+            </p>
+            <app-code-block [code]="codeDismiss" language="html" />
+        </section>
+
+        <!-- API -->
+        <section id="api">
+            <h2 class="cp-h2">API</h2>
+            @for (group of propGroups; track group.target) {
+                <p class="cp-p">{{ group.kind }} on <code class="cp-code">{{ group.target }}</code>.</p>
+                <div class="props-table">
+                    <div class="props-table-header">
+                        <span>Prop</span>
+                        <span>Type</span>
+                        <span>Default</span>
+                        <span>Description</span>
+                    </div>
+                    @for (prop of group.props; track prop.name) {
+                        <div class="props-table-row">
+                            <code class="props-name">{{ prop.name }}</code>
+                            <code class="props-type">{{ prop.type }}</code>
+                            <code class="props-default">{{ prop.defaultVal }}</code>
+                            <span class="props-desc">{{ prop.description }}</span>
+                        </div>
+                    }
+                </div>
+            }
+        </section>
+
+        <!-- Accessibility -->
+        <section id="a11y">
+            <h2 class="cp-h2">Accessibility</h2>
+            <p class="cp-p">The drawer is a native modal dialog opened with showModal().</p>
+            <ul class="a11y-list">
+                @for (item of a11yItems; track item.title) {
+                    <li class="a11y-item">
+                        <div class="a11y-icon"><i [class]="'ph ph-' + item.icon"></i></div>
+                        <div class="a11y-body">
+                            <div class="a11y-title">{{ item.title }}</div>
+                            <div class="a11y-desc">{{ item.body }}</div>
+                        </div>
+                    </li>
+                }
+            </ul>
+        </section>
+
+        <!-- Prev / Next -->
+        <nav class="cp-prevnext">
+            <a routerLink="/dialog" class="cp-prevnext-item">
+                <span class="cp-prevnext-dir">← PREVIOUS</span>
+                <span class="cp-prevnext-label">Dialog</span>
+            </a>
+            <a routerLink="/dropdown-menu" class="cp-prevnext-item cp-prevnext-item--right">
+                <span class="cp-prevnext-dir">NEXT →</span>
+                <span class="cp-prevnext-label cp-prevnext-label--accent">Dropdown Menu</span>
+            </a>
+        </nav>
+
+    </main>
+
+    <app-toc [items]="tocItems" />
+
+</div>

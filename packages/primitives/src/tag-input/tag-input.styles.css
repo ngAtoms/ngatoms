@@ -1,0 +1,158 @@
+/* =============================================================
+   NgAtoms Tag Input — tag-input.styles.css
+   Import once in your global styles.css:
+     @import '@/path/to/tag-input.styles.css';
+   ============================================================= */
+
+:root {
+  --nga-tag-input-radius:       var(--nga-radius-md, 6px);
+  --nga-tag-input-border:       var(--nga-color-border, #CCCCCC);
+  --nga-tag-input-border-hover: var(--nga-color-primary, #1A1A1A);
+  --nga-tag-input-bg:           var(--nga-color-background, #F7F8FA);
+  --nga-tag-input-fg:           var(--nga-color-foreground, #1A1A1A);
+  --nga-tag-input-placeholder:  var(--nga-color-muted-foreground, #6E6E6E);
+  --nga-tag-input-invalid:      var(--nga-color-destructive, #1A1A1A);
+  --nga-tag-input-transition:   border-color var(--nga-dur-base, 180ms) var(--nga-ease-out, ease), box-shadow var(--nga-dur-base, 180ms) var(--nga-ease-out, ease);
+
+  --nga-tag-input-tag-bg:       var(--nga-color-secondary, #E7EAEF);
+  --nga-tag-input-tag-fg:       var(--nga-color-secondary-foreground, #262626);
+  --nga-tag-input-tag-radius:   var(--nga-radius-sm, 4px);
+
+  --nga-tag-input-min-height-sm: 2rem;
+  --nga-tag-input-min-height-md: 2.5rem;
+  --nga-tag-input-min-height-lg: 3rem;
+
+  --nga-tag-input-font-sm: var(--nga-text-xs, 12px);
+  --nga-tag-input-font-md: var(--nga-text-sm, 13px);
+  --nga-tag-input-font-lg: var(--nga-text-base, 15px);
+}
+
+/* ── Wrapper ────────────────────────────────────────────────── */
+.nga-tag-input {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.375rem;
+  width: 100%;
+  min-height: var(--nga-tag-input-min-height);
+  padding: 0.25rem 0.5rem;
+  border: 1px solid var(--nga-tag-input-border);
+  border-radius: var(--nga-tag-input-radius);
+  background: var(--nga-tag-input-bg);
+  color: var(--nga-tag-input-fg);
+  font-size: var(--nga-tag-input-font-size);
+  box-sizing: border-box;
+  cursor: text;
+  transition: var(--nga-tag-input-transition);
+}
+
+.nga-tag-input:hover:not(.nga-tag-input--disabled) {
+  border-color: var(--nga-tag-input-border-hover);
+}
+
+.nga-tag-input:focus-within {
+  border-color: var(--nga-color-ring, #333333);
+  box-shadow: var(--nga-glow-ember, 0 0 0 4px rgba(26, 26, 26, 0.16));
+}
+
+/* ── Tag ────────────────────────────────────────────────────── */
+.nga-tag-input__tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.125rem;
+  max-width: 100%;
+  padding: 0.125rem 0.125rem 0.125rem 0.5rem;
+  border-radius: var(--nga-tag-input-tag-radius);
+  background: var(--nga-tag-input-tag-bg);
+  color: var(--nga-tag-input-tag-fg);
+  font-weight: var(--nga-font-weight-medium, 500);
+  line-height: 1.4;
+}
+
+.nga-tag-input__tag-label {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.nga-tag-input__remove {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 1.25rem;
+  height: 1.25rem;
+  padding: 0;
+  border: none;
+  border-radius: var(--nga-tag-input-tag-radius);
+  background: transparent;
+  color: inherit;
+  opacity: 0.6;
+  cursor: pointer;
+  outline: none;
+  transition: opacity var(--nga-dur-fast, 120ms) var(--nga-ease-out, ease), background var(--nga-dur-fast, 120ms) var(--nga-ease-out, ease);
+}
+
+.nga-tag-input__remove svg {
+  width: 0.75rem;
+  height: 0.75rem;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.75;
+  stroke-linecap: round;
+}
+
+.nga-tag-input__remove:hover:not(:disabled),
+.nga-tag-input__remove:focus-visible {
+  opacity: 1;
+  background: color-mix(in oklab, currentColor 14%, transparent);
+}
+
+.nga-tag-input__remove:disabled {
+  cursor: not-allowed;
+}
+
+/* ── Field ──────────────────────────────────────────────────── */
+.nga-tag-input__field {
+  flex: 1;
+  min-width: 5rem;
+  padding: 0.125rem 0.25rem;
+  border: none;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  outline: none;
+}
+
+.nga-tag-input__field::placeholder {
+  color: var(--nga-tag-input-placeholder);
+  opacity: 1;
+}
+
+/* ── States ─────────────────────────────────────────────────── */
+.nga-tag-input--disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.nga-tag-input--disabled .nga-tag-input__field {
+  cursor: not-allowed;
+}
+
+.nga-tag-input--invalid {
+  border-color: var(--nga-tag-input-invalid) !important;
+}
+
+/* ── Sizes ──────────────────────────────────────────────────── */
+.nga-tag-input--sm {
+  --nga-tag-input-min-height: var(--nga-tag-input-min-height-sm);
+  --nga-tag-input-font-size:  var(--nga-tag-input-font-sm);
+}
+.nga-tag-input--md {
+  --nga-tag-input-min-height: var(--nga-tag-input-min-height-md);
+  --nga-tag-input-font-size:  var(--nga-tag-input-font-md);
+}
+.nga-tag-input--lg {
+  --nga-tag-input-min-height: var(--nga-tag-input-min-height-lg);
+  --nga-tag-input-font-size:  var(--nga-tag-input-font-lg);
+}

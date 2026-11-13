@@ -1,0 +1,19 @@
+<dialog
+  #dialogEl
+  class="nga-drawer"
+  [class.nga-drawer--left]="side() === 'left'"
+  [class.nga-drawer--right]="side() === 'right'"
+  [class.nga-drawer--top]="side() === 'top'"
+  [class.nga-drawer--bottom]="side() === 'bottom'"
+  [class.nga-drawer--sm]="size() === 'sm'"
+  [class.nga-drawer--md]="size() === 'md'"
+  [class.nga-drawer--lg]="size() === 'lg'"
+  [class.nga-drawer--full]="size() === 'full'"
+  [attr.aria-label]="label() || null"
+  (close)="open.set(false)"
+  (click)="onBackdropClick($event)"
+>
+  <div #panelEl class="nga-drawer-panel" tabindex="-1" (click)="$event.stopPropagation()">
+    <ng-content />
+  </div>
+</dialog>

@@ -1,0 +1,73 @@
+/* =============================================================
+   NgAtoms Skeleton — skeleton.styles.css
+   Import once in your global styles.css:
+     @import '@/path/to/skeleton.styles.css';
+   ============================================================= */
+
+:root {
+  --nga-skeleton-bg:        var(--nga-color-muted, #E7EAEF);
+  --nga-skeleton-highlight: color-mix(in oklab, var(--nga-color-card, #F7F8FA) 85%, transparent);
+  --nga-skeleton-radius:    var(--nga-radius-sm, 4px);
+  --nga-skeleton-duration:  1.6s;
+  --nga-skeleton-text-height: 0.75em;
+}
+
+.dark {
+  --nga-skeleton-highlight: color-mix(in oklab, #F7F8FA 10%, transparent);
+}
+
+@keyframes nga-skeleton-shimmer {
+  from { background-position: 200% 0; }
+  to   { background-position: -200% 0; }
+}
+
+/* ── Base ───────────────────────────────────────────────────── */
+.nga-skeleton {
+  display: block;
+  background-color: var(--nga-skeleton-bg);
+  background-image: linear-gradient(
+    90deg,
+    transparent 0%,
+    var(--nga-skeleton-highlight) 50%,
+    transparent 100%
+  );
+  background-size: 200% 100%;
+  background-repeat: no-repeat;
+  animation: nga-skeleton-shimmer var(--nga-skeleton-duration) linear infinite;
+  color: transparent;
+  user-select: none;
+  pointer-events: none;
+}
+
+.nga-skeleton--static {
+  animation: none;
+  background-image: none;
+}
+
+/* ── Variants ───────────────────────────────────────────────── */
+.nga-skeleton--text {
+  width: 100%;
+  height: var(--nga-skeleton-text-height);
+  margin-block: 0.25em;
+  border-radius: var(--nga-skeleton-radius);
+}
+
+.nga-skeleton--circle {
+  width: 2.5rem;
+  height: 2.5rem;
+  flex-shrink: 0;
+  border-radius: var(--nga-radius-full, 9999px);
+}
+
+.nga-skeleton--rect {
+  width: 100%;
+  height: 6rem;
+  border-radius: var(--nga-radius-md, 6px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nga-skeleton {
+    animation: none;
+    background-image: none;
+  }
+}

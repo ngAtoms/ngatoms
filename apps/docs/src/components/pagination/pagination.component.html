@@ -1,0 +1,43 @@
+<ul class="nga-pagination__list">
+  <li>
+    <button
+      type="button"
+      class="nga-pagination__btn nga-pagination__btn--nav"
+      [disabled]="disabled() || current() <= 1"
+      [attr.aria-label]="previousLabel()"
+      (click)="previous()"
+    >
+      <svg viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M10 3.5L5.5 8l4.5 4.5" /></svg>
+    </button>
+  </li>
+
+  @for (item of items(); track item) {
+    <li>
+      @if (item === 'ellipsis-start' || item === 'ellipsis-end') {
+        <span class="nga-pagination__ellipsis" aria-hidden="true">…</span>
+      } @else {
+        <button
+          type="button"
+          class="nga-pagination__btn"
+          [class.nga-pagination__btn--active]="item === current()"
+          [disabled]="disabled()"
+          [attr.aria-label]="'Page ' + item"
+          [attr.aria-current]="item === current() ? 'page' : null"
+          (click)="goTo(item)"
+        >{{ item }}</button>
+      }
+    </li>
+  }
+
+  <li>
+    <button
+      type="button"
+      class="nga-pagination__btn nga-pagination__btn--nav"
+      [disabled]="disabled() || current() >= pageCount()"
+      [attr.aria-label]="nextLabel()"
+      (click)="next()"
+    >
+      <svg viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M6 3.5L10.5 8 6 12.5" /></svg>
+    </button>
+  </li>
+</ul>

@@ -39,7 +39,7 @@ Full docs and previews at **[ngatoms.com](https://ngatoms.com)**.
 | `accordion` | Collapsible items, single or multiple mode | ![stable](https://img.shields.io/badge/stable-green?style=flat-square) |
 | `alert` | Feedback messages — 5 variants | ![stable](https://img.shields.io/badge/stable-green?style=flat-square) |
 | `avatar` | Image with fallback initials or icon | ![stable](https://img.shields.io/badge/stable-green?style=flat-square) |
-| `badge` | Labels — 7 variants: default, ember, success, warning, destructive, solid, outline | ![stable](https://img.shields.io/badge/stable-green?style=flat-square) |
+| `badge` | Labels — 8 variants: default, ember, success, warning, destructive, info, solid, outline | ![stable](https://img.shields.io/badge/stable-green?style=flat-square) |
 | `button` | 5 variants, 5 sizes, loading state, icon support | ![stable](https://img.shields.io/badge/stable-green?style=flat-square) |
 | `card` | Container with header, content, footer slots | ![stable](https://img.shields.io/badge/stable-green?style=flat-square) |
 | `checkbox` | Checked, unchecked, and indeterminate states | ![stable](https://img.shields.io/badge/stable-green?style=flat-square) |
@@ -58,21 +58,21 @@ Full docs and previews at **[ngatoms.com](https://ngatoms.com)**.
 | `tabs` | Underline and pills variants, keyboard navigation | ![stable](https://img.shields.io/badge/stable-green?style=flat-square) |
 | `textarea` | Multiline input with auto-resize | ![stable](https://img.shields.io/badge/stable-green?style=flat-square) |
 | `tooltip` | Floating label — 4 placements, viewport clamping | ![stable](https://img.shields.io/badge/stable-green?style=flat-square) |
-| `breadcrumb` | Hierarchical navigation trail | ![planned](https://img.shields.io/badge/planned-lightgrey?style=flat-square) |
-| `combobox` | Text input with filtered dropdown | ![planned](https://img.shields.io/badge/planned-lightgrey?style=flat-square) |
-| `file-upload` | Drag-and-drop file input zone | ![planned](https://img.shields.io/badge/planned-lightgrey?style=flat-square) |
-| `pagination` | Page navigation controls | ![planned](https://img.shields.io/badge/planned-lightgrey?style=flat-square) |
-| `slider` | Range slider — single and dual thumb | ![planned](https://img.shields.io/badge/planned-lightgrey?style=flat-square) |
-| `stepper` | Multi-step wizard progress indicator | ![planned](https://img.shields.io/badge/planned-lightgrey?style=flat-square) |
-| `tag-input` | Input that creates removable tag chips | ![planned](https://img.shields.io/badge/planned-lightgrey?style=flat-square) |
-| `code-block` | Syntax-highlighted code display | ![planned](https://img.shields.io/badge/planned-lightgrey?style=flat-square) |
-| `color-picker` | HSL/hex color selector | ![planned](https://img.shields.io/badge/planned-lightgrey?style=flat-square) |
-| `context-menu` | Right-click triggered menu | ![planned](https://img.shields.io/badge/planned-lightgrey?style=flat-square) |
-| `drawer` | Side-panel overlay | ![planned](https://img.shields.io/badge/planned-lightgrey?style=flat-square) |
-| `rating` | Star rating input | ![planned](https://img.shields.io/badge/planned-lightgrey?style=flat-square) |
-| `skeleton` | Placeholder loading shimmer | ![planned](https://img.shields.io/badge/planned-lightgrey?style=flat-square) |
-| `timeline` | Vertical event timeline | ![planned](https://img.shields.io/badge/planned-lightgrey?style=flat-square) |
-| `tree` | Collapsible tree view | ![planned](https://img.shields.io/badge/planned-lightgrey?style=flat-square) |
+| `breadcrumb` | Hierarchical navigation trail | ![alpha](https://img.shields.io/badge/alpha-yellow?style=flat-square) |
+| `combobox` | Text input with filtered dropdown | ![alpha](https://img.shields.io/badge/alpha-yellow?style=flat-square) |
+| `file-upload` | Drag-and-drop file input zone | ![alpha](https://img.shields.io/badge/alpha-yellow?style=flat-square) |
+| `pagination` | Page navigation controls | ![alpha](https://img.shields.io/badge/alpha-yellow?style=flat-square) |
+| `slider` | Range slider — single and dual thumb | ![alpha](https://img.shields.io/badge/alpha-yellow?style=flat-square) |
+| `stepper` | Multi-step wizard progress indicator | ![alpha](https://img.shields.io/badge/alpha-yellow?style=flat-square) |
+| `tag-input` | Input that creates removable tag chips | ![alpha](https://img.shields.io/badge/alpha-yellow?style=flat-square) |
+| `code-block` | Syntax-highlighted code display | ![alpha](https://img.shields.io/badge/alpha-yellow?style=flat-square) |
+| `color-picker` | HSL/hex color selector | ![alpha](https://img.shields.io/badge/alpha-yellow?style=flat-square) |
+| `context-menu` | Right-click triggered menu | ![alpha](https://img.shields.io/badge/alpha-yellow?style=flat-square) |
+| `drawer` | Side-panel overlay | ![alpha](https://img.shields.io/badge/alpha-yellow?style=flat-square) |
+| `rating` | Star rating input | ![alpha](https://img.shields.io/badge/alpha-yellow?style=flat-square) |
+| `skeleton` | Placeholder loading shimmer | ![alpha](https://img.shields.io/badge/alpha-yellow?style=flat-square) |
+| `timeline` | Vertical event timeline | ![alpha](https://img.shields.io/badge/alpha-yellow?style=flat-square) |
+| `tree` | Collapsible tree view | ![alpha](https://img.shields.io/badge/alpha-yellow?style=flat-square) |
 
 ## Monorepo Structure
 

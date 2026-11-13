@@ -1,0 +1,158 @@
+<div class="cp-layout">
+
+    <main class="cp-main">
+
+        <header class="cp-header">
+            <div class="cp-eyebrow">Components / Display</div>
+            <h1 class="cp-title">Code Block</h1>
+            <p class="cp-lede">
+                Displays source code with a header, a copy button, and optional line numbers.
+                It ships without a highlighter, so it adds no dependency — plug in the one you already use.
+            </p>
+            <div class="cp-chips">
+                <span ngAtomsBadge variant="default"><i class="ph ph-angular-logo"></i> ngAtoms v1.0+</span>
+                <span ngAtomsBadge variant="default"><i class="ph ph-package"></i> ngatoms add code-block</span>
+                <span ngAtomsBadge variant="warning"><i class="ph ph-flask"></i> Alpha</span>
+                <a ngAtomsBadge variant="outline" href="https://github.com/ngAtoms/ngatoms/tree/rc/packages/primitives/src/code-block" target="_blank" rel="noopener noreferrer">
+                    <i class="ph ph-arrow-square-out"></i> Source
+                </a>
+            </div>
+        </header>
+
+        <!-- Hero preview -->
+        <preview-card>
+            <ng-container preview>
+                <div class="cb-wrap">
+                    <nga-code-block [code]="sample" language="typescript" filename="counter.component.ts" />
+                </div>
+            </ng-container>
+            <ng-container code>
+                <app-code-block [code]="heroCode" language="html" />
+            </ng-container>
+        </preview-card>
+
+        <!-- Usage -->
+        <section id="usage">
+            <h2 class="cp-h2">Usage</h2>
+            <p class="cp-p">Add the code block to your project and import it wherever you need it.</p>
+            <div class="inline-terminal">
+                <span class="inline-terminal-dollar">$</span>
+                <span class="inline-terminal-cmd">ngatoms add code-block</span>
+            </div>
+            <p class="cp-p" style="margin-top: 14px;">Then import into your component:</p>
+            <app-code-block [code]="usageCode" language="typescript" />
+        </section>
+
+        <!-- Syntax highlighting -->
+        <section id="highlighting">
+            <h2 class="cp-h2">Syntax highlighting</h2>
+            <p class="cp-p">
+                Pass a <code class="cp-code">[highlighter]</code> function that takes the code and language and returns HTML.
+                This example uses highlight.js, but Prism or Shiki work the same way. Token colors come from the theme of the library you choose.
+            </p>
+            <preview-card>
+                <ng-container preview>
+                    <div class="cb-wrap">
+                        <nga-code-block [code]="sample" language="typescript" filename="counter.component.ts" [highlighter]="highlight" />
+                    </div>
+                </ng-container>
+                <ng-container code>
+                    <app-code-block [code]="codeHighlighting" language="typescript" />
+                </ng-container>
+            </preview-card>
+        </section>
+
+        <!-- Line numbers -->
+        <section id="lines">
+            <h2 class="cp-h2">Line numbers</h2>
+            <p class="cp-p">
+                Set <code class="cp-code">[lineNumbers]="true"</code> to show a gutter. The numbers are not selectable, so they never end up in a copy.
+            </p>
+            <preview-card>
+                <ng-container preview>
+                    <div class="cb-wrap">
+                        <nga-code-block [code]="sample" language="typescript" [lineNumbers]="true" [highlighter]="highlight" />
+                    </div>
+                </ng-container>
+                <ng-container code>
+                    <app-code-block [code]="codeLines" language="html" />
+                </ng-container>
+            </preview-card>
+        </section>
+
+        <!-- Without header -->
+        <section id="bare">
+            <h2 class="cp-h2">Without header</h2>
+            <p class="cp-p">
+                With no <code class="cp-code">language</code> or <code class="cp-code">filename</code> and <code class="cp-code">[copyable]="false"</code>, the header is dropped.
+            </p>
+            <preview-card>
+                <ng-container preview>
+                    <div class="cb-wrap">
+                        <nga-code-block [code]="shell" [copyable]="false" />
+                    </div>
+                </ng-container>
+                <ng-container code>
+                    <app-code-block [code]="codeBare" language="html" />
+                </ng-container>
+            </preview-card>
+        </section>
+
+        <!-- API -->
+        <section id="api">
+            <h2 class="cp-h2">API</h2>
+            @for (group of propGroups; track group.target) {
+                <p class="cp-p">{{ group.kind }} on <code class="cp-code">{{ group.target }}</code>.</p>
+                <div class="props-table">
+                    <div class="props-table-header">
+                        <span>Prop</span>
+                        <span>Type</span>
+                        <span>Default</span>
+                        <span>Description</span>
+                    </div>
+                    @for (prop of group.props; track prop.name) {
+                        <div class="props-table-row">
+                            <code class="props-name">{{ prop.name }}</code>
+                            <code class="props-type">{{ prop.type }}</code>
+                            <code class="props-default">{{ prop.defaultVal }}</code>
+                            <span class="props-desc">{{ prop.description }}</span>
+                        </div>
+                    }
+                </div>
+            }
+        </section>
+
+        <!-- Accessibility -->
+        <section id="a11y">
+            <h2 class="cp-h2">Accessibility</h2>
+            <p class="cp-p">The block stays readable and operable from the keyboard.</p>
+            <ul class="a11y-list">
+                @for (item of a11yItems; track item.title) {
+                    <li class="a11y-item">
+                        <div class="a11y-icon"><i [class]="'ph ph-' + item.icon"></i></div>
+                        <div class="a11y-body">
+                            <div class="a11y-title">{{ item.title }}</div>
+                            <div class="a11y-desc">{{ item.body }}</div>
+                        </div>
+                    </li>
+                }
+            </ul>
+        </section>
+
+        <!-- Prev / Next -->
+        <nav class="cp-prevnext">
+            <a routerLink="/avatar" class="cp-prevnext-item">
+                <span class="cp-prevnext-dir">← PREVIOUS</span>
+                <span class="cp-prevnext-label">Avatar</span>
+            </a>
+            <a routerLink="/timeline" class="cp-prevnext-item cp-prevnext-item--right">
+                <span class="cp-prevnext-dir">NEXT →</span>
+                <span class="cp-prevnext-label cp-prevnext-label--accent">Timeline</span>
+            </a>
+        </nav>
+
+    </main>
+
+    <app-toc [items]="tocItems" />
+
+</div>

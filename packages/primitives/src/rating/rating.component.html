@@ -1,0 +1,20 @@
+@for (star of stars(); track star) {
+  <button
+    type="button"
+    class="nga-rating__star"
+    role="radio"
+    [class.nga-rating__star--on]="star <= shown()"
+    [attr.aria-checked]="star === value()"
+    [attr.aria-label]="star === 1 ? '1 star' : star + ' stars'"
+    [attr.aria-hidden]="readonly() || null"
+    [attr.tabindex]="tabIndexFor(star)"
+    [disabled]="disabled()"
+    (click)="select(star)"
+    (mouseenter)="onEnter(star)"
+    (keydown)="onKeydown($event)"
+  >
+    <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+      <path d="M12 2.6l2.9 5.9 6.5.9-4.7 4.6 1.1 6.5L12 17.4l-5.8 3.1 1.1-6.5L2.6 9.4l6.5-.9L12 2.6z" />
+    </svg>
+  </button>
+}

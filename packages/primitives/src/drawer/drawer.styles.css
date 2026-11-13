@@ -1,0 +1,232 @@
+/* =============================================================
+   NgAtoms Drawer — drawer.styles.css
+   Import once in your global styles.css:
+     @import '@/path/to/drawer.styles.css';
+   ============================================================= */
+
+:root {
+  /* Light */
+  --nga-drawer-panel-bg:      color-mix(in oklab, var(--nga-color-card, #F7F8FA) 86%, transparent);
+  --nga-drawer-panel-border:  color-mix(in oklab, var(--nga-color-border, #CCCCCC) 55%, transparent);
+  --nga-drawer-panel-blur:    blur(28px) saturate(180%);
+  --nga-drawer-footer-bg:     color-mix(in oklab, var(--nga-color-muted, #F2F4F6) 60%, transparent);
+  --nga-drawer-footer-border: color-mix(in oklab, var(--nga-color-border, #CCCCCC) 50%, transparent);
+  --nga-drawer-shadow:        0 24px 48px -8px rgba(26, 26, 26, 0.16), 0 8px 16px -4px rgba(26, 26, 26, 0.08);
+  --nga-drawer-backdrop:      rgba(26, 26, 26, 0.32);
+  --nga-drawer-backdrop-blur: blur(10px) saturate(140%);
+
+  --nga-drawer-duration:      var(--nga-dur-slow, 320ms);
+
+  --nga-drawer-size-sm: 20rem;
+  --nga-drawer-size-md: 26rem;
+  --nga-drawer-size-lg: 36rem;
+}
+
+.dark {
+  /* Dark */
+  --nga-drawer-panel-bg:      color-mix(in oklab, var(--nga-color-card) 88%, transparent);
+  --nga-drawer-panel-border:  color-mix(in oklab, #F7F8FA 14%, transparent);
+  --nga-drawer-panel-blur:    blur(32px) saturate(220%) brightness(1.08);
+  --nga-drawer-footer-bg:     color-mix(in oklab, var(--nga-color-muted) 50%, transparent);
+  --nga-drawer-footer-border: color-mix(in oklab, #F7F8FA 10%, transparent);
+  --nga-drawer-shadow:        0 24px 64px rgba(0, 0, 0, 0.62), 0 8px 24px rgba(0, 0, 0, 0.4);
+  --nga-drawer-backdrop:      var(--nga-color-scrim, rgba(0, 0, 0, 0.58));
+  --nga-drawer-backdrop-blur: blur(12px) saturate(160%);
+}
+
+/* ── Root host ──────────────────────────────────────────────── */
+.nga-drawer-root {
+  display: contents;
+}
+
+/* ── Native dialog element ──────────────────────────────────── */
+.nga-drawer {
+  position: fixed;
+  inset: auto;
+  margin: 0;
+  padding: 0;
+  border: none;
+  background: transparent;
+  max-width: 100vw;
+  max-height: 100dvh;
+  overflow: visible;
+}
+
+/* Slides in and out. `allow-discrete` on display/overlay keeps the dialog
+   in the top layer until the exit transition has finished. */
+.nga-drawer {
+  transition:
+    transform var(--nga-drawer-duration) var(--nga-ease-out, ease),
+    overlay var(--nga-drawer-duration) allow-discrete,
+    display var(--nga-drawer-duration) allow-discrete;
+}
+
+.nga-drawer::backdrop {
+  background: var(--nga-drawer-backdrop);
+  backdrop-filter: var(--nga-drawer-backdrop-blur);
+  -webkit-backdrop-filter: var(--nga-drawer-backdrop-blur);
+  opacity: 0;
+  transition:
+    opacity var(--nga-drawer-duration) var(--nga-ease-out, ease),
+    overlay var(--nga-drawer-duration) allow-discrete,
+    display var(--nga-drawer-duration) allow-discrete;
+}
+
+.nga-drawer[open]::backdrop {
+  opacity: 1;
+}
+
+@starting-style {
+  .nga-drawer[open]::backdrop {
+    opacity: 0;
+  }
+}
+
+/* ── Sides ──────────────────────────────────────────────────── */
+.nga-drawer--left,
+.nga-drawer--right {
+  top: 0;
+  bottom: 0;
+  width: min(100vw, var(--nga-drawer-size));
+  height: 100dvh;
+}
+
+.nga-drawer--left  { left: 0; }
+.nga-drawer--right { right: 0; }
+
+.nga-drawer--top,
+.nga-drawer--bottom {
+  left: 0;
+  right: 0;
+  width: 100vw;
+  height: min(100dvh, var(--nga-drawer-size));
+}
+
+.nga-drawer--top    { top: 0; }
+.nga-drawer--bottom { bottom: 0; }
+
+/* Closed position (also where the exit transition ends) */
+.nga-drawer--left   { transform: translateX(-100%); }
+.nga-drawer--right  { transform: translateX(100%); }
+.nga-drawer--top    { transform: translateY(-100%); }
+.nga-drawer--bottom { transform: translateY(100%); }
+
+.nga-drawer[open] {
+  transform: none;
+}
+
+/* Where the enter transition starts */
+@starting-style {
+  .nga-drawer--left[open]   { transform: translateX(-100%); }
+  .nga-drawer--right[open]  { transform: translateX(100%); }
+  .nga-drawer--top[open]    { transform: translateY(-100%); }
+  .nga-drawer--bottom[open] { transform: translateY(100%); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nga-drawer,
+  .nga-drawer::backdrop {
+    transition-duration: 1ms;
+  }
+}
+
+/* ── Sizes ──────────────────────────────────────────────────── */
+.nga-drawer--sm   { --nga-drawer-size: var(--nga-drawer-size-sm); }
+.nga-drawer--md   { --nga-drawer-size: var(--nga-drawer-size-md); }
+.nga-drawer--lg   { --nga-drawer-size: var(--nga-drawer-size-lg); }
+.nga-drawer--full { --nga-drawer-size: 100vmax; }
+
+/* ── Panel ──────────────────────────────────────────────────── */
+.nga-drawer-panel {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  background: var(--nga-drawer-panel-bg);
+  backdrop-filter: var(--nga-drawer-panel-blur);
+  -webkit-backdrop-filter: var(--nga-drawer-panel-blur);
+  box-shadow: var(--nga-drawer-shadow);
+  box-sizing: border-box;
+  overflow: hidden;
+  outline: none;
+}
+
+.nga-drawer--left   .nga-drawer-panel { border-right:  1px solid var(--nga-drawer-panel-border); }
+.nga-drawer--right  .nga-drawer-panel { border-left:   1px solid var(--nga-drawer-panel-border); }
+.nga-drawer--top    .nga-drawer-panel { border-bottom: 1px solid var(--nga-drawer-panel-border); }
+.nga-drawer--bottom .nga-drawer-panel { border-top:    1px solid var(--nga-drawer-panel-border); }
+
+/* ── Header ─────────────────────────────────────────────────── */
+.nga-drawer-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1.375rem 1.375rem 0;
+}
+
+.nga-drawer-title {
+  margin: 0;
+  color: var(--nga-color-foreground, #1A1A1A);
+  font-size: var(--nga-text-base, 15px);
+  font-weight: var(--nga-font-weight-semibold, 600);
+  letter-spacing: var(--nga-tracking-snug, -0.01em);
+  line-height: 1.3;
+}
+
+.nga-drawer-description {
+  margin: 0.25rem 0 0;
+  color: var(--nga-color-muted-foreground, #6E6E6E);
+  font-size: 0.84375rem;
+  line-height: 1.5;
+}
+
+/* ── Body ───────────────────────────────────────────────────── */
+.nga-drawer-body {
+  flex: 1;
+  padding: 1.375rem;
+  overflow-y: auto;
+  color: var(--nga-color-foreground, #1A1A1A);
+  font-size: var(--nga-size-font-sm, 13px);
+  line-height: 1.6;
+  scrollbar-width: thin;
+  scrollbar-color: var(--nga-color-border) transparent;
+}
+
+/* ── Footer ─────────────────────────────────────────────────── */
+.nga-drawer-footer {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.625rem;
+  padding: 1.125rem 1.375rem;
+  border-top: 1px solid var(--nga-drawer-footer-border);
+  background: var(--nga-drawer-footer-bg);
+}
+
+/* ── Close button ───────────────────────────────────────────── */
+.nga-drawer-close {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 1.75rem;
+  height: 1.75rem;
+  padding: 0;
+  border: none;
+  border-radius: var(--nga-radius-sm, 4px);
+  background: transparent;
+  color: var(--nga-color-muted-foreground, #6E6E6E);
+  cursor: pointer;
+  outline: none;
+  transition: background var(--nga-dur-base, 180ms) var(--nga-ease-out, ease), color var(--nga-dur-base, 180ms) var(--nga-ease-out, ease);
+}
+
+.nga-drawer-close:hover {
+  background: var(--nga-color-muted, #F2F4F6);
+  color: var(--nga-color-foreground, #1A1A1A);
+}
+
+.nga-drawer-close:focus-visible {
+  box-shadow: var(--nga-glow-ember, 0 0 0 4px rgba(26, 26, 26, 0.16));
+}

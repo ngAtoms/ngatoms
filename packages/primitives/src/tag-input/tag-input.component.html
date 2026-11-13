@@ -1,0 +1,27 @@
+@for (tag of tags(); track $index) {
+  <span class="nga-tag-input__tag">
+    <span class="nga-tag-input__tag-label">{{ tag }}</span>
+    <button
+      type="button"
+      class="nga-tag-input__remove"
+      [disabled]="disabled()"
+      [attr.aria-label]="'Remove ' + tag"
+      (click)="remove($index); $event.stopPropagation()"
+    >
+      <svg viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M4.5 4.5l7 7M11.5 4.5l-7 7" /></svg>
+    </button>
+  </span>
+}
+<input
+  #field
+  class="nga-tag-input__field"
+  type="text"
+  autocomplete="off"
+  [placeholder]="tags().length ? '' : placeholder()"
+  [disabled]="disabled()"
+  [attr.aria-label]="label()"
+  [attr.aria-invalid]="invalid() ? 'true' : null"
+  (keydown)="onKeydown($event)"
+  (paste)="onPaste($event)"
+  (blur)="commit()"
+/>

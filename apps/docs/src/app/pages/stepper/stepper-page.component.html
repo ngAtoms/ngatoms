@@ -1,0 +1,175 @@
+<div class="cp-layout">
+
+    <main class="cp-main">
+
+        <header class="cp-header">
+            <div class="cp-eyebrow">Components / Navigation</div>
+            <h1 class="cp-title">Stepper</h1>
+            <p class="cp-lede">
+                Shows progress through a sequence of steps. Steps before the active one
+                render as complete; make them clickable to let people jump back.
+            </p>
+            <div class="cp-chips">
+                <span ngAtomsBadge variant="default"><i class="ph ph-angular-logo"></i> ngAtoms v1.0+</span>
+                <span ngAtomsBadge variant="default"><i class="ph ph-package"></i> ngatoms add stepper</span>
+                <span ngAtomsBadge variant="warning"><i class="ph ph-flask"></i> Alpha</span>
+                <a ngAtomsBadge variant="outline" href="https://github.com/ngAtoms/ngatoms/tree/rc/packages/primitives/src/stepper" target="_blank" rel="noopener noreferrer">
+                    <i class="ph ph-arrow-square-out"></i> Source
+                </a>
+            </div>
+        </header>
+
+        <!-- Hero preview -->
+        <preview-card>
+            <ng-container preview>
+                <div class="demo-col">
+                    <nga-stepper [(activeStep)]="heroStep">
+                        <nga-step label="Account" />
+                        <nga-step label="Profile" />
+                        <nga-step label="Billing" />
+                        <nga-step label="Review" />
+                    </nga-stepper>
+                    <div class="demo-row">
+                        <button ngAtomsButton variant="outline" size="sm" [disabled]="heroStep() === 0" (click)="back()">Back</button>
+                        <button ngAtomsButton size="sm" [disabled]="heroStep() === 3" (click)="next()">Next</button>
+                    </div>
+                </div>
+            </ng-container>
+            <ng-container code>
+                <app-code-block [code]="heroCode" language="html" />
+            </ng-container>
+        </preview-card>
+
+        <!-- Usage -->
+        <section id="usage">
+            <h2 class="cp-h2">Usage</h2>
+            <p class="cp-p">Add the stepper to your project and import it wherever you need it.</p>
+            <div class="inline-terminal">
+                <span class="inline-terminal-dollar">$</span>
+                <span class="inline-terminal-cmd">ngatoms add stepper</span>
+            </div>
+            <p class="cp-p" style="margin-top: 14px;">Then import into your component:</p>
+            <app-code-block [code]="usageCode" language="typescript" />
+        </section>
+
+        <!-- Vertical -->
+        <section id="vertical">
+            <h2 class="cp-h2">Vertical</h2>
+            <p class="cp-p">
+                Set <code class="cp-code">orientation="vertical"</code> for narrow layouts.
+                A <code class="cp-code">description</code> adds a second line to each step.
+            </p>
+            <preview-card>
+                <ng-container preview>
+                    <nga-stepper [activeStep]="1" orientation="vertical">
+                        <nga-step label="Create repository" description="Name it and pick a visibility." />
+                        <nga-step label="Add collaborators" description="Invite your team." />
+                        <nga-step label="Deploy" description="Ship the first version." />
+                    </nga-stepper>
+                </ng-container>
+                <ng-container code>
+                    <app-code-block [code]="codeVertical" language="html" />
+                </ng-container>
+            </preview-card>
+        </section>
+
+        <!-- Clickable steps -->
+        <section id="clickable">
+            <h2 class="cp-h2">Clickable steps</h2>
+            <p class="cp-p">
+                With <code class="cp-code">[clickable]="true"</code> each step becomes a button that activates it.
+                A <code class="cp-code">disabled</code> step cannot be reached.
+            </p>
+            <preview-card>
+                <ng-container preview>
+                    <nga-stepper [(activeStep)]="clickStep" [clickable]="true">
+                        <nga-step label="Cart" />
+                        <nga-step label="Shipping" />
+                        <nga-step label="Payment" />
+                        <nga-step label="Done" [disabled]="true" />
+                    </nga-stepper>
+                </ng-container>
+                <ng-container code>
+                    <app-code-block [code]="codeClickable" language="html" />
+                </ng-container>
+            </preview-card>
+        </section>
+
+        <!-- Error -->
+        <section id="error">
+            <h2 class="cp-h2">Error</h2>
+            <p class="cp-p">
+                Flag a step that failed validation with <code class="cp-code">[error]="true"</code>.
+            </p>
+            <preview-card>
+                <ng-container preview>
+                    <nga-stepper [activeStep]="2">
+                        <nga-step label="Details" />
+                        <nga-step label="Address" [error]="true" />
+                        <nga-step label="Confirm" />
+                    </nga-stepper>
+                </ng-container>
+                <ng-container code>
+                    <app-code-block [code]="codeError" language="html" />
+                </ng-container>
+            </preview-card>
+        </section>
+
+        <!-- API -->
+        <section id="api">
+            <h2 class="cp-h2">API</h2>
+            @for (group of propGroups; track group.target) {
+                <p class="cp-p">{{ group.kind }} on <code class="cp-code">{{ group.target }}</code>.</p>
+                <div class="props-table">
+                    <div class="props-table-header">
+                        <span>Prop</span>
+                        <span>Type</span>
+                        <span>Default</span>
+                        <span>Description</span>
+                    </div>
+                    @for (prop of group.props; track prop.name) {
+                        <div class="props-table-row">
+                            <code class="props-name">{{ prop.name }}</code>
+                            <code class="props-type">{{ prop.type }}</code>
+                            <code class="props-default">{{ prop.defaultVal }}</code>
+                            <span class="props-desc">{{ prop.description }}</span>
+                        </div>
+                    }
+                </div>
+            }
+        </section>
+
+        <!-- Accessibility -->
+        <section id="a11y">
+            <h2 class="cp-h2">Accessibility</h2>
+            <p class="cp-p">The stepper is announced as a list, with the state of each step in text.</p>
+            <ul class="a11y-list">
+                @for (item of a11yItems; track item.title) {
+                    <li class="a11y-item">
+                        <div class="a11y-icon"><i [class]="'ph ph-' + item.icon"></i></div>
+                        <div class="a11y-body">
+                            <div class="a11y-title">{{ item.title }}</div>
+                            <div class="a11y-desc">{{ item.body }}</div>
+                        </div>
+                    </li>
+                }
+            </ul>
+        </section>
+
+        <!-- Prev / Next -->
+        <nav class="cp-prevnext">
+            <a routerLink="/pagination" class="cp-prevnext-item">
+                <span class="cp-prevnext-dir">← PREVIOUS</span>
+                <span class="cp-prevnext-label">Pagination</span>
+            </a>
+            <a routerLink="/tabs" class="cp-prevnext-item cp-prevnext-item--right">
+                <span class="cp-prevnext-dir">NEXT →</span>
+                <span class="cp-prevnext-label cp-prevnext-label--accent">Tabs</span>
+            </a>
+        </nav>
+
+    </main>
+
+    <app-toc [items]="tocItems" />
+
+</div>

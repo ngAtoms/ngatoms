@@ -1,0 +1,116 @@
+/* =============================================================
+   NgAtoms Pagination — pagination.styles.css
+   Import once in your global styles.css:
+     @import '@/path/to/pagination.styles.css';
+   ============================================================= */
+
+:root {
+  --nga-pagination-gap:        0.25rem;
+  --nga-pagination-radius:     var(--nga-radius-md, 6px);
+  --nga-pagination-fg:         var(--nga-color-foreground, #1A1A1A);
+  --nga-pagination-muted:      var(--nga-color-muted-foreground, #6E6E6E);
+  --nga-pagination-hover-bg:   color-mix(in oklab, var(--nga-color-foreground, #1A1A1A) 7%, transparent);
+  --nga-pagination-active-bg:  var(--nga-color-accent, #333333);
+  --nga-pagination-active-fg:  var(--nga-color-accent-foreground, #F7F8FA);
+
+  --nga-pagination-size-sm: 1.75rem;
+  --nga-pagination-size-md: 2.25rem;
+  --nga-pagination-size-lg: 2.75rem;
+
+  --nga-pagination-font-sm: var(--nga-text-xs, 12px);
+  --nga-pagination-font-md: var(--nga-text-sm, 13px);
+  --nga-pagination-font-lg: var(--nga-text-base, 15px);
+}
+
+/* ── Root ───────────────────────────────────────────────────── */
+.nga-pagination {
+  display: block;
+}
+
+.nga-pagination__list {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--nga-pagination-gap);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* ── Button ─────────────────────────────────────────────────── */
+.nga-pagination__btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: var(--nga-pagination-item-size);
+  height: var(--nga-pagination-item-size);
+  padding: 0 0.375rem;
+  border: 1px solid transparent;
+  border-radius: var(--nga-pagination-radius);
+  background: transparent;
+  color: var(--nga-pagination-fg);
+  font-family: inherit;
+  font-size: var(--nga-pagination-font-size);
+  font-weight: var(--nga-font-weight-medium, 500);
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+  cursor: pointer;
+  outline: none;
+  transition:
+    background var(--nga-dur-fast, 120ms) var(--nga-ease-out, ease),
+    color var(--nga-dur-fast, 120ms) var(--nga-ease-out, ease);
+}
+
+.nga-pagination__btn:hover:not(:disabled):not(.nga-pagination__btn--active) {
+  background: var(--nga-pagination-hover-bg);
+}
+
+.nga-pagination__btn:focus-visible {
+  box-shadow: var(--nga-glow-ember, 0 0 0 4px rgba(26, 26, 26, 0.16));
+}
+
+.nga-pagination__btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.nga-pagination__btn--active {
+  background: var(--nga-pagination-active-bg);
+  color: var(--nga-pagination-active-fg);
+}
+
+.nga-pagination__btn--nav svg {
+  width: 1em;
+  height: 1em;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.75;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* ── Ellipsis ───────────────────────────────────────────────── */
+.nga-pagination__ellipsis {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: var(--nga-pagination-item-size);
+  height: var(--nga-pagination-item-size);
+  color: var(--nga-pagination-muted);
+  font-size: var(--nga-pagination-font-size);
+  user-select: none;
+}
+
+/* ── Sizes ──────────────────────────────────────────────────── */
+.nga-pagination--sm {
+  --nga-pagination-item-size: var(--nga-pagination-size-sm);
+  --nga-pagination-font-size: var(--nga-pagination-font-sm);
+}
+.nga-pagination--md {
+  --nga-pagination-item-size: var(--nga-pagination-size-md);
+  --nga-pagination-font-size: var(--nga-pagination-font-md);
+}
+.nga-pagination--lg {
+  --nga-pagination-item-size: var(--nga-pagination-size-lg);
+  --nga-pagination-font-size: var(--nga-pagination-font-lg);
+}

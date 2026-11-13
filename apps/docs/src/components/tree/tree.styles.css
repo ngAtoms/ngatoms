@@ -1,0 +1,110 @@
+/* =============================================================
+   NgAtoms Tree — tree.styles.css
+   Import once in your global styles.css:
+     @import '@/path/to/tree.styles.css';
+   ============================================================= */
+
+:root {
+  --nga-tree-indent:        1.125rem;
+  --nga-tree-row-height:    1.875rem;
+  --nga-tree-row-radius:    var(--nga-radius-sm, 4px);
+  --nga-tree-fg:            var(--nga-color-foreground, #1A1A1A);
+  --nga-tree-muted:         var(--nga-color-muted-foreground, #6E6E6E);
+  --nga-tree-hover-bg:      color-mix(in oklab, var(--nga-color-foreground, #1A1A1A) 6%, transparent);
+  --nga-tree-selected-bg:   var(--nga-color-accent-soft, #E7EAEF);
+  --nga-tree-font-size:     var(--nga-text-sm, 13px);
+}
+
+/* ── Root ───────────────────────────────────────────────────── */
+.nga-tree {
+  display: block;
+  color: var(--nga-tree-fg);
+  font-size: var(--nga-tree-font-size);
+}
+
+/* ── Item ───────────────────────────────────────────────────── */
+.nga-tree-item {
+  display: block;
+  outline: none;
+}
+
+.nga-tree-item__row {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+  min-height: var(--nga-tree-row-height);
+  padding-inline: calc(0.25rem + (var(--nga-tree-level, 1) - 1) * var(--nga-tree-indent)) 0.5rem;
+  border-radius: var(--nga-tree-row-radius);
+  cursor: pointer;
+  user-select: none;
+  transition: background var(--nga-dur-fast, 120ms) var(--nga-ease-out, ease);
+}
+
+.nga-tree-item__row:hover {
+  background: var(--nga-tree-hover-bg);
+}
+
+.nga-tree-item--selected > .nga-tree-item__row {
+  background: var(--nga-tree-selected-bg);
+  font-weight: var(--nga-font-weight-medium, 500);
+}
+
+.nga-tree-item:focus-visible > .nga-tree-item__row {
+  box-shadow: inset 0 0 0 0.125rem var(--nga-color-ring, #333333);
+}
+
+/* ── Caret ──────────────────────────────────────────────────── */
+.nga-tree-item__caret {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 1rem;
+  height: 1rem;
+  color: var(--nga-tree-muted);
+}
+
+.nga-tree-item__caret svg {
+  width: 0.75rem;
+  height: 0.75rem;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.75;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  transition: transform var(--nga-dur-base, 180ms) var(--nga-ease-out, ease);
+}
+
+.nga-tree-item--expanded > .nga-tree-item__row .nga-tree-item__caret svg {
+  transform: rotate(90deg);
+}
+
+/* ── Icon + label ───────────────────────────────────────────── */
+.nga-tree-item__icon {
+  flex-shrink: 0;
+  color: var(--nga-tree-muted);
+  font-size: 1rem;
+  line-height: 1;
+}
+
+.nga-tree-item__label {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* ── Group ──────────────────────────────────────────────────── */
+.nga-tree-item__group[hidden] {
+  display: none;
+}
+
+/* ── Disabled ───────────────────────────────────────────────── */
+.nga-tree-item--disabled > .nga-tree-item__row {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.nga-tree-item--disabled > .nga-tree-item__row:hover {
+  background: transparent;
+}

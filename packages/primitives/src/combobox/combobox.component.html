@@ -1,0 +1,65 @@
+<input
+  #inputEl
+  class="nga-combobox__input"
+  type="text"
+  role="combobox"
+  autocomplete="off"
+  aria-autocomplete="list"
+  aria-haspopup="listbox"
+  [attr.aria-expanded]="open()"
+  [attr.aria-controls]="listId"
+  [attr.aria-activedescendant]="activeId()"
+  [attr.aria-label]="label() || null"
+  [attr.aria-invalid]="invalid() ? 'true' : null"
+  [placeholder]="placeholder()"
+  [disabled]="disabled()"
+  [value]="query()"
+  (input)="onInput($event)"
+  (keydown)="onKeydown($event)"
+  (click)="openPanel()"
+/>
+<button
+  type="button"
+  class="nga-combobox__toggle"
+  tabindex="-1"
+  aria-hidden="true"
+  [disabled]="disabled()"
+  (mousedown)="$event.preventDefault()"
+  (click)="toggle()"
+>
+  <svg viewBox="0 0 16 16" focusable="false"><path d="M4 6l4 4 4-4" /></svg>
+</button>
+
+<div
+  #panelEl
+  class="nga-combobox-panel"
+  role="listbox"
+  [id]="listId"
+  [class.nga-combobox-panel--open]="open()"
+  [attr.aria-label]="label() || null"
+  (mousedown)="$event.preventDefault()"
+>
+  @for (option of filtered(); track option.value; let i = $index) {
+    <div
+      class="nga-combobox-option"
+      role="option"
+      [id]="optionId(i)"
+      [class.nga-combobox-option--active]="i === activeIndex()"
+      [class.nga-combobox-option--selected]="option.value === value()"
+      [class.nga-combobox-option--disabled]="option.disabled"
+      [attr.aria-selected]="option.value === value()"
+      [attr.aria-disabled]="option.disabled || null"
+      (click)="select(option)"
+      (mousemove)="!option.disabled && activeIndex.set(i)"
+    >
+      <span class="nga-combobox-option__label">{{ option.label }}</span>
+      @if (option.value === value()) {
+        <svg class="nga-combobox-option__check" viewBox="0 0 16 16" aria-hidden="true" focusable="false">
+          <path d="M3.5 8.5l3 3 6-7" />
+        </svg>
+      }
+    </div>
+  } @empty {
+    <div class="nga-combobox-empty">{{ emptyText() }}</div>
+  }
+</div>

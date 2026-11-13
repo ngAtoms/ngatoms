@@ -1,0 +1,29 @@
+<button
+  type="button"
+  class="nga-step__trigger"
+  [disabled]="disabled() || !stepper.clickable()"
+  [attr.aria-current]="index() === stepper.activeStep() ? 'step' : null"
+  (click)="activate()"
+>
+  <span class="nga-step__indicator" aria-hidden="true">
+    @switch (state()) {
+      @case ('complete') {
+        <svg viewBox="0 0 16 16" focusable="false"><path d="M3.5 8.5l3 3 6-7" /></svg>
+      }
+      @case ('error') {
+        <svg viewBox="0 0 16 16" focusable="false"><path d="M8 3.5v5.5M8 12v.5" /></svg>
+      }
+      @default {
+        {{ index() + 1 }}
+      }
+    }
+  </span>
+  <span class="nga-step__text">
+    <span class="nga-step__label">{{ label() }}</span>
+    @if (description()) {
+      <span class="nga-step__description">{{ description() }}</span>
+    }
+    <span class="nga-step__sr">, {{ stateLabel() }}</span>
+  </span>
+</button>
+<span class="nga-step__connector" aria-hidden="true"></span>

@@ -1,0 +1,136 @@
+/* =============================================================
+   NgAtoms Code Block — code-block.styles.css
+   Import once in your global styles.css:
+     @import '@/path/to/code-block.styles.css';
+
+   Token colors are not included: they belong to whichever
+   highlighter you plug in (e.g. a highlight.js or Prism theme).
+   ============================================================= */
+
+:root {
+  --nga-code-block-bg:        var(--nga-color-card, #F7F8FA);
+  --nga-code-block-header-bg: var(--nga-color-muted, #F2F4F6);
+  --nga-code-block-border:    var(--nga-color-border, #D8DDE3);
+  --nga-code-block-fg:        var(--nga-color-foreground, #1A1A1A);
+  --nga-code-block-muted:     var(--nga-color-muted-foreground, #6E6E6E);
+  --nga-code-block-radius:    var(--nga-radius-lg, 10px);
+  --nga-code-block-padding:   1rem;
+  --nga-code-block-font-size: var(--nga-text-sm, 13px);
+  --nga-code-block-line-height: 1.65;
+}
+
+/* ── Root ───────────────────────────────────────────────────── */
+.nga-code-block {
+  position: relative;
+  display: block;
+  border: 1px solid var(--nga-code-block-border);
+  border-radius: var(--nga-code-block-radius);
+  background: var(--nga-code-block-bg);
+  color: var(--nga-code-block-fg);
+  overflow: hidden;
+}
+
+/* ── Header ─────────────────────────────────────────────────── */
+.nga-code-block__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  min-height: 2.25rem;
+  padding: 0 0.375rem 0 var(--nga-code-block-padding);
+  border-bottom: 1px solid var(--nga-code-block-border);
+  background: var(--nga-code-block-header-bg);
+}
+
+.nga-code-block__title {
+  min-width: 0;
+  overflow: hidden;
+  color: var(--nga-code-block-muted);
+  font-family: var(--nga-font-mono, monospace);
+  font-size: var(--nga-text-xs, 12px);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* ── Copy button ────────────────────────────────────────────── */
+.nga-code-block__copy {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 1.75rem;
+  height: 1.75rem;
+  padding: 0;
+  border: none;
+  border-radius: var(--nga-radius-sm, 4px);
+  background: transparent;
+  color: var(--nga-code-block-muted);
+  cursor: pointer;
+  outline: none;
+  transition: background var(--nga-dur-fast, 120ms) var(--nga-ease-out, ease), color var(--nga-dur-fast, 120ms) var(--nga-ease-out, ease);
+}
+
+.nga-code-block__copy svg {
+  width: 0.875rem;
+  height: 0.875rem;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.nga-code-block__copy:hover {
+  background: color-mix(in oklab, var(--nga-code-block-fg) 8%, transparent);
+  color: var(--nga-code-block-fg);
+}
+
+.nga-code-block__copy:focus-visible {
+  box-shadow: var(--nga-glow-ember, 0 0 0 4px rgba(26, 26, 26, 0.16));
+}
+
+/* ── Code ───────────────────────────────────────────────────── */
+.nga-code-block__pre {
+  display: flex;
+  margin: 0;
+  padding: var(--nga-code-block-padding);
+  overflow-x: auto;
+  font-family: var(--nga-font-mono, monospace);
+  font-size: var(--nga-code-block-font-size);
+  line-height: var(--nga-code-block-line-height);
+  tab-size: 2;
+  outline: none;
+  scrollbar-width: thin;
+}
+
+.nga-code-block__pre:focus-visible {
+  box-shadow: inset 0 0 0 0.125rem var(--nga-color-ring, #333333);
+}
+
+.nga-code-block__code {
+  flex: 1;
+  font: inherit;
+  white-space: pre;
+}
+
+/* ── Line numbers ───────────────────────────────────────────── */
+.nga-code-block__gutter {
+  flex-shrink: 0;
+  margin-right: var(--nga-code-block-padding);
+  padding-right: 0.75rem;
+  border-right: 1px solid var(--nga-code-block-border);
+  color: var(--nga-code-block-muted);
+  text-align: right;
+  white-space: pre;
+  user-select: none;
+}
+
+/* ── Copy announcement (screen readers only) ────────────────── */
+.nga-code-block__status {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}

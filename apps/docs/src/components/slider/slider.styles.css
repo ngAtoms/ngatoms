@@ -1,0 +1,113 @@
+/* =============================================================
+   NgAtoms Slider — slider.styles.css
+   Import once in your global styles.css:
+     @import '@/path/to/slider.styles.css';
+   ============================================================= */
+
+:root {
+  --nga-slider-rail-bg:      var(--nga-color-muted, #E7EAEF);
+  --nga-slider-fill-bg:      var(--nga-color-accent, #333333);
+  --nga-slider-thumb-bg:     var(--nga-color-card, #F7F8FA);
+  --nga-slider-thumb-border: var(--nga-color-accent, #333333);
+  --nga-slider-thumb-shadow: var(--nga-shadow-sm, 0 1px 2px rgba(26, 26, 26, 0.06));
+  --nga-slider-radius:       var(--nga-radius-full, 9999px);
+
+  --nga-slider-rail-sm:  0.25rem;
+  --nga-slider-rail-md:  0.375rem;
+  --nga-slider-rail-lg:  0.5rem;
+
+  --nga-slider-thumb-sm: 0.875rem;
+  --nga-slider-thumb-md: 1.125rem;
+  --nga-slider-thumb-lg: 1.375rem;
+}
+
+/* ── Root ───────────────────────────────────────────────────── */
+.nga-slider {
+  display: block;
+  width: 100%;
+  /* Half a thumb of breathing room so the thumb never overflows the host */
+  padding-inline: calc(var(--nga-slider-thumb-size) / 2);
+  box-sizing: border-box;
+}
+
+/* ── Track (hit area) ───────────────────────────────────────── */
+.nga-slider__track {
+  position: relative;
+  display: flex;
+  align-items: center;
+  height: calc(var(--nga-slider-thumb-size) + 0.5rem);
+  cursor: pointer;
+  touch-action: none;
+  user-select: none;
+}
+
+/* ── Rail + fill ────────────────────────────────────────────── */
+.nga-slider__rail {
+  position: relative;
+  width: 100%;
+  height: var(--nga-slider-rail-size);
+  border-radius: var(--nga-slider-radius);
+  background: var(--nga-slider-rail-bg);
+  overflow: hidden;
+}
+
+.nga-slider__fill {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  background: var(--nga-slider-fill-bg);
+}
+
+/* ── Thumb ──────────────────────────────────────────────────── */
+.nga-slider__thumb {
+  position: absolute;
+  top: 50%;
+  width: var(--nga-slider-thumb-size);
+  height: var(--nga-slider-thumb-size);
+  border: 0.125rem solid var(--nga-slider-thumb-border);
+  border-radius: var(--nga-slider-radius);
+  background: var(--nga-slider-thumb-bg);
+  box-shadow: var(--nga-slider-thumb-shadow);
+  box-sizing: border-box;
+  transform: translate(-50%, -50%);
+  outline: none;
+  transition:
+    box-shadow var(--nga-dur-fast, 120ms) var(--nga-ease-out, ease),
+    transform var(--nga-dur-fast, 120ms) var(--nga-ease-out, ease);
+}
+
+.nga-slider__thumb:hover,
+.nga-slider--dragging .nga-slider__thumb:focus {
+  transform: translate(-50%, -50%) scale(1.1);
+}
+
+.nga-slider__thumb:focus-visible {
+  box-shadow: var(--nga-slider-thumb-shadow), var(--nga-glow-ember, 0 0 0 4px rgba(26, 26, 26, 0.16));
+}
+
+/* ── Disabled ───────────────────────────────────────────────── */
+.nga-slider--disabled {
+  opacity: 0.5;
+}
+
+.nga-slider--disabled .nga-slider__track {
+  cursor: not-allowed;
+}
+
+.nga-slider--disabled .nga-slider__thumb {
+  transform: translate(-50%, -50%);
+}
+
+/* ── Sizes ──────────────────────────────────────────────────── */
+.nga-slider--sm {
+  --nga-slider-rail-size:  var(--nga-slider-rail-sm);
+  --nga-slider-thumb-size: var(--nga-slider-thumb-sm);
+}
+.nga-slider--md {
+  --nga-slider-rail-size:  var(--nga-slider-rail-md);
+  --nga-slider-thumb-size: var(--nga-slider-thumb-md);
+}
+.nga-slider--lg {
+  --nga-slider-rail-size:  var(--nga-slider-rail-lg);
+  --nga-slider-thumb-size: var(--nga-slider-thumb-lg);
+}

@@ -1,0 +1,174 @@
+<div class="cp-layout">
+
+    <main class="cp-main">
+
+        <header class="cp-header">
+            <div class="cp-eyebrow">Components / Display</div>
+            <h1 class="cp-title">Timeline</h1>
+            <p class="cp-lede">
+                A vertical list of events in order, each with a marker and a connector to the next.
+                Use it for activity feeds, order tracking, and changelogs.
+            </p>
+            <div class="cp-chips">
+                <span ngAtomsBadge variant="default"><i class="ph ph-angular-logo"></i> ngAtoms v1.0+</span>
+                <span ngAtomsBadge variant="default"><i class="ph ph-package"></i> ngatoms add timeline</span>
+                <span ngAtomsBadge variant="warning"><i class="ph ph-flask"></i> Alpha</span>
+                <a ngAtomsBadge variant="outline" href="https://github.com/ngAtoms/ngatoms/tree/rc/packages/primitives/src/timeline" target="_blank" rel="noopener noreferrer">
+                    <i class="ph ph-arrow-square-out"></i> Source
+                </a>
+            </div>
+        </header>
+
+        <!-- Hero preview -->
+        <preview-card>
+            <ng-container preview>
+                <ol ngAtomsTimeline class="tl-demo">
+                  <li ngAtomsTimelineItem status="complete">
+                    <span ngAtomsTimelineMarker></span>
+                    <div ngAtomsTimelineContent>
+                      <p ngAtomsTimelineTitle>Order placed</p>
+                      <time ngAtomsTimelineTime>Mar 3, 09:12</time>
+                    </div>
+                  </li>
+                  <li ngAtomsTimelineItem status="active">
+                    <span ngAtomsTimelineMarker></span>
+                    <div ngAtomsTimelineContent>
+                      <p ngAtomsTimelineTitle>Shipped</p>
+                      <time ngAtomsTimelineTime>Mar 4, 16:40</time>
+                      <p ngAtomsTimelineDescription>Your package left the warehouse and is on its way.</p>
+                    </div>
+                  </li>
+                  <li ngAtomsTimelineItem>
+                    <span ngAtomsTimelineMarker></span>
+                    <div ngAtomsTimelineContent>
+                      <p ngAtomsTimelineTitle>Delivered</p>
+                      <time ngAtomsTimelineTime>Expected Mar 6</time>
+                    </div>
+                  </li>
+                </ol>
+            </ng-container>
+            <ng-container code>
+                <app-code-block [code]="heroCode" language="html" />
+            </ng-container>
+        </preview-card>
+
+        <!-- Usage -->
+        <section id="usage">
+            <h2 class="cp-h2">Usage</h2>
+            <p class="cp-p">Add the timeline to your project and import it wherever you need it.</p>
+            <div class="inline-terminal">
+                <span class="inline-terminal-dollar">$</span>
+                <span class="inline-terminal-cmd">ngatoms add timeline</span>
+            </div>
+            <p class="cp-p" style="margin-top: 14px;">Then import into your component:</p>
+            <app-code-block [code]="usageCode" language="typescript" />
+        </section>
+
+        <!-- Status -->
+        <section id="status">
+            <h2 class="cp-h2">Status</h2>
+            <p class="cp-p">
+                Each item takes a <code class="cp-code">status</code>: <strong>complete</strong> fills the marker and its connector,
+                <strong>active</strong> rings the marker, and <strong>default</strong> leaves it hollow.
+            </p>
+            <preview-card>
+                <ng-container preview>
+                    <ol ngAtomsTimeline class="tl-demo">
+                        <li ngAtomsTimelineItem status="complete"><span ngAtomsTimelineMarker></span><div ngAtomsTimelineContent><p ngAtomsTimelineTitle>complete</p></div></li>
+                        <li ngAtomsTimelineItem status="active"><span ngAtomsTimelineMarker></span><div ngAtomsTimelineContent><p ngAtomsTimelineTitle>active</p></div></li>
+                        <li ngAtomsTimelineItem><span ngAtomsTimelineMarker></span><div ngAtomsTimelineContent><p ngAtomsTimelineTitle>default</p></div></li>
+                    </ol>
+                </ng-container>
+                <ng-container code>
+                    <app-code-block [code]="codeStatus" language="html" />
+                </ng-container>
+            </preview-card>
+        </section>
+
+        <!-- Custom markers -->
+        <section id="markers">
+            <h2 class="cp-h2">Custom markers</h2>
+            <p class="cp-p">
+                An empty marker renders a dot. Put an icon inside it to replace the dot.
+            </p>
+            <preview-card>
+                <ng-container preview>
+                    <ol ngAtomsTimeline class="tl-demo">
+                        <li ngAtomsTimelineItem status="complete">
+                            <span ngAtomsTimelineMarker><i class="ph-bold ph-git-commit"></i></span>
+                            <div ngAtomsTimelineContent><p ngAtomsTimelineTitle>Commit pushed</p><time ngAtomsTimelineTime>2 hours ago</time></div>
+                        </li>
+                        <li ngAtomsTimelineItem status="complete">
+                            <span ngAtomsTimelineMarker><i class="ph-bold ph-check-circle"></i></span>
+                            <div ngAtomsTimelineContent><p ngAtomsTimelineTitle>Checks passed</p><time ngAtomsTimelineTime>1 hour ago</time></div>
+                        </li>
+                        <li ngAtomsTimelineItem status="active">
+                            <span ngAtomsTimelineMarker><i class="ph-bold ph-rocket-launch"></i></span>
+                            <div ngAtomsTimelineContent><p ngAtomsTimelineTitle>Deploying</p><time ngAtomsTimelineTime>Just now</time></div>
+                        </li>
+                    </ol>
+                </ng-container>
+                <ng-container code>
+                    <app-code-block [code]="codeMarkers" language="html" />
+                </ng-container>
+            </preview-card>
+        </section>
+
+        <!-- API -->
+        <section id="api">
+            <h2 class="cp-h2">API</h2>
+            @for (group of propGroups; track group.target) {
+                <p class="cp-p">{{ group.kind }} on <code class="cp-code">{{ group.target }}</code>.</p>
+                <div class="props-table">
+                    <div class="props-table-header">
+                        <span>Prop</span>
+                        <span>Type</span>
+                        <span>Default</span>
+                        <span>Description</span>
+                    </div>
+                    @for (prop of group.props; track prop.name) {
+                        <div class="props-table-row">
+                            <code class="props-name">{{ prop.name }}</code>
+                            <code class="props-type">{{ prop.type }}</code>
+                            <code class="props-default">{{ prop.defaultVal }}</code>
+                            <span class="props-desc">{{ prop.description }}</span>
+                        </div>
+                    }
+                </div>
+            }
+        </section>
+
+        <!-- Accessibility -->
+        <section id="a11y">
+            <h2 class="cp-h2">Accessibility</h2>
+            <p class="cp-p">The timeline is a plain ordered list, so it needs no ARIA roles of its own.</p>
+            <ul class="a11y-list">
+                @for (item of a11yItems; track item.title) {
+                    <li class="a11y-item">
+                        <div class="a11y-icon"><i [class]="'ph ph-' + item.icon"></i></div>
+                        <div class="a11y-body">
+                            <div class="a11y-title">{{ item.title }}</div>
+                            <div class="a11y-desc">{{ item.body }}</div>
+                        </div>
+                    </li>
+                }
+            </ul>
+        </section>
+
+        <!-- Prev / Next -->
+        <nav class="cp-prevnext">
+            <a routerLink="/code-block" class="cp-prevnext-item">
+                <span class="cp-prevnext-dir">← PREVIOUS</span>
+                <span class="cp-prevnext-label">Code Block</span>
+            </a>
+            <a routerLink="/tree" class="cp-prevnext-item cp-prevnext-item--right">
+                <span class="cp-prevnext-dir">NEXT →</span>
+                <span class="cp-prevnext-label cp-prevnext-label--accent">Tree</span>
+            </a>
+        </nav>
+
+    </main>
+
+    <app-toc [items]="tocItems" />
+
+</div>

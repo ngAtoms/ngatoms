@@ -1,0 +1,80 @@
+<div
+  class="nga-color-picker__area"
+  [style.background-color]="hueColor()"
+  (pointerdown)="onAreaPointer($event, true)"
+  (pointermove)="onAreaPointer($event, false)"
+  (pointerup)="onPointerEnd($event)"
+  (pointercancel)="onPointerEnd($event)"
+>
+  <div
+    class="nga-color-picker__area-thumb"
+    role="slider"
+    aria-label="Saturation and brightness"
+    aria-valuemin="0"
+    aria-valuemax="100"
+    [attr.aria-valuenow]="saturationPercent()"
+    [attr.aria-valuetext]="'Saturation ' + saturationPercent() + '%, brightness ' + brightnessPercent() + '%'"
+    [attr.aria-disabled]="disabled() || null"
+    [attr.tabindex]="disabled() ? -1 : 0"
+    [style.left.%]="hsv().s * 100"
+    [style.top.%]="(1 - hsv().v) * 100"
+    [style.background-color]="value()"
+    (keydown)="onAreaKeydown($event)"
+  ></div>
+</div>
+
+<div
+  class="nga-color-picker__hue"
+  (pointerdown)="onHuePointer($event, true)"
+  (pointermove)="onHuePointer($event, false)"
+  (pointerup)="onPointerEnd($event)"
+  (pointercancel)="onPointerEnd($event)"
+>
+  <div
+    class="nga-color-picker__hue-thumb"
+    role="slider"
+    aria-label="Hue"
+    aria-orientation="horizontal"
+    aria-valuemin="0"
+    aria-valuemax="360"
+    [attr.aria-valuenow]="hueDegrees()"
+    [attr.aria-valuetext]="hueDegrees() + ' degrees'"
+    [attr.aria-disabled]="disabled() || null"
+    [attr.tabindex]="disabled() ? -1 : 0"
+    [style.left.%]="(hsv().h / 360) * 100"
+    [style.background-color]="hueColor()"
+    (keydown)="onHueKeydown($event)"
+  ></div>
+</div>
+
+<div class="nga-color-picker__row">
+  <span class="nga-color-picker__preview" aria-hidden="true" [style.background-color]="value()"></span>
+  <input
+    class="nga-color-picker__hex"
+    type="text"
+    spellcheck="false"
+    autocomplete="off"
+    maxlength="7"
+    aria-label="Hex color"
+    [value]="value()"
+    [disabled]="disabled()"
+    (change)="onHexChange($event)"
+  />
+</div>
+
+@if (swatches().length) {
+  <div class="nga-color-picker__swatches" role="group" aria-label="Preset colors">
+    @for (swatch of swatches(); track swatch) {
+      <button
+        type="button"
+        class="nga-color-picker__swatch"
+        [class.nga-color-picker__swatch--selected]="isSelected(swatch)"
+        [style.background-color]="swatch"
+        [disabled]="disabled()"
+        [attr.aria-label]="swatch"
+        [attr.aria-pressed]="isSelected(swatch)"
+        (click)="setHex(swatch)"
+      ></button>
+    }
+  </div>
+}

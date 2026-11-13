@@ -1,0 +1,170 @@
+<div class="cp-layout">
+
+    <main class="cp-main">
+
+        <header class="cp-header">
+            <div class="cp-eyebrow">Components / Feedback</div>
+            <h1 class="cp-title">Skeleton</h1>
+            <p class="cp-lede">
+                A placeholder that holds the shape of content while it loads.
+                Three variants cover most layouts; size them with plain CSS.
+            </p>
+            <div class="cp-chips">
+                <span ngAtomsBadge variant="default"><i class="ph ph-angular-logo"></i> ngAtoms v1.0+</span>
+                <span ngAtomsBadge variant="default"><i class="ph ph-package"></i> ngatoms add skeleton</span>
+                <span ngAtomsBadge variant="warning"><i class="ph ph-flask"></i> Alpha</span>
+                <a ngAtomsBadge variant="outline" href="https://github.com/ngAtoms/ngatoms/tree/rc/packages/primitives/src/skeleton" target="_blank" rel="noopener noreferrer">
+                    <i class="ph ph-arrow-square-out"></i> Source
+                </a>
+            </div>
+        </header>
+
+        <!-- Hero preview -->
+        <preview-card>
+            <ng-container preview>
+                <div class="sk-card">
+                    <span ngAtomsSkeleton variant="circle"></span>
+                    <div class="sk-lines">
+                        <span ngAtomsSkeleton style="width: 55%"></span>
+                        <span ngAtomsSkeleton style="width: 90%"></span>
+                    </div>
+                </div>
+            </ng-container>
+            <ng-container code>
+                <app-code-block [code]="heroCode" language="html" />
+            </ng-container>
+        </preview-card>
+
+        <!-- Usage -->
+        <section id="usage">
+            <h2 class="cp-h2">Usage</h2>
+            <p class="cp-p">Add the skeleton to your project and import it wherever you need it.</p>
+            <div class="inline-terminal">
+                <span class="inline-terminal-dollar">$</span>
+                <span class="inline-terminal-cmd">ngatoms add skeleton</span>
+            </div>
+            <p class="cp-p" style="margin-top: 14px;">Then import into your component:</p>
+            <app-code-block [code]="usageCode" language="typescript" />
+        </section>
+
+        <!-- Variants -->
+        <section id="variants">
+            <h2 class="cp-h2">Variants</h2>
+            <p class="cp-p">
+                <strong>text</strong> follows the font size of its container, <strong>circle</strong> suits avatars,
+                and <strong>rect</strong> stands in for images and cards.
+            </p>
+            <preview-card>
+                <ng-container preview>
+                    <div class="demo-col">
+                        <div class="demo-row"><span class="demo-label">text</span><span ngAtomsSkeleton variant="text" style="width: 240px"></span></div>
+                        <div class="demo-row"><span class="demo-label">circle</span><span ngAtomsSkeleton variant="circle"></span></div>
+                        <div class="demo-row"><span class="demo-label">rect</span><span ngAtomsSkeleton variant="rect" style="width: 240px"></span></div>
+                    </div>
+                </ng-container>
+                <ng-container code>
+                    <app-code-block [code]="codeVariants" language="html" />
+                </ng-container>
+            </preview-card>
+        </section>
+
+        <!-- Sizing -->
+        <section id="sizing">
+            <h2 class="cp-h2">Sizing</h2>
+            <p class="cp-p">
+                Set <code class="cp-code">width</code> and <code class="cp-code">height</code> with a class or inline style.
+                The skeleton never guesses the size of the content it replaces.
+            </p>
+            <preview-card>
+                <ng-container preview>
+                    <div class="demo-row">
+                        <span ngAtomsSkeleton variant="circle" style="width: 64px; height: 64px"></span>
+                        <span ngAtomsSkeleton variant="rect" style="width: 160px; height: 64px"></span>
+                        <span ngAtomsSkeleton variant="rect" style="width: 96px; height: 64px"></span>
+                    </div>
+                </ng-container>
+                <ng-container code>
+                    <app-code-block [code]="codeSizing" language="html" />
+                </ng-container>
+            </preview-card>
+        </section>
+
+        <!-- Static -->
+        <section id="static">
+            <h2 class="cp-h2">Static</h2>
+            <p class="cp-p">
+                Pass <code class="cp-code">[animated]="false"</code> to drop the shimmer.
+                It is also dropped automatically when the user prefers reduced motion.
+            </p>
+            <preview-card>
+                <ng-container preview>
+                    <div class="sk-lines" style="width: 280px">
+                        <span ngAtomsSkeleton [animated]="false" style="width: 70%"></span>
+                        <span ngAtomsSkeleton [animated]="false"></span>
+                        <span ngAtomsSkeleton [animated]="false" style="width: 40%"></span>
+                    </div>
+                </ng-container>
+                <ng-container code>
+                    <app-code-block [code]="codeStatic" language="html" />
+                </ng-container>
+            </preview-card>
+        </section>
+
+        <!-- API -->
+        <section id="api">
+            <h2 class="cp-h2">API</h2>
+            @for (group of propGroups; track group.target) {
+                <p class="cp-p">{{ group.kind }} on <code class="cp-code">{{ group.target }}</code>.</p>
+                <div class="props-table">
+                    <div class="props-table-header">
+                        <span>Prop</span>
+                        <span>Type</span>
+                        <span>Default</span>
+                        <span>Description</span>
+                    </div>
+                    @for (prop of group.props; track prop.name) {
+                        <div class="props-table-row">
+                            <code class="props-name">{{ prop.name }}</code>
+                            <code class="props-type">{{ prop.type }}</code>
+                            <code class="props-default">{{ prop.defaultVal }}</code>
+                            <span class="props-desc">{{ prop.description }}</span>
+                        </div>
+                    }
+                </div>
+            }
+        </section>
+
+        <!-- Accessibility -->
+        <section id="a11y">
+            <h2 class="cp-h2">Accessibility</h2>
+            <p class="cp-p">Skeletons are decorative, so they are hidden from assistive technology.</p>
+            <ul class="a11y-list">
+                @for (item of a11yItems; track item.title) {
+                    <li class="a11y-item">
+                        <div class="a11y-icon"><i [class]="'ph ph-' + item.icon"></i></div>
+                        <div class="a11y-body">
+                            <div class="a11y-title">{{ item.title }}</div>
+                            <div class="a11y-desc">{{ item.body }}</div>
+                        </div>
+                    </li>
+                }
+            </ul>
+        </section>
+
+        <!-- Prev / Next -->
+        <nav class="cp-prevnext">
+            <a routerLink="/progress" class="cp-prevnext-item">
+                <span class="cp-prevnext-dir">← PREVIOUS</span>
+                <span class="cp-prevnext-label">Progress</span>
+            </a>
+            <a routerLink="/spinner" class="cp-prevnext-item cp-prevnext-item--right">
+                <span class="cp-prevnext-dir">NEXT →</span>
+                <span class="cp-prevnext-label cp-prevnext-label--accent">Spinner</span>
+            </a>
+        </nav>
+
+    </main>
+
+    <app-toc [items]="tocItems" />
+
+</div>

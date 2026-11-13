@@ -134,11 +134,11 @@ npm run status:changesets
 
 ## Adding a New Component
 
-New components live in `packages/primitives/src/lib/<component-name>/`.
+New components live in `packages/primitives/src/<component-name>/`.
 
 1. **Create the component** following the structure of an existing component (e.g., `button` or `checkbox`).
 2. **Export it** from `packages/primitives/src/index.ts`.
-3. **Register it** in `registry/registry.json` with the appropriate metadata.
+3. **Register it** in `registry/registry.json` with the appropriate metadata. If it imports from another component (e.g. `overlay`), list that component under `registryDependencies` so the CLI installs it too.
 4. **Add a docs page** under `apps/docs/src/app/pages/<component-name>/`.
 5. **Write tests** in the component directory.
 6. **Run a changeset** with a `minor` bump for `@ngatoms/ngatoms-primitives` and `ngatoms`.

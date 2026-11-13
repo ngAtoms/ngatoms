@@ -1,0 +1,27 @@
+<div
+  #track
+  class="nga-slider__track"
+  (pointerdown)="onPointerDown($event)"
+  (pointermove)="onPointerMove($event)"
+  (pointerup)="onPointerUp($event)"
+  (pointercancel)="onPointerUp($event)"
+>
+  <div class="nga-slider__rail">
+    <div class="nga-slider__fill" [style.left.%]="fillStart()" [style.width.%]="fillWidth()"></div>
+  </div>
+  @for (thumb of thumbs(); track thumb.index) {
+    <div
+      class="nga-slider__thumb"
+      role="slider"
+      aria-orientation="horizontal"
+      [style.left.%]="thumb.percent"
+      [attr.tabindex]="disabled() ? -1 : 0"
+      [attr.aria-label]="thumb.label"
+      [attr.aria-valuemin]="thumb.min"
+      [attr.aria-valuemax]="thumb.max"
+      [attr.aria-valuenow]="thumb.value"
+      [attr.aria-disabled]="disabled() || null"
+      (keydown)="onKeydown($event, thumb)"
+    ></div>
+  }
+</div>

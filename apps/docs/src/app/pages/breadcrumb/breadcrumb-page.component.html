@@ -1,0 +1,159 @@
+<div class="cp-layout">
+
+    <main class="cp-main">
+
+        <header class="cp-header">
+            <div class="cp-eyebrow">Components / Navigation</div>
+            <h1 class="cp-title">Breadcrumb</h1>
+            <p class="cp-lede">
+                Shows where the current page sits in the hierarchy and links back up it.
+                Built from plain directives on your own <code class="cp-code">nav</code>, <code class="cp-code">ol</code>, and <code class="cp-code">a</code> elements.
+            </p>
+            <div class="cp-chips">
+                <span ngAtomsBadge variant="default"><i class="ph ph-angular-logo"></i> ngAtoms v1.0+</span>
+                <span ngAtomsBadge variant="default"><i class="ph ph-package"></i> ngatoms add breadcrumb</span>
+                <span ngAtomsBadge variant="warning"><i class="ph ph-flask"></i> Alpha</span>
+                <a ngAtomsBadge variant="outline" href="https://github.com/ngAtoms/ngatoms/tree/rc/packages/primitives/src/breadcrumb" target="_blank" rel="noopener noreferrer">
+                    <i class="ph ph-arrow-square-out"></i> Source
+                </a>
+            </div>
+        </header>
+
+        <!-- Hero preview -->
+        <preview-card>
+            <ng-container preview>
+                <nav ngAtomsBreadcrumb>
+                    <ol ngAtomsBreadcrumbList>
+                        <li ngAtomsBreadcrumbItem><a ngAtomsBreadcrumbLink routerLink="/get-started">Docs</a></li>
+                        <li ngAtomsBreadcrumbSeparator></li>
+                        <li ngAtomsBreadcrumbItem><a ngAtomsBreadcrumbLink routerLink="/button">Components</a></li>
+                        <li ngAtomsBreadcrumbSeparator></li>
+                        <li ngAtomsBreadcrumbItem><span ngAtomsBreadcrumbPage>Breadcrumb</span></li>
+                    </ol>
+                </nav>
+            </ng-container>
+            <ng-container code>
+                <app-code-block [code]="heroCode" language="html" />
+            </ng-container>
+        </preview-card>
+
+        <!-- Usage -->
+        <section id="usage">
+            <h2 class="cp-h2">Usage</h2>
+            <p class="cp-p">Add the breadcrumb to your project and import it wherever you need it.</p>
+            <div class="inline-terminal">
+                <span class="inline-terminal-dollar">$</span>
+                <span class="inline-terminal-cmd">ngatoms add breadcrumb</span>
+            </div>
+            <p class="cp-p" style="margin-top: 14px;">Then import into your component:</p>
+            <app-code-block [code]="usageCode" language="typescript" />
+        </section>
+
+        <!-- Custom separator -->
+        <section id="separator">
+            <h2 class="cp-h2">Custom separator</h2>
+            <p class="cp-p">
+                An empty separator renders a slash. Put anything inside it — an icon, a character — to replace it.
+            </p>
+            <preview-card>
+                <ng-container preview>
+                    <nav ngAtomsBreadcrumb>
+                        <ol ngAtomsBreadcrumbList>
+                            <li ngAtomsBreadcrumbItem><a ngAtomsBreadcrumbLink routerLink="/get-started"><i class="ph ph-house"></i> Home</a></li>
+                            <li ngAtomsBreadcrumbSeparator><i class="ph ph-caret-right"></i></li>
+                            <li ngAtomsBreadcrumbItem><a ngAtomsBreadcrumbLink routerLink="/button">Settings</a></li>
+                            <li ngAtomsBreadcrumbSeparator><i class="ph ph-caret-right"></i></li>
+                            <li ngAtomsBreadcrumbItem><span ngAtomsBreadcrumbPage>Billing</span></li>
+                        </ol>
+                    </nav>
+                </ng-container>
+                <ng-container code>
+                    <app-code-block [code]="codeSeparator" language="html" />
+                </ng-container>
+            </preview-card>
+        </section>
+
+        <!-- Collapsed -->
+        <section id="collapsed">
+            <h2 class="cp-h2">Collapsed</h2>
+            <p class="cp-p">
+                For deep hierarchies, replace the middle levels with <code class="cp-code">ngAtomsBreadcrumbEllipsis</code>.
+            </p>
+            <preview-card>
+                <ng-container preview>
+                    <nav ngAtomsBreadcrumb>
+                        <ol ngAtomsBreadcrumbList>
+                            <li ngAtomsBreadcrumbItem><a ngAtomsBreadcrumbLink routerLink="/get-started">Home</a></li>
+                            <li ngAtomsBreadcrumbSeparator></li>
+                            <li ngAtomsBreadcrumbItem><span ngAtomsBreadcrumbEllipsis></span></li>
+                            <li ngAtomsBreadcrumbSeparator></li>
+                            <li ngAtomsBreadcrumbItem><a ngAtomsBreadcrumbLink routerLink="/button">Invoices</a></li>
+                            <li ngAtomsBreadcrumbSeparator></li>
+                            <li ngAtomsBreadcrumbItem><span ngAtomsBreadcrumbPage>INV-2041</span></li>
+                        </ol>
+                    </nav>
+                </ng-container>
+                <ng-container code>
+                    <app-code-block [code]="codeCollapsed" language="html" />
+                </ng-container>
+            </preview-card>
+        </section>
+
+        <!-- API -->
+        <section id="api">
+            <h2 class="cp-h2">API</h2>
+            @for (group of propGroups; track group.target) {
+                <p class="cp-p">{{ group.kind }} on <code class="cp-code">{{ group.target }}</code>.</p>
+                <div class="props-table">
+                    <div class="props-table-header">
+                        <span>Prop</span>
+                        <span>Type</span>
+                        <span>Default</span>
+                        <span>Description</span>
+                    </div>
+                    @for (prop of group.props; track prop.name) {
+                        <div class="props-table-row">
+                            <code class="props-name">{{ prop.name }}</code>
+                            <code class="props-type">{{ prop.type }}</code>
+                            <code class="props-default">{{ prop.defaultVal }}</code>
+                            <span class="props-desc">{{ prop.description }}</span>
+                        </div>
+                    }
+                </div>
+            }
+        </section>
+
+        <!-- Accessibility -->
+        <section id="a11y">
+            <h2 class="cp-h2">Accessibility</h2>
+            <p class="cp-p">The markup follows the WAI-ARIA breadcrumb pattern.</p>
+            <ul class="a11y-list">
+                @for (item of a11yItems; track item.title) {
+                    <li class="a11y-item">
+                        <div class="a11y-icon"><i [class]="'ph ph-' + item.icon"></i></div>
+                        <div class="a11y-body">
+                            <div class="a11y-title">{{ item.title }}</div>
+                            <div class="a11y-desc">{{ item.body }}</div>
+                        </div>
+                    </li>
+                }
+            </ul>
+        </section>
+
+        <!-- Prev / Next -->
+        <nav class="cp-prevnext">
+            <a routerLink="/accordion" class="cp-prevnext-item">
+                <span class="cp-prevnext-dir">← PREVIOUS</span>
+                <span class="cp-prevnext-label">Accordion</span>
+            </a>
+            <a routerLink="/pagination" class="cp-prevnext-item cp-prevnext-item--right">
+                <span class="cp-prevnext-dir">NEXT →</span>
+                <span class="cp-prevnext-label cp-prevnext-label--accent">Pagination</span>
+            </a>
+        </nav>
+
+    </main>
+
+    <app-toc [items]="tocItems" />
+
+</div>

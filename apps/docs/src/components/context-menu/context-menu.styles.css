@@ -1,0 +1,58 @@
+/* =============================================================
+   NgAtoms Context Menu — context-menu.styles.css
+   Import once in your global styles.css:
+     @import '@/path/to/context-menu.styles.css';
+
+   The panel and its items reuse the dropdown-menu styles, so
+   dropdown-menu.styles.css must be imported as well (the CLI
+   adds it for you as a dependency).
+   ============================================================= */
+
+/* ── Host ───────────────────────────────────────────────────── */
+.nga-context-menu-root {
+  display: contents;
+}
+
+/* ── Trigger area ───────────────────────────────────────────── */
+.nga-context-menu-trigger {
+  /* Long-press opens the menu on touch devices instead of the OS callout */
+  -webkit-touch-callout: none;
+}
+
+.nga-context-menu-trigger:focus-visible {
+  outline: none;
+  box-shadow: var(--nga-glow-ember, 0 0 0 4px rgba(26, 26, 26, 0.16));
+}
+
+/* ── Panel ──────────────────────────────────────────────────── */
+/* Fades and scales from the pointer, in and out. `allow-discrete` keeps
+   the panel rendered until the exit transition has finished. */
+.nga-context-menu-panel {
+  outline: none;
+  opacity: 0;
+  transform: scale(0.94);
+  transform-origin: top left;
+  transition:
+    opacity var(--nga-dur-base, 180ms) var(--nga-ease-out, ease),
+    transform var(--nga-dur-base, 180ms) var(--nga-ease-out, ease),
+    display var(--nga-dur-base, 180ms) allow-discrete;
+}
+
+.nga-context-menu-panel.nga-dropdown-panel--open {
+  opacity: 1;
+  transform: none;
+}
+
+@starting-style {
+  .nga-context-menu-panel.nga-dropdown-panel--open {
+    opacity: 0;
+    transform: scale(0.94);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nga-context-menu-panel {
+    transform: none;
+    transition-duration: 1ms;
+  }
+}

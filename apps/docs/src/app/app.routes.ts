@@ -117,4 +117,79 @@ export const routes: Routes = [
     loadComponent: () =>
       import('./pages/dropdown-menu/dropdown-menu-page.component').then(m => m.DropdownMenuPageComponent),
   },
+  {
+    path: 'skeleton',
+    loadComponent: () =>
+      import('./pages/skeleton/skeleton-page.component').then(m => m.SkeletonPageComponent),
+  },
+  {
+    path: 'breadcrumb',
+    loadComponent: () =>
+      import('./pages/breadcrumb/breadcrumb-page.component').then(m => m.BreadcrumbPageComponent),
+  },
+  {
+    path: 'timeline',
+    loadComponent: () =>
+      import('./pages/timeline/timeline-page.component').then(m => m.TimelinePageComponent),
+  },
+  {
+    path: 'rating',
+    loadComponent: () =>
+      import('./pages/rating/rating-page.component').then(m => m.RatingPageComponent),
+  },
+  {
+    path: 'pagination',
+    loadComponent: () =>
+      import('./pages/pagination/pagination-page.component').then(m => m.PaginationPageComponent),
+  },
+  {
+    path: 'stepper',
+    loadComponent: () =>
+      import('./pages/stepper/stepper-page.component').then(m => m.StepperPageComponent),
+  },
+  {
+    path: 'slider',
+    loadComponent: () =>
+      import('./pages/slider/slider-page.component').then(m => m.SliderPageComponent),
+  },
+  {
+    path: 'tag-input',
+    loadComponent: () =>
+      import('./pages/tag-input/tag-input-page.component').then(m => m.TagInputPageComponent),
+  },
+  {
+    path: 'file-upload',
+    loadComponent: () =>
+      import('./pages/file-upload/file-upload-page.component').then(m => m.FileUploadPageComponent),
+  },
+  {
+    path: 'drawer',
+    loadComponent: () =>
+      import('./pages/drawer/drawer-page.component').then(m => m.DrawerPageComponent),
+  },
+  {
+    path: 'context-menu',
+    loadComponent: () =>
+      import('./pages/context-menu/context-menu-page.component').then(m => m.ContextMenuPageComponent),
+  },
+  {
+    path: 'combobox',
+    loadComponent: () =>
+      import('./pages/combobox/combobox-page.component').then(m => m.ComboboxPageComponent),
+  },
+  {
+    path: 'color-picker',
+    loadComponent: () =>
+      import('./pages/color-picker/color-picker-page.component').then(m => m.ColorPickerPageComponent),
+  },
+  {
+    path: 'tree',
+    loadComponent: () =>
+      import('./pages/tree/tree-page.component').then(m => m.TreePageComponent),
+  },
+  {
+    path: 'code-block',
+    loadComponent: () =>
+      import('./pages/code-block/code-block-page.component').then(m => m.CodeBlockPageComponent),
+  },
 ];

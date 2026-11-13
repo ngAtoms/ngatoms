@@ -1,0 +1,222 @@
+/* =============================================================
+   NgAtoms Combobox — combobox.styles.css
+   Import once in your global styles.css:
+     @import '@/path/to/combobox.styles.css';
+   ============================================================= */
+
+:root {
+  --nga-combobox-radius:       var(--nga-radius-md, 6px);
+  --nga-combobox-border:       var(--nga-color-border, #CCCCCC);
+  --nga-combobox-border-hover: var(--nga-color-primary, #1A1A1A);
+  --nga-combobox-bg:           var(--nga-color-background, #F7F8FA);
+  --nga-combobox-fg:           var(--nga-color-foreground, #1A1A1A);
+  --nga-combobox-placeholder:  var(--nga-color-muted-foreground, #6E6E6E);
+  --nga-combobox-invalid:      var(--nga-color-destructive, #1A1A1A);
+  --nga-combobox-transition:   border-color var(--nga-dur-base, 180ms) var(--nga-ease-out, ease), box-shadow var(--nga-dur-base, 180ms) var(--nga-ease-out, ease);
+
+  --nga-combobox-height-sm: 2rem;
+  --nga-combobox-height-md: 2.5rem;
+  --nga-combobox-height-lg: 3rem;
+
+  --nga-combobox-font-sm: var(--nga-text-xs, 12px);
+  --nga-combobox-font-md: var(--nga-text-sm, 13px);
+  --nga-combobox-font-lg: var(--nga-text-base, 15px);
+
+  /* Light — warm frosted glass */
+  --nga-combobox-panel-bg:     color-mix(in oklab, var(--nga-color-card, #F7F8FA) 78%, transparent);
+  --nga-combobox-panel-border: color-mix(in oklab, var(--nga-color-border, #CCCCCC) 55%, transparent);
+  --nga-combobox-panel-shadow: 0 8px 24px -4px rgba(26, 26, 26, 0.10), 0 2px 8px -2px rgba(26, 26, 26, 0.06);
+  --nga-combobox-panel-inset:  inset 0 1px 0 rgba(230, 230, 230, 0.85);
+  --nga-combobox-panel-blur:   blur(20px) saturate(180%);
+  --nga-combobox-panel-max-height: 16rem;
+
+  --nga-combobox-option-height:    2rem;
+  --nga-combobox-option-radius:    calc(var(--nga-radius-md, 6px) - 2px);
+  --nga-combobox-option-active-bg: color-mix(in oklab, var(--nga-color-foreground, #1A1A1A) 7%, transparent);
+}
+
+.dark {
+  /* Dark — deep frosted glass */
+  --nga-combobox-panel-bg:     color-mix(in oklab, var(--nga-color-card) 82%, transparent);
+  --nga-combobox-panel-border: color-mix(in oklab, #F7F8FA 14%, transparent);
+  --nga-combobox-panel-shadow: 0 8px 32px rgba(0, 0, 0, 0.55), 0 2px 8px rgba(0, 0, 0, 0.36);
+  --nga-combobox-panel-inset:  inset 0 1px 0 rgba(230, 230, 230, 0.07);
+  --nga-combobox-panel-blur:   blur(24px) saturate(200%) brightness(1.06);
+}
+
+/* ── Control ────────────────────────────────────────────────── */
+.nga-combobox {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  width: 100%;
+  height: var(--nga-combobox-height);
+  border: 1px solid var(--nga-combobox-border);
+  border-radius: var(--nga-combobox-radius);
+  background: var(--nga-combobox-bg);
+  color: var(--nga-combobox-fg);
+  font-size: var(--nga-combobox-font-size);
+  box-sizing: border-box;
+  transition: var(--nga-combobox-transition);
+}
+
+.nga-combobox:hover:not(.nga-combobox--disabled) {
+  border-color: var(--nga-combobox-border-hover);
+}
+
+.nga-combobox:focus-within {
+  border-color: var(--nga-color-ring, #333333);
+  box-shadow: var(--nga-glow-ember, 0 0 0 4px rgba(26, 26, 26, 0.16));
+}
+
+.nga-combobox__input {
+  flex: 1;
+  min-width: 0;
+  height: 100%;
+  padding: 0 0 0 0.75rem;
+  border: none;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  outline: none;
+}
+
+.nga-combobox__input::placeholder {
+  color: var(--nga-combobox-placeholder);
+  opacity: 1;
+}
+
+.nga-combobox__toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 2rem;
+  height: 100%;
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: var(--nga-combobox-placeholder);
+  cursor: pointer;
+}
+
+.nga-combobox__toggle svg {
+  width: 1rem;
+  height: 1rem;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.75;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  transition: transform var(--nga-dur-base, 180ms) var(--nga-ease-out, ease);
+}
+
+.nga-combobox--open .nga-combobox__toggle svg {
+  transform: rotate(180deg);
+}
+
+/* ── States ─────────────────────────────────────────────────── */
+.nga-combobox--disabled {
+  opacity: 0.5;
+}
+
+.nga-combobox--disabled .nga-combobox__input,
+.nga-combobox--disabled .nga-combobox__toggle {
+  cursor: not-allowed;
+}
+
+.nga-combobox--invalid {
+  border-color: var(--nga-combobox-invalid) !important;
+}
+
+/* ── Sizes ──────────────────────────────────────────────────── */
+.nga-combobox--sm {
+  --nga-combobox-height:    var(--nga-combobox-height-sm);
+  --nga-combobox-font-size: var(--nga-combobox-font-sm);
+}
+.nga-combobox--md {
+  --nga-combobox-height:    var(--nga-combobox-height-md);
+  --nga-combobox-font-size: var(--nga-combobox-font-md);
+}
+.nga-combobox--lg {
+  --nga-combobox-height:    var(--nga-combobox-height-lg);
+  --nga-combobox-font-size: var(--nga-combobox-font-lg);
+}
+
+/* ── Panel ──────────────────────────────────────────────────── */
+.nga-combobox-panel {
+  position: fixed;
+  z-index: 50;
+  display: none;
+  max-height: var(--nga-combobox-panel-max-height);
+  padding: 0.25rem;
+  overflow-y: auto;
+  border: 1px solid var(--nga-combobox-panel-border);
+  border-radius: var(--nga-combobox-radius);
+  background: var(--nga-combobox-panel-bg);
+  backdrop-filter: var(--nga-combobox-panel-blur);
+  -webkit-backdrop-filter: var(--nga-combobox-panel-blur);
+  box-shadow: var(--nga-combobox-panel-shadow), var(--nga-combobox-panel-inset);
+  color: var(--nga-combobox-fg);
+  font-size: var(--nga-text-sm, 13px);
+  box-sizing: border-box;
+  scrollbar-width: thin;
+}
+
+.nga-combobox-panel--open {
+  display: block;
+  animation: nga-combobox-in var(--nga-dur-fast, 120ms) var(--nga-ease-out, ease);
+}
+
+@keyframes nga-combobox-in {
+  from { opacity: 0; transform: translateY(-4px) scale(0.98); }
+  to   { opacity: 1; transform: none; }
+}
+
+/* ── Option ─────────────────────────────────────────────────── */
+.nga-combobox-option {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  min-height: var(--nga-combobox-option-height);
+  padding: 0 0.625rem;
+  border-radius: var(--nga-combobox-option-radius);
+  cursor: pointer;
+  user-select: none;
+}
+
+.nga-combobox-option--active {
+  background: var(--nga-combobox-option-active-bg);
+}
+
+.nga-combobox-option--selected {
+  font-weight: var(--nga-font-weight-medium, 500);
+}
+
+.nga-combobox-option--disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.nga-combobox-option__label {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.nga-combobox-option__check {
+  flex-shrink: 0;
+  width: 0.875rem;
+  height: 0.875rem;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.nga-combobox-empty {
+  padding: 0.5rem 0.625rem;
+  color: var(--nga-combobox-placeholder);
+}

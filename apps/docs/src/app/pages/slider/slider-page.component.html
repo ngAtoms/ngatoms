@@ -1,0 +1,180 @@
+<div class="cp-layout">
+
+    <main class="cp-main">
+
+        <header class="cp-header">
+            <div class="cp-eyebrow">Components / Forms</div>
+            <h1 class="cp-title">Slider</h1>
+            <p class="cp-lede">
+                Pick a number, or a range between two numbers, by dragging a thumb along a track.
+                Bound to a signal, with min, max, and step.
+            </p>
+            <div class="cp-chips">
+                <span ngAtomsBadge variant="default"><i class="ph ph-angular-logo"></i> ngAtoms v1.0+</span>
+                <span ngAtomsBadge variant="default"><i class="ph ph-package"></i> ngatoms add slider</span>
+                <span ngAtomsBadge variant="warning"><i class="ph ph-flask"></i> Alpha</span>
+                <a ngAtomsBadge variant="outline" href="https://github.com/ngAtoms/ngatoms/tree/rc/packages/primitives/src/slider" target="_blank" rel="noopener noreferrer">
+                    <i class="ph ph-arrow-square-out"></i> Source
+                </a>
+            </div>
+        </header>
+
+        <!-- Hero preview -->
+        <preview-card>
+            <ng-container preview>
+                <div class="demo-col sl-demo">
+                    <nga-slider [(value)]="heroVal" label="Volume" />
+                    <p class="demo-note">value: {{ heroVal() }}</p>
+                </div>
+            </ng-container>
+            <ng-container code>
+                <app-code-block [code]="heroCode" language="html" />
+            </ng-container>
+        </preview-card>
+
+        <!-- Usage -->
+        <section id="usage">
+            <h2 class="cp-h2">Usage</h2>
+            <p class="cp-p">Add the slider to your project and import it wherever you need it.</p>
+            <div class="inline-terminal">
+                <span class="inline-terminal-dollar">$</span>
+                <span class="inline-terminal-cmd">ngatoms add slider</span>
+            </div>
+            <p class="cp-p" style="margin-top: 14px;">Then import into your component:</p>
+            <app-code-block [code]="usageCode" language="typescript" />
+        </section>
+
+        <!-- Range -->
+        <section id="range">
+            <h2 class="cp-h2">Range</h2>
+            <p class="cp-p">
+                Set <code class="cp-code">mode="range"</code> and bind <code class="cp-code">[(range)]</code> to a
+                <code class="cp-code">[start, end]</code> tuple. The thumbs cannot cross each other.
+            </p>
+            <preview-card>
+                <ng-container preview>
+                    <div class="demo-col sl-demo">
+                        <nga-slider mode="range" [(range)]="rangeVal" [rangeLabels]="['Minimum price', 'Maximum price']" />
+                        <p class="demo-note">range: {{ rangeVal()[0] }} – {{ rangeVal()[1] }}</p>
+                    </div>
+                </ng-container>
+                <ng-container code>
+                    <app-code-block [code]="codeRange" language="html" />
+                </ng-container>
+            </preview-card>
+        </section>
+
+        <!-- Min, max, and step -->
+        <section id="step">
+            <h2 class="cp-h2">Min, max, and step</h2>
+            <p class="cp-p">
+                <code class="cp-code">[min]</code> and <code class="cp-code">[max]</code> set the bounds.
+                <code class="cp-code">[step]</code> sets the snap increment and accepts decimals.
+            </p>
+            <preview-card>
+                <ng-container preview>
+                    <div class="demo-col sl-demo">
+                        <nga-slider [(value)]="stepVal" [min]="0" [max]="5" [step]="0.5" label="Rating" />
+                        <p class="demo-note">value: {{ stepVal() }}</p>
+                    </div>
+                </ng-container>
+                <ng-container code>
+                    <app-code-block [code]="codeStep" language="html" />
+                </ng-container>
+            </preview-card>
+        </section>
+
+        <!-- Sizes -->
+        <section id="sizes">
+            <h2 class="cp-h2">Sizes</h2>
+            <p class="cp-p">
+                Three sizes. <strong>md</strong> is the default.
+            </p>
+            <preview-card>
+                <ng-container preview>
+                    <div class="demo-col sl-demo">
+                        <div class="demo-row"><span class="demo-label">sm</span><nga-slider [(value)]="sizeVal" size="sm" style="flex: 1" /></div>
+                        <div class="demo-row"><span class="demo-label">md</span><nga-slider [(value)]="sizeVal" size="md" style="flex: 1" /></div>
+                        <div class="demo-row"><span class="demo-label">lg</span><nga-slider [(value)]="sizeVal" size="lg" style="flex: 1" /></div>
+                    </div>
+                </ng-container>
+                <ng-container code>
+                    <app-code-block [code]="codeSizes" language="html" />
+                </ng-container>
+            </preview-card>
+        </section>
+
+        <!-- Disabled -->
+        <section id="disabled">
+            <h2 class="cp-h2">Disabled</h2>
+            <p class="cp-p">
+                Pass <code class="cp-code">[disabled]="true"</code> to prevent interaction.
+            </p>
+            <preview-card>
+                <ng-container preview>
+                    <div class="sl-demo"><nga-slider [value]="30" [disabled]="true" /></div>
+                </ng-container>
+                <ng-container code>
+                    <app-code-block [code]="codeDisabled" language="html" />
+                </ng-container>
+            </preview-card>
+        </section>
+
+        <!-- API -->
+        <section id="api">
+            <h2 class="cp-h2">API</h2>
+            @for (group of propGroups; track group.target) {
+                <p class="cp-p">{{ group.kind }} on <code class="cp-code">{{ group.target }}</code>.</p>
+                <div class="props-table">
+                    <div class="props-table-header">
+                        <span>Prop</span>
+                        <span>Type</span>
+                        <span>Default</span>
+                        <span>Description</span>
+                    </div>
+                    @for (prop of group.props; track prop.name) {
+                        <div class="props-table-row">
+                            <code class="props-name">{{ prop.name }}</code>
+                            <code class="props-type">{{ prop.type }}</code>
+                            <code class="props-default">{{ prop.defaultVal }}</code>
+                            <span class="props-desc">{{ prop.description }}</span>
+                        </div>
+                    }
+                </div>
+            }
+        </section>
+
+        <!-- Accessibility -->
+        <section id="a11y">
+            <h2 class="cp-h2">Accessibility</h2>
+            <p class="cp-p">Each thumb follows the WAI-ARIA slider pattern.</p>
+            <ul class="a11y-list">
+                @for (item of a11yItems; track item.title) {
+                    <li class="a11y-item">
+                        <div class="a11y-icon"><i [class]="'ph ph-' + item.icon"></i></div>
+                        <div class="a11y-body">
+                            <div class="a11y-title">{{ item.title }}</div>
+                            <div class="a11y-desc">{{ item.body }}</div>
+                        </div>
+                    </li>
+                }
+            </ul>
+        </section>
+
+        <!-- Prev / Next -->
+        <nav class="cp-prevnext">
+            <a routerLink="/rating" class="cp-prevnext-item">
+                <span class="cp-prevnext-dir">← PREVIOUS</span>
+                <span class="cp-prevnext-label">Rating</span>
+            </a>
+            <a routerLink="/tag-input" class="cp-prevnext-item cp-prevnext-item--right">
+                <span class="cp-prevnext-dir">NEXT →</span>
+                <span class="cp-prevnext-label cp-prevnext-label--accent">Tag Input</span>
+            </a>
+        </nav>
+
+    </main>
+
+    <app-toc [items]="tocItems" />
+
+</div>
