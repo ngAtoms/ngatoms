@@ -37,38 +37,58 @@
 
 /* ── Primitives ───────────────────────────────────────────── */
 :root {
-  /* Neutrals — ink scale. Blacks stay at 80–90%. Whites are a cool frost, not pure #fff. */
-  --nga-stone-50:  #F7F8FA; /* frost paper */
-  --nga-stone-100: #F2F4F6;
-  --nga-stone-150: #E7EAEF;
-  --nga-stone-200: #D8DDE3;
-  --nga-stone-300: #B3B3B3; /* 70% */
-  --nga-stone-400: #8A8A8A; /* 54% */
-  --nga-stone-500: #6E6E6E; /* 43% */
-  --nga-stone-600: #555555; /* 33% */
-  --nga-stone-700: #404040; /* 25% */
-  --nga-stone-800: #333333; /* 80% black */
-  --nga-stone-900: #262626; /* 85% black */
-  --nga-stone-950: #1A1A1A; /* 90% black */
+  /* Neutrals — a warm scale from cream paper to ink. Cool grays would
+     read blue against the cream page. */
+  --nga-stone-50:  #FBF8F1; /* paper — cards sit a step above the page */
+  --nga-stone-100: #F3EEE3; /* cream — the page */
+  --nga-stone-150: #EAE3D4;
+  --nga-stone-200: #DDD4C1;
+  --nga-stone-300: #BDB29C;
+  --nga-stone-400: #94897A;
+  --nga-stone-500: #756C5F;
+  --nga-stone-600: #5A5349;
+  --nga-stone-700: #433E37;
+  --nga-stone-800: #33302B;
+  --nga-stone-900: #252320;
+  --nga-stone-950: #111111; /* ink */
 
-  /* Ink ramp — neutral accent. The ember name stays so existing tokens keep working. */
-  --nga-ember-50:  #F7F8FA;
-  --nga-ember-100: #E7EAEF;
-  --nga-ember-200: #B3B3B3;
-  --nga-ember-300: #8A8A8A;
-  --nga-ember-400: #555555;
-  --nga-ember-500: #333333;
-  --nga-ember-600: #262626;
-  --nga-ember-700: #1F1F1F;
-  --nga-ember-800: #1A1A1A;
-  --nga-ember-900: #141414;
+  /* Dark surfaces and their text */
+  --nga-charcoal-700: #33312D;
+  --nga-charcoal-800: #262624;
+  --nga-charcoal-900: #1E1E1C; /* charcoal — the dark page */
+  --nga-sand:         #D8CBB3;
 
-  /* Paper and status, expressed as gray steps rather than hue */
-  --nga-white:        #F7F8FA;
-  --nga-success-500:  #404040;
-  --nga-warning-500:  #6E6E6E;
-  --nga-danger-500:   #1A1A1A;
-  --nga-info-500:     #555555;
+  /* Ember — burnt orange accent ramp. 500 is the brand color; 400 is the
+     step that holds up on charcoal. */
+  --nga-ember-50:  #FDF3EC;
+  --nga-ember-100: #FBE3D6;
+  --nga-ember-200: #F8B99C;
+  --nga-ember-300: #F47F4A;
+  --nga-ember-400: #EE6A2F;
+  --nga-ember-500: #D9541E;
+  --nga-ember-600: #C4481A;
+  --nga-ember-700: #AB3D14;
+  --nga-ember-800: #8A3110;
+  --nga-ember-900: #6B260C;
+
+  /* Paper */
+  --nga-white:        #FBF8F1;
+
+  /* Status hues, spaced away from the orange accent: a golden warning and
+     a cool crimson, so neither reads as "accent". Each has a 600 for light
+     surfaces and a 400 that stays readable on charcoal. */
+  --nga-success-400:  #6CCB7A;
+  --nga-success-500:  #36934A;
+  --nga-success-600:  #2B7A3B;
+  --nga-warning-400:  #F2C230;
+  --nga-warning-500:  #C28A0A;
+  --nga-warning-600:  #94680A;
+  --nga-danger-400:   #FF6B81;
+  --nga-danger-500:   #C81E3A;
+  --nga-danger-600:   #A8182F;
+  --nga-info-400:     #7DA2FF;
+  --nga-info-500:     #2F6BFF; /* electric blue */
+  --nga-info-600:     #1F52D6;
 }
 
 /* ── Semantic: Light mode (default) ───────────────────────── */
@@ -89,12 +109,12 @@
   --nga-color-muted:                 var(--nga-stone-150);
   --nga-color-muted-foreground:      var(--nga-stone-500);
 
-  /* Accent — ink, one step off the page text */
+  /* Accent — burnt orange. Ink sits on it at 4.7:1; paper would be 3.5:1. */
   --nga-color-accent:                var(--nga-ember-500);
   --nga-color-accent-hover:          var(--nga-ember-600);
   --nga-color-accent-active:         var(--nga-ember-700);
-  --nga-color-accent-foreground:     var(--nga-white);
-  --nga-color-accent-soft:           var(--nga-stone-150);
+  --nga-color-accent-foreground:     var(--nga-stone-950);
+  --nga-color-accent-soft:           color-mix(in oklab, var(--nga-ember-500) 12%, transparent);
 
   /* Borders & rings */
   --nga-color-border:                var(--nga-stone-200);
@@ -105,17 +125,21 @@
   --nga-color-card:                  var(--nga-white);
   --nga-color-card-foreground:       var(--nga-stone-900);
 
-  /* Status */
-  --nga-color-success:               var(--nga-success-500);
+  /* Status — solid color, text on it, and a soft tint for backgrounds */
+  --nga-color-success:               var(--nga-success-600);
   --nga-color-success-foreground:    var(--nga-white);
-  --nga-color-warning:               var(--nga-warning-500);
-  --nga-color-warning-foreground:    var(--nga-stone-900);
+  --nga-color-success-soft:          color-mix(in oklab, var(--nga-success-500) 12%, transparent);
+  --nga-color-warning:               var(--nga-warning-600);
+  --nga-color-warning-foreground:    var(--nga-white);
+  --nga-color-warning-soft:          color-mix(in oklab, var(--nga-warning-500) 14%, transparent);
   --nga-color-destructive:           var(--nga-danger-500);
   --nga-color-destructive-foreground: var(--nga-white);
-  --nga-color-destructive-hover:     var(--nga-stone-800);
-  --nga-color-destructive-active:    #141414;
+  --nga-color-destructive-hover:     var(--nga-danger-600);
+  --nga-color-destructive-active:    #8C1427;
+  --nga-color-destructive-soft:      color-mix(in oklab, var(--nga-danger-500) 11%, transparent);
   --nga-color-info:                  var(--nga-info-500);
   --nga-color-info-foreground:       var(--nga-white);
+  --nga-color-info-soft:             color-mix(in oklab, var(--nga-info-500) 11%, transparent);
 
   /* Radius */
   --nga-radius-none: 0;
@@ -148,13 +172,13 @@
   --nga-shadow-md: 0 4px 10px -2px rgba(26, 26, 26, 0.08), 0 2px 4px -2px rgba(26, 26, 26, 0.04);
   --nga-shadow-lg: 0 12px 24px -6px rgba(26, 26, 26, 0.12), 0 4px 8px -4px rgba(26, 26, 26, 0.06);
   --nga-shadow-xl: 0 24px 48px -12px rgba(26, 26, 26, 0.18);
-  --nga-glow-ember:      0 0 0 4px rgba(26, 26, 26, 0.16);
-  --nga-glow-ember-soft: 0 8px 32px -8px rgba(26, 26, 26, 0.22);
+  --nga-glow-ember:      0 0 0 4px color-mix(in oklab, var(--nga-ember-500) 24%, transparent);
+  --nga-glow-ember-soft: 0 8px 32px -8px color-mix(in oklab, var(--nga-ember-500) 30%, transparent);
 
-  /* Frost — milky glass. Blur only reads when a surface sits over the page. */
+  /* Frost — warm milky glass. Blur only reads when a surface sits over the page. */
   --nga-frost-blur:        blur(22px) saturate(180%);
-  --nga-color-frost:       color-mix(in oklab, #FCFCFD 72%, transparent);
-  --nga-color-frost-strong: color-mix(in oklab, #FFFFFF 78%, transparent);
+  --nga-color-frost:       color-mix(in oklab, #FBF8F1 72%, transparent);
+  --nga-color-frost-strong: color-mix(in oklab, #FDFBF6 80%, transparent);
 
   /* Typography — families */
   --nga-font-sans:    'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
@@ -235,53 +259,57 @@
 
 /* ── Semantic: Dark mode (.dark on <html> or <body>) ──────── */
 .dark {
-  /* Surfaces */
-  --nga-color-background:            var(--nga-stone-950);
-  --nga-color-foreground:            #F5F6F8;
+  /* Surfaces — charcoal page, sand text */
+  --nga-color-background:            var(--nga-charcoal-900);
+  --nga-color-foreground:            var(--nga-sand);
 
-  /* Primary action — paper on ink */
-  --nga-color-primary:               #F5F6F8;
-  --nga-color-primary-foreground:    var(--nga-stone-950);
+  /* Primary action — sand on charcoal */
+  --nga-color-primary:               var(--nga-sand);
+  --nga-color-primary-foreground:    var(--nga-charcoal-900);
 
   /* Secondary action */
-  --nga-color-secondary:             var(--nga-stone-800);
+  --nga-color-secondary:             var(--nga-charcoal-700);
   --nga-color-secondary-foreground:  var(--nga-stone-200);
 
   /* Muted / subdued */
-  --nga-color-muted:                 var(--nga-stone-800);
-  --nga-color-muted-foreground:      var(--nga-stone-300);
+  --nga-color-muted:                 var(--nga-charcoal-700);
+  --nga-color-muted-foreground:      #A69B86;
 
-  /* Accent — light ink so it reads on a 90% black page */
-  --nga-color-accent:                var(--nga-stone-200);
-  --nga-color-accent-hover:          var(--nga-stone-100);
-  --nga-color-accent-active:         #FFFFFF;
+  /* Accent — the 400 step, so it holds up on charcoal */
+  --nga-color-accent:                var(--nga-ember-400);
+  --nga-color-accent-hover:          var(--nga-ember-300);
+  --nga-color-accent-active:         #F8946A;
   --nga-color-accent-foreground:     var(--nga-stone-950);
-  --nga-color-accent-soft:           rgba(245, 246, 248, 0.14);
+  --nga-color-accent-soft:           color-mix(in oklab, var(--nga-ember-400) 18%, transparent);
 
   /* Borders & rings */
-  --nga-color-border:                #333333;
-  --nga-color-border-strong:         #404040;
-  --nga-color-ring:                  var(--nga-stone-200);
+  --nga-color-border:                #36342F;
+  --nga-color-border-strong:         #4A4740;
+  --nga-color-ring:                  var(--nga-ember-400);
 
   /* Card / elevated surface */
-  --nga-color-card:                  var(--nga-stone-900);
-  --nga-color-card-foreground:       #F5F6F8;
+  --nga-color-card:                  var(--nga-charcoal-800);
+  --nga-color-card-foreground:       var(--nga-sand);
 
-  /* Status — lighter grays so they stay visible on the dark page */
-  --nga-color-success:               #B3B3B3;
+  /* Status — the 400 steps stay readable on the dark page */
+  --nga-color-success:               var(--nga-success-400);
   --nga-color-success-foreground:    var(--nga-stone-950);
-  --nga-color-warning:               #CCCCCC;
+  --nga-color-success-soft:          color-mix(in oklab, var(--nga-success-400) 14%, transparent);
+  --nga-color-warning:               var(--nga-warning-400);
   --nga-color-warning-foreground:    var(--nga-stone-950);
-  --nga-color-destructive:           #F5F6F8;
+  --nga-color-warning-soft:          color-mix(in oklab, var(--nga-warning-400) 14%, transparent);
+  --nga-color-destructive:           var(--nga-danger-400);
   --nga-color-destructive-foreground: var(--nga-stone-950);
-  --nga-color-destructive-hover:     #FFFFFF;
-  --nga-color-destructive-active:    var(--nga-stone-200);
-  --nga-color-info:                  #8A8A8A;
-  --nga-color-info-foreground:       #F5F6F8;
+  --nga-color-destructive-hover:     #FF8FA0;
+  --nga-color-destructive-active:    #F04560;
+  --nga-color-destructive-soft:      color-mix(in oklab, var(--nga-danger-400) 14%, transparent);
+  --nga-color-info:                  var(--nga-info-400);
+  --nga-color-info-foreground:       var(--nga-stone-950);
+  --nga-color-info-soft:             color-mix(in oklab, var(--nga-info-400) 14%, transparent);
 
   /* Frost on dark stays translucent ink */
-  --nga-color-frost:        color-mix(in oklab, var(--nga-stone-950) 74%, transparent);
-  --nga-color-frost-strong: color-mix(in oklab, var(--nga-stone-900) 82%, transparent);
+  --nga-color-frost:        color-mix(in oklab, var(--nga-charcoal-900) 74%, transparent);
+  --nga-color-frost-strong: color-mix(in oklab, var(--nga-charcoal-800) 82%, transparent);
 
   /* Shadows sit darker than the 90% black page, or they disappear into it */
   --nga-shadow-xs: 0 1px 0 rgba(0, 0, 0, 0.55);
@@ -290,6 +318,6 @@
   --nga-shadow-lg: 0 12px 24px -6px rgba(0, 0, 0, 0.66);
   --nga-shadow-xl: 0 24px 48px -12px rgba(0, 0, 0, 0.72);
   --nga-color-scrim: rgba(0, 0, 0, 0.58);
-  --nga-glow-ember:      0 0 0 4px rgba(245, 246, 248, 0.22);
-  --nga-glow-ember-soft: 0 8px 32px -8px rgba(245, 246, 248, 0.16);
+  --nga-glow-ember:      0 0 0 4px color-mix(in oklab, var(--nga-ember-400) 30%, transparent);
+  --nga-glow-ember-soft: 0 8px 32px -8px color-mix(in oklab, var(--nga-ember-400) 26%, transparent);
 }

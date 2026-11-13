@@ -6,7 +6,14 @@ import { CodeBlockComponent } from "../../../components/code-block/code-block.co
 import { TocComponent } from "../../../components/toc/toc.component";
 import { PreviewCard } from "../../../components/preview-card/preview-card";
 
-const VARIANTS = ["default", "accent", "success", "destructive"] as const;
+const VARIANTS = [
+  "default",
+  "accent",
+  "success",
+  "warning",
+  "destructive",
+  "info",
+] as const;
 
 @Component({
   selector: "app-progress-page",
@@ -40,7 +47,9 @@ export class MyComponent {}`;
   readonly variantsCode = `<nga-progress variant="default"     [value]="65" />
 <nga-progress variant="accent"      [value]="65" />
 <nga-progress variant="success"     [value]="65" />
-<nga-progress variant="destructive" [value]="65" />`;
+<nga-progress variant="warning"     [value]="65" />
+<nga-progress variant="destructive" [value]="65" />
+<nga-progress variant="info"        [value]="65" />`;
 
   readonly sizesCode = `<nga-progress variant="accent" [value]="60" size="sm" />
 <nga-progress variant="accent" [value]="60" size="md" />
@@ -49,7 +58,9 @@ export class MyComponent {}`;
   readonly indeterminateCode = `<nga-progress variant="default"     [indeterminate]="true" />
 <nga-progress variant="accent"      [indeterminate]="true" />
 <nga-progress variant="success"     [indeterminate]="true" />
-<nga-progress variant="destructive" [indeterminate]="true" />`;
+<nga-progress variant="warning"     [indeterminate]="true" />
+<nga-progress variant="destructive" [indeterminate]="true" />
+<nga-progress variant="info"        [indeterminate]="true" />`;
 
   readonly props = [
     {
@@ -66,7 +77,7 @@ export class MyComponent {}`;
     },
     {
       name: "variant",
-      type: `'default' | 'accent' | 'success' | 'destructive'`,
+      type: `'default' | 'accent' | 'success' | 'warning' | 'destructive' | 'info'`,
       defaultVal: `'default'`,
       description: "Color of the progress fill.",
     },

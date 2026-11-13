@@ -612,18 +612,13 @@ section {
 }
 
 .status-alpha {
-  background: color-mix(in srgb, var(--nga-ember-500) 12%, transparent);
-  color: var(--nga-ember-700);
-}
-
-:host-context(.dark) .status-alpha {
-  color: var(--nga-ember-400);
-  background: rgba(26, 26, 26, 0.12);
+  background: var(--nga-color-warning-soft);
+  color: var(--nga-color-warning);
 }
 
 .status-stable {
-  background: color-mix(in srgb, var(--nga-success-500) 12%, transparent);
-  color: var(--nga-success-500);
+  background: var(--nga-color-success-soft);
+  color: var(--nga-color-success);
 }
 
 .status-planned {

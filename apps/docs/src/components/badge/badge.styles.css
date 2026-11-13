@@ -19,20 +19,24 @@
   --nga-badge-default-fg:  var(--nga-stone-700, #404040);
 
   /* Variant: ember — warm accent */
-  --nga-badge-ember-bg:    var(--nga-ember-100, #E7EAEF);
+  --nga-badge-ember-bg:    color-mix(in oklab, var(--nga-ember-500, #6E6E6E) 14%, transparent);
   --nga-badge-ember-fg:    var(--nga-ember-700, #1F1F1F);
 
   /* Variant: success — green tint */
-  --nga-badge-success-bg:  #F2F4F6;
-  --nga-badge-success-fg:  #262626;
+  --nga-badge-success-bg:  var(--nga-color-success-soft, color-mix(in oklab, var(--nga-color-success, #6E6E6E) 14%, transparent));
+  --nga-badge-success-fg:  color-mix(in oklab, var(--nga-color-success, #333333) 85%, var(--nga-color-foreground, #1A1A1A));
 
   /* Variant: warning — amber tint */
-  --nga-badge-warning-bg:  #E7EAEF;
-  --nga-badge-warning-fg:  #1A1A1A;
+  --nga-badge-warning-bg:  var(--nga-color-warning-soft, color-mix(in oklab, var(--nga-color-warning, #6E6E6E) 14%, transparent));
+  --nga-badge-warning-fg:  color-mix(in oklab, var(--nga-color-warning, #333333) 85%, var(--nga-color-foreground, #1A1A1A));
 
   /* Variant: destructive — red tint */
-  --nga-badge-destructive-bg: #CCCCCC;
-  --nga-badge-destructive-fg: #1A1A1A;
+  --nga-badge-destructive-bg:  var(--nga-color-destructive-soft, color-mix(in oklab, var(--nga-color-destructive, #6E6E6E) 14%, transparent));
+  --nga-badge-destructive-fg:  color-mix(in oklab, var(--nga-color-destructive, #333333) 85%, var(--nga-color-foreground, #1A1A1A));
+
+  /* Variant: info — blue tint */
+  --nga-badge-info-bg:  var(--nga-color-info-soft, color-mix(in oklab, var(--nga-color-info, #6E6E6E) 14%, transparent));
+  --nga-badge-info-fg:  color-mix(in oklab, var(--nga-color-info, #333333) 85%, var(--nga-color-foreground, #1A1A1A));
 
   /* Variant: solid — high contrast */
   --nga-badge-solid-bg:    var(--nga-stone-900, #1A1A1A);
@@ -49,20 +53,8 @@
   --nga-badge-default-fg:  var(--nga-stone-300, #B3B3B3);
 
   /* ember */
-  --nga-badge-ember-bg:    rgba(26, 26, 26, 0.12);
+  --nga-badge-ember-bg:    color-mix(in oklab, var(--nga-ember-400, #8A8A8A) 16%, transparent);
   --nga-badge-ember-fg:    var(--nga-ember-300, #8A8A8A);
-
-  /* success */
-  --nga-badge-success-bg:  rgba(26, 26, 26, 0.10);
-  --nga-badge-success-fg:  #8A8A8A;
-
-  /* warning */
-  --nga-badge-warning-bg:  rgba(26, 26, 26, 0.14);
-  --nga-badge-warning-fg:  #B3B3B3;
-
-  /* destructive */
-  --nga-badge-destructive-bg: rgba(26, 26, 26, 0.18);
-  --nga-badge-destructive-fg: #F7F8FA;
 
   /* solid */
   --nga-badge-solid-bg:    var(--nga-stone-100, #F2F4F6);
@@ -114,6 +106,11 @@
 .nga-badge--destructive {
   background: var(--nga-badge-destructive-bg);
   color: var(--nga-badge-destructive-fg);
+}
+
+.nga-badge--info {
+  background: var(--nga-badge-info-bg);
+  color: var(--nga-badge-info-fg);
 }
 
 .nga-badge--solid {
