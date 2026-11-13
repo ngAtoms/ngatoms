@@ -160,3 +160,39 @@ export function buildColumnModel<T>(
 
   return { columns, indexById, panes, headerDepth };
 }
+
+/** Share of the viewport width that pinned columns may cover before they are released. */
+export const MAX_PINNED_SHARE = 0.6;
+
+/** Returns the column tree with the pins on the given sides removed. */
+export function unpinColumns<T>(nodes: GridColumnNode<T>[], sides: ReadonlySet<GridColumnPin>): GridColumnNode<T>[] {
+  return nodes.map(node => {
+    if (isColumnGroup(node)) return { ...node, children: unpinColumns(node.children, sides) };
+    return node.pinned && sides.has(node.pinned) ? { ...node, pinned: undefined } : node;
+  });
+}
+
+/**
+ * Builds the column model for a viewport of the given width.
+ *
+ * Pinned columns that would cover more than {@link MAX_PINNED_SHARE} of the
+ * viewport are released, so a narrow container always keeps room to scroll:
+ * the right side goes first, and the left side too when it alone is too wide.
+ *
+ * @param nodes Column groups and leaf columns, as declared by the app.
+ * @param viewportWidth Width of the scroll viewport in px; `0` means not measured yet.
+ * @param widths User-resized widths by column id.
+ */
+export function fitColumnModel<T>(
+  nodes: GridColumnNode<T>[],
+  viewportWidth: number,
+  widths?: ReadonlyMap<string, number>,
+): GridColumnModel<T> {
+  const model = buildColumnModel(nodes, widths);
+  const { left, right } = model.panes;
+  const budget = viewportWidth * MAX_PINNED_SHARE;
+  if (viewportWidth <= 0 || left.width + right.width <= budget) return model;
+
+  const released: GridColumnPin[] = left.width <= budget ? ['right'] : ['left', 'right'];
+  return buildColumnModel(unpinColumns(nodes, new Set(released)), widths);
+}

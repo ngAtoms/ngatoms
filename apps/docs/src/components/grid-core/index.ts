@@ -10,3 +10,5 @@ export * from './row-model';
 export * from './format';
 export * from './filter';
 export * from './sort';
+export * from './selection';
+export * from './edit';

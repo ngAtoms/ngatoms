@@ -56,4 +56,5 @@ section { scroll-margin-top: calc(var(--nga-nav-height, 56px) + 24px); }
 .demo-label { font-family: var(--nga-font-mono); font-size: 11px; color: var(--nga-color-muted-foreground); min-width: 80px; }
 .demo-note { font-family: var(--nga-font-mono); font-size: 12px; color: var(--nga-color-muted-foreground); margin: 0; }
 
-.grid-demo { width: 620px; max-width: 100%; }
+.cp-main { max-width: 100%; }
+.grid-demo { width: 736px; max-width: 100%; min-width: 0; }

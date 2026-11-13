@@ -29,7 +29,7 @@ export interface GridRow<T = unknown> {
   kind?: GridRowKind;
   /** Which direction of a variance is good news for this row. */
   favorable?: 'higher' | 'lower';
-  /** Number format for the whole row, e.g. a ratio or headcount line. */
+  /** Number format for the whole row, e.g. a percentage line. */
   format?: GridNumberFormat;
   /**
    * Absolute position, for flat data paged by scroll: the app supplies
@@ -70,7 +70,7 @@ export interface GridColumn<T = unknown> {
   header: string;
   /**
    * Shows the hierarchy: indentation per level and the expand/collapse
-   * toggle. Usually the account or entity name column.
+   * toggle. Usually the name column.
    */
   tree?: boolean;
   /** Key of `row.data` to read. Defaults to the column id. */
@@ -138,7 +138,7 @@ export interface GridCellChange {
 /** Per-cell state, resolved by the app. */
 export interface GridCellState {
   readonly?: boolean;
-  /** Closed for input, e.g. a locked period. */
+  /** Closed for input. */
   locked?: boolean;
   /** Produced by the app's calculations; not directly editable. */
   calculated?: boolean;
@@ -158,11 +158,11 @@ export interface GridNumberFormat {
   decimals?: number;
   /** Divide before display: 1000 shows thousands, 1000000 millions. */
   scale?: number;
-  /** `parentheses` is the accounting convention: (1,234). */
+  /** `parentheses` shows negatives as (1,234). */
   negative?: 'minus' | 'parentheses';
   /** Text for a zero value, commonly '–'. */
   zero?: string;
-  /** Flip the sign for display only, e.g. revenue stored as a credit. */
+  /** Flip the sign for display only, e.g. a value stored negative but read as positive. */
   reverseSign?: boolean;
 }
 

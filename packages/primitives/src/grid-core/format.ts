@@ -1,6 +1,6 @@
 /**
  * @file Number formatting on top of `Intl.NumberFormat`:
- * accounting negatives, scaling, zero placeholders, percentages and sign
+ * negatives in parentheses, scaling, zero placeholders, percentages and sign
  * reversal, plus the favorable/unfavorable reading of a variance.
  */
 
@@ -47,7 +47,7 @@ function roundsToZero(value: number, format: GridNumberFormat): boolean {
 
 /**
  * Merges the formats that apply to a cell.
- * The row wins over the column: a ratio or headcount line dictates its
+ * The row wins over the column: a percentage line dictates its
  * own format whatever column it crosses.
  */
 export function resolveFormat<T>(row: GridRow<T>, column: GridColumn<T>): GridNumberFormat | undefined {
@@ -99,8 +99,8 @@ export function createNumberFormatter(locale?: string): GridNumberFormatter {
 
 /**
  * Reads a variance as good or bad news for a row.
- * A positive variance is favorable when higher is better (revenue) and
- * unfavorable when lower is better (costs). The raw value is judged,
+ * A positive variance is favorable when higher is better and unfavorable
+ * when lower is better. The raw value is judged,
  * before any display-only sign reversal.
  *
  * @returns The tone, or null when the value is empty, non-numeric or zero.

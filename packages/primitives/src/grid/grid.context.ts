@@ -5,7 +5,16 @@
  */
 
 import { InjectionToken } from '@angular/core';
-import { GridCellValue, GridColumn, GridHeaderCell, GridRow, GridVarianceTone, GridVisibleRow } from '../grid-core';
+import {
+  GridCellState,
+  GridCellValue,
+  GridColumn,
+  GridHeaderCell,
+  GridMove,
+  GridRow,
+  GridVarianceTone,
+  GridVisibleRow,
+} from '../grid-core';
 
 /** A row to draw, with its vertical position. */
 export interface GridRenderRow<T = unknown> {
@@ -44,6 +53,10 @@ export interface GridCellView {
   numeric: boolean;
   /** Set on variance columns when the value reads as good or bad news. */
   tone: GridVarianceTone | null;
+  /** Whether the cell accepts edits right now. */
+  editable: boolean;
+  /** State resolved by the app for this cell, if any. */
+  state: GridCellState | null;
 }
 
 /** What panes may ask of the grid. */
@@ -64,6 +77,26 @@ export interface NgAtomsGridContext<T = unknown> {
   openFilterColumn(): string | null;
   /** Opens the filter popover of a column, anchored to the given element. */
   openFilter(column: GridColumn<T>, anchor: HTMLElement): void;
+  /** Whether the cell at a display position is the active cell. */
+  isActive(row: number, col: number): boolean;
+  /** Makes a cell the active cell. */
+  activate(row: number, col: number): void;
+  /** A cell was tapped or clicked; on touch screens a second tap on the active cell edits it. */
+  tapCell(row: number, col: number): void;
+  /** Draft text of the cell when it is being edited, otherwise null. */
+  editDraft(row: number, col: number): string | null;
+  /** Whether the draft being edited was rejected as invalid. */
+  isDraftInvalid(): boolean;
+  /** Opens the editor on a cell, if it accepts edits. */
+  startEdit(row: number, col: number): void;
+  /** Replaces the draft text while editing. */
+  updateDraft(text: string): void;
+  /** Applies the draft and optionally moves the active cell; an invalid draft stays open. */
+  commitEdit(move?: GridMove): void;
+  /** Closes the editor without applying the draft. */
+  cancelEdit(): void;
+  /** Closes the editor because focus left it: applies a valid draft, discards an invalid one. */
+  leaveEdit(): void;
 }
 
 /** One entry of the set filter's list. */

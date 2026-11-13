@@ -62,7 +62,7 @@ cheap: variants are thin presets over one engine rather than forks.
 |---|---|
 | `nga-grid` | The full grid. Everything below is configuration of it. |
 | Flat table preset | No hierarchy, no editing: lists, lookups, audit logs. |
-| Tree grid preset | Hierarchical rows, read-only: summary reports and statements. |
+| Tree grid preset | Hierarchical rows, read-only: summary reports. |
 | Editable grid preset | Tree + editing + range selection + clipboard: data entry sheets. |
 
 Presets ship as documented configurations and recipes first. They only

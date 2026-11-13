@@ -5,7 +5,10 @@
   [attr.aria-label]="label() || null"
   [attr.aria-rowcount]="rowList().length + columnModel().headerDepth"
   [attr.aria-colcount]="columnModel().columns.length"
+  [attr.tabindex]="activeCell() ? -1 : 0"
   (scroll)="onScroll()"
+  (keydown)="onKeydown($event)"
+  (focusin)="onFocusIn()"
 >
   <div
     class="nga-grid__canvas"

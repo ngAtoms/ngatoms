@@ -3,7 +3,7 @@
  */
 
 import { describe, expect, it } from 'vitest';
-import { DEFAULT_COLUMN_WIDTH, DEFAULT_MIN_COLUMN_WIDTH, buildColumnModel } from './column-model';
+import { DEFAULT_COLUMN_WIDTH, DEFAULT_MIN_COLUMN_WIDTH, buildColumnModel, fitColumnModel } from './column-model';
 import { GridColumnNode } from './types';
 
 const months = (quarter: string, names: string[]): GridColumnNode => ({
@@ -12,7 +12,7 @@ const months = (quarter: string, names: string[]): GridColumnNode => ({
   children: names.map(name => ({ id: name, header: name, width: 90 })),
 });
 
-const statement: GridColumnNode[] = [
+const grouped: GridColumnNode[] = [
   { id: 'account', header: 'Account', width: 240, pinned: 'left' },
   {
     id: '2026',
@@ -27,7 +27,7 @@ const cells = (row: { key: string; colStart: number; colSpan: number; rowSpan: n
 
 describe('buildColumnModel', () => {
   it('orders leaves left pane, center, right pane', () => {
-    const model = buildColumnModel(statement);
+    const model = buildColumnModel(grouped);
     expect(model.columns.map(c => c.id)).toEqual(['account', 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'total']);
     expect(model.indexById.get('Apr')).toBe(4);
     expect(model.panes.left.columns.map(c => c.id)).toEqual(['account']);
@@ -35,14 +35,14 @@ describe('buildColumnModel', () => {
   });
 
   it('computes pane widths and offsets', () => {
-    const { panes } = buildColumnModel(statement);
+    const { panes } = buildColumnModel(grouped);
     expect(panes.left.width).toBe(240);
     expect(panes.center.width).toBe(540);
     expect(Array.from(panes.center.offsets)).toEqual([0, 90, 180, 270, 360, 450, 540]);
   });
 
   it('builds one header row per nesting level, with spans', () => {
-    const { panes, headerDepth } = buildColumnModel(statement);
+    const { panes, headerDepth } = buildColumnModel(grouped);
     expect(headerDepth).toBe(3);
     const [years, quarters, leaves] = panes.center.headerRows;
     expect(cells(years)).toEqual([['2026', 0, 6, 1]]);
@@ -54,7 +54,7 @@ describe('buildColumnModel', () => {
   });
 
   it('stretches ungrouped leaf headers down to the bottom row', () => {
-    const { panes } = buildColumnModel(statement);
+    const { panes } = buildColumnModel(grouped);
     expect(cells(panes.left.headerRows[0])).toEqual([['account', 0, 1, 3]]);
     expect(panes.left.headerRows[1]).toEqual([]);
     expect(panes.left.headerRows[2]).toEqual([]);
@@ -87,10 +87,10 @@ describe('buildColumnModel', () => {
 
   it('does not merge two separate groups that share a header text', () => {
     const { panes } = buildColumnModel([
-      { id: 'actual', header: 'Q1', children: [{ id: 'a', header: 'A' }] },
-      { id: 'budget', header: 'Q1', children: [{ id: 'b', header: 'B' }] },
+      { id: 'first', header: 'Q1', children: [{ id: 'a', header: 'A' }] },
+      { id: 'second', header: 'Q1', children: [{ id: 'b', header: 'B' }] },
     ]);
-    expect(cells(panes.center.headerRows[0])).toEqual([['actual', 0, 1, 1], ['budget', 1, 1, 1]]);
+    expect(cells(panes.center.headerRows[0])).toEqual([['first', 0, 1, 1], ['second', 1, 1, 1]]);
   });
 
   it('applies default, resized and minimum widths', () => {
@@ -114,5 +114,36 @@ describe('buildColumnModel', () => {
     expect(model.columns).toEqual([]);
     expect(model.headerDepth).toBe(1);
     expect(model.panes.center.width).toBe(0);
+  });
+});
+
+describe('fitColumnModel', () => {
+  const nodes: GridColumnNode[] = [
+    { id: 'name', header: 'Name', pinned: 'left', width: 200 },
+    { id: 'group', header: 'Group', children: [{ id: 'a', header: 'A', width: 100 }] },
+    { id: 'total', header: 'Total', pinned: 'right', width: 100 },
+  ];
+
+  it('keeps the pins while they fit the viewport', () => {
+    const model = fitColumnModel(nodes, 1000);
+    expect(model.panes.left.width).toBe(200);
+    expect(model.panes.right.width).toBe(100);
+  });
+
+  it('keeps the pins before the viewport is measured', () => {
+    expect(fitColumnModel(nodes, 0).panes.left.width).toBe(200);
+  });
+
+  it('releases the right side first', () => {
+    const model = fitColumnModel(nodes, 400);
+    expect(model.panes.left.width).toBe(200);
+    expect(model.panes.right.width).toBe(0);
+    expect(model.columns.map(column => column.id)).toEqual(['name', 'a', 'total']);
+  });
+
+  it('releases both sides when the left side alone is too wide', () => {
+    const model = fitColumnModel(nodes, 300);
+    expect(model.panes.left.width).toBe(0);
+    expect(model.panes.center.width).toBe(400);
   });
 });

@@ -6,8 +6,8 @@
             <div class="cp-eyebrow">Components / Data</div>
             <h1 class="cp-title">Grid</h1>
             <p class="cp-lede">
-                A data grid for large, structured data: hierarchical rows, multi-level column headers,
-                pinned panes, number formatting, filters, sorting, and virtualization on both axes.
+                A data grid for large, structured data: hierarchical rows, single or multi-level column headers,
+                pinned columns, number formatting, filters, sorting, cell editing, and virtualization on both axes.
                 The app owns the data — the grid displays what it is given and applies no business rules.
             </p>
             <div class="cp-chips">
@@ -24,11 +24,11 @@
             <ng-container preview>
                 <div class="grid-demo">
                     <nga-grid
-                        [rows]="statementRows"
-                        [columns]="statementColumns"
-                        [(expanded)]="statementExpanded"
+                        [rows]="salesRows"
+                        [columns]="salesColumns"
+                        [(expanded)]="salesExpanded"
                         locale="en-US"
-                        label="Income statement 2026"
+                        label="Units sold in 2026"
                     />
                 </div>
             </ng-container>
@@ -40,7 +40,7 @@
         <!-- Usage -->
         <section id="usage">
             <h2 class="cp-h2">Usage</h2>
-            <p class="cp-p">The grid is in development and not in the registry yet. This page documents what is built so far: read-only rendering, filters and sorting. Editing comes next.</p>
+            <p class="cp-p">The grid is in development and not in the registry yet. This page documents what is built so far.</p>
             <app-code-block [code]="usageCode" language="typescript" />
         </section>
 
@@ -49,12 +49,12 @@
             <h2 class="cp-h2">Simple headers</h2>
             <p class="cp-p">
                 Groups, pinning and hierarchy are all optional. A plain list of leaf columns gives a single header row,
-                which is all a ledger, a lookup or an audit list needs.
+                which is all a list, a lookup or a log needs.
             </p>
             <preview-card>
                 <ng-container preview>
                     <div class="grid-demo">
-                        <nga-grid [rows]="ledgerRows" [columns]="ledgerColumns" locale="en-US" label="Cost center ledger" style="--nga-grid-height: 20rem" />
+                        <nga-grid [rows]="stockRows" [columns]="stockColumns" locale="en-US" label="Stock by warehouse" style="--nga-grid-height: 20rem" />
                     </div>
                 </ng-container>
                 <ng-container code>
@@ -69,23 +69,23 @@
             <p class="cp-p">
                 Give a column a <code class="cp-code">filter</code> and its header shows a filter button: <strong>text</strong> and <strong>number</strong> offer conditions,
                 <strong>set</strong> lists the distinct values to tick. Mark it <code class="cp-code">sortable</code> and clicking the header cycles ascending, descending, unsorted.
-                Both are models, so the app can read, persist and restore them. Try the Account filter on the income statement at the top:
+                Both are models, so the app can read, persist and restore them. Try the Product filter on the grid at the top:
                 in a tree, the ancestors of a match stay visible, dimmed, and sorting orders siblings within each parent.
             </p>
             <preview-card [allowOverflow]="true" previewMinHeight="420px">
                 <ng-container preview>
                     <div class="grid-demo">
                         <div class="demo-row" style="margin-bottom: 12px">
-                            <p class="demo-note">{{ activeFilterCount }} active filters · sorted by {{ ledgerSort()[0]?.columnId ?? 'nothing' }} {{ ledgerSort()[0]?.direction ?? '' }}</p>
-                            <button ngAtomsButton size="sm" variant="outline" [disabled]="activeFilterCount === 0" (click)="ledgerFilters.set({})">Clear filters</button>
+                            <p class="demo-note">{{ activeFilterCount }} active filters · sorted by {{ stockSort()[0]?.columnId ?? 'nothing' }} {{ stockSort()[0]?.direction ?? '' }}</p>
+                            <button ngAtomsButton size="sm" variant="outline" [disabled]="activeFilterCount === 0" (click)="stockFilters.set({})">Clear filters</button>
                         </div>
                         <nga-grid
-                            [rows]="ledgerRows"
-                            [columns]="ledgerInteractiveColumns"
-                            [(filters)]="ledgerFilters"
-                            [(sort)]="ledgerSort"
+                            [rows]="stockRows"
+                            [columns]="stockInteractiveColumns"
+                            [(filters)]="stockFilters"
+                            [(sort)]="stockSort"
                             locale="en-US"
-                            label="Cost center ledger"
+                            label="Stock by warehouse"
                             style="--nga-grid-height: 20rem"
                         />
                     </div>
@@ -105,6 +105,38 @@
                 Filtering never recalculates a value: a parent keeps the total it was given. To show totals for the filtered rows, use external mode and return them.
             </p>
             <app-code-block [code]="codeExternal" language="typescript" />
+        </section>
+
+        <!-- Editing -->
+        <section id="editing">
+            <h2 class="cp-h2">Editing</h2>
+            <p class="cp-p">
+                Mark a column <code class="cp-code">editable</code> and its cells accept input: type to replace, <strong>Enter</strong> or <strong>F2</strong> to edit, double-click works too.
+                <strong>Enter</strong> commits and moves down, <strong>Tab</strong> commits and moves right, <strong>Escape</strong> cancels, <strong>Delete</strong> clears.
+                The grid never changes your data. It emits <code class="cp-code">(cellsChange)</code>; the app applies it, runs whatever rules it has, and passes the rows back —
+                here the app recomputes the group and total rows. <code class="cp-code">[cellState]</code> decides what each cell is: January and February are <strong>locked</strong>,
+                totals are <strong>calculated</strong>, edited cells are <strong>dirty</strong>, and a negative value is <strong>invalid</strong>.
+            </p>
+            <preview-card>
+                <ng-container preview>
+                    <div class="grid-demo">
+                        <nga-grid
+                            [rows]="planRows()"
+                            [columns]="planColumns"
+                            [(expanded)]="planExpanded"
+                            [cellState]="planCellState"
+                            (cellsChange)="onPlanChange($event)"
+                            locale="en-US"
+                            label="Planned units"
+                            style="--nga-grid-height: 22rem"
+                        />
+                        <p class="demo-note" style="margin-top: 10px">last change: {{ lastChange() }}</p>
+                    </div>
+                </ng-container>
+                <ng-container code>
+                    <app-code-block [code]="codeEditing" language="typescript" />
+                </ng-container>
+            </preview-card>
         </section>
 
         <!-- Rows and hierarchy -->
@@ -133,8 +165,8 @@
             <h2 class="cp-h2">Number formatting</h2>
             <p class="cp-p">
                 A <code class="cp-code">format</code> is declarative and display-only. Set it on a column, and override it on a row when the row dictates the format —
-                the <strong>Operating margin</strong> line above is a percentage in every column. A column flagged <code class="cp-code">variance</code> is colored by the row's <code class="cp-code">favorable</code> direction:
-                spending over budget is bad news, revenue over budget is good news.
+                the <strong>Return rate</strong> line at the top is a percentage in every column. A column flagged <code class="cp-code">variance</code> is colored by the row's <code class="cp-code">favorable</code> direction:
+                more returns than the target is bad news, more sales than the target is good news.
             </p>
             <app-code-block [code]="codeFormatting" language="typescript" />
         </section>
@@ -143,7 +175,8 @@
         <section id="density">
             <h2 class="cp-h2">Density</h2>
             <p class="cp-p">
-                <strong>compact</strong> is the default and suits dense reports. <strong>comfortable</strong> gives rows more room.
+                <strong>compact</strong> is the default and suits dense data. <strong>comfortable</strong> gives rows more room.
+                On touch screens the grid uses the comfortable row height whatever the setting, so rows and header controls stay easy to hit.
             </p>
             <preview-card>
                 <ng-container preview>
@@ -153,12 +186,12 @@
                             <button ngAtomsButton size="sm" [variant]="density() === 'comfortable' ? 'primary' : 'outline'" (click)="density.set('comfortable')">comfortable</button>
                         </div>
                         <nga-grid
-                            [rows]="statementRows"
-                            [columns]="statementColumns"
-                            [(expanded)]="statementExpanded"
+                            [rows]="salesRows"
+                            [columns]="salesColumns"
+                            [(expanded)]="salesExpanded"
                             [density]="density()"
                             locale="en-US"
-                            label="Income statement 2026"
+                            label="Units sold in 2026"
                             style="--nga-grid-height: 20rem"
                         />
                     </div>
@@ -222,7 +255,7 @@
         <!-- Accessibility -->
         <section id="a11y">
             <h2 class="cp-h2">Accessibility</h2>
-            <p class="cp-p">Keyboard navigation and the full screen-reader pass come with the next milestone. What is in place today:</p>
+            <p class="cp-p">The grid follows the WAI-ARIA grid pattern. Range selection and the full screen-reader pass are still to come.</p>
             <ul class="a11y-list">
                 @for (item of a11yItems; track item.title) {
                     <li class="a11y-item">

@@ -15,15 +15,33 @@
     @for (col of columns(); track col.column.id) {
       @if (entry.kind === 'row') {
         @let view = grid.cell(entry.row, col.column);
+        @let active = grid.isActive(item.index, col.index);
+        @let draft = grid.editDraft(item.index, col.index);
         <div
           class="nga-grid__cell"
           role="gridcell"
           [class.nga-grid__cell--number]="view.numeric"
           [class.nga-grid__cell--favorable]="view.tone === 'favorable'"
           [class.nga-grid__cell--unfavorable]="view.tone === 'unfavorable'"
+          [class.nga-grid__cell--active]="active"
+          [class.nga-grid__cell--editing]="draft !== null"
+          [class.nga-grid__cell--editable]="view.editable"
+          [class.nga-grid__cell--locked]="view.state?.locked"
+          [class.nga-grid__cell--calculated]="view.state?.calculated"
+          [class.nga-grid__cell--dirty]="view.state?.dirty"
+          [class.nga-grid__cell--invalid]="!!view.state?.invalid"
+          [class.nga-grid__cell--pending]="view.state?.pending"
+          [class.nga-grid__cell--note]="view.state?.note"
           [attr.aria-colindex]="col.index + 1"
+          [attr.aria-readonly]="view.editable ? null : true"
+          [attr.aria-invalid]="view.state?.invalid ? true : null"
+          [attr.title]="invalidMessage(view.state?.invalid)"
+          [attr.tabindex]="active ? 0 : -1"
           [style.left.px]="col.left"
           [style.width.px]="col.width"
+          (mousedown)="grid.activate(item.index, col.index)"
+          (click)="grid.tapCell(item.index, col.index)"
+          (dblclick)="grid.startEdit(item.index, col.index)"
         >
           @if (col.column.tree) {
             <span class="nga-grid__indent" [style.width.px]="indentOf(entry.level)"></span>
@@ -34,6 +52,8 @@
                 tabindex="-1"
                 [class.nga-grid__toggle--open]="entry.expanded"
                 [attr.aria-label]="entry.expanded ? 'Collapse row' : 'Expand row'"
+                (mousedown)="$event.stopPropagation()"
+                (dblclick)="$event.stopPropagation()"
                 (click)="grid.toggleRow(entry.row)"
               >
                 <svg viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M6 3.5L10.5 8 6 12.5" /></svg>
@@ -42,7 +62,24 @@
               <span class="nga-grid__toggle-spacer"></span>
             }
           }
-          <span class="nga-grid__cell-text">{{ view.text }}</span>
+          @if (draft !== null) {
+            <input
+              class="nga-grid__editor"
+              type="text"
+              autocomplete="off"
+              spellcheck="false"
+              [value]="draft"
+              [attr.aria-label]="col.column.header"
+              [attr.aria-invalid]="grid.isDraftInvalid() ? true : null"
+              (input)="onEditorInput($event)"
+              (keydown)="onEditorKeydown($event)"
+              (mousedown)="$event.stopPropagation()"
+              (dblclick)="$event.stopPropagation()"
+              (blur)="grid.leaveEdit()"
+            />
+          } @else {
+            <span class="nga-grid__cell-text">{{ view.text }}</span>
+          }
         </div>
       } @else {
         <div

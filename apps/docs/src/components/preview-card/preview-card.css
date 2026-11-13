@@ -82,6 +82,15 @@
     border-radius: var(--nga-radius-md);
     border: 1px solid var(--nga-color-border);
     padding: var(--nga-space-8);
+    max-width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+}
+
+/* On small screens the frame gives its room to the demo */
+@media (max-width: 640px) {
+    .preview-area { padding: 12px; }
+    .preview-area-content { padding: 12px; }
 }
 
 .preview-code {
