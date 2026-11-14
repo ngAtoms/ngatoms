@@ -126,17 +126,34 @@
                             [(expanded)]="planExpanded"
                             [cellState]="planCellState"
                             (cellsChange)="onPlanChange($event)"
+                            (cellsRejected)="onPlanRejected($event)"
+                            (selectionChange)="planSelection.set($event)"
                             locale="en-US"
                             label="Planned units"
                             style="--nga-grid-height: 22rem"
                         />
-                        <p class="demo-note" style="margin-top: 10px">last change: {{ lastChange() }}</p>
+                        <p class="demo-note" style="margin-top: 10px">{{ planSummary() }}</p>
+                        <p class="demo-note">last change: {{ lastChange() }}{{ planRejected() }}</p>
                     </div>
                 </ng-container>
                 <ng-container code>
                     <app-code-block [code]="codeEditing" language="typescript" />
                 </ng-container>
             </preview-card>
+        </section>
+
+        <!-- Selection, copy and paste -->
+        <section id="selection">
+            <h2 class="cp-h2">Selection, copy and paste</h2>
+            <p class="cp-p">
+                Drag, <strong>Shift+click</strong> or <strong>Shift+arrows</strong> select a block; <strong>Ctrl+A</strong> selects everything and <strong>Escape</strong> goes back to one cell.
+                <strong>Ctrl+C</strong> copies the block as tab-separated text, which is what spreadsheets read and write, and <strong>Ctrl+V</strong> pastes one: a single value fills the selection,
+                a block is laid out from its top-left corner. <strong>Delete</strong> clears the block, <strong>Ctrl+X</strong> cuts it, <strong>Ctrl+D</strong> fills the first row down.
+                Each of these is <strong>one</strong> <code class="cp-code">(cellsChange)</code> batch. <strong>Ctrl+Z</strong> and <strong>Ctrl+Y</strong> emit the opposite batch as an ordinary change, so undo goes through the same rules as an edit.
+                Try it on the grid above: the line under it sums the selection, which the app works out from <code class="cp-code">(selectionChange)</code>.
+                Pasted values that a cell cannot take are skipped and reported through <code class="cp-code">(cellsRejected)</code>. One operation touches at most 200,000 cells.
+            </p>
+            <app-code-block [code]="codeSelection" language="typescript" />
         </section>
 
         <!-- Rows and hierarchy -->
@@ -255,7 +272,7 @@
         <!-- Accessibility -->
         <section id="a11y">
             <h2 class="cp-h2">Accessibility</h2>
-            <p class="cp-p">The grid follows the WAI-ARIA grid pattern. Range selection and the full screen-reader pass are still to come.</p>
+            <p class="cp-p">The grid follows the WAI-ARIA grid pattern. The full screen-reader pass is still to come.</p>
             <ul class="a11y-list">
                 @for (item of a11yItems; track item.title) {
                     <li class="a11y-item">

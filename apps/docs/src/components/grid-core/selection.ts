@@ -1,10 +1,10 @@
 /**
- * @file Active-cell navigation: where a keyboard move lands, given the
- * current position and the size of the grid. Pure position math — focus
- * and scrolling are the renderer's concern.
+ * @file Active-cell navigation and range selection: where a keyboard move
+ * lands, and which cells a range covers. Pure position math — focus and
+ * scrolling are the renderer's concern.
  */
 
-import { GridCellPosition } from './types';
+import { GridCellPosition, GridCellRange } from './types';
 
 /** A keyboard move of the active cell. */
 export type GridMove =
@@ -91,4 +91,53 @@ export function moveForKey(key: string, withCtrl: boolean): GridMove | null {
     case 'PageDown':   return 'pageDown';
     default:           return null;
   }
+}
+
+/** A block of cells by its edges, inclusive on all four. */
+export interface GridCellRect {
+  top: number;
+  left: number;
+  bottom: number;
+  right: number;
+}
+
+/** Sides of a selection a cell sits on. */
+export type GridRectEdge = 'top' | 'right' | 'bottom' | 'left';
+
+/** The block a range covers, whichever corner the range was dragged from. */
+export function rangeRect(range: GridCellRange): GridCellRect {
+  return {
+    top: Math.min(range.start.row, range.end.row),
+    left: Math.min(range.start.col, range.end.col),
+    bottom: Math.max(range.start.row, range.end.row),
+    right: Math.max(range.start.col, range.end.col),
+  };
+}
+
+/** Whether a position falls inside a block. */
+export function rectContains(rect: GridCellRect, position: GridCellPosition): boolean {
+  return (
+    position.row >= rect.top && position.row <= rect.bottom && position.col >= rect.left && position.col <= rect.right
+  );
+}
+
+/** Number of cells in a block. */
+export function rectSize(rect: GridCellRect): number {
+  return (rect.bottom - rect.top + 1) * (rect.right - rect.left + 1);
+}
+
+/**
+ * The outer sides of a block that a cell touches, which is what a
+ * renderer needs to draw one outline around the whole block.
+ *
+ * @returns The sides, or null when the cell is outside the block.
+ */
+export function rectEdges(rect: GridCellRect, position: GridCellPosition): GridRectEdge[] | null {
+  if (!rectContains(rect, position)) return null;
+  const edges: GridRectEdge[] = [];
+  if (position.row === rect.top) edges.push('top');
+  if (position.col === rect.right) edges.push('right');
+  if (position.row === rect.bottom) edges.push('bottom');
+  if (position.col === rect.left) edges.push('left');
+  return edges;
 }

@@ -17,6 +17,7 @@
         @let view = grid.cell(entry.row, col.column);
         @let active = grid.isActive(item.index, col.index);
         @let draft = grid.editDraft(item.index, col.index);
+        @let edges = grid.selectionEdges(item.index, col.index);
         <div
           class="nga-grid__cell"
           role="gridcell"
@@ -24,6 +25,7 @@
           [class.nga-grid__cell--favorable]="view.tone === 'favorable'"
           [class.nga-grid__cell--unfavorable]="view.tone === 'unfavorable'"
           [class.nga-grid__cell--active]="active"
+          [class.nga-grid__cell--selected]="edges !== null"
           [class.nga-grid__cell--editing]="draft !== null"
           [class.nga-grid__cell--editable]="view.editable"
           [class.nga-grid__cell--locked]="view.state?.locked"
@@ -33,13 +35,16 @@
           [class.nga-grid__cell--pending]="view.state?.pending"
           [class.nga-grid__cell--note]="view.state?.note"
           [attr.aria-colindex]="col.index + 1"
+          [attr.aria-selected]="edges !== null || active ? true : null"
+          [attr.data-edges]="edges"
           [attr.aria-readonly]="view.editable ? null : true"
           [attr.aria-invalid]="view.state?.invalid ? true : null"
           [attr.title]="invalidMessage(view.state?.invalid)"
           [attr.tabindex]="active ? 0 : -1"
           [style.left.px]="col.left"
           [style.width.px]="col.width"
-          (mousedown)="grid.activate(item.index, col.index)"
+          (mousedown)="grid.pressCell(item.index, col.index, $event.shiftKey)"
+          (mouseenter)="grid.dragOverCell(item.index, col.index, $event.buttons === 1)"
           (click)="grid.tapCell(item.index, col.index)"
           (dblclick)="grid.startEdit(item.index, col.index)"
         >

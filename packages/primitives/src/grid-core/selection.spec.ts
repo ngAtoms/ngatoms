@@ -3,7 +3,7 @@
  */
 
 import { describe, expect, it } from 'vitest';
-import { clampPosition, moveForKey, movePosition } from './selection';
+import { clampPosition, moveForKey, movePosition, rangeRect, rectContains, rectEdges, rectSize } from './selection';
 
 const bounds = { rowCount: 100, columnCount: 10, pageSize: 20 };
 
@@ -61,5 +61,35 @@ describe('moveForKey', () => {
   it('ignores other keys', () => {
     expect(moveForKey('a', false)).toBeNull();
     expect(moveForKey('Enter', false)).toBeNull();
+  });
+});
+
+describe('rangeRect', () => {
+  it('orders the corners whichever way the range was dragged', () => {
+    expect(rangeRect({ start: { row: 5, col: 4 }, end: { row: 2, col: 6 } })).toEqual({ top: 2, left: 4, bottom: 5, right: 6 });
+  });
+});
+
+describe('rect helpers', () => {
+  const rect = { top: 1, left: 1, bottom: 3, right: 2 };
+
+  it('counts the cells of a block', () => {
+    expect(rectSize(rect)).toBe(6);
+  });
+
+  it('tells inside from outside', () => {
+    expect(rectContains(rect, { row: 3, col: 2 })).toBe(true);
+    expect(rectContains(rect, { row: 4, col: 2 })).toBe(false);
+  });
+
+  it('names the outer sides a cell touches', () => {
+    expect(rectEdges(rect, { row: 1, col: 1 })).toEqual(['top', 'left']);
+    expect(rectEdges(rect, { row: 2, col: 2 })).toEqual(['right']);
+    expect(rectEdges(rect, { row: 3, col: 2 })).toEqual(['right', 'bottom']);
+    expect(rectEdges(rect, { row: 0, col: 0 })).toBeNull();
+  });
+
+  it('gives a single cell all four sides', () => {
+    expect(rectEdges({ top: 0, left: 0, bottom: 0, right: 0 }, { row: 0, col: 0 })).toEqual(['top', 'right', 'bottom', 'left']);
   });
 });

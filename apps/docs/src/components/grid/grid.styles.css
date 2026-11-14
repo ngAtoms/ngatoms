@@ -28,6 +28,9 @@
   --nga-grid-unfavorable:   var(--nga-color-destructive, #C81E3A);
   --nga-grid-pin-shadow:    rgba(17, 17, 17, 0.10);
 
+  --nga-grid-selection-bg:     color-mix(in oklab, var(--nga-color-accent, #D9541E) 10%, transparent);
+  --nga-grid-selection-border: var(--nga-color-accent, #D9541E);
+
   --nga-grid-scrollbar-size:  0.75rem;
   --nga-grid-scrollbar-track: var(--nga-grid-header-bg);
   --nga-grid-scrollbar-thumb: color-mix(in oklab, var(--nga-grid-fg) 28%, var(--nga-grid-header-bg));
@@ -570,7 +573,29 @@
 
 .nga-grid__cell {
   outline: none;
+  user-select: none;
 }
+
+/* ── Range selection ────────────────────────────────────────── */
+/* The tint is an image layer, so it sits over a cell's own background
+   (locked, invalid) instead of replacing it. The outline is drawn cell
+   by cell: each one paints only the outer sides of the block it touches. */
+.nga-grid__cell--selected {
+  background-image: linear-gradient(var(--nga-grid-selection-bg), var(--nga-grid-selection-bg));
+}
+
+.nga-grid__cell--selected:not(.nga-grid__cell--active, .nga-grid__cell--invalid) {
+  box-shadow:
+    inset 0 var(--nga-grid-edge-top, 0) 0 0 var(--nga-grid-selection-border),
+    inset calc(-1 * var(--nga-grid-edge-right, 0px)) 0 0 0 var(--nga-grid-selection-border),
+    inset 0 calc(-1 * var(--nga-grid-edge-bottom, 0px)) 0 0 var(--nga-grid-selection-border),
+    inset var(--nga-grid-edge-left, 0) 0 0 0 var(--nga-grid-selection-border);
+}
+
+.nga-grid__cell[data-edges~='top']    { --nga-grid-edge-top: 1px; }
+.nga-grid__cell[data-edges~='right']  { --nga-grid-edge-right: 1px; }
+.nga-grid__cell[data-edges~='bottom'] { --nga-grid-edge-bottom: 1px; }
+.nga-grid__cell[data-edges~='left']   { --nga-grid-edge-left: 1px; }
 
 .nga-grid__cell--active {
   box-shadow: inset 0 0 0 2px var(--nga-grid-active-ring, var(--nga-color-ring, #D9541E));
@@ -703,6 +728,12 @@
   .nga-grid__viewport:focus-visible {
     outline: 2px solid Highlight;
     outline-offset: -2px;
+  }
+
+  .nga-grid__cell--selected {
+    background: Highlight;
+    color: HighlightText;
+    forced-color-adjust: none;
   }
 
   .nga-grid__cell--invalid {

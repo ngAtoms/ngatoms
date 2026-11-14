@@ -12,3 +12,6 @@ export * from './filter';
 export * from './sort';
 export * from './selection';
 export * from './edit';
+export * from './clipboard';
+export * from './history';
+export * from './batch';

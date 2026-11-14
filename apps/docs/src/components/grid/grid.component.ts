@@ -18,12 +18,16 @@ import {
   model,
   output,
   signal,
+  untracked,
   viewChild,
 } from '@angular/core';
 import { DOCUMENT } from '@angular/common';
 import {
   GridCellChange,
   GridCellPosition,
+  GridCellRect,
+  GridCellRejection,
+  GridCellResolver,
   GridCellState,
   GridCellValue,
   GridColumn,
@@ -36,15 +40,20 @@ import {
   GridMove,
   GridRow,
   GridRowId,
+  GridSelection,
   GridSort,
   applyFilters,
   buildRowTree,
   clampPosition,
+  clearChanges,
+  copyText,
   createCellChange,
+  createHistory,
   createNumberFormatter,
   createRowComparator,
   distinctValues,
   editTextOf,
+  fillDownChanges,
   fitColumnModel,
   fixedSizeRange,
   flattenRows,
@@ -55,6 +64,11 @@ import {
   movePosition,
   nextSort,
   parseCellInput,
+  parseTsv,
+  pasteChanges,
+  rangeRect,
+  rectEdges,
+  rectSize,
   resolveFormat,
   variableSizeRange,
   varianceTone,
@@ -233,6 +247,10 @@ export class NgAtomsGridComponent<T = unknown> implements NgAtomsGridContext<T> 
    * your data and pass the new rows in.
    */
   readonly cellsChange = output<GridCellChange[]>();
+  /** Pasted values that were skipped: cells that do not accept edits, or text that is not a value for the column. */
+  readonly cellsRejected = output<GridCellRejection[]>();
+  /** The selected cells changed. Null while the grid has no active cell. */
+  readonly selectionChange = output<GridSelection | null>();
 
   protected readonly scrollTop = signal(0);
   protected readonly scrollLeft = signal(0);
@@ -376,7 +394,41 @@ export class NgAtomsGridComponent<T = unknown> implements NgAtomsGridContext<T> 
     const requested = this.requestedActiveCell();
     return requested ? clampPosition(requested, this.bounds()) : null;
   });
+  /** The far corner of the selection as last set; the active cell is the near one. */
+  private readonly requestedRangeEnd = signal<GridCellPosition | null>(null);
+  private readonly rangeEnd = computed(() => {
+    const requested = this.requestedRangeEnd();
+    return requested ? clampPosition(requested, this.bounds()) : null;
+  });
+  /** The block of selected cells; a single cell when nothing was extended. */
+  private readonly selectionRect = computed<GridCellRect | null>(() => {
+    const active = this.activeCell();
+    return active ? rangeRect({ start: active, end: this.rangeEnd() ?? active }) : null;
+  });
+  /** More than the active cell is selected. */
+  private readonly hasRange = computed(() => {
+    const rect = this.selectionRect();
+    return !!rect && rectSize(rect) > 1;
+  });
+  private readonly selection = computed<GridSelection | null>(() => {
+    const active = this.activeCell();
+    const rect = this.selectionRect();
+    if (!active || !rect) return null;
+
+    const rowIds: GridRowId[] = [];
+    const list = this.rowList();
+    for (let index = rect.top; index <= rect.bottom; index++) {
+      const entry = list.get(index);
+      if (entry?.kind === 'row') rowIds.push(entry.row.id);
+    }
+    const columnIds = this.columnModel().columns.slice(rect.left, rect.right + 1).map(column => column.id);
+    return { range: { start: active, end: this.rangeEnd() ?? active }, rowIds, columnIds };
+  });
   private readonly editSession = signal<EditSession | null>(null);
+  /** Batches the user produced, for undo and redo. */
+  private readonly history = createHistory();
+  /** The mouse went down on a cell and has not been released since. */
+  private selecting = false;
   private readonly bounds = computed(() => ({
     rowCount: this.rowList().length,
     columnCount: this.columnModel().columns.length,
@@ -392,6 +444,10 @@ export class NgAtomsGridComponent<T = unknown> implements NgAtomsGridContext<T> 
 
   constructor() {
     effect(() => this.visibleRangeChange.emit(this.rowRange()));
+    effect(() => {
+      const selection = this.selection();
+      untracked(() => this.selectionChange.emit(selection));
+    });
     afterRenderEffect(() => {
       this.activeCell();
       this.editSession();
@@ -430,9 +486,35 @@ export class NgAtomsGridComponent<T = unknown> implements NgAtomsGridContext<T> 
 
   /** @inheritdoc */
   activate(row: number, col: number): void {
-    this.reactivated = this.isActive(row, col);
+    this.reactivated = this.isActive(row, col) && !this.hasRange();
+    this.requestedRangeEnd.set(null);
     this.requestedActiveCell.set({ row, col });
     this.scrollIntoView({ row, col });
+  }
+
+  /** @inheritdoc */
+  pressCell(row: number, col: number, extend: boolean): void {
+    this.selecting = true;
+    if (extend && this.activeCell()) this.extendTo({ row, col });
+    else this.activate(row, col);
+  }
+
+  /** @inheritdoc */
+  dragOverCell(row: number, col: number, pressed: boolean): void {
+    if (!pressed) this.selecting = false;
+    else if (this.selecting) this.extendTo({ row, col });
+  }
+
+  /** @inheritdoc */
+  selectionEdges(row: number, col: number): string | null {
+    const rect = this.selectionRect();
+    if (!rect || !this.hasRange()) return null;
+    return rectEdges(rect, { row, col })?.join(' ') ?? null;
+  }
+
+  /** Forgets the undo history. Call it after loading different data. */
+  clearHistory(): void {
+    this.history.clear();
   }
 
   /** @inheritdoc */
@@ -475,7 +557,7 @@ export class NgAtomsGridComponent<T = unknown> implements NgAtomsGridContext<T> 
     }
 
     const change = createCellChange(target.row, target.column, parsed.value);
-    if (change) this.cellsChange.emit([change]);
+    if (change) this.emitChanges([change]);
     this.closeEditor();
     if (move) this.moveActiveCell(move);
   }
@@ -591,8 +673,47 @@ export class NgAtomsGridComponent<T = unknown> implements NgAtomsGridContext<T> 
       return;
     }
 
-    if (this.handleTreeKey(event.key, active) || this.handleMoveKey(event, active) || this.handleEditKey(event, active)) {
-      event.preventDefault();
+    const handled =
+      this.handleTreeKey(event.key, active) ||
+      this.handleCommandKey(event) ||
+      this.handleMoveKey(event, active) ||
+      this.handleEditKey(event, active);
+    if (handled) event.preventDefault();
+  }
+
+  /** Puts the selection on the clipboard as tab-separated text. */
+  protected onCopy(event: ClipboardEvent): void {
+    const rect = this.clipboardRect(event);
+    const text = rect && copyText(rect, this.resolveCell, this.locale());
+    if (text === null) return;
+    event.clipboardData?.setData('text/plain', text);
+    event.preventDefault();
+  }
+
+  /** Copies the selection, then clears its editable cells. */
+  protected onCut(event: ClipboardEvent): void {
+    this.onCopy(event);
+    if (event.defaultPrevented) this.clearSelection();
+  }
+
+  /**
+   * Turns pasted text into one batch of changes, starting at the
+   * selection. Cells that cannot take their value are reported through
+   * `cellsRejected`, and the pasted block becomes the selection.
+   */
+  protected onPaste(event: ClipboardEvent): void {
+    const rect = this.clipboardRect(event);
+    const text = event.clipboardData?.getData('text/plain');
+    if (!rect || !text) return;
+    event.preventDefault();
+
+    const result = pasteChanges(parseTsv(text), rect, this.bounds(), this.resolveCell, this.locale());
+    if (!result) return;
+    this.emitChanges(result.changes);
+    if (result.rejected.length) this.cellsRejected.emit(result.rejected);
+    if (result.rect) {
+      this.requestedActiveCell.set({ row: result.rect.top, col: result.rect.left });
+      this.requestedRangeEnd.set({ row: result.rect.bottom, col: result.rect.right });
     }
   }
 
@@ -633,8 +754,35 @@ export class NgAtomsGridComponent<T = unknown> implements NgAtomsGridContext<T> 
   private handleMoveKey(event: KeyboardEvent, active: GridCellPosition): boolean {
     const move = moveForKey(event.key, event.ctrlKey || event.metaKey);
     if (!move) return false;
-    const next = movePosition(active, move, this.bounds());
-    if (next) this.activate(next.row, next.col);
+    const from = event.shiftKey ? (this.rangeEnd() ?? active) : active;
+    const next = movePosition(from, move, this.bounds());
+    if (next && event.shiftKey) {
+      this.extendTo(next);
+      this.scrollIntoView(next);
+    } else if (next) this.activate(next.row, next.col);
+    return true;
+  }
+
+  /**
+   * Shortcuts that act on the selection: Escape collapses it to the
+   * active cell, Ctrl+A selects everything, Ctrl+D fills down, Ctrl+Z
+   * undoes and Ctrl+Y or Ctrl+Shift+Z redoes. Cmd stands in for Ctrl.
+   *
+   * @returns Whether the key was used.
+   */
+  private handleCommandKey(event: KeyboardEvent): boolean {
+    if (event.key === 'Escape' && this.hasRange()) {
+      this.requestedRangeEnd.set(null);
+      return true;
+    }
+    if (!event.ctrlKey && !event.metaKey) return false;
+
+    const key = event.key.toLowerCase();
+    if (key === 'a') this.selectAll();
+    else if (key === 'd') this.fillDown();
+    else if (key === 'y' || (key === 'z' && event.shiftKey)) this.replay(this.history.redo());
+    else if (key === 'z') this.replay(this.history.undo());
+    else return false;
     return true;
   }
 
@@ -647,9 +795,56 @@ export class NgAtomsGridComponent<T = unknown> implements NgAtomsGridContext<T> 
   private handleEditKey(event: KeyboardEvent, active: GridCellPosition): boolean {
     if (event.key === 'Enter' || event.key === 'F2') return this.openEditor(active, null);
     if (isTypingKey(event)) return this.openEditor(active, event.key);
-    if (event.key === 'Delete' || event.key === 'Backspace') return this.clearCell(active);
+    if (event.key === 'Delete' || event.key === 'Backspace') return this.clearSelection();
     return false;
   }
+
+  /** Moves the far corner of the selection, leaving the active cell where it is. */
+  private extendTo(position: GridCellPosition): void {
+    this.reactivated = false;
+    this.requestedRangeEnd.set(position);
+  }
+
+  /** Selects every cell, from the first to the last. */
+  private selectAll(): void {
+    const { rowCount, columnCount } = this.bounds();
+    this.requestedActiveCell.set({ row: 0, col: 0 });
+    this.requestedRangeEnd.set({ row: rowCount - 1, col: columnCount - 1 });
+  }
+
+  /** Emits a batch the user produced and remembers it for undo. */
+  private emitChanges(changes: GridCellChange[]): void {
+    if (!changes.length) return;
+    this.history.record(changes);
+    this.cellsChange.emit(changes);
+  }
+
+  /** Emits a batch that comes from the history, which already holds it. */
+  private replay(changes: GridCellChange[] | null): void {
+    if (changes) this.cellsChange.emit(changes);
+  }
+
+  /** Copies the first row of the selection into the rows below it. */
+  private fillDown(): void {
+    const rect = this.selectionRect();
+    const changes = rect && fillDownChanges(rect, this.resolveCell);
+    if (changes) this.emitChanges(changes);
+  }
+
+  /**
+   * The selection a clipboard event applies to, or null when the event
+   * belongs to something else: the header, a text field, an open editor.
+   */
+  private clipboardRect(event: ClipboardEvent): GridCellRect | null {
+    const elsewhere = !!(event.target as HTMLElement).closest('.nga-grid__header, input, textarea');
+    return elsewhere || this.editSession() ? null : this.selectionRect();
+  }
+
+  /** Looks a display position up for batch edits. */
+  private readonly resolveCell: GridCellResolver<T> = position => {
+    const target = this.cellAt(position);
+    return target && { ...target, editable: this.canEdit(target) };
+  };
 
   /** The row and column at a display position, or null for a placeholder row. */
   private cellAt(position: GridCellPosition): { row: GridRow<T>; column: GridColumn<T> } | null {
@@ -688,16 +883,15 @@ export class NgAtomsGridComponent<T = unknown> implements NgAtomsGridContext<T> 
   }
 
   /**
-   * Emits a change that empties a cell.
+   * Emits one batch that empties the editable cells of the selection.
    *
-   * @returns Whether the cell accepts edits.
+   * @returns Whether there was a selection to clear.
    */
-  private clearCell(position: GridCellPosition): boolean {
-    const target = this.cellAt(position);
-    if (!target || !this.canEdit(target)) return false;
-    const change = createCellChange(target.row, target.column, null);
-    if (change) this.cellsChange.emit([change]);
-    return true;
+  private clearSelection(): boolean {
+    const rect = this.selectionRect();
+    const changes = rect && clearChanges(rect, this.resolveCell);
+    if (changes) this.emitChanges(changes);
+    return !!rect;
   }
 
   /** Moves the active cell by one step. */

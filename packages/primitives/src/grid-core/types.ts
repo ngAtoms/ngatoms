@@ -135,6 +135,28 @@ export interface GridCellChange {
   next: GridCellValue;
 }
 
+/**
+ * The cells a user selected. Positions are display positions, which
+ * move with sorting, filtering and expansion; the ids do not.
+ */
+export interface GridSelection {
+  range: GridCellRange;
+  /** Ids of the loaded rows in the range, top to bottom. */
+  rowIds: GridRowId[];
+  /** Ids of the columns in the range, left to right. */
+  columnIds: string[];
+}
+
+/** A pasted value that did not become a change. */
+export interface GridCellRejection {
+  rowId: GridRowId;
+  columnId: string;
+  /** The text that was pasted. */
+  text: string;
+  /** `readonly`: the cell does not accept edits. `invalid`: the text is not a value for the column. */
+  reason: 'readonly' | 'invalid';
+}
+
 /** Per-cell state, resolved by the app. */
 export interface GridCellState {
   readonly?: boolean;

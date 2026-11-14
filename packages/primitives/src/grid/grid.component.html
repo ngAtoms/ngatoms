@@ -5,10 +5,14 @@
   [attr.aria-label]="label() || null"
   [attr.aria-rowcount]="rowList().length + columnModel().headerDepth"
   [attr.aria-colcount]="columnModel().columns.length"
+  aria-multiselectable="true"
   [attr.tabindex]="activeCell() ? -1 : 0"
   (scroll)="onScroll()"
   (keydown)="onKeydown($event)"
   (focusin)="onFocusIn()"
+  (copy)="onCopy($event)"
+  (cut)="onCut($event)"
+  (paste)="onPaste($event)"
 >
   <div
     class="nga-grid__canvas"

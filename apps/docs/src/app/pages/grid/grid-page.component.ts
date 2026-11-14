@@ -3,10 +3,12 @@ import { RouterLink } from "@angular/router";
 import {
   NgAtomsGridComponent,
   type GridCellChange,
+  type GridCellRejection,
   type GridColumn,
   type GridFilters,
   type GridRow,
   type GridRowId,
+  type GridSelection,
   type GridSort,
 } from "../../../components/grid";
 import {
@@ -65,6 +67,19 @@ export class GridPageComponent {
   private readonly planDirty = signal<ReadonlySet<string>>(new Set());
   readonly planRows = computed(() => withPlanTotals(this.planLeaves()));
   readonly lastChange = signal("none yet");
+  readonly planSelection = signal<GridSelection | null>(null);
+  readonly planRejected = signal("");
+  readonly planSummary = computed(() => {
+    const selection = this.planSelection();
+    if (!selection) return "nothing selected";
+    const rows = new Map(this.planRows().map((row) => [row.id, row]));
+    const values = selection.rowIds
+      .flatMap((id) => selection.columnIds.map((columnId) => rows.get(id)?.data[columnId]))
+      .filter((value): value is number => typeof value === "number");
+    const sum = values.reduce((total, value) => total + value, 0);
+    const cells = selection.rowIds.length * selection.columnIds.length;
+    return `${cells} ${cells === 1 ? "cell" : "cells"} selected · sum ${sum.toLocaleString("en-US")}`;
+  });
 
   readonly scaleRows = buildScaleRows(100, 999);
   readonly scaleColumns = buildScaleColumns(500);
@@ -88,7 +103,13 @@ export class GridPageComponent {
     this.planLeaves.update((leaves) => applyPlanChanges(leaves, changes));
     this.planDirty.update((dirty) => new Set([...dirty, ...changes.map((c) => `${c.rowId}:${c.columnId}`)]));
     const last = changes[changes.length - 1];
-    this.lastChange.set(`${last.rowId} · ${last.columnId}: ${last.previous ?? "empty"} → ${last.next ?? "empty"}`);
+    const more = changes.length > 1 ? ` (+${changes.length - 1} more)` : "";
+    this.lastChange.set(`${last.rowId} · ${last.columnId}: ${last.previous ?? "empty"} → ${last.next ?? "empty"}${more}`);
+    this.planRejected.set("");
+  }
+
+  onPlanRejected(rejected: GridCellRejection[]): void {
+    this.planRejected.set(` · ${rejected.length} pasted ${rejected.length === 1 ? "value" : "values"} skipped`);
   }
 
   readonly heroCode = "<nga-grid\n  [rows]=\"rows\"\n  [columns]=\"columns\"\n  [(expanded)]=\"expanded\"\n  locale=\"en-US\"\n  label=\"Units sold in 2026\"\n/>";
@@ -102,6 +123,8 @@ export class GridPageComponent {
   readonly codeExternal = "// <nga-grid\n//   [rows]=\"rows()\"\n//   [columns]=\"columns\"\n//   filterMode=\"external\"\n//   sortMode=\"external\"\n//   [(filters)]=\"filters\"\n//   [(sort)]=\"sort\"\n// />\n\nreadonly rows = signal<GridRow<Line>[]>([]);\nreadonly filters = signal<GridFilters<Line>>({});\nreadonly sort = signal<GridSort[]>([]);\n\nconstructor() {\n  effect(() => {\n    this.api.query(this.filters(), this.sort()).then(rows => this.rows.set(rows));\n  });\n}";
 
   readonly codeEditing = "// <nga-grid\n//   [rows]=\"rows()\"\n//   [columns]=\"columns\"\n//   [cellState]=\"cellState\"\n//   (cellsChange)=\"onCellsChange($event)\"\n// />\n\nreadonly columns: GridColumnNode<Line>[] = [\n  { id: 'name', header: 'Product', pinned: 'left', tree: true },\n  { id: 'm1', header: 'Jan', type: 'number', editable: true },\n  { id: 'm2', header: 'Feb', type: 'number', editable: true },\n];\n\nprivate readonly leaves = signal<GridRow<Line>[]>(loadLeaves());\nprivate readonly dirty = signal<ReadonlySet<string>>(new Set());\n\n// Totals belong to the app: they are derived from the leaves on every change.\nreadonly rows = computed(() => withTotals(this.leaves()));\n\nonCellsChange(changes: GridCellChange[]): void {\n  this.leaves.update(leaves => applyChanges(leaves, changes));\n  this.dirty.update(dirty => new Set([...dirty, ...changes.map(c => `${c.rowId}:${c.columnId}`)]));\n}\n\nreadonly cellState = (row: GridRow<Line>, column: GridColumn<Line>) => {\n  if (row.parentId === undefined) return { calculated: true };\n  if (column.id === 'm1') return { locked: true };\n  if (Number(row.data[column.id]) < 0) return { invalid: 'Units cannot be negative' };\n  return this.dirty().has(`${row.id}:${column.id}`) ? { dirty: true } : null;\n};";
+
+  readonly codeSelection = "// <nga-grid\n//   [rows]=\"rows()\"\n//   [columns]=\"columns\"\n//   (cellsChange)=\"onCellsChange($event)\"\n//   (cellsRejected)=\"onCellsRejected($event)\"\n//   (selectionChange)=\"selection.set($event)\"\n// />\n\nreadonly selection = signal<GridSelection | null>(null);\n\n// Positions move with sorting and filtering; the ids do not.\nreadonly sum = computed(() => {\n  const selection = this.selection();\n  if (!selection) return 0;\n  const rows = new Map(this.rows().map(row => [row.id, row]));\n  return selection.rowIds\n    .flatMap(id => selection.columnIds.map(columnId => rows.get(id)?.data[columnId]))\n    .filter(value => typeof value === 'number')\n    .reduce((total, value) => total + value, 0);\n});\n\nonCellsRejected(rejected: GridCellRejection[]): void {\n  // { rowId, columnId, text, reason: 'readonly' | 'invalid' }\n  this.toast.show(`${rejected.length} values were skipped`);\n}\n\n// After loading different data, drop the undo history:\n// this.grid().clearHistory();";
 
   readonly codeRows = "const rows: GridRow<Line>[] = [\n  { id: 'returns', data: returnsTotals, favorable: 'lower' },\n  { id: 'damaged', parentId: 'returns', data: damaged, favorable: 'lower' },\n  { id: 'net', data: netUnits, kind: 'total' },\n];";
 
@@ -137,6 +160,8 @@ export class GridPageComponent {
       target: "nga-grid",
       props: [
         { name: "cellsChange", type: "GridCellChange[]", defaultVal: "—", description: "The user edited cells. Each change has rowId, columnId, previous and next. Apply it and pass new rows in." },
+        { name: "cellsRejected", type: "GridCellRejection[]", defaultVal: "—", description: "Pasted values that were skipped: the cell does not accept edits, or the text is not a value for the column." },
+        { name: "selectionChange", type: "GridSelection | null", defaultVal: "—", description: "The selected block changed: its range in display positions, plus the row ids and column ids it covers." },
         { name: "rowExpand", type: "GridRowId", defaultVal: "—", description: "A row with hasChildren and no loaded children was expanded. Load them and pass them in." },
         { name: "visibleRangeChange", type: "{ start, end }", defaultVal: "—", description: "The rendered row window changed. Use it to load pages while scrolling." },
       ],
@@ -204,6 +229,7 @@ export class GridPageComponent {
     { icon: "keyboard", title: "Keyboard navigation", body: "Tab enters the grid on its active cell. Arrow keys move one cell; Home and End travel the row, and with Ctrl the whole grid; Page Up and Page Down move a screen. The active cell is scrolled into view." },
     { icon: "tree-structure", title: "Hierarchy", body: "In the tree column, Right expands a row and Left collapses it. Rows expose aria-level and aria-expanded." },
     { icon: "pencil-simple", title: "Editing", body: "Enter, F2 or typing opens the editor; Enter and Tab commit and move, Escape cancels, and focus returns to the cell. Cells that cannot be edited expose aria-readonly, and invalid ones aria-invalid with their message." },
+    { icon: "selection", title: "Selection", body: "Shift with any navigation key extends the selection; Ctrl+A selects all and Escape collapses it. Selected cells expose aria-selected. Copy, cut and paste use the standard clipboard shortcuts and need no permission prompt." },
     { icon: "table", title: "Grid semantics", body: "role=\"treegrid\" (or \"grid\" without hierarchy), with aria-rowcount and aria-colcount for the full data and aria-rowindex and aria-colindex on rendered cells, so virtualization does not hide the real size." },
     { icon: "funnel", title: "Sorting and filters", body: "Sortable headers expose aria-sort. The filter popover is a labelled dialog that takes focus and returns it on close. Header controls are not yet reachable from the keyboard." },
     { icon: "hand-tap", title: "Touch and small screens", body: "On coarse pointers rows grow to the comfortable height and header controls to a 44px target. Pinned columns release on narrow containers so the scrolling area never collapses." },
@@ -216,6 +242,7 @@ export class GridPageComponent {
     { id: "filters", label: "Filters and sorting" },
     { id: "external", label: "Filtering on the server" },
     { id: "editing", label: "Editing" },
+    { id: "selection", label: "Selection, copy and paste" },
     { id: "rows", label: "Rows and hierarchy" },
     { id: "columns", label: "Column groups and pinning" },
     { id: "formatting", label: "Number formatting" },

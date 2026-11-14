@@ -79,8 +79,18 @@ export interface NgAtomsGridContext<T = unknown> {
   openFilter(column: GridColumn<T>, anchor: HTMLElement): void;
   /** Whether the cell at a display position is the active cell. */
   isActive(row: number, col: number): boolean;
-  /** Makes a cell the active cell. */
+  /** Makes a cell the active cell and the only selected one. */
   activate(row: number, col: number): void;
+  /** The mouse went down on a cell: it becomes the active cell, or with `extend` the far corner of the selection. */
+  pressCell(row: number, col: number, extend: boolean): void;
+  /** The mouse moved over a cell; while the button stays down the selection follows it. */
+  dragOverCell(row: number, col: number, pressed: boolean): void;
+  /**
+   * Outer sides of the selection the cell touches, space-separated;
+   * empty for a cell inside it. Null when the cell is not selected, or
+   * when the selection is the active cell alone.
+   */
+  selectionEdges(row: number, col: number): string | null;
   /** A cell was tapped or clicked; on touch screens a second tap on the active cell edits it. */
   tapCell(row: number, col: number): void;
   /** Draft text of the cell when it is being edited, otherwise null. */
