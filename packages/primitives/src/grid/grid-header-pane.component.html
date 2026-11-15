@@ -5,6 +5,7 @@
       <div
     class="nga-grid__header-cell"
     role="columnheader"
+    [attr.id]="grid.headerDomId(pane(), item.cell.key, item.cell.row)"
     [class.nga-grid__header-cell--group]="!column"
     [class.nga-grid__header-cell--number]="column?.type === 'number'"
     [attr.aria-colspan]="item.cell.colSpan > 1 ? item.cell.colSpan : null"

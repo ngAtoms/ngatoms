@@ -25,6 +25,7 @@
         <div
           class="nga-grid__cell"
           [attr.role]="rowHeader ? 'rowheader' : 'gridcell'"
+          [attr.aria-labelledby]="grid.cellLabelledBy(entry.row.id, col.column.id, rowHeader)"
           [class.nga-grid__cell--number]="view.numeric"
           [class.nga-grid__cell--favorable]="view.tone === 'favorable'"
           [class.nga-grid__cell--unfavorable]="view.tone === 'unfavorable'"
@@ -88,6 +89,7 @@
             }
           }
           @if (draft !== null) {
+            <span class="nga-sr-only" [attr.id]="grid.cellValueDomId(entry.row.id, col.column.id)">{{ view.text }}</span>
             @let editorTemplate = grid.editorTemplate(col.column.id);
             @let editorContext = grid.editorContext();
             @if (editorTemplate && editorContext) {
@@ -118,12 +120,14 @@
           } @else {
             @let cellTemplate = grid.cellTemplate(col.column.id);
             @if (cellTemplate) {
-              <ng-container
-                [ngTemplateOutlet]="cellTemplate"
-                [ngTemplateOutletContext]="cellContext(entry.row, col.column, view.text)"
-              />
+              <span class="nga-grid__cell-value" [attr.id]="grid.cellValueDomId(entry.row.id, col.column.id)">
+                <ng-container
+                  [ngTemplateOutlet]="cellTemplate"
+                  [ngTemplateOutletContext]="cellContext(entry.row, col.column, view.text)"
+                />
+              </span>
             } @else {
-              <span class="nga-grid__cell-text">{{ view.text }}</span>
+              <span class="nga-grid__cell-text" [attr.id]="grid.cellValueDomId(entry.row.id, col.column.id)">{{ view.text }}</span>
             }
           }
         </div>

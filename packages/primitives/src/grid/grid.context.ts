@@ -113,6 +113,26 @@ export interface NgAtomsGridContext<T = unknown> {
    * when the selection is the active cell alone.
    */
   selectionEdges(row: number, col: number): string | null;
+  /**
+   * Id of a header cell. The pane is part of it, because a group split by
+   * pinning repeats its key in each pane.
+   */
+  headerDomId(pane: string, key: string, row: number): string;
+  /**
+   * Id of the row's accessible label. The node stays in the document when
+   * the first column scrolls out of the grid.
+   */
+  rowHeaderDomId(rowId: GridRowId): string;
+  /** Id of the node that holds a cell's value, so the accessible name includes it. */
+  cellValueDomId(rowId: GridRowId, columnId: string): string;
+  /** Id of the leaf column header, or null when that column is not in the model. */
+  columnHeaderDomId(columnId: string): string | null;
+  /**
+   * `aria-labelledby` for a body cell: the row label, the leaf column
+   * header and the cell's own value. A row header names its column header
+   * and its own value. Null when no id exists.
+   */
+  cellLabelledBy(rowId: GridRowId, columnId: string, rowHeader: boolean): string | null;
   /** A cell was tapped or clicked; on touch screens a second tap on the active cell edits it. */
   tapCell(row: number, col: number): void;
   /** Draft text of the cell when it is being edited, otherwise null. */

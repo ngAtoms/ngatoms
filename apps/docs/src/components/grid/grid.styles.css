@@ -12,13 +12,16 @@
 
   --nga-grid-bg:            var(--nga-color-card, #FBF8F1);
   --nga-grid-fg:            var(--nga-color-foreground, #111111);
-  --nga-grid-muted:         var(--nga-color-muted-foreground, #756C5F);
+  /* Secondary text (locked cells, empty states) mixes the grid's own
+     foreground into its background, so it keeps 4.5:1 in light and dark
+     whatever the global muted token is. */
+  --nga-grid-muted:         color-mix(in oklab, var(--nga-grid-fg) 65%, var(--nga-grid-bg));
   --nga-grid-border:        var(--nga-color-border, #DDD4C1);
   --nga-grid-row-border:    color-mix(in oklab, var(--nga-color-border, #DDD4C1) 55%, transparent);
 
   /* Opaque, because pinned panes and the header sit over scrolling cells */
   --nga-grid-header-bg:     color-mix(in oklab, var(--nga-color-muted, #EAE3D4) 55%, var(--nga-grid-bg));
-  --nga-grid-header-fg:     var(--nga-color-muted-foreground, #756C5F);
+  --nga-grid-header-fg:     color-mix(in oklab, var(--nga-grid-fg) 65%, var(--nga-grid-header-bg));
   --nga-grid-row-hover-bg:  color-mix(in oklab, var(--nga-color-foreground, #111111) 4%, var(--nga-grid-bg));
   --nga-grid-subtotal-bg:   color-mix(in oklab, var(--nga-color-muted, #EAE3D4) 35%, var(--nga-grid-bg));
   --nga-grid-total-bg:      color-mix(in oklab, var(--nga-color-muted, #EAE3D4) 70%, var(--nga-grid-bg));

@@ -142,6 +142,14 @@ const WRAP_LINE_HEIGHT = 18;
 /** Rows rendered above and below the viewport so fast scrolling shows no gaps. */
 const ROW_OVERSCAN = 6;
 
+/** Counts grid instances so element ids stay unique when several grids share a page. */
+let nextGridInstance = 0;
+
+/** Keeps a DOM id token to characters that are safe unescaped. */
+function domToken(value: string): string {
+  return value.replace(/[^A-Za-z0-9_-]/g, '_');
+}
+
 /** Columns rendered left and right of the viewport, for the same reason. */
 const COLUMN_OVERSCAN = 2;
 
@@ -170,7 +178,9 @@ const COLUMN_OVERSCAN = 2;
 export class NgAtomsGridComponent<T = unknown> implements NgAtomsGridContext<T> {
   private readonly destroyRef = inject(DestroyRef);
   private readonly document = inject(DOCUMENT);
+  private readonly hostElement = inject(ElementRef<HTMLElement>);
   private readonly viewport = viewChild.required<ElementRef<HTMLElement>>('viewport');
+  private readonly domPrefix = `nga-grid-${nextGridInstance++}`;
 
   /** Flat rows; hierarchy comes from each row's `parentId`. */
   readonly rows = input<GridRow<T>[]>([]);
@@ -209,8 +219,28 @@ export class NgAtomsGridComponent<T = unknown> implements NgAtomsGridContext<T> 
   readonly fitRows = input(false);
   /** BCP 47 locale for number formatting; defaults to the browser's. */
   readonly locale = input<string | undefined>(undefined);
-  /** Accessible name of the grid. */
+  /**
+   * Name of the grid. Copied to the grid element as `aria-label` when the
+   * host has neither `aria-label` nor `aria-labelledby`.
+   */
   readonly label = input<string>('');
+
+  /**
+   * `aria-labelledby` the app set on the host. It names the grid element,
+   * which is the inner viewport, not the host.
+   */
+  viewportLabelledBy(): string | null {
+    return this.hostElement.nativeElement.getAttribute('aria-labelledby') || null;
+  }
+
+  /**
+   * Name of the grid element. The host attribute wins over `label`, and
+   * `aria-labelledby` wins over both.
+   */
+  viewportLabel(): string | null {
+    if (this.viewportLabelledBy()) return null;
+    return this.hostElement.nativeElement.getAttribute('aria-label') || this.label() || null;
+  }
 
   /** A row with unloaded children was expanded; the app should supply them. */
   readonly rowExpand = output<GridRowId>();
@@ -252,6 +282,19 @@ export class NgAtomsGridComponent<T = unknown> implements NgAtomsGridContext<T> 
   protected readonly columnModel = computed(() =>
     fitColumnModel(this.columns(), this.viewportWidth(), this.widthsById()),
   );
+  /** Leaf column header ids, keyed by column id. Built with the same id the header template writes. */
+  private readonly leafHeaderIds = computed(() => {
+    const ids = new Map<string, string>();
+    const { left, center, right } = this.columnModel().panes;
+    for (const pane of [left, center, right]) {
+      for (const cells of pane.headerRows) {
+        for (const cell of cells) {
+          if (cell.column) ids.set(cell.column.id, this.headerDomId(pane.id, cell.key, cell.row));
+        }
+      }
+    }
+    return ids;
+  });
   private readonly headerRowHeight = computed(() => {
     const room = this.columnModel().headerDepth === 1 ? HEADER_ROOM.single : HEADER_ROOM.grouped;
     return this.rowHeightPx() + room;
@@ -516,8 +559,18 @@ export class NgAtomsGridComponent<T = unknown> implements NgAtomsGridContext<T> 
     const editing = this.editing.position();
     if (editing && (editing.row !== row || editing.col !== col)) this.editing.leave();
     this.headerKeys.blur();
+    this.keepFocus();
     this.selected.setActive({ row, col });
     this.focus.scrollIntoView({ row, col });
+  }
+
+  /**
+   * A long move (Ctrl+↓, Ctrl+End) scrolls the focused cell out of the
+   * rendered window, and the browser drops focus to the body. When focus
+   * is in the grid now, the next render puts it back on the active cell.
+   */
+  private keepFocus(): void {
+    if (this.viewport().nativeElement.contains(this.document.activeElement)) this.focus.request();
   }
 
   /** @inheritdoc */
@@ -540,6 +593,46 @@ export class NgAtomsGridComponent<T = unknown> implements NgAtomsGridContext<T> 
   /** @inheritdoc */
   selectionEdges(row: number, col: number): string | null {
     return this.selected.edges(row, col);
+  }
+
+  /** @inheritdoc */
+  headerDomId(pane: string, key: string, row: number): string {
+    return `${this.domPrefix}-h-${domToken(pane)}-${row}-${domToken(key)}`;
+  }
+
+  /** @inheritdoc */
+  rowHeaderDomId(rowId: GridRowId): string {
+    return `${this.domPrefix}-r-${domToken(String(rowId))}`;
+  }
+
+  /** @inheritdoc */
+  cellValueDomId(rowId: GridRowId, columnId: string): string {
+    return `${this.domPrefix}-v-${domToken(String(rowId))}-${domToken(columnId)}`;
+  }
+
+  /** @inheritdoc */
+  columnHeaderDomId(columnId: string): string | null {
+    return this.leafHeaderIds().get(columnId) ?? null;
+  }
+
+  /**
+   * Text of the first column. It is the row's accessible label, kept
+   * outside the grid so a horizontal scroll cannot drop the id.
+   */
+  protected rowHeaderText(row: GridRow<T>): string {
+    const column = this.columnModel().columns[0];
+    return column ? this.cell(row, column).text : '';
+  }
+
+  /** @inheritdoc */
+  cellLabelledBy(rowId: GridRowId, columnId: string, rowHeader: boolean): string | null {
+    const columnHeaderId = this.columnHeaderDomId(columnId);
+    const valueId = this.cellValueDomId(rowId, columnId);
+    const ids = rowHeader
+      ? [columnHeaderId, valueId]
+      : [this.rowHeaderDomId(rowId), columnHeaderId, valueId];
+    const present = ids.filter((id): id is string => !!id);
+    return present.length ? present.join(' ') : null;
   }
 
   /** @inheritdoc */
@@ -811,6 +904,7 @@ export class NgAtomsGridComponent<T = unknown> implements NgAtomsGridContext<T> 
     const from = event.shiftKey ? (this.selected.rangeEnd() ?? active) : active;
     const next = movePosition(from, move, this.bounds());
     if (next && event.shiftKey) {
+      this.keepFocus();
       this.selected.extendTo(next);
       this.focus.scrollIntoView(next);
     } else if (next) this.activate(next.row, next.col);

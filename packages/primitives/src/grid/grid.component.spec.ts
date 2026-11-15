@@ -123,7 +123,59 @@ function setScrollLeft(element: HTMLElement, value: number): void {
   element.dispatchEvent(new Event('scroll'));
 }
 
+/** Lets `scrollTop` move the rendered window: jsdom keeps it at 0 and fires no scroll. */
+function liveScrollTop(element: HTMLElement): void {
+  let value = 0;
+  Object.defineProperty(element, 'scrollTop', {
+    configurable: true,
+    get: () => value,
+    set: (next: number) => {
+      value = Math.max(0, next);
+      element.dispatchEvent(new Event('scroll'));
+    },
+  });
+}
+
+/** Sends a key to the element that has focus, the way the browser does. */
+async function keyOnFocus(fixture: ComponentFixture<unknown>, init: KeyboardEventInit): Promise<void> {
+  const target = (document.activeElement ?? document.body) as HTMLElement;
+  target.dispatchEvent(new KeyboardEvent('keydown', { bubbles: true, cancelable: true, ...init }));
+  for (let pass = 0; pass < 2; pass++) {
+    fixture.detectChanges();
+    await fixture.whenStable();
+    TestBed.tick();
+  }
+}
+
 describe('nga-grid', () => {
+  it('keeps focus in the grid on Ctrl+↓, Ctrl+End, Ctrl+Home and Ctrl+↑ across the rendered window', async () => {
+    const fixture = await mount(TallGrid);
+    const grid = gridOf(fixture);
+    liveScrollTop(grid);
+    await focusGrid(fixture);
+    (grid.querySelector('.nga-grid__cell--active') as HTMLElement).focus();
+    expect(grid.contains(document.activeElement)).toBe(true);
+
+    const activeRow = () =>
+      grid.querySelector('.nga-grid__cell--active')?.closest('[role="row"]')?.getAttribute('aria-rowindex');
+    const steps: [KeyboardEventInit, string][] = [
+      [{ key: 'ArrowDown', ctrlKey: true }, '301'],
+      [{ key: 'Home', ctrlKey: true }, '2'],
+      [{ key: 'End', ctrlKey: true }, '301'],
+      [{ key: 'ArrowUp', ctrlKey: true }, '2'],
+    ];
+    for (const [init, row] of steps) {
+      await keyOnFocus(fixture, init);
+      expect(document.activeElement, init.key).not.toBe(document.body);
+      expect(grid.contains(document.activeElement), init.key).toBe(true);
+      expect(activeRow(), init.key).toBe(row);
+    }
+
+    await keyOnFocus(fixture, { key: 'ArrowDown' });
+    expect(grid.contains(document.activeElement)).toBe(true);
+    expect(activeRow()).toBe('3');
+  });
+
   it('names a row header from its column and its value, and a cell from the row, the column and its value', async () => {
     const fixture = await mount(TwoGrids);
     const first = gridOf(fixture, 0);
@@ -228,8 +280,34 @@ describe('nga-grid', () => {
     expect(grid.querySelectorAll('[aria-colindex="3"][aria-selected="true"]')).toHaveLength(0);
   });
 
+  it('copies aria-label from the host onto the grid', async () => {
+    const fixture = await mount(HostLabel);
+    const grid = gridOf(fixture);
+    expect(grid.getAttribute('aria-label')).toBe('Ledger');
+    expect(grid.getAttribute('aria-labelledby')).toBeNull();
+  });
+
+  it('copies aria-labelledby from the host onto the grid', async () => {
+    const fixture = await mount(HostLabelledBy);
+    const grid = gridOf(fixture);
+    expect(grid.getAttribute('aria-labelledby')).toBe('ledger-title');
+    expect(grid.getAttribute('aria-label')).toBeNull();
+  });
+
   it('runs axe in jsdom with color contrast off', async () => {
     const fixture = await mount(OneGrid);
+    await focusGrid(fixture);
+    const results = await axe.run(fixture.nativeElement, {
+      rules: { 'color-contrast': { enabled: false } },
+    });
+    const detail = results.violations.map(
+      violation => `${violation.id}: ${violation.nodes.map(node => node.target.join(' ')).join(' | ')}`,
+    );
+    expect(detail, detail.join('\n')).toEqual([]);
+  });
+
+  it('runs axe in jsdom on a grid with no name, color contrast off', async () => {
+    const fixture = await mount(UnnamedGrid);
     await focusGrid(fixture);
     const results = await axe.run(fixture.nativeElement, {
       rules: { 'color-contrast': { enabled: false } },
@@ -247,19 +325,6 @@ describe('nga-grid', () => {
   template: `<nga-grid [rows]="rows" [columns]="columns" label="Accounts" />`,
 })
 class OneGrid {
-  readonly rows = rows;
-  readonly columns = columns;
-}
-
-@Component({
-  standalone: true,
-  imports: [NgAtomsGridComponent],
-  template: `
-    <nga-grid [rows]="rows" [columns]="columns" label="First" />
-    <nga-grid [rows]="rows" [columns]="columns" label="Second" />
-  `,
-})
-class TwoGrids {
   readonly rows = rows;
   readonly columns = columns;
 }
@@ -283,6 +348,19 @@ const wideColumns: GridColumnNode<WideLine>[] = [
 @Component({
   standalone: true,
   imports: [NgAtomsGridComponent],
+  template: `<nga-grid [rows]="rows" [columns]="columns" label="Tall" />`,
+})
+class TallGrid {
+  readonly rows: GridRow<Line>[] = Array.from({ length: 300 }, (_, i) => ({
+    id: `t${i}`,
+    data: { name: `Row ${i}`, a: i, b: i * 2 },
+  }));
+  readonly columns = columns;
+}
+
+@Component({
+  standalone: true,
+  imports: [NgAtomsGridComponent],
   template: `<nga-grid [rows]="rows" [columns]="columns" label="Wide" />`,
 })
 class WideGrid {
@@ -290,6 +368,52 @@ class WideGrid {
     { id: 'w1', data: { c0: 'Alpha', c1: 'Bravo', c2: 'Charlie', c3: 'Delta', c4: 'Echo' } },
   ];
   readonly columns = wideColumns;
+}
+
+@Component({
+  standalone: true,
+  imports: [NgAtomsGridComponent],
+  template: `<nga-grid aria-label="Ledger" [rows]="rows" [columns]="columns" />`,
+})
+class HostLabel {
+  readonly rows = rows;
+  readonly columns = columns;
+}
+
+@Component({
+  standalone: true,
+  imports: [NgAtomsGridComponent],
+  template: `
+    <span id="ledger-title">Ledger</span>
+    <nga-grid aria-labelledby="ledger-title" [rows]="rows" [columns]="columns" />
+  `,
+})
+class HostLabelledBy {
+  readonly rows = rows;
+  readonly columns = columns;
+}
+
+@Component({
+  standalone: true,
+  imports: [NgAtomsGridComponent],
+  template: `<nga-grid [rows]="rows" [columns]="columns" />`,
+})
+class UnnamedGrid {
+  readonly rows = rows;
+  readonly columns = columns;
+}
+
+@Component({
+  standalone: true,
+  imports: [NgAtomsGridComponent],
+  template: `
+    <nga-grid [rows]="rows" [columns]="columns" label="First" />
+    <nga-grid [rows]="rows" [columns]="columns" label="Second" />
+  `,
+})
+class TwoGrids {
+  readonly rows = rows;
+  readonly columns = columns;
 }
 
 @Component({

@@ -7,7 +7,8 @@
   #viewport
   class="nga-grid__viewport"
   [attr.role]="hasHierarchy() ? 'treegrid' : 'grid'"
-  [attr.aria-label]="label() || null"
+  [attr.aria-label]="viewportLabel()"
+  [attr.aria-labelledby]="viewportLabelledBy()"
   [attr.aria-rowcount]="rowList().length + columnModel().headerDepth"
   [attr.aria-colcount]="columnModel().columns.length"
   aria-multiselectable="true"

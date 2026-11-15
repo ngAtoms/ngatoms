@@ -141,6 +141,7 @@ export class NgAtomsGridFilterComponent<T = unknown> implements OnInit, OnDestro
   /** Removes the popover from the page and gives focus back to the header button. */
   ngOnDestroy(): void {
     this.deregister?.();
+    this.document.removeEventListener('scroll', this.place, { capture: true });
     const panel = this.panel().nativeElement;
     const hadFocus = panel.contains(this.document.activeElement);
     if (panel.parentElement === this.document.body) this.renderer.removeChild(this.document.body, panel);
@@ -241,18 +242,26 @@ export class NgAtomsGridFilterComponent<T = unknown> implements OnInit, OnDestro
     const panel = this.panel().nativeElement;
     const anchor = this.anchor();
     this.renderer.appendChild(this.document.body, panel);
-
-    const position = computeOverlayPosition(anchor.getBoundingClientRect(), panel.getBoundingClientRect(), {
-      placement: 'bottom',
-      align: 'start',
-      gap: POPOVER_GAP,
-    });
-    this.renderer.setStyle(panel, 'top', `${position.top}px`);
-    this.renderer.setStyle(panel, 'left', `${position.left}px`);
+    this.place();
+    // Capture, so a scroll of the page or of any container follows the button.
+    // The list's own scroll lands here too and leaves the panel where it is.
+    this.document.addEventListener('scroll', this.place, { capture: true, passive: true });
 
     this.deregister = this.overlay.register(() => this.dismiss.emit(), [panel, anchor], {
       closeOnScroll: false,
     });
     panel.querySelector<HTMLElement>('select, input')?.focus();
   }
+
+  /** Places the popover under the header button, where the button is now. */
+  private readonly place = (): void => {
+    const panel = this.panel().nativeElement;
+    const position = computeOverlayPosition(this.anchor().getBoundingClientRect(), panel.getBoundingClientRect(), {
+      placement: 'bottom',
+      align: 'start',
+      gap: POPOVER_GAP,
+    });
+    this.renderer.setStyle(panel, 'top', `${position.top}px`);
+    this.renderer.setStyle(panel, 'left', `${position.left}px`);
+  };
 }

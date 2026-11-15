@@ -63,7 +63,8 @@
               "grid-core/**/*.spec.ts",
               "button/button.directive.spec.ts",
               "input/input.directive.spec.ts",
-              "grid/grid.component.spec.ts"
+              "grid/grid.component.spec.ts",
+              "grid/index.spec.ts"
             ]
           }
         }

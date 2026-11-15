@@ -190,6 +190,7 @@
             <p class="cp-p">
                 Columns are a tree: a group spans its children, to any depth. Leaf columns can be pinned <strong>left</strong> or <strong>right</strong>;
                 pinned columns stay in view while the rest scrolls, and only the columns in view are rendered.
+                To keep the identifying column visible during horizontal scroll, pin it (<code>pinned: 'left'</code>).
             </p>
             <app-code-block [code]="codeColumns" language="typescript" />
         </section>
@@ -488,7 +489,9 @@
         <!-- Accessibility -->
         <section id="a11y">
             <h2 class="cp-h2">Accessibility</h2>
-            <p class="cp-p">The grid follows the WAI-ARIA grid pattern. The full screen-reader pass is still to come.</p>
+            <p class="cp-p">The grid follows the WAI-ARIA grid pattern for keyboard use. With the default theme, header text, locked cells and empty states reach a 4.5:1 contrast ratio in light and dark.</p>
+            <p class="cp-p">The app names the grid with <code class="cp-code">aria-label</code> or <code class="cp-code">aria-labelledby</code> on <code class="cp-code">nga-grid</code>.</p>
+            <app-code-block [code]="codeGridName" language="html" />
             <ul class="a11y-list">
                 @for (item of a11yItems; track item.title) {
                     <li class="a11y-item">

@@ -176,10 +176,11 @@ const COLUMN_OVERSCAN = 2;
   providers: [{ provide: NGA_GRID, useExisting: NgAtomsGridComponent }],
 })
 export class NgAtomsGridComponent<T = unknown> implements NgAtomsGridContext<T> {
-  private readonly domPrefix = `nga-grid-${nextGridInstance++}`;
   private readonly destroyRef = inject(DestroyRef);
   private readonly document = inject(DOCUMENT);
+  private readonly hostElement = inject(ElementRef<HTMLElement>);
   private readonly viewport = viewChild.required<ElementRef<HTMLElement>>('viewport');
+  private readonly domPrefix = `nga-grid-${nextGridInstance++}`;
 
   /** Flat rows; hierarchy comes from each row's `parentId`. */
   readonly rows = input<GridRow<T>[]>([]);
@@ -218,8 +219,28 @@ export class NgAtomsGridComponent<T = unknown> implements NgAtomsGridContext<T> 
   readonly fitRows = input(false);
   /** BCP 47 locale for number formatting; defaults to the browser's. */
   readonly locale = input<string | undefined>(undefined);
-  /** Accessible name of the grid. */
+  /**
+   * Name of the grid. Copied to the grid element as `aria-label` when the
+   * host has neither `aria-label` nor `aria-labelledby`.
+   */
   readonly label = input<string>('');
+
+  /**
+   * `aria-labelledby` the app set on the host. It names the grid element,
+   * which is the inner viewport, not the host.
+   */
+  viewportLabelledBy(): string | null {
+    return this.hostElement.nativeElement.getAttribute('aria-labelledby') || null;
+  }
+
+  /**
+   * Name of the grid element. The host attribute wins over `label`, and
+   * `aria-labelledby` wins over both.
+   */
+  viewportLabel(): string | null {
+    if (this.viewportLabelledBy()) return null;
+    return this.hostElement.nativeElement.getAttribute('aria-label') || this.label() || null;
+  }
 
   /** A row with unloaded children was expanded; the app should supply them. */
   readonly rowExpand = output<GridRowId>();
@@ -538,8 +559,18 @@ export class NgAtomsGridComponent<T = unknown> implements NgAtomsGridContext<T> 
     const editing = this.editing.position();
     if (editing && (editing.row !== row || editing.col !== col)) this.editing.leave();
     this.headerKeys.blur();
+    this.keepFocus();
     this.selected.setActive({ row, col });
     this.focus.scrollIntoView({ row, col });
+  }
+
+  /**
+   * A long move (Ctrl+↓, Ctrl+End) scrolls the focused cell out of the
+   * rendered window, and the browser drops focus to the body. When focus
+   * is in the grid now, the next render puts it back on the active cell.
+   */
+  private keepFocus(): void {
+    if (this.viewport().nativeElement.contains(this.document.activeElement)) this.focus.request();
   }
 
   /** @inheritdoc */
@@ -873,6 +904,7 @@ export class NgAtomsGridComponent<T = unknown> implements NgAtomsGridContext<T> 
     const from = event.shiftKey ? (this.selected.rangeEnd() ?? active) : active;
     const next = movePosition(from, move, this.bounds());
     if (next && event.shiftKey) {
+      this.keepFocus();
       this.selected.extendTo(next);
       this.focus.scrollIntoView(next);
     } else if (next) this.activate(next.row, next.col);
