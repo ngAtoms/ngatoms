@@ -163,6 +163,7 @@
         "packages/primitives/src/tabs/tab-list.directive.ts",
         "packages/primitives/src/tabs/tab-trigger.directive.ts",
         "packages/primitives/src/tabs/tab-panel.directive.ts",
+        "packages/primitives/src/tabs/tab-trigger-links.ts",
         "packages/primitives/src/tabs/tabs.styles.css",
         "packages/primitives/src/tabs/index.ts"
       ],

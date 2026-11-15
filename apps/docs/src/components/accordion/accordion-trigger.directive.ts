@@ -38,12 +38,38 @@ export class NgAtomsAccordionTriggerDirective {
     this.item.toggle();
   }
 
+  /**
+   * Enter and Space toggle the panel. Arrow Down and Arrow Up move to the
+   * next and previous trigger of the same accordion, Home and End to the
+   * first and last (Fn+← and Fn+→ on a Mac); at either end focus stays.
+   * With Ctrl, Alt, Meta or Shift held, those keys are left to the page.
+   */
   @HostListener('keydown', ['$event'])
   onKeydown(event: KeyboardEvent): void {
     if (event.key === 'Enter' || event.key === ' ') {
       event.preventDefault();
       this.item.toggle();
+      return;
     }
+    if (event.ctrlKey || event.altKey || event.metaKey || event.shiftKey) return;
+    const triggers = this.siblingTriggers();
+    const index = triggers.indexOf(this.el.nativeElement);
+    const targets: Record<string, number> = {
+      ArrowDown: index + 1,
+      ArrowUp: index - 1,
+      Home: 0,
+      End: triggers.length - 1,
+    };
+    if (index < 0 || !(event.key in targets)) return;
+    event.preventDefault();
+    triggers[targets[event.key]]?.focus();
+  }
+
+  /** The enabled triggers of this accordion, in order, without those of a nested accordion. */
+  private siblingTriggers(): HTMLElement[] {
+    const root = (this.el.nativeElement as HTMLElement).closest('.nga-accordion');
+    const all = root?.querySelectorAll<HTMLElement>('.nga-accordion-trigger:not(:disabled)') ?? [];
+    return Array.from(all).filter(trigger => trigger.closest('.nga-accordion') === root);
   }
 
 }

@@ -8,6 +8,7 @@ import {
   input,
   signal,
 } from '@angular/core';
+import { TAB_TRIGGER_ELEMENTS } from './tab-trigger-links';
 
 export type NgAtomsTabsVariant = 'underline' | 'pills';
 
@@ -51,10 +52,10 @@ export class NgAtomsTabsComponent {
     this.activeTab.set(value);
   }
 
-  /** Adds a trigger. The first one becomes active when no tab is. */
+  /** Adds a trigger. The first enabled one becomes active when no tab is. */
   register(trigger: NgAtomsTabTriggerDirectiveRef): void {
     this._triggers.push(trigger);
-    if (!this.activeTab() && this._triggers.length === 1) {
+    if (!this.activeTab() && !this.isDisabled(trigger)) {
       this.activeTab.set(trigger.value());
     }
   }
@@ -65,18 +66,43 @@ export class NgAtomsTabsComponent {
     if (idx >= 0) this._triggers.splice(idx, 1);
   }
 
-  /** Activates and focuses the tab after the active one, wrapping to the first. */
+  /** Activates and focuses the next enabled tab after the active one, wrapping to the first. */
   navigateNext(): void {
-    const idx = this._triggers.findIndex(t => t.value() === this.activeTab());
-    const next = this._triggers[(idx + 1) % this._triggers.length];
-    if (next) { this.setActive(next.value()); next.focus(); }
+    this.step(1);
   }
 
-  /** Activates and focuses the tab before the active one, wrapping to the last. */
+  /** Activates and focuses the previous enabled tab before the active one, wrapping to the last. */
   navigatePrev(): void {
-    const idx = this._triggers.findIndex(t => t.value() === this.activeTab());
-    const prev = this._triggers[(idx - 1 + this._triggers.length) % this._triggers.length];
-    if (prev) { this.setActive(prev.value()); prev.focus(); }
+    this.step(-1);
   }
 
+  /** Whether a trigger's element is disabled; keyboard navigation and activation skip it. */
+  private isDisabled(trigger: NgAtomsTabTriggerDirectiveRef): boolean {
+    return TAB_TRIGGER_ELEMENTS.get(trigger)?.matches(':disabled') ?? false;
+  }
+
+  /** The triggers keyboard navigation can land on, in order. */
+  private enabledTriggers(): NgAtomsTabTriggerDirectiveRef[] {
+    return this._triggers.filter(trigger => !this.isDisabled(trigger));
+  }
+
+  /**
+   * Moves one enabled tab forward or back from the active one, wrapping.
+   * When the active tab is not among the enabled ones, forward goes to the
+   * first and back to the last.
+   */
+  private step(direction: 1 | -1): void {
+    const enabled = this.enabledTriggers();
+    if (!enabled.length) return;
+    const idx = enabled.findIndex(t => t.value() === this.activeTab());
+    const from = idx < 0 ? (direction > 0 ? -1 : 0) : idx;
+    this.activate(enabled[(from + direction + enabled.length) % enabled.length]);
+  }
+
+  /** Makes a trigger's tab active and gives it focus; a disabled trigger is left alone. */
+  private activate(trigger: NgAtomsTabTriggerDirectiveRef | undefined): void {
+    if (!trigger || this.isDisabled(trigger)) return;
+    this.setActive(trigger.value());
+    trigger.focus();
+  }
 }
