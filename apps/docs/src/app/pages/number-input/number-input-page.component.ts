@@ -5,11 +5,13 @@ import { NgAtomsBadgeDirective } from "../../../components/badge";
 import { CodeBlockComponent } from "../../../components/code-block/code-block.component";
 import { TocComponent } from "../../../components/toc/toc.component";
 import { PreviewCard } from "../../../components/preview-card/preview-card";
+import { PropsTableComponent } from "../../../components/props-table/props-table.component";
+import { type DocsShortcut, ShortcutsTableComponent } from "../../../components/shortcuts-table/shortcuts-table.component";
 
 @Component({
   selector: "app-number-input-page",
   standalone: true,
-  imports: [
+  imports: [ShortcutsTableComponent, PropsTableComponent, 
     RouterLink,
     NgAtomsNumberInputComponent,
     NgAtomsBadgeDirective,
@@ -22,6 +24,10 @@ import { PreviewCard } from "../../../components/preview-card/preview-card";
   styleUrl: "./number-input-page.component.css",
 })
 export class NumberInputPageComponent {
+  readonly shortcuts: DocsShortcut[] = [
+    { action: "Increment / decrement", windows: "↑ / ↓" },
+  ];
+
   readonly heroVal = signal(1);
   readonly sizeVal = signal(5);
   readonly ratingVal = signal(5);

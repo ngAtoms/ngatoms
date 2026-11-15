@@ -52,11 +52,12 @@ const VARIANT_META: Record<
       "Your account will be deactivated in 24 hours. Please verify your email.",
   },
 };
+import { PropsTableComponent } from "../../../components/props-table/props-table.component";
 
 @Component({
   selector: "app-alert-page",
   standalone: true,
-  imports: [
+  imports: [PropsTableComponent, 
     RouterLink,
     NgAtomsAlertDirective,
     NgAtomsAlertTitleDirective,

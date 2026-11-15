@@ -13,11 +13,13 @@ import { NgAtomsBadgeDirective } from "../../../components/badge";
 import { CodeBlockComponent } from "../../../components/code-block/code-block.component";
 import { TocComponent } from "../../../components/toc/toc.component";
 import { PreviewCard } from "../../../components/preview-card/preview-card";
+import { PropsTableComponent } from "../../../components/props-table/props-table.component";
+import { type DocsShortcut, ShortcutsTableComponent } from "../../../components/shortcuts-table/shortcuts-table.component";
 
 @Component({
   selector: "app-context-menu-page",
   standalone: true,
-  imports: [
+  imports: [ShortcutsTableComponent, PropsTableComponent, 
     RouterLink,
     NgAtomsContextMenuComponent,
     NgAtomsContextMenuTriggerDirective,
@@ -34,6 +36,14 @@ import { PreviewCard } from "../../../components/preview-card/preview-card";
   styleUrl: "./context-menu-page.component.css",
 })
 export class ContextMenuPageComponent {
+  readonly shortcuts: DocsShortcut[] = [
+    { action: "Open from a focused trigger", windows: "Shift+F10 or the Menu key", mac: "⇧F10 (with Fn on keyboards with media keys)" },
+    { action: "Move between items", windows: "↑ / ↓" },
+    { action: "First / last item", windows: "Home / End", mac: "Fn+← / Fn+→" },
+    { action: "Activate the item", windows: "Enter", mac: "Return" },
+    { action: "Close", windows: "Esc" },
+  ];
+
   readonly lastAction = signal("none");
 
   readonly heroCode = "<nga-context-menu>\n  <div ngAtomsContextMenuTrigger tabindex=\"0\">Right-click here</div>\n\n  <button ngAtomsDropdownItem (click)=\"copy()\">\n    <i class=\"ph-bold ph-copy\"></i> Copy\n  </button>\n  <button ngAtomsDropdownItem (click)=\"paste()\">\n    <i class=\"ph-bold ph-clipboard\"></i> Paste\n  </button>\n  <button ngAtomsDropdownItem [disabled]=\"true\">\n    <i class=\"ph-bold ph-share\"></i> Share\n  </button>\n  <div ngAtomsDropdownSeparator></div>\n  <button ngAtomsDropdownItem [destructive]=\"true\" (click)=\"remove()\">\n    <i class=\"ph-bold ph-trash\"></i> Delete\n  </button>\n</nga-context-menu>";

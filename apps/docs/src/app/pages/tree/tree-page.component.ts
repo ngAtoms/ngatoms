@@ -9,11 +9,13 @@ import { NgAtomsBadgeDirective } from "../../../components/badge";
 import { CodeBlockComponent } from "../../../components/code-block/code-block.component";
 import { TocComponent } from "../../../components/toc/toc.component";
 import { PreviewCard } from "../../../components/preview-card/preview-card";
+import { PropsTableComponent } from "../../../components/props-table/props-table.component";
+import { type DocsShortcut, ShortcutsTableComponent } from "../../../components/shortcuts-table/shortcuts-table.component";
 
 @Component({
   selector: "app-tree-page",
   standalone: true,
-  imports: [
+  imports: [ShortcutsTableComponent, PropsTableComponent, 
     RouterLink,
     NgAtomsTreeComponent,
     NgAtomsTreeItemComponent,
@@ -28,6 +30,14 @@ import { PreviewCard } from "../../../components/preview-card/preview-card";
   styleUrl: "./tree-page.component.css",
 })
 export class TreePageComponent {
+  readonly shortcuts: DocsShortcut[] = [
+    { action: "Move through the visible items", windows: "↓ / ↑" },
+    { action: "Expand a branch, or enter it", windows: "→" },
+    { action: "Collapse a branch, or go to the parent", windows: "←" },
+    { action: "First / last item", windows: "Home / End", mac: "Fn+← / Fn+→" },
+    { action: "Select the focused item", windows: "Enter or Space", mac: "Return or Space" },
+  ];
+
   readonly heroSelected = signal<string | null>("app.component.ts");
   readonly plainSelected = signal<string | null>(null);
   readonly docsExpanded = signal(true);

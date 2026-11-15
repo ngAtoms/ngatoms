@@ -5,11 +5,13 @@ import { NgAtomsBadgeDirective } from "../../../components/badge";
 import { CodeBlockComponent } from "../../../components/code-block/code-block.component";
 import { TocComponent } from "../../../components/toc/toc.component";
 import { PreviewCard } from "../../../components/preview-card/preview-card";
+import { PropsTableComponent } from "../../../components/props-table/props-table.component";
+import { type DocsShortcut, ShortcutsTableComponent } from "../../../components/shortcuts-table/shortcuts-table.component";
 
 @Component({
   selector: "app-checkbox-page",
   standalone: true,
-  imports: [
+  imports: [ShortcutsTableComponent, PropsTableComponent, 
     RouterLink,
     NgAtomsCheckboxDirective,
     NgAtomsBadgeDirective,
@@ -22,6 +24,11 @@ import { PreviewCard } from "../../../components/preview-card/preview-card";
   styleUrl: "./checkbox-page.component.css",
 })
 export class CheckboxPageComponent {
+  readonly shortcuts: DocsShortcut[] = [
+    { action: "Toggle the focused checkbox", windows: "Space" },
+    { action: "Move between checkboxes", windows: "Tab / Shift+Tab", mac: "Tab / ⇧Tab" },
+  ];
+
   readonly heroChecked = signal(false);
   readonly stateUnchecked = signal(false);
   readonly stateChecked = signal(true);

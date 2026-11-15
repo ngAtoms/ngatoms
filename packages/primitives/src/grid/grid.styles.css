@@ -54,6 +54,17 @@
   overflow: hidden;
 }
 
+/* Sized to its rows: the canvas is as tall as the rows, the grid grows
+   to hold it, and nothing scrolls vertically */
+.nga-grid--fit-rows,
+.nga-grid--fit-rows .nga-grid__viewport {
+  height: auto;
+}
+
+.nga-grid--fit-rows .nga-grid__viewport {
+  overflow-y: hidden;
+}
+
 /* ── Scroll viewport ────────────────────────────────────────── */
 .nga-grid__viewport {
   width: 100%;
@@ -188,6 +199,15 @@
   justify-content: flex-end;
 }
 
+.nga-grid__header-cell:focus {
+  outline: none;
+}
+
+.nga-grid__header-cell:focus-visible {
+  box-shadow: inset 0 0 0 2px var(--nga-color-ring, #D9541E);
+  color: var(--nga-grid-fg);
+}
+
 /* Group headers are underlined, and their label sticks to the left edge
    of the scrolling area so it stays readable while the group is only
    partly in view. */
@@ -260,6 +280,21 @@
   min-width: 0;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+/* Wrapped text runs onto as many lines as the row height fits, then
+   ends in an ellipsis; the full text is the cell's title. */
+.nga-grid__cell--wrap {
+  white-space: normal;
+}
+
+.nga-grid__cell--wrap .nga-grid__cell-text {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: var(--nga-grid-wrap-lines, 1);
+  line-clamp: var(--nga-grid-wrap-lines, 1);
+  line-height: 1.125rem;
+  overflow-wrap: anywhere;
 }
 
 .nga-grid__cell--favorable   { color: var(--nga-grid-favorable); }
@@ -877,6 +912,7 @@
    the state markers fall back to outlines in system colors. */
 @media (forced-colors: active) {
   .nga-grid__cell--active,
+  .nga-grid__header-cell:focus-visible,
   .nga-grid__viewport:focus-visible {
     outline: 2px solid Highlight;
     outline-offset: -2px;

@@ -1,0 +1,39 @@
+:host {
+  display: block;
+  margin: 12px 0;
+}
+
+.props-name,
+.props-type,
+.props-default {
+  min-width: 0;
+  font-family: var(--nga-font-mono);
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.props-name {
+  font-size: 13px;
+  font-weight: var(--nga-font-weight-medium);
+  color: var(--nga-color-foreground);
+}
+
+/* Types and defaults may run onto a second line, like the description */
+.props-type,
+.props-default {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  font-size: 12px;
+  line-height: 1.125rem;
+  overflow-wrap: anywhere;
+}
+
+.props-type {
+  color: var(--nga-color-accent);
+}
+
+.props-default {
+  color: var(--nga-color-muted-foreground);
+}

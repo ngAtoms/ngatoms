@@ -7,11 +7,12 @@ import { NgAtomsBadgeDirective } from "../../../components/badge";
 import { CodeBlockComponent } from "../../../components/code-block/code-block.component";
 import { TocComponent } from "../../../components/toc/toc.component";
 import { PreviewCard } from "../../../components/preview-card/preview-card";
+import { PropsTableComponent } from "../../../components/props-table/props-table.component";
 
 @Component({
   selector: "app-skeleton-page",
   standalone: true,
-  imports: [
+  imports: [PropsTableComponent, 
     RouterLink,
     NgAtomsSkeletonDirective,
     NgAtomsBadgeDirective,

@@ -522,6 +522,7 @@
       "files": [
         "packages/primitives/src/grid/grid-body-pane.component.html",
         "packages/primitives/src/grid/grid-body-pane.component.ts",
+        "packages/primitives/src/grid/grid-drag-select.ts",
         "packages/primitives/src/grid/grid-filter.component.html",
         "packages/primitives/src/grid/grid-filter.component.ts",
         "packages/primitives/src/grid/grid-header-pane.component.html",

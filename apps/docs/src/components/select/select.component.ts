@@ -83,7 +83,7 @@ export class NgAtomsSelectComponent implements AfterViewChecked, OnDestroy {
       this.positionPanel();
       this.deregister?.();
       this.deregister = this.overlay.register(
-        () => this.close(false),
+        reason => this.close(reason === 'escape'),
         [this.el.nativeElement, panel],
         { closeOnScroll: false }
       );

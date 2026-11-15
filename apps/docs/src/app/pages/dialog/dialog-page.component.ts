@@ -10,11 +10,13 @@ import { NgAtomsDialogCloseDirective } from "../../../components/dialog/dialog-c
 import { NgAtomsButtonDirective } from "../../../components/button";
 import { CodeBlockComponent } from "../../../components/code-block/code-block.component";
 import { TocComponent } from "../../../components/toc/toc.component";
+import { PropsTableComponent } from "../../../components/props-table/props-table.component";
+import { type DocsShortcut, ShortcutsTableComponent } from "../../../components/shortcuts-table/shortcuts-table.component";
 
 @Component({
   selector: "app-dialog-page",
   standalone: true,
-  imports: [
+  imports: [ShortcutsTableComponent, PropsTableComponent, 
     RouterLink,
     NgAtomsDialogComponent,
     NgAtomsDialogHeaderDirective,
@@ -32,6 +34,11 @@ import { TocComponent } from "../../../components/toc/toc.component";
   styleUrl: "./dialog-page.component.css",
 })
 export class DialogPageComponent {
+  readonly shortcuts: DocsShortcut[] = [
+    { action: "Close the dialog", windows: "Esc" },
+    { action: "Move through its content", windows: "Tab / Shift+Tab", mac: "Tab / ⇧Tab" },
+  ];
+
   previewTabs: Record<string, "preview" | "code"> = {};
 
   readonly editOpen = signal(false);

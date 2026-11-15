@@ -530,49 +530,8 @@ section {
 
 /* ── Components table ────────────────────────────────────────── */
 
-.comp-table-wrap {
-  overflow-x: auto;
-  border: 1px solid color-mix(in oklab, var(--nga-color-border) 60%, transparent);
-  border-radius: var(--nga-radius-lg);
+.comp-grid {
   margin-top: 16px;
-}
-
-.comp-table {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: 13px;
-}
-
-.comp-table thead tr {
-  border-bottom: 1px solid color-mix(in oklab, var(--nga-color-border) 60%, transparent);
-}
-
-.comp-table th {
-  padding: 8px 14px;
-  text-align: left;
-  font-size: 11px;
-  font-weight: var(--nga-font-weight-semibold);
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  color: var(--nga-stone-400);
-  white-space: nowrap;
-  background: color-mix(in oklab, var(--nga-color-foreground) 5%, transparent);
-  font-family: var(--nga-font-mono);
-}
-
-.comp-table td {
-  padding: 8px 14px;
-  color: var(--nga-color-foreground);
-  border-top: 1px solid color-mix(in oklab, var(--nga-color-border) 60%, transparent);
-  vertical-align: middle;
-}
-
-.comp-table tbody tr:first-child td {
-  border-top: none;
-}
-
-.comp-table tbody tr:hover td {
-  background: color-mix(in oklab, var(--nga-color-foreground) 5%, transparent);
 }
 
 .comp-link {

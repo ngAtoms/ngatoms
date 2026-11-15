@@ -90,6 +90,8 @@ export interface NgAtomsGridContext<T = unknown> {
   startRowDrag(row: number, event: PointerEvent): void;
   /** Whether the row at a display position is the one being dragged. */
   isDraggedRow(row: number): boolean;
+  /** A key was pressed on a focused column header: move along the header, sort, filter, resize, or go back to the cells. */
+  headerKey(column: GridColumn<T>, event: KeyboardEvent): void;
   /** Gives a column a width, kept within the column's limits. */
   resizeColumn(column: GridColumn<T>, width: number): void;
   /** Fits a column to its header and the cells on screen. */

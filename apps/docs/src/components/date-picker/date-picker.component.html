@@ -1,4 +1,5 @@
 <button
+  #triggerEl
   type="button"
   class="nga-date-picker-trigger"
   [class.nga-date-picker-trigger--sm]="size() === 'sm'"
@@ -16,6 +17,21 @@
     class="nga-date-picker-trigger-text"
     [class.nga-date-picker-trigger-text--placeholder]="!displayValue()"
   >{{ displayValue() || placeholder() }}</span>
+
+  @if (displayValue()) {
+    <button
+      type="button"
+      class="nga-date-picker-clear"
+      aria-label="Clear date"
+      (click)="$event.stopPropagation(); clear()"
+    >
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
+        <line x1="18" y1="6" x2="6" y2="18"/>
+        <line x1="6" y1="6" x2="18" y2="18"/>
+      </svg>
+    </button>
+  }
+
   <svg class="nga-date-picker-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
     <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
     <line x1="16" y1="2" x2="16" y2="6"/>
@@ -32,6 +48,9 @@
   aria-label="Date picker"
   [attr.aria-hidden]="!open() || null"
 >
+  <!-- Screen-reader live region for month/year navigation announcements -->
+  <span class="nga-sr-only" aria-live="polite" aria-atomic="true">{{ open() ? monthLabel() : '' }}</span>
+
   <!-- ── Header ───────────────────────────────────────────── -->
   <div class="nga-date-picker-header">
     @if (view() === 'days') {
@@ -41,12 +60,20 @@
         </svg>
       </button>
       <div class="nga-date-picker-header-labels">
-        <button type="button" class="nga-date-picker-header-btn" (click)="toggleMonthView()">
-          {{ monthLabels()[viewMonth()] }}
-        </button>
-        <button type="button" class="nga-date-picker-header-btn" (click)="toggleYearView()">
-          {{ viewYear() }}
-        </button>
+        <button
+          type="button"
+          class="nga-date-picker-header-btn"
+          [attr.aria-label]="'Select month, currently ' + monthLabels()[viewMonth()]"
+          [attr.aria-expanded]="view() === 'months'"
+          (click)="toggleMonthView()"
+        >{{ monthLabels()[viewMonth()] }}</button>
+        <button
+          type="button"
+          class="nga-date-picker-header-btn"
+          [attr.aria-label]="'Select year, currently ' + viewYear()"
+          [attr.aria-expanded]="view() === 'years'"
+          (click)="toggleYearView()"
+        >{{ viewYear() }}</button>
       </div>
       <button type="button" class="nga-date-picker-nav" (click)="nextMonth()" aria-label="Next month">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
@@ -59,10 +86,14 @@
           <polyline points="15 18 9 12 15 6"/>
         </svg>
       </button>
-      <button type="button" class="nga-date-picker-header-btn" (click)="toggleYearView()">
-        {{ viewYear() }}
-      </button>
-      <span></span>
+      <button
+        type="button"
+        class="nga-date-picker-header-btn"
+        [attr.aria-label]="'Select year, currently ' + viewYear()"
+        [attr.aria-expanded]="view() === 'years'"
+        (click)="toggleYearView()"
+      >{{ viewYear() }}</button>
+      <span aria-hidden="true"></span>
     } @else {
       <button type="button" class="nga-date-picker-nav" (click)="prevYearRange()" aria-label="Previous years">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
@@ -80,27 +111,37 @@
 
   <!-- ── Day grid ─────────────────────────────────────────── -->
   @if (view() === 'days') {
-    <div class="nga-date-picker-grid" (mouseleave)="onGridLeave()">
-      @for (h of dayLabels(); track h) {
-        <span class="nga-date-picker-day-header">{{ h }}</span>
-      }
-      @for (day of calendarDays(); track day.dateStr) {
-        <button
-          type="button"
-          class="nga-date-picker-day"
-          [class.nga-date-picker-day--outside]="!day.isCurrentMonth"
-          [class.nga-date-picker-day--today]="day.isToday"
-          [class.nga-date-picker-day--selected]="day.isSelected"
-          [class.nga-date-picker-day--range-start]="day.isRangeStart"
-          [class.nga-date-picker-day--range-end]="day.isRangeEnd"
-          [class.nga-date-picker-day--in-range]="day.isInRange"
-          [class.nga-date-picker-day--disabled]="day.isDisabled"
-          [attr.aria-disabled]="day.isDisabled || null"
-          [attr.aria-pressed]="day.isSelected"
-          [attr.aria-label]="day.date.toLocaleDateString(locale(), { month: 'long', day: 'numeric', year: 'numeric' })"
-          (click)="selectDay(day)"
-          (mouseenter)="onDayHover(day)"
-        >{{ day.day }}</button>
+    <div class="nga-date-picker-grid" role="grid" (mouseleave)="onGridLeave()">
+      <div role="row" class="nga-date-picker-day-row">
+        @for (h of dayLabels(); track h) {
+          <span role="columnheader" class="nga-date-picker-day-header" aria-label="{{ h }}">{{ h }}</span>
+        }
+      </div>
+      @for (week of calendarWeeks(); track week[0].dateStr) {
+        <div role="row" class="nga-date-picker-day-row">
+          @for (day of week; track day.dateStr) {
+            <button
+              type="button"
+              role="gridcell"
+              class="nga-date-picker-day"
+              [class.nga-date-picker-day--outside]="!day.isCurrentMonth"
+              [class.nga-date-picker-day--today]="day.isToday"
+              [class.nga-date-picker-day--selected]="day.isSelected"
+              [class.nga-date-picker-day--range-start]="day.isRangeStart"
+              [class.nga-date-picker-day--range-end]="day.isRangeEnd"
+              [class.nga-date-picker-day--in-range]="day.isInRange"
+              [class.nga-date-picker-day--disabled]="day.isDisabled"
+              [attr.aria-disabled]="day.isDisabled || null"
+              [attr.aria-selected]="day.isSelected"
+              [attr.aria-current]="day.isToday ? 'date' : null"
+              [attr.aria-label]="day.date.toLocaleDateString(locale(), { month: 'long', day: 'numeric', year: 'numeric' })"
+              [attr.data-date]="day.dateStr"
+              [tabindex]="day.dateStr === focusedDateStr() ? 0 : -1"
+              (click)="selectDay(day)"
+              (mouseenter)="onDayHover(day)"
+            >{{ day.day }}</button>
+          }
+        </div>
       }
     </div>
   }
@@ -113,8 +154,9 @@
           type="button"
           class="nga-date-picker-month-cell"
           [class.nga-date-picker-month-cell--active]="i === viewMonth()"
+          [attr.aria-label]="m"
           (click)="selectMonth(i)"
-        >{{ monthsShort[i] }}</button>
+        >{{ monthLabelsShort()[i] }}</button>
       }
     </div>
   }

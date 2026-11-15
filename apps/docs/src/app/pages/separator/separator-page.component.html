@@ -95,22 +95,7 @@
         <section id="api">
             <h2 class="cp-h2">API</h2>
             <p class="cp-p">Inputs on <code class="cp-code">ngAtomsSeparator</code>. Apply to any block element — <code class="cp-code">&lt;div&gt;</code>, <code class="cp-code">&lt;hr&gt;</code>, or <code class="cp-code">&lt;span&gt;</code>.</p>
-            <div class="props-table">
-                <div class="props-table-header">
-                    <span>Prop</span>
-                    <span>Type</span>
-                    <span>Default</span>
-                    <span>Description</span>
-                </div>
-                @for (prop of props; track prop.name) {
-                    <div class="props-table-row">
-                        <code class="props-name">{{ prop.name }}</code>
-                        <code class="props-type">{{ prop.type }}</code>
-                        <code class="props-default">{{ prop.defaultVal }}</code>
-                        <span class="props-desc">{{ prop.description }}</span>
-                    </div>
-                }
-            </div>
+            <app-props-table [props]="props" />
         </section>
 
         <!-- Accessibility -->

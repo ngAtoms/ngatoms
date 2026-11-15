@@ -17,11 +17,13 @@ import { NgAtomsBadgeDirective } from "../../../components/badge";
 import { CodeBlockComponent } from "../../../components/code-block/code-block.component";
 import { TocComponent } from "../../../components/toc/toc.component";
 import { PreviewCard } from "../../../components/preview-card/preview-card";
+import { PropsTableComponent } from "../../../components/props-table/props-table.component";
+import { type DocsShortcut, ShortcutsTableComponent } from "../../../components/shortcuts-table/shortcuts-table.component";
 
 @Component({
   selector: "app-drawer-page",
   standalone: true,
-  imports: [
+  imports: [ShortcutsTableComponent, PropsTableComponent, 
     RouterLink,
     NgAtomsDrawerComponent,
     NgAtomsDrawerHeaderDirective,
@@ -41,6 +43,11 @@ import { PreviewCard } from "../../../components/preview-card/preview-card";
   styleUrl: "./drawer-page.component.css",
 })
 export class DrawerPageComponent {
+  readonly shortcuts: DocsShortcut[] = [
+    { action: "Close the drawer", windows: "Esc" },
+    { action: "Move through its content", windows: "Tab / Shift+Tab", mac: "Tab / ⇧Tab" },
+  ];
+
   readonly heroOpen = signal(false);
   readonly sideOpen = signal(false);
   readonly side = signal<NgAtomsDrawerSide>("left");

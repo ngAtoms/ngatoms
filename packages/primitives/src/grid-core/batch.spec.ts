@@ -3,7 +3,7 @@
  */
 
 import { describe, expect, it } from 'vitest';
-import { GridCellResolver, clearChanges, copyText, fillDownChanges, pasteChanges } from './batch';
+import { GridCellResolver, clearChanges, copyText, fillDownChanges, fillFromChanges, pasteChanges } from './batch';
 import { GridColumn, GridRow } from './types';
 
 interface Item {
@@ -65,6 +65,18 @@ describe('fillDownChanges', () => {
       { rowId: 'b', columnId: 'units', previous: 300, next: 1200 },
       { rowId: 'b', columnId: 'share', previous: 0.5, next: 0.25 },
     ]);
+  });
+});
+
+describe('fillFromChanges', () => {
+  it('gives the editable cells of the block the value of the source cell', () => {
+    const changes = fillFromChanges({ top: 0, left: 1, bottom: 2, right: 1 }, { row: 0, col: 1 }, resolve);
+    expect(changes).toEqual([{ rowId: 'b', columnId: 'units', previous: 300, next: 1200 }]);
+  });
+
+  it('fills right along a row', () => {
+    const changes = fillFromChanges({ top: 1, left: 1, bottom: 1, right: 2 }, { row: 1, col: 1 }, resolve);
+    expect(changes).toEqual([{ rowId: 'b', columnId: 'share', previous: 0.5, next: 300 }]);
   });
 });
 

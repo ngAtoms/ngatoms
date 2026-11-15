@@ -10,11 +10,13 @@ import {
 import { NgAtomsButtonDirective } from "../../../components/button";
 import { CodeBlockComponent } from "../../../components/code-block/code-block.component";
 import { TocComponent } from "../../../components/toc/toc.component";
+import { PropsTableComponent } from "../../../components/props-table/props-table.component";
+import { type DocsShortcut, ShortcutsTableComponent } from "../../../components/shortcuts-table/shortcuts-table.component";
 
 @Component({
   selector: "app-dropdown-menu-page",
   standalone: true,
-  imports: [
+  imports: [ShortcutsTableComponent, PropsTableComponent, 
     RouterLink,
     NgAtomsDropdownMenuComponent,
     NgAtomsDropdownTriggerDirective,
@@ -30,6 +32,12 @@ import { TocComponent } from "../../../components/toc/toc.component";
   styleUrl: "./dropdown-menu-page.component.css",
 })
 export class DropdownMenuPageComponent {
+  readonly shortcuts: DocsShortcut[] = [
+    { action: "Move between items", windows: "Arrow keys" },
+    { action: "Activate the item", windows: "Enter or Space", mac: "Return or Space" },
+    { action: "Close", windows: "Esc" },
+  ];
+
   previewTabs: Record<string, "preview" | "code"> = {};
 
   tab(id: string): "preview" | "code" {

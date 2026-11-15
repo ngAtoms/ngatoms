@@ -8,11 +8,12 @@ import { PreviewCard } from "../../../components/preview-card/preview-card";
 
 const VARIANTS = ["default", "filled", "ghost"] as const;
 const SIZES = ["xs", "sm", "md", "lg", "xl"] as const;
+import { PropsTableComponent } from "../../../components/props-table/props-table.component";
 
 @Component({
   selector: "app-input-page",
   standalone: true,
-  imports: [
+  imports: [PropsTableComponent, 
     RouterLink,
     NgAtomsInputDirective,
     NgAtomsBadgeDirective,

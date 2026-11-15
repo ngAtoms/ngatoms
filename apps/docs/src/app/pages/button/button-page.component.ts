@@ -5,10 +5,13 @@ import { CodeBlockComponent } from "../../../components/code-block/code-block.co
 import { NgAtomsBadgeDirective } from "../../../components/badge";
 import { TocComponent } from "../../../components/toc/toc.component";
 import { PreviewCard } from "../../../components/preview-card/preview-card";
+import { PropsTableComponent } from "../../../components/props-table/props-table.component";
+import { type DocsShortcut, ShortcutsTableComponent } from "../../../components/shortcuts-table/shortcuts-table.component";
+
 @Component({
   selector: "app-button-page",
   standalone: true,
-  imports: [
+  imports: [ShortcutsTableComponent, PropsTableComponent, 
     RouterLink,
     NgAtomsButtonDirective,
     CodeBlockComponent,
@@ -21,6 +24,10 @@ import { PreviewCard } from "../../../components/preview-card/preview-card";
   styleUrl: "./button-page.component.css",
 })
 export class ButtonPageComponent {
+  readonly shortcuts: DocsShortcut[] = [
+    { action: "Activate", windows: "Space or Enter", mac: "Space or Return" },
+  ];
+
   loadingDemo = signal(false);
   loadingError = signal(false);
 

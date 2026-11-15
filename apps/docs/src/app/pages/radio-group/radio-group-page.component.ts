@@ -8,11 +8,13 @@ import { NgAtomsBadgeDirective } from "../../../components/badge";
 import { CodeBlockComponent } from "../../../components/code-block/code-block.component";
 import { TocComponent } from "../../../components/toc/toc.component";
 import { PreviewCard } from "../../../components/preview-card/preview-card";
+import { PropsTableComponent } from "../../../components/props-table/props-table.component";
+import { type DocsShortcut, ShortcutsTableComponent } from "../../../components/shortcuts-table/shortcuts-table.component";
 
 @Component({
   selector: "app-radio-group-page",
   standalone: true,
-  imports: [
+  imports: [ShortcutsTableComponent, PropsTableComponent, 
     RouterLink,
     NgAtomsRadioGroupComponent,
     NgAtomsRadioDirective,
@@ -26,6 +28,12 @@ import { PreviewCard } from "../../../components/preview-card/preview-card";
   styleUrl: "./radio-group-page.component.css",
 })
 export class RadioGroupPageComponent {
+  readonly shortcuts: DocsShortcut[] = [
+    { action: "Move between options", windows: "Arrow keys" },
+    { action: "Select the focused option", windows: "Space" },
+    { action: "Leave the group", windows: "Tab" },
+  ];
+
   readonly heroPlan = signal("pro");
   readonly plan = signal("pro");
   readonly payment = signal("card");

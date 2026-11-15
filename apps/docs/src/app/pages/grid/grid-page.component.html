@@ -69,6 +69,17 @@
             </preview-card>
         </section>
 
+        <!-- As a plain table -->
+        <section id="plain-table">
+            <h2 class="cp-h2">As a plain table</h2>
+            <p class="cp-p">
+                For a short list the grid can behave like an ordinary table. <code class="cp-code">fitRows</code> makes it as tall as its rows, with no vertical scrolling.
+                A column with <code class="cp-code">flex</code> takes the width the others leave free, so the table always fills its container, and <code class="cp-code">wrap</code> lets long text run onto as many lines as <code class="cp-code">rowHeight</code> fits, with the full text as a tooltip.
+                The API tables further down this page, and on every other page of these docs, are this.
+            </p>
+            <app-code-block [code]="codePlainTable" language="typescript" />
+        </section>
+
         <!-- Filters and sorting -->
         <section id="filters">
             <h2 class="cp-h2">Filters and sorting</h2>
@@ -154,10 +165,10 @@
             <p class="cp-p">
                 Drag, <strong>Shift+click</strong> or <strong>Shift+arrows</strong> select a block; <strong>Ctrl+A</strong> (<strong>⌘A</strong> on a Mac) selects everything and <strong>Escape</strong> goes back to one cell.
                 <strong>Ctrl+C</strong> (<strong>⌘C</strong>) copies the block as tab-separated text, which is what spreadsheets read and write, and <strong>Ctrl+V</strong> (<strong>⌘V</strong>) pastes one: a single value fills the selection,
-                a block is laid out from its top-left corner. <strong>Delete</strong> clears the block, <strong>Ctrl+X</strong> (<strong>⌘X</strong>) cuts it, <strong>Ctrl+D</strong> (<strong>⌘D</strong>) fills the first row down.
+                a block is laid out from its top-left corner. <strong>Delete</strong> clears the block, <strong>Ctrl+X</strong> (<strong>⌘X</strong>) cuts it, <strong>Ctrl+D</strong> (<strong>⌘D</strong>) fills the first row down, and <strong>Ctrl+Enter</strong> (<strong>⌘Return</strong>) gives the whole block the value of the active cell.
                 Each of these is <strong>one</strong> <code class="cp-code">(cellsChange)</code> batch. <strong>Ctrl+Z</strong> and <strong>Ctrl+Y</strong> (<strong>⌘Z</strong> and <strong>⌘Y</strong>) emit the opposite batch as an ordinary change, so undo goes through the same rules as an edit.
                 Try it on the grid above: the line under it sums the selection, which the app works out from <code class="cp-code">(selectionChange)</code>.
-                Pasted values that a cell cannot take are skipped and reported through <code class="cp-code">(cellsRejected)</code>. One operation touches at most 200,000 cells.
+                Pasted values that a cell cannot take are skipped and reported through <code class="cp-code">(cellsRejected)</code>. One operation touches at most 200,000 cells; a larger one is not carried out, and <code class="cp-code">(batchRejected)</code> says so.
             </p>
             <app-code-block [code]="codeSelection" language="typescript" />
         </section>
@@ -420,7 +431,7 @@
                             [(filters)]="shortcutFilters"
                             density="comfortable"
                             label="Keyboard shortcuts"
-                            style="--nga-grid-height: 30.2rem"
+                            style="--nga-grid-height: 32rem"
                         />
                     </div>
                 </ng-container>
@@ -490,24 +501,9 @@
         <!-- API -->
         <section id="api">
             <h2 class="cp-h2">API</h2>
-            @for (group of propGroups; track group.target) {
+            @for (group of propGroups; track group.kind + group.target) {
                 <p class="cp-p">{{ group.kind }} on <code class="cp-code">{{ group.target }}</code>.</p>
-                <div class="props-table">
-                    <div class="props-table-header">
-                        <span>Prop</span>
-                        <span>Type</span>
-                        <span>Default</span>
-                        <span>Description</span>
-                    </div>
-                    @for (prop of group.props; track prop.name) {
-                        <div class="props-table-row">
-                            <code class="props-name">{{ prop.name }}</code>
-                            <code class="props-type">{{ prop.type }}</code>
-                            <code class="props-default">{{ prop.defaultVal }}</code>
-                            <span class="props-desc">{{ prop.description }}</span>
-                        </div>
-                    }
-                </div>
+                <app-props-table [props]="group.props" [label]="group.kind + ' of ' + group.target" />
             }
         </section>
 

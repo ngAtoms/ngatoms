@@ -11,11 +11,13 @@ import { NgAtomsBadgeDirective } from "../../../components/badge";
 import { CodeBlockComponent } from "../../../components/code-block/code-block.component";
 import { TocComponent } from "../../../components/toc/toc.component";
 import { PreviewCard } from "../../../components/preview-card/preview-card";
+import { PropsTableComponent } from "../../../components/props-table/props-table.component";
+import { type DocsShortcut, ShortcutsTableComponent } from "../../../components/shortcuts-table/shortcuts-table.component";
 
 @Component({
   selector: "app-stepper-page",
   standalone: true,
-  imports: [
+  imports: [ShortcutsTableComponent, PropsTableComponent, 
     RouterLink,
     NgAtomsStepperComponent,
     NgAtomsStepComponent,
@@ -30,6 +32,11 @@ import { PreviewCard } from "../../../components/preview-card/preview-card";
   styleUrl: "./stepper-page.component.css",
 })
 export class StepperPageComponent {
+  readonly shortcuts: DocsShortcut[] = [
+    { action: "Move between steps", windows: "Tab / Shift+Tab", mac: "Tab / ⇧Tab" },
+    { action: "Activate a step", windows: "Enter or Space", mac: "Return or Space" },
+  ];
+
   readonly heroStep = signal(1);
   readonly clickStep = signal(2);
 

@@ -14,6 +14,8 @@ export type GridMove =
   | 'right'
   | 'rowStart'
   | 'rowEnd'
+  | 'columnStart'
+  | 'columnEnd'
   | 'gridStart'
   | 'gridEnd'
   | 'pageUp'
@@ -64,6 +66,8 @@ export function movePosition(position: GridCellPosition, move: GridMove, bounds:
     right: { row, col: col + 1 },
     rowStart: { row, col: 0 },
     rowEnd: { row, col: lastCol },
+    columnStart: { row: 0, col },
+    columnEnd: { row: lastRow, col },
     gridStart: { row: 0, col: 0 },
     gridEnd: { row: lastRow, col: lastCol },
     pageUp: { row: row - page, col },
@@ -75,16 +79,17 @@ export function movePosition(position: GridCellPosition, move: GridMove, bounds:
 /**
  * Maps a keyboard event to a move.
  * Follows the WAI-ARIA grid pattern: Home and End travel the row, and
- * with Ctrl (or Cmd) they travel the whole grid.
+ * with Ctrl (⌘ on a Mac) they travel the whole grid. Ctrl with an arrow
+ * goes to the edge of the grid in that direction.
  *
  * @returns The move, or null when the key is not a navigation key.
  */
 export function moveForKey(key: string, withCtrl: boolean): GridMove | null {
   switch (key) {
-    case 'ArrowUp':    return 'up';
-    case 'ArrowDown':  return 'down';
-    case 'ArrowLeft':  return 'left';
-    case 'ArrowRight': return 'right';
+    case 'ArrowUp':    return withCtrl ? 'columnStart' : 'up';
+    case 'ArrowDown':  return withCtrl ? 'columnEnd' : 'down';
+    case 'ArrowLeft':  return withCtrl ? 'rowStart' : 'left';
+    case 'ArrowRight': return withCtrl ? 'rowEnd' : 'right';
     case 'Home':       return withCtrl ? 'gridStart' : 'rowStart';
     case 'End':        return withCtrl ? 'gridEnd' : 'rowEnd';
     case 'PageUp':     return 'pageUp';

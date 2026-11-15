@@ -58,6 +58,13 @@ describe('moveForKey', () => {
     expect(moveForKey('End', true)).toBe('gridEnd');
   });
 
+  it('sends Ctrl with an arrow to the edge of the grid', () => {
+    expect(moveForKey('ArrowUp', true)).toBe('columnStart');
+    expect(moveForKey('ArrowRight', true)).toBe('rowEnd');
+    expect(movePosition({ row: 5, col: 5 }, 'columnEnd', bounds)).toEqual({ row: 99, col: 5 });
+    expect(movePosition({ row: 5, col: 5 }, 'columnStart', bounds)).toEqual({ row: 0, col: 5 });
+  });
+
   it('ignores other keys', () => {
     expect(moveForKey('a', false)).toBeNull();
     expect(moveForKey('Enter', false)).toBeNull();

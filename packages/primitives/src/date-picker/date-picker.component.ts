@@ -209,7 +209,7 @@ export class NgAtomsDatePickerComponent implements OnDestroy {
     effect(() => {
       if (this.open()) {
         this.deregister = this.overlay.register(
-          () => this.close(false),
+          reason => this.close(reason === 'escape'),
           [this.el.nativeElement, this.panelEl().nativeElement],
           { closeOnScroll: false }
         );

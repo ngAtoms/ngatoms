@@ -5,11 +5,13 @@ import { NgAtomsBadgeDirective } from "../../../components/badge";
 import { CodeBlockComponent } from "../../../components/code-block/code-block.component";
 import { TocComponent } from "../../../components/toc/toc.component";
 import { PreviewCard } from "../../../components/preview-card/preview-card";
+import { PropsTableComponent } from "../../../components/props-table/props-table.component";
+import { type DocsShortcut, ShortcutsTableComponent } from "../../../components/shortcuts-table/shortcuts-table.component";
 
 @Component({
   selector: "app-switch-page",
   standalone: true,
-  imports: [
+  imports: [ShortcutsTableComponent, PropsTableComponent, 
     RouterLink,
     NgAtomsSwitchDirective,
     NgAtomsBadgeDirective,
@@ -22,6 +24,11 @@ import { PreviewCard } from "../../../components/preview-card/preview-card";
   styleUrl: "./switch-page.component.css",
 })
 export class SwitchPageComponent {
+  readonly shortcuts: DocsShortcut[] = [
+    { action: "Toggle the focused switch", windows: "Space" },
+    { action: "Move between switches", windows: "Tab / Shift+Tab", mac: "Tab / ⇧Tab" },
+  ];
+
   readonly heroOn = signal(true);
   readonly stateOff = signal(false);
   readonly stateOn = signal(true);

@@ -209,8 +209,52 @@ export function fitColumnModel<T>(
   const model = buildColumnModel(nodes, widths);
   const { left, right } = model.panes;
   const budget = viewportWidth * MAX_PINNED_SHARE;
-  if (viewportWidth <= 0 || left.width + right.width <= budget) return model;
+  if (viewportWidth <= 0) return model;
+  if (left.width + right.width <= budget) return withFlex(nodes, model, viewportWidth, widths);
 
   const released: GridColumnPin[] = left.width <= budget ? ['right'] : ['left', 'right'];
-  return buildColumnModel(unpinColumns(nodes, new Set(released)), widths);
+  const unpinned = unpinColumns(nodes, new Set(released));
+  return withFlex(unpinned, buildColumnModel(unpinned, widths), viewportWidth, widths);
+}
+
+/**
+ * Shares the width the columns leave free among the `flex` columns.
+ * Each gets a part in proportion to its `flex`, on top of its own
+ * width; the last one takes the rounding remainder so the columns end
+ * exactly at the edge. Columns the user resized are left alone.
+ *
+ * @returns Widths for the flex columns that grow, by column id; empty when there is nothing to share.
+ */
+export function flexWidths<T>(
+  model: GridColumnModel<T>,
+  viewportWidth: number,
+  widths?: ReadonlyMap<string, number>,
+): Map<string, number> {
+  const { left, center, right } = model.panes;
+  const free = viewportWidth - left.width - center.width - right.width;
+  const growing = model.columns.filter(column => (column.flex ?? 0) > 0 && !widths?.has(column.id));
+  const shares = growing.reduce((total, column) => total + (column.flex ?? 0), 0);
+  const grown = new Map<string, number>();
+  if (free <= 0 || shares <= 0) return grown;
+
+  let given = 0;
+  growing.forEach((column, index) => {
+    const isLast = index === growing.length - 1;
+    const extra = isLast ? free - given : Math.floor((free * (column.flex ?? 0)) / shares);
+    given += extra;
+    grown.set(column.id, columnWidth(column, widths) + extra);
+  });
+  return grown;
+}
+
+/** Rebuilds a model with its flex columns grown to fill the viewport, when any can grow. */
+function withFlex<T>(
+  nodes: GridColumnNode<T>[],
+  model: GridColumnModel<T>,
+  viewportWidth: number,
+  widths?: ReadonlyMap<string, number>,
+): GridColumnModel<T> {
+  const grown = flexWidths(model, viewportWidth, widths);
+  if (!grown.size) return model;
+  return buildColumnModel(nodes, new Map([...(widths ?? []), ...grown]));
 }

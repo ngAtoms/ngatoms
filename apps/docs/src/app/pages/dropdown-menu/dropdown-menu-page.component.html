@@ -111,19 +111,7 @@
 
     <!-- Props -->
     <h2 id="props" class="cp-h2">Props</h2>
-    <div class="props-table">
-      <div class="props-table-header">
-        <span>Prop</span><span>Type</span><span>Default</span><span>Description</span>
-      </div>
-      @for (prop of props; track prop.name) {
-        <div class="props-table-row">
-          <span class="props-name">{{ prop.name }}</span>
-          <span class="props-type">{{ prop.type }}</span>
-          <span class="props-default">{{ prop.default }}</span>
-          <span class="props-desc">{{ prop.desc }}</span>
-        </div>
-      }
-    </div>
+    <app-props-table [props]="props" />
 
     <!-- A11y -->
     <h2 id="a11y" class="cp-h2">Accessibility</h2>
@@ -138,6 +126,8 @@
         </li>
       }
     </ul>
+    <p class="cp-p">Keyboard shortcuts, on Windows / Linux and on macOS:</p>
+    <app-shortcuts-table [shortcuts]="shortcuts" />
 
     <!-- Prev / Next -->
     <nav class="cp-prevnext">

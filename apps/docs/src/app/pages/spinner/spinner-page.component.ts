@@ -7,11 +7,12 @@ import { TocComponent } from "../../../components/toc/toc.component";
 import { PreviewCard } from "../../../components/preview-card/preview-card";
 
 const SIZES = ["sm", "md", "lg"] as const;
+import { PropsTableComponent } from "../../../components/props-table/props-table.component";
 
 @Component({
   selector: "app-spinner-page",
   standalone: true,
-  imports: [
+  imports: [PropsTableComponent, 
     RouterLink,
     NgAtomsSpinnerDirective,
     NgAtomsBadgeDirective,

@@ -15,11 +15,12 @@ const VARIANTS = [
   "solid",
   "outline",
 ] as const;
+import { PropsTableComponent } from "../../../components/props-table/props-table.component";
 
 @Component({
   selector: "app-badge-page",
   standalone: true,
-  imports: [
+  imports: [PropsTableComponent, 
     RouterLink,
     NgAtomsBadgeDirective,
     CodeBlockComponent,

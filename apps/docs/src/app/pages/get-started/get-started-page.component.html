@@ -158,33 +158,27 @@
         All are Angular standalone directives/components — no runtime dependencies.
       </p>
 
-      <div class="comp-table-wrap">
-        <table class="comp-table">
-          <thead>
-            <tr>
-              <th>Component</th>
-              <th>Description</th>
-              <th>Status</th>
-            </tr>
-          </thead>
-          <tbody>
-            @for (c of components; track c.name) {
-              <tr>
-                <td>
-                  @if (c.route) {
-                    <a [routerLink]="c.route" class="comp-link">{{ c.name }}</a>
-                  } @else {
-                    <span class="comp-name">{{ c.name }}</span>
-                  }
-                </td>
-                <td class="comp-desc">{{ c.description }}</td>
-                <td>
-                  <span [class]="'status-badge status-' + c.status">{{ c.status }}</span>
-                </td>
-              </tr>
+      <div class="comp-grid">
+        <nga-grid
+          [rows]="componentRows"
+          [columns]="componentColumns"
+          [(filters)]="componentFilters"
+          [(sort)]="componentSort"
+          [rowHeight]="40"
+          [fitRows]="true"
+          label="Components"
+        >
+          <ng-template ngaGridCell="name" let-value let-row="row">
+            @if (routeOf(row); as route) {
+              <a [routerLink]="route" class="comp-link">{{ value }}</a>
+            } @else {
+              <span class="comp-name">{{ value }}</span>
             }
-          </tbody>
-        </table>
+          </ng-template>
+          <ng-template ngaGridCell="status" let-value>
+            <span [class]="'status-badge status-' + value">{{ value }}</span>
+          </ng-template>
+        </nga-grid>
       </div>
     </section>
 

@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy } from "@angular/core";
+import { Component, ChangeDetectionStrategy, signal } from "@angular/core";
 import { RouterLink } from "@angular/router";
 import { NgAtomsTabsComponent } from "../../../components/tabs";
 import { NgAtomsTabListDirective } from "../../../components/tabs";
@@ -6,6 +6,14 @@ import { NgAtomsTabTriggerDirective } from "../../../components/tabs";
 import { NgAtomsTabPanelDirective } from "../../../components/tabs";
 import { CodeBlockComponent } from "../../../components/code-block/code-block.component";
 import { TocComponent } from "../../../components/toc/toc.component";
+import {
+  type GridColumn,
+  type GridFilters,
+  type GridRow,
+  type GridSort,
+  NgAtomsGridCellDirective,
+  NgAtomsGridComponent,
+} from "../../../components/grid";
 
 export interface ComponentEntry {
   name: string;
@@ -18,6 +26,8 @@ export interface ComponentEntry {
   selector: "app-get-started-page",
   standalone: true,
   imports: [
+    NgAtomsGridComponent,
+    NgAtomsGridCellDirective,
     RouterLink,
     NgAtomsTabsComponent,
     NgAtomsTabListDirective,
@@ -335,6 +345,22 @@ export class AppComponent {}`;
       status: "alpha",
     },
   ];
+
+  readonly componentRows: GridRow<ComponentEntry>[] = this.components.map((component) => ({
+    id: component.name,
+    data: component,
+  }));
+  readonly componentColumns: GridColumn<ComponentEntry>[] = [
+    { id: "name", header: "Component", width: 170, sortable: true, filter: "text" },
+    { id: "description", header: "Description", width: 280, flex: 1, wrap: true },
+    { id: "status", header: "Status", width: 120, sortable: true, filter: "set" },
+  ];
+  readonly componentFilters = signal<GridFilters<ComponentEntry>>({});
+  readonly componentSort = signal<GridSort[]>([]);
+
+  routeOf(row: GridRow<unknown>): string | undefined {
+    return (row.data as ComponentEntry).route;
+  }
 
   get availableCount(): number {
     return this.components.filter((component) => component.status !== "planned").length;

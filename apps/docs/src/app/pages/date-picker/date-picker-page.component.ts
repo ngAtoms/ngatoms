@@ -5,11 +5,13 @@ import { NgAtomsBadgeDirective } from "../../../components/badge";
 import { CodeBlockComponent } from "../../../components/code-block/code-block.component";
 import { TocComponent } from "../../../components/toc/toc.component";
 import { PreviewCard } from "../../../components/preview-card/preview-card";
+import { PropsTableComponent } from "../../../components/props-table/props-table.component";
+import { type DocsShortcut, ShortcutsTableComponent } from "../../../components/shortcuts-table/shortcuts-table.component";
 
 @Component({
   selector: "app-date-picker-page",
   standalone: true,
-  imports: [
+  imports: [ShortcutsTableComponent, PropsTableComponent, 
     RouterLink,
     NgAtomsDatePickerComponent,
     NgAtomsBadgeDirective,
@@ -22,6 +24,13 @@ import { PreviewCard } from "../../../components/preview-card/preview-card";
   styleUrl: "./date-picker-page.component.css",
 })
 export class DatePickerPageComponent {
+  readonly shortcuts: DocsShortcut[] = [
+    { action: "Move between days", windows: "Arrow keys" },
+    { action: "Previous / next month", windows: "Page Up / Page Down", mac: "Fn+↑ / Fn+↓" },
+    { action: "Select the day", windows: "Enter or Space", mac: "Return or Space" },
+    { action: "Close the calendar", windows: "Esc" },
+  ];
+
   readonly single = signal("");
   readonly rangeStart = signal("");
   readonly rangeEnd = signal("");

@@ -9,7 +9,7 @@
   [attr.tabindex]="activeCell() ? -1 : 0"
   (scroll)="onScroll()"
   (keydown)="onKeydown($event)"
-  (focusin)="onFocusIn()"
+  (focusin)="onFocusIn($event)"
   (copy)="onCopy($event)"
   (cut)="onCut($event)"
   (paste)="onPaste($event)"

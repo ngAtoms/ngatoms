@@ -7,11 +7,13 @@ import { NgAtomsBadgeDirective } from "../../../components/badge";
 import { CodeBlockComponent } from "../../../components/code-block/code-block.component";
 import { TocComponent } from "../../../components/toc/toc.component";
 import { PreviewCard } from "../../../components/preview-card/preview-card";
+import { PropsTableComponent } from "../../../components/props-table/props-table.component";
+import { type DocsShortcut, ShortcutsTableComponent } from "../../../components/shortcuts-table/shortcuts-table.component";
 
 @Component({
   selector: "app-slider-page",
   standalone: true,
-  imports: [
+  imports: [ShortcutsTableComponent, PropsTableComponent, 
     RouterLink,
     NgAtomsSliderComponent,
     NgAtomsBadgeDirective,
@@ -24,6 +26,12 @@ import { PreviewCard } from "../../../components/preview-card/preview-card";
   styleUrl: "./slider-page.component.css",
 })
 export class SliderPageComponent {
+  readonly shortcuts: DocsShortcut[] = [
+    { action: "Move one step", windows: "Arrow keys" },
+    { action: "Move a tenth of the range", windows: "Page Up / Page Down", mac: "Fn+↑ / Fn+↓" },
+    { action: "Jump to the bounds", windows: "Home / End", mac: "Fn+← / Fn+→" },
+  ];
+
   readonly heroVal = signal(40);
   readonly rangeVal = signal<[number, number]>([20, 70]);
   readonly stepVal = signal(2.5);

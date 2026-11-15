@@ -7,11 +7,13 @@ import { NgAtomsBadgeDirective } from "../../../components/badge";
 import { CodeBlockComponent } from "../../../components/code-block/code-block.component";
 import { TocComponent } from "../../../components/toc/toc.component";
 import { PreviewCard } from "../../../components/preview-card/preview-card";
+import { PropsTableComponent } from "../../../components/props-table/props-table.component";
+import { type DocsShortcut, ShortcutsTableComponent } from "../../../components/shortcuts-table/shortcuts-table.component";
 
 @Component({
   selector: "app-pagination-page",
   standalone: true,
-  imports: [
+  imports: [ShortcutsTableComponent, PropsTableComponent, 
     RouterLink,
     NgAtomsPaginationComponent,
     NgAtomsBadgeDirective,
@@ -24,6 +26,11 @@ import { PreviewCard } from "../../../components/preview-card/preview-card";
   styleUrl: "./pagination-page.component.css",
 })
 export class PaginationPageComponent {
+  readonly shortcuts: DocsShortcut[] = [
+    { action: "Move between buttons", windows: "Tab / Shift+Tab", mac: "Tab / ⇧Tab" },
+    { action: "Activate a button", windows: "Enter or Space", mac: "Return or Space" },
+  ];
+
   readonly heroPage = signal(1);
   readonly siblingPage = signal(10);
   readonly sizePage = signal(2);

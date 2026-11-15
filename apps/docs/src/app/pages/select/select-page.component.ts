@@ -13,10 +13,13 @@ import { NgAtomsBadgeDirective } from "../../../components/badge";
 import { CodeBlockComponent } from "../../../components/code-block/code-block.component";
 import { TocComponent } from "../../../components/toc/toc.component";
 import { PreviewCard } from "../../../components/preview-card/preview-card";
+import { PropsTableComponent } from "../../../components/props-table/props-table.component";
+import { type DocsShortcut, ShortcutsTableComponent } from "../../../components/shortcuts-table/shortcuts-table.component";
+
 @Component({
   selector: "app-select-page",
   standalone: true,
-  imports: [
+  imports: [ShortcutsTableComponent, PropsTableComponent, 
     RouterLink,
     NgAtomsSelectComponent,
     NgAtomsBadgeDirective,
@@ -29,6 +32,13 @@ import { PreviewCard } from "../../../components/preview-card/preview-card";
   styleUrl: "./select-page.component.css",
 })
 export class SelectPageComponent {
+  readonly shortcuts: DocsShortcut[] = [
+    { action: "Move between options", windows: "Arrow keys" },
+    { action: "Select the option", windows: "Enter or Space", mac: "Return or Space" },
+    { action: "First / last option", windows: "Home / End", mac: "Fn+← / Fn+→" },
+    { action: "Close the panel", windows: "Esc" },
+  ];
+
   readonly skills = signal<string[]>([]);
 
   readonly selectedSkillLabels = computed(() =>

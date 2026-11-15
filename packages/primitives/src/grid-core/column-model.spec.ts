@@ -3,7 +3,7 @@
  */
 
 import { describe, expect, it } from 'vitest';
-import { DEFAULT_COLUMN_WIDTH, DEFAULT_MIN_COLUMN_WIDTH, buildColumnModel, clampColumnWidth, columnHeaderPaths, fitColumnModel } from './column-model';
+import { DEFAULT_COLUMN_WIDTH, DEFAULT_MIN_COLUMN_WIDTH, buildColumnModel, clampColumnWidth, columnHeaderPaths, fitColumnModel, flexWidths } from './column-model';
 import { GridColumnNode } from './types';
 
 const months = (quarter: string, names: string[]): GridColumnNode => ({
@@ -177,5 +177,34 @@ describe('clampColumnWidth', () => {
     expect(clampColumnWidth({ id: 'a', header: 'A' }, 100.6)).toBe(101);
     expect(clampColumnWidth({ id: 'a', header: 'A' }, 10)).toBe(DEFAULT_MIN_COLUMN_WIDTH);
     expect(clampColumnWidth({ id: 'a', header: 'A', minWidth: 80 }, 10)).toBe(80);
+  });
+});
+
+describe('flex columns', () => {
+  const nodes: GridColumnNode[] = [
+    { id: 'name', header: 'Name', width: 100 },
+    { id: 'type', header: 'Type', width: 100, flex: 1 },
+    { id: 'notes', header: 'Notes', width: 100, flex: 3 },
+  ];
+
+  it('share the free width in proportion and end at the edge', () => {
+    const model = fitColumnModel(nodes, 701);
+    const widths = Array.from(model.panes.center.offsets.slice(1), (end, index) => end - model.panes.center.offsets[index]);
+    expect(widths).toEqual([100, 200, 401]);
+  });
+
+  it('keep their own width when there is nothing to share', () => {
+    expect(fitColumnModel(nodes, 250).panes.center.width).toBe(300);
+    expect(flexWidths(buildColumnModel(nodes), 250).size).toBe(0);
+  });
+
+  it('leave a column the user resized alone', () => {
+    const model = fitColumnModel(nodes, 700, new Map([['type', 150]]));
+    const widths = Array.from(model.panes.center.offsets.slice(1), (end, index) => end - model.panes.center.offsets[index]);
+    expect(widths).toEqual([100, 150, 450]);
+  });
+
+  it('do not grow before the viewport is measured', () => {
+    expect(fitColumnModel(nodes, 0).panes.center.width).toBe(300);
   });
 });

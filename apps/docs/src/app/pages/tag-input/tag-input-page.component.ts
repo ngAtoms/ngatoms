@@ -7,11 +7,13 @@ import { NgAtomsBadgeDirective } from "../../../components/badge";
 import { CodeBlockComponent } from "../../../components/code-block/code-block.component";
 import { TocComponent } from "../../../components/toc/toc.component";
 import { PreviewCard } from "../../../components/preview-card/preview-card";
+import { PropsTableComponent } from "../../../components/props-table/props-table.component";
+import { type DocsShortcut, ShortcutsTableComponent } from "../../../components/shortcuts-table/shortcuts-table.component";
 
 @Component({
   selector: "app-tag-input-page",
   standalone: true,
-  imports: [
+  imports: [ShortcutsTableComponent, PropsTableComponent, 
     RouterLink,
     NgAtomsTagInputComponent,
     NgAtomsBadgeDirective,
@@ -24,6 +26,12 @@ import { PreviewCard } from "../../../components/preview-card/preview-card";
   styleUrl: "./tag-input-page.component.css",
 })
 export class TagInputPageComponent {
+  readonly shortcuts: DocsShortcut[] = [
+    { action: "Add the typed text as a tag", windows: "Enter or a separator", mac: "Return or a separator" },
+    { action: "Remove the last tag", windows: "Backspace in an empty field", mac: "Delete (⌫) in an empty field" },
+    { action: "Reach the remove buttons", windows: "Tab" },
+  ];
+
   readonly heroTags = signal(["angular", "signals"]);
   readonly maxTags = signal(["one", "two"]);
   readonly sizeTags = signal(["design", "tokens"]);

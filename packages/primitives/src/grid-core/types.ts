@@ -86,6 +86,14 @@ export interface GridColumn<T = unknown> {
   /** Width in px. */
   width?: number;
   minWidth?: number;
+  /**
+   * Share of the width the other columns leave free. Columns with
+   * `flex` grow to fill the grid; `width` is then their smallest size.
+   * A column the user has resized keeps the width it was given.
+   */
+  flex?: number;
+  /** Lets long text run onto as many lines as the row height fits, instead of one line cut short. */
+  wrap?: boolean;
   /** Whether the user can drag the column's edge to resize it. Defaults to true. */
   resizable?: boolean;
   /** Leaves the column out of the grid without removing it from the column tree. */
@@ -169,6 +177,16 @@ export interface GridRowMove {
   targetId: GridRowId;
   /** `inside` makes the row a child of the target. */
   position: GridDropPosition;
+}
+
+/**
+ * An operation the grid did not carry out because it would touch more
+ * cells than one batch may hold.
+ */
+export interface GridBatchRejection {
+  operation: 'copy' | 'cut' | 'paste' | 'clear' | 'fill';
+  /** Most cells one operation may touch. */
+  limit: number;
 }
 
 /** A pasted value that did not become a change. */

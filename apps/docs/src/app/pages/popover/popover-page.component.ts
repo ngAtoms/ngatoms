@@ -7,11 +7,13 @@ import {
 import { NgAtomsButtonDirective } from "../../../components/button";
 import { CodeBlockComponent } from "../../../components/code-block/code-block.component";
 import { TocComponent } from "../../../components/toc/toc.component";
+import { PropsTableComponent } from "../../../components/props-table/props-table.component";
+import { type DocsShortcut, ShortcutsTableComponent } from "../../../components/shortcuts-table/shortcuts-table.component";
 
 @Component({
   selector: "app-popover-page",
   standalone: true,
-  imports: [
+  imports: [ShortcutsTableComponent, PropsTableComponent, 
     RouterLink,
     NgAtomsPopoverComponent,
     NgAtomsPopoverTriggerDirective,
@@ -24,6 +26,10 @@ import { TocComponent } from "../../../components/toc/toc.component";
   styleUrl: "./popover-page.component.css",
 })
 export class PopoverPageComponent {
+  readonly shortcuts: DocsShortcut[] = [
+    { action: "Close the popover", windows: "Esc" },
+  ];
+
   previewTabs: Record<string, "preview" | "code"> = {};
 
   open = model(false);

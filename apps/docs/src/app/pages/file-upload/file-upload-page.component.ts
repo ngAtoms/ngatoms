@@ -8,11 +8,13 @@ import { NgAtomsBadgeDirective } from "../../../components/badge";
 import { CodeBlockComponent } from "../../../components/code-block/code-block.component";
 import { TocComponent } from "../../../components/toc/toc.component";
 import { PreviewCard } from "../../../components/preview-card/preview-card";
+import { PropsTableComponent } from "../../../components/props-table/props-table.component";
+import { type DocsShortcut, ShortcutsTableComponent } from "../../../components/shortcuts-table/shortcuts-table.component";
 
 @Component({
   selector: "app-file-upload-page",
   standalone: true,
-  imports: [
+  imports: [ShortcutsTableComponent, PropsTableComponent, 
     RouterLink,
     NgAtomsFileUploadComponent,
     NgAtomsBadgeDirective,
@@ -25,6 +27,10 @@ import { PreviewCard } from "../../../components/preview-card/preview-card";
   styleUrl: "./file-upload-page.component.css",
 })
 export class FileUploadPageComponent {
+  readonly shortcuts: DocsShortcut[] = [
+    { action: "Open the file browser", windows: "Enter or Space", mac: "Return or Space" },
+  ];
+
   readonly heroFiles = signal<File[]>([]);
   readonly imageFiles = signal<File[]>([]);
   readonly customFiles = signal<File[]>([]);

@@ -177,22 +177,7 @@
         <section id="api">
             <h2 class="cp-h2">API</h2>
             <p class="cp-p">Inputs on <code class="cp-code">nga-radio-group</code>. The <code class="cp-code">ngAtomsRadio</code> directive takes <code class="cp-code">value</code> and <code class="cp-code">size</code>.</p>
-            <div class="props-table">
-                <div class="props-table-header">
-                    <span>Prop</span>
-                    <span>Type</span>
-                    <span>Default</span>
-                    <span>Description</span>
-                </div>
-                @for (prop of props; track prop.name) {
-                    <div class="props-table-row">
-                        <code class="props-name">{{ prop.name }}</code>
-                        <code class="props-type">{{ prop.type }}</code>
-                        <code class="props-default">{{ prop.defaultVal }}</code>
-                        <span class="props-desc">{{ prop.description }}</span>
-                    </div>
-                }
-            </div>
+            <app-props-table [props]="props" />
         </section>
 
         <!-- Accessibility -->
@@ -210,6 +195,8 @@
                     </li>
                 }
             </ul>
+            <p class="cp-p">Keyboard shortcuts, on Windows / Linux and on macOS:</p>
+            <app-shortcuts-table [shortcuts]="shortcuts" />
         </section>
 
         <!-- Prev / Next -->

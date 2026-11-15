@@ -14,11 +14,12 @@ const VARIANTS = [
   "destructive",
   "info",
 ] as const;
+import { PropsTableComponent } from "../../../components/props-table/props-table.component";
 
 @Component({
   selector: "app-progress-page",
   standalone: true,
-  imports: [
+  imports: [PropsTableComponent, 
     RouterLink,
     NgAtomsProgressComponent,
     NgAtomsBadgeDirective,

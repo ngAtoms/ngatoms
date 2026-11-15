@@ -7,11 +7,13 @@ import { NgAtomsBadgeDirective } from "../../../components/badge";
 import { CodeBlockComponent } from "../../../components/code-block/code-block.component";
 import { TocComponent } from "../../../components/toc/toc.component";
 import { PreviewCard } from "../../../components/preview-card/preview-card";
+import { PropsTableComponent } from "../../../components/props-table/props-table.component";
+import { type DocsShortcut, ShortcutsTableComponent } from "../../../components/shortcuts-table/shortcuts-table.component";
 
 @Component({
   selector: "app-rating-page",
   standalone: true,
-  imports: [
+  imports: [ShortcutsTableComponent, PropsTableComponent, 
     RouterLink,
     NgAtomsRatingComponent,
     NgAtomsBadgeDirective,
@@ -24,6 +26,12 @@ import { PreviewCard } from "../../../components/preview-card/preview-card";
   styleUrl: "./rating-page.component.css",
 })
 export class RatingPageComponent {
+  readonly shortcuts: DocsShortcut[] = [
+    { action: "Raise the rating", windows: "→ or ↑" },
+    { action: "Lower the rating", windows: "← or ↓" },
+    { action: "One star / the maximum", windows: "Home / End", mac: "Fn+← / Fn+→" },
+  ];
+
   readonly heroVal = signal(3);
   readonly sizeVal = signal(4);
   readonly tenVal = signal(7);

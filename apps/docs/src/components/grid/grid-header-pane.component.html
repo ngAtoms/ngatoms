@@ -8,6 +8,8 @@
     [attr.aria-colspan]="item.cell.colSpan > 1 ? item.cell.colSpan : null"
     [attr.aria-sort]="ariaSort(column)"
     [attr.data-column-id]="column?.id ?? null"
+    [attr.tabindex]="column ? -1 : null"
+    (keydown)="column && grid.headerKey(column, $event)"
     [style.left.px]="item.left"
     [style.top.px]="item.top"
     [style.width.px]="item.width"

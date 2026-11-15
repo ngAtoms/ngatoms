@@ -8,11 +8,13 @@ import { NgAtomsBadgeDirective } from "../../../components/badge";
 import { CodeBlockComponent } from "../../../components/code-block/code-block.component";
 import { TocComponent } from "../../../components/toc/toc.component";
 import { PreviewCard } from "../../../components/preview-card/preview-card";
+import { PropsTableComponent } from "../../../components/props-table/props-table.component";
+import { type DocsShortcut, ShortcutsTableComponent } from "../../../components/shortcuts-table/shortcuts-table.component";
 
 @Component({
   selector: "app-combobox-page",
   standalone: true,
-  imports: [
+  imports: [ShortcutsTableComponent, PropsTableComponent, 
     RouterLink,
     NgAtomsComboboxComponent,
     NgAtomsBadgeDirective,
@@ -25,6 +27,13 @@ import { PreviewCard } from "../../../components/preview-card/preview-card";
   styleUrl: "./combobox-page.component.css",
 })
 export class ComboboxPageComponent {
+  readonly shortcuts: DocsShortcut[] = [
+    { action: "Open the list and move through it", windows: "↓ / ↑" },
+    { action: "Pick the active option", windows: "Enter", mac: "Return" },
+    { action: "Close the list", windows: "Esc" },
+    { action: "Close and move to the next field", windows: "Tab" },
+  ];
+
   readonly frameworks: NgAtomsComboboxOption[] = [
     { value: "angular", label: "Angular" },
     { value: "react", label: "React" },

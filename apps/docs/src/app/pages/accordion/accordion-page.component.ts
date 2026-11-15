@@ -8,11 +8,13 @@ import { NgAtomsBadgeDirective } from "../../../components/badge";
 import { CodeBlockComponent } from "../../../components/code-block/code-block.component";
 import { TocComponent } from "../../../components/toc/toc.component";
 import { PreviewCard } from "../../../components/preview-card/preview-card";
+import { PropsTableComponent } from "../../../components/props-table/props-table.component";
+import { type DocsShortcut, ShortcutsTableComponent } from "../../../components/shortcuts-table/shortcuts-table.component";
 
 @Component({
   selector: "app-accordion-page",
   standalone: true,
-  imports: [
+  imports: [ShortcutsTableComponent, PropsTableComponent, 
     RouterLink,
     NgAtomsAccordionComponent,
     NgAtomsAccordionItemComponent,
@@ -28,6 +30,12 @@ import { PreviewCard } from "../../../components/preview-card/preview-card";
   styleUrl: "./accordion-page.component.css",
 })
 export class AccordionPageComponent {
+  readonly shortcuts: DocsShortcut[] = [
+    { action: "Move between triggers", windows: "↑ / ↓" },
+    { action: "Toggle the focused panel", windows: "Space or Enter", mac: "Space or Return" },
+    { action: "First / last trigger", windows: "Home / End", mac: "Fn+← / Fn+→" },
+  ];
+
   readonly heroCode = `<nga-accordion defaultValue="what">
   <nga-accordion-item value="what">
     <button ngAtomsAccordionTrigger>What is NgAtoms?</button>

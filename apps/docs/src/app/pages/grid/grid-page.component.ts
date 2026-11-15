@@ -61,6 +61,7 @@ import {
 import { NgAtomsBadgeDirective } from "../../../components/badge";
 import { CodeBlockComponent } from "../../../components/code-block/code-block.component";
 import { TocComponent } from "../../../components/toc/toc.component";
+import { PropsTableComponent } from "../../../components/props-table/props-table.component";
 import { PreviewCard } from "../../../components/preview-card/preview-card";
 
 @Component({
@@ -79,6 +80,7 @@ import { PreviewCard } from "../../../components/preview-card/preview-card";
     NgAtomsBadgeDirective,
     CodeBlockComponent,
     TocComponent,
+    PropsTableComponent,
     PreviewCard,
   ],
   templateUrl: "./grid-page.component.html",
@@ -152,7 +154,9 @@ export class GridPageComponent {
     ["Navigation", "Move one cell", "Arrow keys", "Arrow keys"],
     ["Navigation", "Start / end of the row", "Home / End", "Fn+← / Fn+→"],
     ["Navigation", "First / last cell of the grid", "Ctrl+Home / Ctrl+End", "⌘Fn+← / ⌘Fn+→"],
+    ["Navigation", "Edge of the grid in a direction", "Ctrl + arrow key", "⌘ + arrow key"],
     ["Navigation", "One screen up / down", "Page Up / Page Down", "Fn+↑ / Fn+↓"],
+    ["Navigation", "Parent row", "← on a row with nothing to collapse", "← on a row with nothing to collapse"],
     ["Navigation", "Expand / collapse a row", "→ / ← in the tree column", "→ / ← in the tree column"],
     ["Selection", "Extend the selection", "Shift + any navigation key", "⇧ + any navigation key"],
     ["Selection", "Select everything", "Ctrl+A", "⌘A"],
@@ -163,12 +167,20 @@ export class GridPageComponent {
     ["Editing", "Cancel the edit", "Esc", "Esc"],
     ["Editing", "Clear the selection", "Delete or Backspace", "Delete (⌫) or Fn+Delete"],
     ["Editing", "Fill the first row down", "Ctrl+D", "⌘D"],
+    ["Editing", "Fill the selection from the active cell", "Ctrl+Enter", "⌘Return"],
     ["Editing", "Undo", "Ctrl+Z", "⌘Z"],
     ["Editing", "Redo", "Ctrl+Y or Ctrl+Shift+Z", "⌘Y or ⇧⌘Z"],
     ["Clipboard", "Copy", "Ctrl+C", "⌘C"],
     ["Clipboard", "Cut", "Ctrl+X", "⌘X"],
     ["Clipboard", "Paste", "Ctrl+V", "⌘V"],
+    ["Header", "Go to the column header", "↑ from the first row", "↑ from the first row"],
+    ["Header", "Along the header", "← / →, Home / End", "← / →, Fn+← / Fn+→"],
+    ["Header", "Sort", "Enter or Space", "Return or Space"],
+    ["Header", "Open the filter", "Alt+↓", "⌥↓"],
+    ["Header", "Resize the column", "Shift+← / Shift+→", "⇧← / ⇧→"],
+    ["Header", "Back to the cells", "↓ or Esc", "↓ or Esc"],
     ["Rows", "Move the row up / down", "Alt+↑ / Alt+↓", "⌥↑ / ⌥↓"],
+    ["Rows", "Cancel a drag", "Esc", "Esc"],
   ].map(([group, action, windows, mac], index) => ({ id: index, data: { group, action, windows, mac } }));
   readonly shortcutFilters = signal<GridFilters<Record<string, string>>>({});
 
@@ -258,6 +270,8 @@ export class GridPageComponent {
 
   readonly codeSimple = "const columns: GridColumnNode<StockLine>[] = [\n  { id: 'warehouse', header: 'Warehouse', width: 120 },\n  { id: 'category', header: 'Category', width: 120 },\n  { id: 'product', header: 'Product', width: 170 },\n  { id: 'supplier', header: 'Supplier', width: 120 },\n  { id: 'inStock', header: 'In stock', type: 'number', format: units },\n  { id: 'reorderLevel', header: 'Reorder at', type: 'number', format: units },\n  { id: 'difference', header: 'Diff', type: 'number', format: units, variance: true },\n];\n\n// <nga-grid [rows]=\"rows\" [columns]=\"columns\" />";
 
+  readonly codePlainTable = "// <nga-grid [rows]=\"rows\" [columns]=\"columns\" [rowHeight]=\"52\" [fitRows]=\"true\" />\n\nconst columns: GridColumn<Prop>[] = [\n  { id: 'name', header: 'Prop', width: 180 },\n  { id: 'type', header: 'Type', width: 210, wrap: true },\n  { id: 'description', header: 'Description', width: 260, flex: 1, wrap: true },\n];";
+
   readonly codeFilters = "const columns: GridColumnNode<StockLine>[] = [\n  { id: 'warehouse', header: 'Warehouse', sortable: true, filter: 'set' },\n  { id: 'product', header: 'Product', sortable: true, filter: 'text' },\n  { id: 'inStock', header: 'In stock', type: 'number', sortable: true, filter: 'number' },\n];\n\nreadonly filters = signal<GridFilters<StockLine>>({});\nreadonly sort = signal<GridSort[]>([{ columnId: 'inStock', direction: 'desc' }]);\n\n// <nga-grid [rows]=\"rows\" [columns]=\"columns\" [(filters)]=\"filters\" [(sort)]=\"sort\" />\n\n// Restore a saved view:\nthis.filters.set({\n  warehouse: { type: 'set', values: ['Lisbon', 'Toronto'] },\n  inStock: { type: 'number', operator: 'lt', value: 100 },\n});";
 
   readonly codeExternal = "// <nga-grid\n//   [rows]=\"rows()\"\n//   [columns]=\"columns\"\n//   filterMode=\"external\"\n//   sortMode=\"external\"\n//   [(filters)]=\"filters\"\n//   [(sort)]=\"sort\"\n// />\n\nreadonly rows = signal<GridRow<Line>[]>([]);\nreadonly filters = signal<GridFilters<Line>>({});\nreadonly sort = signal<GridSort[]>([]);\n\nconstructor() {\n  effect(() => {\n    this.api.query(this.filters(), this.sort()).then(rows => this.rows.set(rows));\n  });\n}";
@@ -309,6 +323,8 @@ export class GridPageComponent {
         { name: "columnWidths", type: "Record<string, number> (model)", defaultVal: "{}", description: "Two-way binding for the widths the user set by dragging, by column id." },
         { name: "rowReorder", type: "boolean", defaultVal: "false", description: "Shows a handle on each row to drag it by. Moves are emitted, not applied." },
         { name: "density", type: "'compact' | 'comfortable'", defaultVal: "'compact'", description: "Row height preset." },
+        { name: "rowHeight", type: "number | null", defaultVal: "null", description: "Height of a row in px. Overrides the density preset; use it with columns that wrap." },
+        { name: "fitRows", type: "boolean", defaultVal: "false", description: "Makes the grid as tall as its rows, with no vertical scrolling. Every row is rendered, so keep it to short lists." },
         { name: "locale", type: "string", defaultVal: "browser locale", description: "Locale used to format and parse numbers." },
         { name: "label", type: "string", defaultVal: "''", description: "Accessible name of the grid." },
       ],
@@ -319,6 +335,7 @@ export class GridPageComponent {
       props: [
         { name: "cellsChange", type: "GridCellChange[]", defaultVal: "—", description: "The user edited cells. Each change has rowId, columnId, previous and next. Apply it and pass new rows in." },
         { name: "cellsRejected", type: "GridCellRejection[]", defaultVal: "—", description: "Pasted values that were skipped: the cell does not accept edits, or the text is not a value for the column." },
+        { name: "batchRejected", type: "GridBatchRejection", defaultVal: "—", description: "A copy, cut, paste, clear or fill was not carried out because it would touch more cells than one batch may hold." },
         { name: "selectionChange", type: "GridSelection | null", defaultVal: "—", description: "The selected block changed: its range in display positions, plus the row ids and column ids it covers." },
         { name: "rowMove", type: "GridRowMove", defaultVal: "—", description: "A row was dragged onto another, or moved from the keyboard (Alt+↑ / Alt+↓, ⌥↑ / ⌥↓ on a Mac): rowId, targetId and position ('before' | 'after' | 'inside')." },
         { name: "rowExpand", type: "GridRowId", defaultVal: "—", description: "A row with hasChildren and no loaded children was expanded. Load them and pass them in." },
@@ -366,6 +383,8 @@ export class GridPageComponent {
         { name: "type", type: "'text' | 'number'", defaultVal: "'text'", description: "Number columns are right-aligned and formatted." },
         { name: "width", type: "number", defaultVal: "120", description: "Width in px." },
         { name: "minWidth", type: "number", defaultVal: "48", description: "Smallest width a resize can reach, in px." },
+        { name: "flex", type: "number", defaultVal: "—", description: "Share of the width the other columns leave free. The column grows to fill the grid; width is then its smallest size." },
+        { name: "wrap", type: "boolean", defaultVal: "false", description: "Lets long text run onto as many lines as the row height fits." },
         { name: "resizable", type: "boolean", defaultVal: "true", description: "Whether the user can drag the edge of the header." },
         { name: "hidden", type: "boolean", defaultVal: "false", description: "Leaves the column out without removing it from the column tree." },
         { name: "pinned", type: "'left' | 'right'", defaultVal: "—", description: "Keeps the column in view." },
@@ -411,7 +430,7 @@ export class GridPageComponent {
     { icon: "selection", title: "Selection", body: "Shift with any navigation key extends the selection; Ctrl+A (⌘A on a Mac) selects all and Escape collapses it. Selected cells expose aria-selected. Copy, cut and paste use the standard clipboard shortcuts and need no permission prompt." },
     { icon: "arrows-out-cardinal", title: "Reordering", body: "Alt+↑ and Alt+↓ (⌥↑ and ⌥↓ on a Mac) move the active row one place, so reordering does not depend on dragging. The active cell follows the row." },
     { icon: "table", title: "Grid semantics", body: "role=\"treegrid\" (or \"grid\" without hierarchy), with aria-rowcount and aria-colcount for the full data and aria-rowindex and aria-colindex on rendered cells, so virtualization does not hide the real size." },
-    { icon: "funnel", title: "Sorting and filters", body: "Sortable headers expose aria-sort. The filter popover is a labelled dialog that takes focus and returns it on close. Header controls — sort, filter and the resize handle — are not yet reachable from the keyboard." },
+    { icon: "funnel", title: "Sorting and filters", body: "Sortable headers expose aria-sort. The filter popover is a labelled dialog that takes focus and returns it on close. From the first row, ↑ moves to the column header: Enter sorts, Alt+↓ (⌥↓ on a Mac) opens the filter, and Shift+← / Shift+→ resize the column." },
     { icon: "hand-tap", title: "Touch and small screens", body: "On coarse pointers rows grow to the comfortable height and header controls to a 44px target. Pinned columns release on narrow containers so the scrolling area never collapses." },
     { icon: "palette", title: "Not color alone", body: "Variance values keep their sign or parentheses, and cell states have a marker or a text equivalent as well as a color." },
   ];
@@ -419,6 +438,7 @@ export class GridPageComponent {
   readonly tocItems = [
     { id: "usage", label: "Usage" },
     { id: "simple", label: "Simple headers" },
+    { id: "plain-table", label: "As a plain table" },
     { id: "filters", label: "Filters and sorting" },
     { id: "external", label: "Filtering on the server" },
     { id: "editing", label: "Editing" },

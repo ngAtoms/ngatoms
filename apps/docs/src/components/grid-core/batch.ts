@@ -95,6 +95,32 @@ export function fillDownChanges<T>(rect: GridCellRect, resolve: GridCellResolver
 }
 
 /**
+ * Changes that give every editable cell of a block the value of one
+ * cell, usually the active one. With a block one row high this fills
+ * right; one column wide, it fills down.
+ *
+ * @returns The changes, or null when the block is past the cell limit.
+ */
+export function fillFromChanges<T>(
+  rect: GridCellRect,
+  source: GridCellPosition,
+  resolve: GridCellResolver<T>,
+): GridCellChange[] | null {
+  const positions = rectPositions(rect);
+  const from = resolve(source);
+  if (!positions) return null;
+  if (!from) return [];
+
+  const value = getCellValue(from.row, from.column);
+  return compact(
+    positions.map(position => {
+      const target = resolve(position);
+      return target?.editable ? createCellChange(target.row, target.column, value) : null;
+    }),
+  );
+}
+
+/**
  * Turns a pasted block into changes.
  * Cells that do not accept edits, and text that is not a value for its
  * column, are skipped and reported rather than stopping the paste.

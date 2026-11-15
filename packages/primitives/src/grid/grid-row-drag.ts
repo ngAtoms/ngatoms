@@ -2,6 +2,7 @@
  * @file Pointer tracking for dragging a row by its handle. It reports
  * where a drop would land as the pointer moves, scrolls the grid when
  * the pointer nears its top or bottom edge, and reports the final target.
+ * Escape cancels the drag.
  */
 
 import { GridDropTarget, dropTargetAt } from '../grid-core';
@@ -59,8 +60,17 @@ export function trackRowDrag(
     target = dropTargetAt(offset, rowHeight, rowCount, allowInside);
     onMove(target);
   };
+  /** Cancels the drag on Escape. */
+  const key = (pressed: KeyboardEvent): void => {
+    if (pressed.key !== 'Escape') return;
+    pressed.preventDefault();
+    pressed.stopPropagation();
+    if (handle.hasPointerCapture(event.pointerId)) handle.releasePointerCapture(event.pointerId);
+    finish(false);
+  };
   /** Stops listening and reports the outcome. */
   const finish = (dropped: boolean): void => {
+    handle.ownerDocument.removeEventListener('keydown', key, true);
     handle.removeEventListener('pointermove', move);
     handle.removeEventListener('pointerup', drop);
     handle.removeEventListener('pointercancel', cancel);
@@ -71,6 +81,7 @@ export function trackRowDrag(
   /** The browser took the pointer away. */
   const cancel = (): void => finish(false);
 
+  handle.ownerDocument.addEventListener('keydown', key, true);
   handle.addEventListener('pointermove', move);
   handle.addEventListener('pointerup', drop);
   handle.addEventListener('pointercancel', cancel);

@@ -8,11 +8,13 @@ import { NgAtomsBadgeDirective } from "../../../components/badge";
 import { CodeBlockComponent } from "../../../components/code-block/code-block.component";
 import { TocComponent } from "../../../components/toc/toc.component";
 import { PreviewCard } from "../../../components/preview-card/preview-card";
+import { PropsTableComponent } from "../../../components/props-table/props-table.component";
+import { type DocsShortcut, ShortcutsTableComponent } from "../../../components/shortcuts-table/shortcuts-table.component";
 
 @Component({
   selector: "app-tabs-page",
   standalone: true,
-  imports: [
+  imports: [ShortcutsTableComponent, PropsTableComponent, 
     RouterLink,
     NgAtomsTabsComponent,
     NgAtomsTabListDirective,
@@ -28,6 +30,12 @@ import { PreviewCard } from "../../../components/preview-card/preview-card";
   styleUrl: "./tabs-page.component.css",
 })
 export class TabsPageComponent {
+  readonly shortcuts: DocsShortcut[] = [
+    { action: "Move between tabs", windows: "← / →" },
+    { action: "First / last tab", windows: "Home / End", mac: "Fn+← / Fn+→" },
+    { action: "Activate the focused tab", windows: "Space or Enter", mac: "Space or Return" },
+  ];
+
   readonly heroCode = `<nga-tabs defaultValue="account">
   <div ngAtomsTabList>
     <button ngAtomsTabTrigger value="account">Account</button>
