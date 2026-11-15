@@ -1,3 +1,7 @@
+/**
+ * @file Avatar: an image, with initials or an icon to fall back on.
+ */
+
 import {
   Component,
   ElementRef,
@@ -10,6 +14,7 @@ import {
 
 export type NgAtomsAvatarSize = 'sm' | 'md' | 'lg' | 'xl';
 
+/** Avatar: an image, with initials or an icon to fall back on. */
 @Component({
   selector: 'nga-avatar',
   standalone: true,
@@ -43,6 +48,7 @@ export class NgAtomsAvatarComponent {
     });
   }
 
+  /** Notes that the image failed to load, so the fallback shows. */
   onError(): void {
     this.imgError.set(true);
   }

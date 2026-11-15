@@ -1,3 +1,7 @@
+/**
+ * @file Dropdown menu: a trigger and a panel of items.
+ */
+
 import {
   Component,
   ElementRef,
@@ -37,6 +41,7 @@ const OPPOSITE: Record<NgAtomsDropdownPlacement, NgAtomsDropdownPlacement> = {
   right: 'left',
 };
 
+/** Dropdown menu: a trigger and a panel of items. */
 @Component({
   selector: 'nga-dropdown-menu',
   standalone: true,
@@ -81,6 +86,7 @@ export class NgAtomsDropdownMenuComponent implements NgAtomsDropdownMenuContext,
     });
   }
 
+  /** Keeps the panel by the trigger while the page scrolls. */
   @HostListener('window:scroll')
   onWindowScroll(): void {
     if (this.open()) {
@@ -88,6 +94,7 @@ export class NgAtomsDropdownMenuComponent implements NgAtomsDropdownMenuContext,
     }
   }
 
+  /** Opens the menu with focus on the first item, or closes it. */
   toggle(): void {
     this.open.update(v => !v);
     if (this.open()) {
@@ -98,6 +105,7 @@ export class NgAtomsDropdownMenuComponent implements NgAtomsDropdownMenuContext,
     }
   }
 
+  /** Opens the menu with focus on the last item. */
   openAndFocusLast(): void {
     this.open.set(true);
     requestAnimationFrame(() => {
@@ -106,10 +114,12 @@ export class NgAtomsDropdownMenuComponent implements NgAtomsDropdownMenuContext,
     });
   }
 
+  /** Closes the menu. */
   close(): void {
     this.open.set(false);
   }
 
+  /** The items that can take focus, in order. */
   private items(): HTMLElement[] {
     return Array.from(
       this.panelEl().nativeElement.querySelectorAll<HTMLElement>(
@@ -118,27 +128,42 @@ export class NgAtomsDropdownMenuComponent implements NgAtomsDropdownMenuContext,
     );
   }
 
+  /** Focuses the first item. */
   focusFirst(): void {
     this.items()[0]?.focus();
   }
 
+  /** Focuses the last item. */
   focusLast(): void {
     const items = this.items();
     items[items.length - 1]?.focus();
   }
 
+  /** Focuses the item after the given one, wrapping to the first. */
   focusNext(current: HTMLElement): void {
     const items = this.items();
     const idx = items.indexOf(current);
     items[(idx + 1) % items.length]?.focus();
   }
 
+  /** Focuses the item before the given one, wrapping to the last. */
   focusPrev(current: HTMLElement): void {
     const items = this.items();
     const idx = items.indexOf(current);
     items[(idx - 1 + items.length) % items.length]?.focus();
   }
 
+  /**
+   * Coordinates of the panel for a placement and an alignment, before
+   * any check that it fits the viewport.
+   *
+   * @param p Side of the trigger the panel opens on.
+   * @param a Alignment of the panel along that side.
+   * @param tr Bounding box of the trigger.
+   * @param pr Bounding box of the panel.
+   * @param gap Space between the trigger and the panel, in px.
+   * @returns Viewport coordinates of the panel's top-left corner.
+   */
   private computeCoords(
     p: NgAtomsDropdownPlacement,
     a: NgAtomsDropdownAlign,
@@ -163,6 +188,7 @@ export class NgAtomsDropdownMenuComponent implements NgAtomsDropdownMenuContext,
     return { top, left };
   }
 
+  /** Whether the panel at these coordinates stays inside the viewport, keeping a margin. */
   private fits(top: number, left: number, pr: DOMRect, margin: number): boolean {
     return (
       top >= margin &&
@@ -172,6 +198,11 @@ export class NgAtomsDropdownMenuComponent implements NgAtomsDropdownMenuContext,
     );
   }
 
+  /**
+   * Places the panel next to the trigger, flipping to the opposite side
+   * when it does not fit. When neither side fits, the preferred side is
+   * clamped inside the viewport, keeping the margin.
+   */
   private position(): void {
     const panel = this.panelEl().nativeElement;
     const tr = this.el.nativeElement.getBoundingClientRect();
@@ -206,6 +237,7 @@ export class NgAtomsDropdownMenuComponent implements NgAtomsDropdownMenuContext,
     this.renderer.setStyle(panel, 'left', `${left}px`);
   }
 
+  /** Removes the panel from the body and stops listening for outside clicks. */
   ngOnDestroy(): void {
     this.deregister?.();
     const panel = this.panelEl().nativeElement;

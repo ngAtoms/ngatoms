@@ -240,17 +240,17 @@ describe('nga-grid', () => {
     const grid = await focusGrid(fixture);
     const host = fixture.componentInstance;
 
-    // The host records moves without applying them, so positions are those of p1, a, b, p2, c.
+    /** The host records moves without applying them, so positions are those of p1, a, b, p2, c. */
     await key(fixture, grid, { key: 'ArrowDown', altKey: true });
     expect(host.moves).toEqual([{ rowId: 'p1', targetId: 'p2', position: 'after' }]);
 
-    // The active cell went to p1's landing place, which in unchanged data is b, the last child of p1.
+    /** The active cell went to p1's landing place, which in unchanged data is b, the last child of p1. */
     await key(fixture, grid, { key: 'ArrowDown', altKey: true });
     expect(host.moves).toHaveLength(1);
     await key(fixture, grid, { key: 'ArrowUp', altKey: true });
     expect(host.moves[1]).toEqual({ rowId: 'b', targetId: 'a', position: 'before' });
 
-    // From p2, Alt+↑ skips p1's children and lands before p1.
+    /** From p2, Alt+↑ skips p1's children and lands before p1. */
     await key(fixture, grid, { key: 'ArrowDown' });
     await key(fixture, grid, { key: 'ArrowDown' });
     await key(fixture, grid, { key: 'ArrowUp', altKey: true });

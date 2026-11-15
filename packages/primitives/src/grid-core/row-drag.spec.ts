@@ -71,7 +71,7 @@ function visible(entries: [string, number][]): GridRowList {
 }
 
 describe('siblingMove', () => {
-  // p1 (expanded) > a, b · p2 (expanded) > c · p3
+  /** p1 (expanded) > a, b · p2 (expanded) > c · p3 */
   const list = visible([
     ['p1', 1],
     ['a', 2],

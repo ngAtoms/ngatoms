@@ -1,3 +1,7 @@
+/**
+ * @file Tooltip shown on hover or focus.
+ */
+
 import {
   Directive,
   ElementRef,
@@ -11,6 +15,7 @@ import { DOCUMENT } from '@angular/common';
 
 export type NgAtomsTooltipPlacement = 'top' | 'bottom' | 'left' | 'right';
 
+/** Tooltip shown on hover or focus. */
 @Directive({
   selector: '[ngAtomsTooltip]',
   standalone: true,
@@ -31,6 +36,7 @@ export class NgAtomsTooltipDirective implements OnDestroy {
   private tooltipEl: HTMLElement | null = null;
   private showTimer: ReturnType<typeof setTimeout> | null = null;
 
+  /** Schedules the tooltip to show after the delay. */
   @HostListener('mouseenter')
   @HostListener('focus')
   onShow(): void {
@@ -39,17 +45,20 @@ export class NgAtomsTooltipDirective implements OnDestroy {
     this.showTimer = setTimeout(() => this.show(), this.delay());
   }
 
+  /** Hides the tooltip. */
   @HostListener('mouseleave')
   @HostListener('blur')
   onHide(): void {
     this.hide();
   }
 
+  /** Hides the tooltip on Escape. */
   @HostListener('keydown.escape')
   onEscape(): void {
     this.hide();
   }
 
+  /** Keeps the tooltip by its element while the page scrolls. */
   @HostListener('window:scroll')
   onWindowScroll(): void {
     if (this.tooltipEl) {
@@ -57,6 +66,7 @@ export class NgAtomsTooltipDirective implements OnDestroy {
     }
   }
 
+  /** Creates the tooltip element in the body and places it. */
   private show(): void {
     this.tooltipEl = this.renderer.createElement('div');
     this.renderer.addClass(this.tooltipEl, 'nga-tooltip');
@@ -71,6 +81,7 @@ export class NgAtomsTooltipDirective implements OnDestroy {
     });
   }
 
+  /** Places the tooltip on the side the placement asks for, kept inside the viewport. */
   private position(): void {
     if (!this.tooltipEl) return;
     const gap = 8;
@@ -105,6 +116,7 @@ export class NgAtomsTooltipDirective implements OnDestroy {
     this.renderer.setStyle(this.tooltipEl, 'left', `${left}px`);
   }
 
+  /** Removes the tooltip element and cancels a pending show. */
   private hide(): void {
     this.clearTimer();
     if (this.tooltipEl) {
@@ -113,6 +125,7 @@ export class NgAtomsTooltipDirective implements OnDestroy {
     }
   }
 
+  /** Cancels a pending show. */
   private clearTimer(): void {
     if (this.showTimer !== null) {
       clearTimeout(this.showTimer);
@@ -120,6 +133,7 @@ export class NgAtomsTooltipDirective implements OnDestroy {
     }
   }
 
+  /** Removes the tooltip element. */
   ngOnDestroy(): void {
     this.hide();
   }

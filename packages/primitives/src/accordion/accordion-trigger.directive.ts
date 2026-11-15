@@ -1,3 +1,7 @@
+/**
+ * @file The button that opens and closes its accordion item.
+ */
+
 import {
   Directive,
   ElementRef,
@@ -8,6 +12,7 @@ import {
 } from '@angular/core';
 import { NgAtomsAccordionItemComponent } from './accordion-item.component';
 
+/** The button that opens and closes its accordion item. */
 @Directive({
   selector: '[ngAtomsAccordionTrigger]',
   standalone: true,
@@ -33,11 +38,13 @@ export class NgAtomsAccordionTriggerDirective {
     });
   }
 
+  /** Toggles the item. */
   @HostListener('click')
   onClick(): void {
     this.item.toggle();
   }
 
+  /** Enter and Space toggle the panel. */
   @HostListener('keydown', ['$event'])
   onKeydown(event: KeyboardEvent): void {
     if (event.key === 'Enter' || event.key === ' ') {

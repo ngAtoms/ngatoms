@@ -1,3 +1,7 @@
+/**
+ * @file The content shown while its tab is active.
+ */
+
 import {
   Directive,
   ElementRef,
@@ -8,6 +12,7 @@ import {
 } from '@angular/core';
 import { NgAtomsTabsComponent } from './tabs.component';
 
+/** The content shown while its tab is active. */
 @Directive({
   selector: '[ngAtomsTabPanel]',
   standalone: true,

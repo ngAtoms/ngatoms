@@ -70,7 +70,7 @@ function coords(
  * Computes fixed-position coordinates for a floating panel anchored to a
  * rect. Tries the preferred placement, flips to the opposite side when it
  * does not fit, and otherwise clamps the preferred placement into the
- * viewport. The grid filter is the caller.
+ * viewport. Shared by popover, dropdown-menu, combobox and context-menu.
  */
 export function computeOverlayPosition(
   anchor: NgAtomsOverlayRect,

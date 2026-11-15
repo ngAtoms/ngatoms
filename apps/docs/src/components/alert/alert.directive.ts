@@ -1,3 +1,7 @@
+/**
+ * @file Alert: the box, its title and its description.
+ */
+
 import {
   Directive,
   ElementRef,
@@ -9,6 +13,7 @@ import {
 
 export type NgAtomsAlertVariant = 'default' | 'info' | 'success' | 'warning' | 'destructive';
 
+/** Alert box, styled by variant. */
 @Directive({
   selector: '[ngAtomsAlert]',
   standalone: true,
@@ -33,6 +38,7 @@ export class NgAtomsAlertDirective {
 
 }
 
+/** Title of an alert. */
 @Directive({
   selector: '[ngAtomsAlertTitle]',
   standalone: true,
@@ -40,6 +46,7 @@ export class NgAtomsAlertDirective {
 })
 export class NgAtomsAlertTitleDirective {}
 
+/** Description of an alert. */
 @Directive({
   selector: '[ngAtomsAlertDescription]',
   standalone: true,

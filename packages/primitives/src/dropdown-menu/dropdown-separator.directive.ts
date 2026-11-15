@@ -1,5 +1,10 @@
+/**
+ * @file A rule between groups of items.
+ */
+
 import { Directive } from '@angular/core';
 
+/** A rule between groups of items. */
 @Directive({
   selector: '[ngAtomsDropdownSeparator]',
   standalone: true,

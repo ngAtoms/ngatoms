@@ -1,3 +1,8 @@
+/**
+ * @file Accordion root. Holds which items are open and applies the single or
+ * multiple mode.
+ */
+
 import {
   Component,
   effect,
@@ -5,6 +10,7 @@ import {
   signal,
 } from '@angular/core';
 
+/** Accordion root. Holds which items are open and applies the single or multiple mode. */
 @Component({
   selector: 'nga-accordion',
   standalone: true,
@@ -27,6 +33,10 @@ export class NgAtomsAccordionComponent {
     });
   }
 
+  /**
+   * Opens an item, or closes it when it is open. In single mode opening one
+   * closes the others, and the open item only closes when `collapsible` is set.
+   */
   toggle(value: string): void {
     const current = new Set(this.openItems());
     if (current.has(value)) {

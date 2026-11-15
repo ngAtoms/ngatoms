@@ -236,15 +236,16 @@ export class NgAtomsGridFilterComponent<T = unknown> implements OnInit, OnDestro
    * Moves the popover to the document body, places it under the header
    * button and focuses its first field.
    * It lives in the body because an ancestor with a transform or filter
-   * would otherwise clip a fixed-position element.
+   * would otherwise clip a fixed-position element. A scroll listener in
+   * the capture phase follows the button through a scroll of the page or
+   * of any container; the list's own scroll lands there too and leaves the
+   * panel where it is.
    */
   private show(): void {
     const panel = this.panel().nativeElement;
     const anchor = this.anchor();
     this.renderer.appendChild(this.document.body, panel);
     this.place();
-    // Capture, so a scroll of the page or of any container follows the button.
-    // The list's own scroll lands here too and leaves the panel where it is.
     this.document.addEventListener('scroll', this.place, { capture: true, passive: true });
 
     this.deregister = this.overlay.register(() => this.dismiss.emit(), [panel, anchor], {

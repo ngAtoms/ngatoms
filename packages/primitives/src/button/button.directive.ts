@@ -1,3 +1,7 @@
+/**
+ * @file Button, styled by variant and size, with a loading state.
+ */
+
 import {
   Directive,
   ElementRef,
@@ -18,6 +22,7 @@ export type NgAtomsButtonVariant =
 
 export type NgAtomsButtonSize = 'xs' | 'sm' | 'md' | 'lg' | 'xl';
 
+/** Button, styled by variant and size, with a loading state. */
 @Directive({
   selector: '[ngAtomsButton]',
   standalone: true,
@@ -68,6 +73,7 @@ export class NgAtomsButtonDirective implements OnDestroy {
     });
   }
 
+  /** Swallows clicks while the button is loading, so the handlers bound to it do not run. */
   @HostListener('click', ['$event'])
   onHostClick(event: MouseEvent): void {
     if (this.loading()) {
@@ -75,6 +81,7 @@ export class NgAtomsButtonDirective implements OnDestroy {
     }
   }
 
+  /** Removes the spinner element. */
   ngOnDestroy(): void {
     if (this._spinnerEl) {
       this.renderer.removeChild(this.el.nativeElement, this._spinnerEl);
@@ -82,6 +89,7 @@ export class NgAtomsButtonDirective implements OnDestroy {
     }
   }
 
+  /** Marks the button busy and disabled for assistive technology, and inserts the spinner. */
   private _activateLoading(): void {
     if (this._spinnerEl) return;
 
@@ -97,6 +105,10 @@ export class NgAtomsButtonDirective implements OnDestroy {
     this._spinnerEl = spinner;
   }
 
+  /**
+   * Removes the spinner and the busy state. `aria-disabled` stays when the
+   * button is natively disabled.
+   */
   private _deactivateLoading(): void {
     if (!this._spinnerEl) return;
 

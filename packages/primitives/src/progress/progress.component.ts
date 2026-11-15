@@ -1,3 +1,7 @@
+/**
+ * @file Progress bar, determinate or indeterminate.
+ */
+
 import {
   Component,
   ElementRef,
@@ -10,6 +14,7 @@ import {
 export type NgAtomsProgressSize    = 'sm' | 'md' | 'lg';
 export type NgAtomsProgressVariant = 'default' | 'accent' | 'success' | 'destructive';
 
+/** Progress bar, determinate or indeterminate. */
 @Component({
   selector: 'nga-progress',
   standalone: true,

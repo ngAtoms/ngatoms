@@ -1,5 +1,10 @@
+/**
+ * @file The row of tab triggers.
+ */
+
 import { Directive } from '@angular/core';
 
+/** The row of tab triggers. */
 @Directive({
   selector: '[ngAtomsTabList]',
   standalone: true,
