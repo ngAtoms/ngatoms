@@ -26,6 +26,7 @@
     "init-fetch-tokens",
     "monochrome-palette",
     "overlay-reposition-on-scroll",
+    "primitives-jsdoc",
     "readme-component-status-v2",
     "readme-component-status",
     "registry-status-field",
