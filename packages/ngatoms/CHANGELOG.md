@@ -1,5 +1,11 @@
 # ngatoms
 
+## 1.0.0-rc.4
+
+### Patch Changes
+
+- 6a37984: fix(registry): `ngatoms add` installs the shared `overlay` with popover, dropdown-menu and date-picker, which import it. A new test checks that every component declares exactly the registry components its code imports
+
 ## 1.0.0-rc.3
 
 ### Patch Changes

@@ -25,6 +25,7 @@
     "grid-v1",
     "init-fetch-tokens",
     "monochrome-palette",
+    "overlay-registry-deps",
     "overlay-reposition-on-scroll",
     "primitives-jsdoc",
     "readme-component-status-v2",
