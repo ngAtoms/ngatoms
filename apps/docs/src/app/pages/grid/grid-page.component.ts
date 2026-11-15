@@ -21,6 +21,12 @@ import {
   NgAtomsCheckboxDirective,
 } from "../../../components/checkbox";
 import {
+  NgAtomsSelectComponent,
+} from "../../../components/select";
+import {
+  NgAtomsDatePickerComponent,
+} from "../../../components/date-picker";
+import {
   NgAtomsPaginationComponent,
 } from "../../../components/pagination";
 import {
@@ -67,6 +73,8 @@ import { PreviewCard } from "../../../components/preview-card/preview-card";
     NgAtomsGridEditorDirective,
     NgAtomsButtonDirective,
     NgAtomsCheckboxDirective,
+    NgAtomsSelectComponent,
+    NgAtomsDatePickerComponent,
     NgAtomsPaginationComponent,
     NgAtomsBadgeDirective,
     CodeBlockComponent,
@@ -134,11 +142,41 @@ export class GridPageComponent {
   readonly regionRows = signal<GridRow<RegionLine>[]>(buildRegionRows());
   readonly regionExpanded = signal<ReadonlySet<GridRowId>>(new Set());
 
-  readonly taskStatuses = TASK_STATUSES;
+  readonly shortcutColumns: GridColumn<Record<string, string>>[] = [
+    { id: "group", header: "Group", width: 105, filter: "set" },
+    { id: "action", header: "Action", width: 205 },
+    { id: "windows", header: "Windows / Linux", width: 190 },
+    { id: "mac", header: "macOS", width: 218 },
+  ];
+  readonly shortcutRows: GridRow<Record<string, string>>[] = [
+    ["Navigation", "Move one cell", "Arrow keys", "Arrow keys"],
+    ["Navigation", "Start / end of the row", "Home / End", "Fn+← / Fn+→"],
+    ["Navigation", "First / last cell of the grid", "Ctrl+Home / Ctrl+End", "⌘Fn+← / ⌘Fn+→"],
+    ["Navigation", "One screen up / down", "Page Up / Page Down", "Fn+↑ / Fn+↓"],
+    ["Navigation", "Expand / collapse a row", "→ / ← in the tree column", "→ / ← in the tree column"],
+    ["Selection", "Extend the selection", "Shift + any navigation key", "⇧ + any navigation key"],
+    ["Selection", "Select everything", "Ctrl+A", "⌘A"],
+    ["Selection", "Back to one cell", "Esc", "Esc"],
+    ["Editing", "Edit the cell", "Enter, F2, or just type", "Return, F2 (Fn+F2), or just type"],
+    ["Editing", "Commit and move down / up", "Enter / Shift+Enter", "Return / ⇧Return"],
+    ["Editing", "Commit and move right / left", "Tab / Shift+Tab", "Tab / ⇧Tab"],
+    ["Editing", "Cancel the edit", "Esc", "Esc"],
+    ["Editing", "Clear the selection", "Delete or Backspace", "Delete (⌫) or Fn+Delete"],
+    ["Editing", "Fill the first row down", "Ctrl+D", "⌘D"],
+    ["Editing", "Undo", "Ctrl+Z", "⌘Z"],
+    ["Editing", "Redo", "Ctrl+Y or Ctrl+Shift+Z", "⌘Y or ⇧⌘Z"],
+    ["Clipboard", "Copy", "Ctrl+C", "⌘C"],
+    ["Clipboard", "Cut", "Ctrl+X", "⌘X"],
+    ["Clipboard", "Paste", "Ctrl+V", "⌘V"],
+    ["Rows", "Move the row up / down", "Alt+↑ / Alt+↓", "⌥↑ / ⌥↓"],
+  ].map(([group, action, windows, mac], index) => ({ id: index, data: { group, action, windows, mac } }));
+  readonly shortcutFilters = signal<GridFilters<Record<string, string>>>({});
+
+  readonly taskStatusOptions = TASK_STATUSES.map((status) => ({ value: status, label: status }));
   readonly taskColumns = buildTaskColumns();
   readonly taskRows = signal<GridRow<TaskLine>[]>(buildTaskRows());
   readonly taskExpanded = signal<ReadonlySet<GridRowId>>(new Set(["design", "build"]));
-  readonly lastMove = signal("drag a row by its handle, or press Alt+Up / Alt+Down");
+  readonly lastMove = signal("drag a row by its handle, or press Alt+↑ / Alt+↓ (⌥↑ / ⌥↓ on a Mac)");
 
   readonly taskCellState = (row: GridRow<TaskLine>, column: GridColumn<TaskLine>) =>
     row.parentId === undefined && column.id !== "task" ? { readonly: true } : null;
@@ -234,7 +272,7 @@ export class GridPageComponent {
 
   readonly codeFormatting = "// 1,234 · (1,234) · –\nconst units: GridNumberFormat = { decimals: 0, negative: 'parentheses', zero: '–' };\n\n// Thousands, one decimal\nconst thousands: GridNumberFormat = { scale: 1000, decimals: 1 };\n\n// A value stored negative, shown positive\nconst reversed: GridNumberFormat = { reverseSign: true };\n\nconst columns = [\n  { id: 'difference', header: 'Diff', type: 'number', format: units, variance: true },\n];\n\nconst rows = [\n  { id: 'returns', data: returns, favorable: 'lower' },\n  { id: 'return-rate', data: returnRate, format: { style: 'percent', decimals: 1 } },\n];";
 
-  readonly codeTemplates = "<nga-grid [rows]=\"rows()\" [columns]=\"columns\" (cellsChange)=\"onCellsChange($event)\">\n  <!-- How the cells of the \"status\" column look -->\n  <ng-template ngaGridCell=\"status\" let-value>\n    <span ngAtomsBadge [variant]=\"variantOf(value)\">{{ value }}</span>\n  </ng-template>\n\n  <!-- How they are edited: any control; call commit with the new value -->\n  <ng-template ngaGridEditor=\"status\" let-value let-commit=\"commit\">\n    <select (change)=\"commit($any($event.target).value)\">\n      @for (status of statuses; track status) {\n        <option [value]=\"status\" [selected]=\"status === value\">{{ status }}</option>\n      }\n    </select>\n  </ng-template>\n\n  <ng-template ngaGridEditor=\"due\" let-value let-commit=\"commit\">\n    <input type=\"date\" [value]=\"value ?? ''\" (change)=\"commit($any($event.target).value || null)\" />\n  </ng-template>\n\n  <!-- A control that is always there: the app handles its change itself -->\n  <ng-template ngaGridCell=\"done\" let-value let-row=\"row\">\n    <input type=\"checkbox\" ngAtomsCheckbox [checked]=\"value === true\" (change)=\"setDone(row.id, $any($event.target).checked)\" />\n  </ng-template>\n</nga-grid>";
+  readonly codeTemplates = "<nga-grid [rows]=\"rows()\" [columns]=\"columns\" (cellsChange)=\"onCellsChange($event)\">\n  <!-- How the cells of the \"status\" column look -->\n  <ng-template ngaGridCell=\"status\" let-value>\n    <span ngAtomsBadge [variant]=\"variantOf(value)\">{{ value }}</span>\n  </ng-template>\n\n  <!-- How they are edited: any control; call commit with the new value -->\n  <ng-template ngaGridEditor=\"status\" let-value let-commit=\"commit\">\n    <nga-select [options]=\"statuses\" [value]=\"value\" (valueChange)=\"commit($event)\" [defaultOpen]=\"true\" />\n  </ng-template>\n\n  <ng-template ngaGridEditor=\"due\" let-value let-commit=\"commit\">\n    <nga-date-picker [value]=\"value ?? ''\" (valueChange)=\"commit($event || null)\" [defaultOpen]=\"true\" />\n  </ng-template>\n\n  <!-- A control that is always there: the app handles its change itself -->\n  <ng-template ngaGridCell=\"done\" let-value let-row=\"row\">\n    <input type=\"checkbox\" ngAtomsCheckbox [checked]=\"value === true\" (change)=\"setDone(row.id, $any($event.target).checked)\" />\n  </ng-template>\n</nga-grid>";
 
   readonly codeRowReorder = "// <nga-grid [rows]=\"rows()\" [columns]=\"columns\" [rowReorder]=\"true\" (rowMove)=\"onRowMove($event)\" />\n\nonRowMove(move: GridRowMove): void {\n  // { rowId, targetId, position: 'before' | 'after' | 'inside' }\n  this.rows.update(rows => {\n    const row = rows.find(candidate => candidate.id === move.rowId)!;\n    const rest = rows.filter(candidate => candidate.id !== move.rowId);\n    const index = rest.findIndex(candidate => candidate.id === move.targetId);\n    const target = rest[index];\n\n    const moved = { ...row, parentId: move.position === 'inside' ? target.id : target.parentId };\n    const at = move.position === 'before' ? index : move.position === 'after' ? index + 1 : rest.length;\n    return [...rest.slice(0, at), moved, ...rest.slice(at)];\n  });\n}";
 
@@ -247,6 +285,8 @@ export class GridPageComponent {
   readonly codeLazyChildren = "// <nga-grid\n//   [rows]=\"rows()\"\n//   [columns]=\"columns\"\n//   [(expanded)]=\"expanded\"\n//   (rowExpand)=\"onRowExpand($event)\"\n// />\n\nreadonly rows = signal<GridRow<Region>[]>([\n  { id: 'iberia', hasChildren: true, data: { name: 'Iberia', units: 8420 } },\n]);\n\nonRowExpand(regionId: GridRowId): void {\n  this.api.stores(regionId).then(stores => this.rows.update(rows => [...rows, ...stores]));\n}";
 
   readonly codeExport = "// <nga-grid #grid [rows]=\"rows\" [columns]=\"columns\" />\n// <button (click)=\"download(grid.exportText())\">Download CSV</button>\n\ndownload(csv: string): void {\n  const url = URL.createObjectURL(new Blob([csv], { type: 'text/csv' }));\n  const link = Object.assign(document.createElement('a'), { href: url, download: 'units.csv' });\n  link.click();\n  URL.revokeObjectURL(url);\n}\n\n// Semicolon-separated, written as shown on screen:\ngrid.exportText({ delimiter: ';', values: 'formatted' });";
+
+  readonly codeShortcuts = "// The shortcut list above is itself a grid: four text columns, one of them filterable.\nconst columns: GridColumn<Shortcut>[] = [\n  { id: 'group', header: 'Group', filter: 'set' },\n  { id: 'action', header: 'Action' },\n  { id: 'windows', header: 'Windows / Linux' },\n  { id: 'mac', header: 'macOS' },\n];";
 
   readonly codeDensity = "<nga-grid [rows]=\"rows\" [columns]=\"columns\" density=\"comfortable\" />";
 
@@ -280,7 +320,7 @@ export class GridPageComponent {
         { name: "cellsChange", type: "GridCellChange[]", defaultVal: "—", description: "The user edited cells. Each change has rowId, columnId, previous and next. Apply it and pass new rows in." },
         { name: "cellsRejected", type: "GridCellRejection[]", defaultVal: "—", description: "Pasted values that were skipped: the cell does not accept edits, or the text is not a value for the column." },
         { name: "selectionChange", type: "GridSelection | null", defaultVal: "—", description: "The selected block changed: its range in display positions, plus the row ids and column ids it covers." },
-        { name: "rowMove", type: "GridRowMove", defaultVal: "—", description: "A row was dragged onto another, or moved with Alt+Up / Alt+Down: rowId, targetId and position ('before' | 'after' | 'inside')." },
+        { name: "rowMove", type: "GridRowMove", defaultVal: "—", description: "A row was dragged onto another, or moved from the keyboard (Alt+↑ / Alt+↓, ⌥↑ / ⌥↓ on a Mac): rowId, targetId and position ('before' | 'after' | 'inside')." },
         { name: "rowExpand", type: "GridRowId", defaultVal: "—", description: "A row with hasChildren and no loaded children was expanded. Load them and pass them in." },
         { name: "visibleRangeChange", type: "{ start, end }", defaultVal: "—", description: "The rendered row window changed. Use it to load pages while scrolling." },
       ],
@@ -365,11 +405,11 @@ export class GridPageComponent {
   ];
 
   readonly a11yItems = [
-    { icon: "keyboard", title: "Keyboard navigation", body: "Tab enters the grid on its active cell. Arrow keys move one cell; Home and End travel the row, and with Ctrl the whole grid; Page Up and Page Down move a screen. The active cell is scrolled into view." },
+    { icon: "keyboard", title: "Keyboard navigation", body: "Tab enters the grid on its active cell. Arrow keys move one cell; Home and End travel the row, and with Ctrl (⌘ on a Mac) the whole grid; Page Up and Page Down move a screen. The Keyboard shortcuts section lists every key for Windows, Linux and macOS. The active cell is scrolled into view." },
     { icon: "tree-structure", title: "Hierarchy", body: "In the tree column, Right expands a row and Left collapses it. Rows expose aria-level and aria-expanded." },
     { icon: "pencil-simple", title: "Editing", body: "Enter, F2 or typing opens the editor; Enter and Tab commit and move, Escape cancels, and focus returns to the cell. Cells that cannot be edited expose aria-readonly, and invalid ones aria-invalid with their message." },
-    { icon: "selection", title: "Selection", body: "Shift with any navigation key extends the selection; Ctrl+A selects all and Escape collapses it. Selected cells expose aria-selected. Copy, cut and paste use the standard clipboard shortcuts and need no permission prompt." },
-    { icon: "arrows-out-cardinal", title: "Reordering", body: "Alt+Up and Alt+Down move the active row one place, so reordering does not depend on dragging. The active cell follows the row." },
+    { icon: "selection", title: "Selection", body: "Shift with any navigation key extends the selection; Ctrl+A (⌘A on a Mac) selects all and Escape collapses it. Selected cells expose aria-selected. Copy, cut and paste use the standard clipboard shortcuts and need no permission prompt." },
+    { icon: "arrows-out-cardinal", title: "Reordering", body: "Alt+↑ and Alt+↓ (⌥↑ and ⌥↓ on a Mac) move the active row one place, so reordering does not depend on dragging. The active cell follows the row." },
     { icon: "table", title: "Grid semantics", body: "role=\"treegrid\" (or \"grid\" without hierarchy), with aria-rowcount and aria-colcount for the full data and aria-rowindex and aria-colindex on rendered cells, so virtualization does not hide the real size." },
     { icon: "funnel", title: "Sorting and filters", body: "Sortable headers expose aria-sort. The filter popover is a labelled dialog that takes focus and returns it on close. Header controls — sort, filter and the resize handle — are not yet reachable from the keyboard." },
     { icon: "hand-tap", title: "Touch and small screens", body: "On coarse pointers rows grow to the comfortable height and header controls to a 44px target. Pinned columns release on narrow containers so the scrolling area never collapses." },
@@ -393,6 +433,7 @@ export class GridPageComponent {
     { id: "paging-pages", label: "Paging with pages" },
     { id: "lazy-children", label: "Loading children on demand" },
     { id: "export", label: "Export" },
+    { id: "shortcuts", label: "Keyboard shortcuts" },
     { id: "density", label: "Density" },
     { id: "scale", label: "Scale" },
     { id: "api", label: "API" },

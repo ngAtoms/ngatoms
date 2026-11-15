@@ -165,12 +165,14 @@
 }
 
 /* ── Panel ──────────────────────────────────────────────────── */
+/* The panel is moved to <body> and placed with fixed coordinates by the
+   component, so a scroll container can never clip it. */
 .nga-select-panel {
-  position: absolute;
-  top: calc(100% + 4px);
+  position: fixed;
+  top: 0;
   left: 0;
-  right: 0;
   z-index: 50;
+  box-sizing: border-box;
   background: var(--nga-select-panel-bg);
   backdrop-filter: var(--nga-select-panel-blur);
   -webkit-backdrop-filter: var(--nga-select-panel-blur);
@@ -182,8 +184,6 @@
 }
 
 .nga-select-panel--above {
-  top: auto;
-  bottom: calc(100% + 4px);
   animation: nga-select-panel-in-above var(--nga-dur-fast, 120ms) var(--nga-ease-out, ease);
 }
 

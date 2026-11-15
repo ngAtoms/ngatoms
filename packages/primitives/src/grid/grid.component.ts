@@ -236,7 +236,7 @@ export class NgAtomsGridComponent<T = unknown> implements NgAtomsGridContext<T> 
    * your data and pass the new rows in.
    */
   readonly cellsChange = output<GridCellChange[]>();
-  /** The user dragged a row onto another, or moved it with Alt+Up / Alt+Down. Move it in your data and pass rows back. */
+  /** The user dragged a row onto another, or moved it with Alt+↑ / Alt+↓ (⌥↑ / ⌥↓ on a Mac). Move it in your data and pass rows back. */
   readonly rowMove = output<GridRowMove>();
   /** Pasted values that were skipped: cells that do not accept edits, or text that is not a value for the column. */
   readonly cellsRejected = output<GridCellRejection[]>();
@@ -892,8 +892,9 @@ export class NgAtomsGridComponent<T = unknown> implements NgAtomsGridContext<T> 
   /**
    * Shortcuts that act on the selection: Escape collapses it to the
    * active cell, Ctrl+A selects everything, Ctrl+D fills down, Ctrl+Z
-   * undoes and Ctrl+Y or Ctrl+Shift+Z redoes. Cmd stands in for Ctrl.
-   * Alt+Up and Alt+Down move the active row when rows can be reordered.
+   * undoes and Ctrl+Y or Ctrl+Shift+Z redoes. On a Mac ⌘ stands in for
+   * Ctrl: ⌘A, ⌘D, ⌘Z, ⌘Y or ⇧⌘Z. Alt+↑ and Alt+↓ (⌥↑ and ⌥↓ on a Mac)
+   * move the active row when rows can be reordered.
    *
    * @returns Whether the key was used.
    */

@@ -20,6 +20,13 @@ These apply to all TypeScript in the library. They are enforced by ESLint for `p
 - **Every function, method, and class has a JSDoc header.** Keep it clean, correct, and pragmatic: say what it does and why it exists, plus any non-obvious behavior. Do not restate the signature, and do not add `@param`/`@returns` lines that only repeat names and types. Methods implementing an interface may use `/** @inheritdoc */`.
 - Interface members are documented with JSDoc where the name alone is not enough.
 
+## Keyboard Shortcuts
+
+- **Every shortcut is documented for Windows/Linux and for macOS.** A component page that has keyboard shortcuts carries a table with three columns — action, Windows / Linux, macOS — and prose that names a shortcut gives both forms (`Ctrl+C`, `⌘C` on a Mac).
+- The Mac form is not always a different modifier. `Ctrl` is `⌘`, `Alt` is `⌥`, `Enter` is `Return`; `Home` / `End` are `Fn+←` / `Fn+→` and `Page Up` / `Page Down` are `Fn+↑` / `Fn+↓` on keyboards without those keys; `Delete` is `Fn+Delete`.
+- **Code accepts both.** A shortcut on `Ctrl` also answers to `⌘` (`event.ctrlKey || event.metaKey`). Do not bind a shortcut the browser or the system already owns on either platform (`Ctrl+R`, `⌘W`, `⌘Q`…).
+- JSDoc that lists shortcuts follows the same rule.
+
 ## Project Overview
 
 **NgAtoms** is a collection of Angular UI primitives designed to be copied directly into projects rather than installed as a library dependency. Core philosophy: no runtime UI dependencies, full project control.

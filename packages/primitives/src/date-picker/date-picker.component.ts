@@ -59,6 +59,8 @@ export class NgAtomsDatePickerComponent implements OnDestroy {
   readonly size = input<NgAtomsDatePickerSize>('md');
   readonly invalid = input<boolean>(false);
   readonly disabled = input<boolean>(false);
+  /** Opens the calendar as soon as the picker is created — for a picker that appears on demand, such as an inline editor. */
+  readonly defaultOpen = input<boolean>(false);
   readonly placeholder = input<string>('Pick a date');
   readonly showToday = input<boolean>(false);
   readonly todayLabel = input<string>('Today');
@@ -202,6 +204,7 @@ export class NgAtomsDatePickerComponent implements OnDestroy {
   constructor() {
     afterNextRender(() => {
       this.renderer.appendChild(this.document.body, this.panelEl().nativeElement);
+      if (this.defaultOpen()) this.toggle();
     });
     effect(() => {
       if (this.open()) {

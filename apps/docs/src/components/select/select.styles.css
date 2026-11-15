@@ -20,7 +20,7 @@
   --nga-select-filled-fg:           var(--nga-color-secondary-foreground, #1A1A1A);
   --nga-select-filled-border:       transparent;
   --nga-select-filled-border-hover: var(--nga-color-primary, #1A1A1A);
-  --nga-select-filled-bg-hover:     color-mix(in srgb, var(--nga-select-filled-bg) 85%, #1A1A1A);
+  --nga-select-filled-bg-hover:     color-mix(in oklch, var(--nga-select-filled-bg) 85%, #1A1A1A);
 
   /* Variant: ghost */
   --nga-select-ghost-bg:           transparent;
@@ -34,11 +34,12 @@
   /* Panel */
   --nga-select-panel-bg:     color-mix(in oklab, var(--nga-color-card, #F7F8FA) 78%, transparent);
   --nga-select-panel-border: color-mix(in oklab, var(--nga-color-border, #CCCCCC) 55%, transparent);
-  --nga-select-panel-inset:  inset 0 1px 0 rgba(230, 230, 230, 0.85);
+  --nga-select-panel-inset:  inset 0 1px 0 color-mix(in oklch, #F7F8FA 85%, transparent);
   --nga-select-panel-blur:   blur(20px) saturate(180%);
-  --nga-select-panel-shadow: 0 8px 24px -4px rgba(26, 26, 26, 0.10), 0 2px 8px -2px rgba(26, 26, 26, 0.06);
+  --nga-select-panel-shadow: 0 8px 24px -4px color-mix(in oklch, oklch(10% 0 0) 10%, transparent),
+                             0 2px 8px -2px  color-mix(in oklch, oklch(10% 0 0) 6%, transparent);
 
-  /* Options */
+  /* Options — selected uses accent tint + accent text for WCAG AA compliance */
   --nga-select-option-hover-bg:    var(--nga-color-muted, #F2F4F6);
   --nga-select-option-selected-bg: color-mix(in oklch, var(--nga-color-accent, #333333) 10%, transparent);
   --nga-select-option-selected-fg: var(--nga-color-accent, #333333);
@@ -46,7 +47,7 @@
 
 /* ── Dark mode ──────────────────────────────────────────────── */
 .dark {
-  --nga-select-filled-bg-hover:    color-mix(in srgb, var(--nga-select-filled-bg) 82%, #F7F8FA);
+  --nga-select-filled-bg-hover:    color-mix(in oklch, var(--nga-select-filled-bg) 82%, #F7F8FA);
   --nga-select-panel-bg:           color-mix(in oklab, var(--nga-color-card) 82%, transparent);
   --nga-select-panel-border:       color-mix(in oklab, #F7F8FA 14%, transparent);
   --nga-select-panel-blur:         blur(24px) saturate(200%) brightness(1.06);
@@ -59,6 +60,19 @@
 
 .nga-select-wrapper {
   position: relative;
+}
+
+/* ── Screen reader utility ──────────────────────────────────── */
+.nga-sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
 }
 
 /* ── Trigger ────────────────────────────────────────────────── */
@@ -81,7 +95,7 @@
 }
 
 .nga-select-trigger:focus-visible {
-  box-shadow: var(--nga-glow-ember, 0 0 0 4px rgba(26, 26, 26, 0.16));
+  box-shadow: 0 0 0 4px color-mix(in oklch, var(--nga-color-accent, #333333) 18%, transparent);
 }
 
 .nga-select-trigger:disabled {
@@ -147,16 +161,18 @@
 /* ── Invalid ────────────────────────────────────────────────── */
 .nga-select-trigger--invalid { border-color: var(--nga-select-invalid-border) !important; }
 .nga-select-trigger--invalid:focus-visible {
-  box-shadow: 0 0 0 4px rgba(26, 26, 26, 0.18);
+  box-shadow: 0 0 0 4px color-mix(in oklch, var(--nga-color-destructive, #1A1A1A) 18%, transparent);
 }
 
 /* ── Panel ──────────────────────────────────────────────────── */
+/* The panel is moved to <body> and placed with fixed coordinates by the
+   component, so a scroll container can never clip it. */
 .nga-select-panel {
-  position: absolute;
-  top: calc(100% + 4px);
+  position: fixed;
+  top: 0;
   left: 0;
-  right: 0;
   z-index: 50;
+  box-sizing: border-box;
   background: var(--nga-select-panel-bg);
   backdrop-filter: var(--nga-select-panel-blur);
   -webkit-backdrop-filter: var(--nga-select-panel-blur);
@@ -168,8 +184,6 @@
 }
 
 .nga-select-panel--above {
-  top: auto;
-  bottom: calc(100% + 4px);
   animation: nga-select-panel-in-above var(--nga-dur-fast, 120ms) var(--nga-ease-out, ease);
 }
 
@@ -180,6 +194,10 @@
 @keyframes nga-select-panel-in-above {
   from { opacity: 0; transform: translateY(4px); }
   to   { opacity: 1; transform: translateY(0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nga-select-panel { animation: none; }
 }
 
 /* ── Search ─────────────────────────────────────────────────── */
@@ -233,7 +251,8 @@
   font-size: var(--nga-size-font-sm, 13px);
   line-height: 1.4;
   cursor: pointer;
-  transition: background var(--nga-dur-fast, 120ms) var(--nga-ease-out, ease), color var(--nga-dur-fast, 120ms) var(--nga-ease-out, ease);
+  transition: background var(--nga-dur-fast, 120ms) var(--nga-ease-out, ease),
+              color var(--nga-dur-fast, 120ms) var(--nga-ease-out, ease);
   color: var(--nga-color-foreground, #1A1A1A);
   user-select: none;
 }
@@ -246,6 +265,7 @@
 .nga-select-option--selected {
   background: var(--nga-select-option-selected-bg);
   color: var(--nga-select-option-selected-fg);
+  font-weight: var(--nga-font-weight-medium, 500);
 }
 
 .nga-select-option--selected.nga-select-option--focused,

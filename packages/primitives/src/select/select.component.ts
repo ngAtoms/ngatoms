@@ -2,15 +2,18 @@ import {
   AfterViewChecked,
   Component,
   ElementRef,
-  HostListener,
+  OnDestroy,
+  Renderer2,
+  afterNextRender,
   computed,
+  effect,
   inject,
   input,
   model,
   signal,
   viewChild,
 } from '@angular/core';
-import { NgClass } from '@angular/common';
+import { DOCUMENT, NgClass } from '@angular/common';
 import { NgAtomsOverlayService } from '../overlay/overlay.service';
 
 export interface NgAtomsSelectOption {
@@ -30,13 +33,16 @@ export type NgAtomsSelectSize = 'xs' | 'sm' | 'md' | 'lg' | 'xl';
   templateUrl: './select.component.html',
   styleUrl: './select.component.css',
 })
-export class NgAtomsSelectComponent implements AfterViewChecked {
+export class NgAtomsSelectComponent implements AfterViewChecked, OnDestroy {
   private readonly el = inject(ElementRef);
   private readonly overlay = inject(NgAtomsOverlayService);
+  private readonly renderer = inject(Renderer2);
+  private readonly document = inject(DOCUMENT);
   private deregister: (() => void) | null = null;
 
   readonly triggerEl = viewChild.required<ElementRef<HTMLButtonElement>>('triggerEl');
   readonly searchInputEl = viewChild<ElementRef<HTMLInputElement>>('searchInput');
+  readonly panelEl = viewChild<ElementRef<HTMLElement>>('panelEl');
 
   readonly options = input<NgAtomsSelectOption[]>([]);
   readonly placeholder = input<string>('Select...');
@@ -46,6 +52,8 @@ export class NgAtomsSelectComponent implements AfterViewChecked {
   readonly invalid = input<boolean>(false);
   readonly variant = input<NgAtomsSelectVariant>('default');
   readonly size = input<NgAtomsSelectSize>('md');
+  /** Opens the panel as soon as the select is created — for a select that appears on demand, such as an inline editor. */
+  readonly defaultOpen = input<boolean>(false);
 
   readonly value = model<string | string[] | null>(null);
 
@@ -55,6 +63,36 @@ export class NgAtomsSelectComponent implements AfterViewChecked {
   readonly panelAbove = signal(false);
 
   private _shouldFocusSearch = false;
+
+  /** Repositions the panel when anything but the panel itself scrolls. */
+  private readonly onAnyScroll = (event: Event): void => {
+    const panel = this.panelEl()?.nativeElement;
+    if (panel && !panel.contains(event.target as Node)) this.positionPanel();
+  };
+
+  constructor() {
+    /*
+     * The panel is moved to <body> once it renders, so no scroll
+     * container or transformed ancestor can clip it. Angular no longer
+     * finds it where it rendered it, so the cleanup takes it out.
+     */
+    effect(onCleanup => {
+      const panel = this.panelEl()?.nativeElement;
+      if (!panel) return;
+      this.renderer.appendChild(this.document.body, panel);
+      this.positionPanel();
+      this.deregister?.();
+      this.deregister = this.overlay.register(
+        () => this.close(false),
+        [this.el.nativeElement, panel],
+        { closeOnScroll: false }
+      );
+      onCleanup(() => panel.remove());
+    });
+    afterNextRender(() => {
+      if (this.defaultOpen()) this.toggleOpen();
+    });
+  }
 
   readonly filteredOptions = computed(() => {
     const query = this.searchQuery().toLowerCase().trim();
@@ -102,23 +140,11 @@ export class NgAtomsSelectComponent implements AfterViewChecked {
   toggleOpen(): void {
     if (this.disabled()) return;
     if (!this.isOpen()) {
-      this.computePanelPosition();
       this.isOpen.set(true);
-      this.deregister = this.overlay.register(
-        () => this.close(false),
-        [this.el.nativeElement],
-        { closeOnScroll: false }
-      );
+      this.document.addEventListener('scroll', this.onAnyScroll, true);
       if (this.searchable()) this._shouldFocusSearch = true;
     } else {
       this.close();
-    }
-  }
-
-  @HostListener('window:scroll')
-  onWindowScroll(): void {
-    if (this.isOpen()) {
-      this.computePanelPosition();
     }
   }
 
@@ -126,8 +152,7 @@ export class NgAtomsSelectComponent implements AfterViewChecked {
     this.isOpen.set(false);
     this.searchQuery.set('');
     this.focusedIndex.set(-1);
-    this.deregister?.();
-    this.deregister = null;
+    this.detach();
     if (returnFocus) {
       this.triggerEl().nativeElement.focus();
     }
@@ -150,8 +175,14 @@ export class NgAtomsSelectComponent implements AfterViewChecked {
     this.focusedIndex.set(-1);
   }
 
+  /**
+   * Keyboard handling on the trigger. Escape on a closed select is left
+   * alone: it belongs to whatever contains the select, a dialog or an
+   * inline editor.
+   */
   onTriggerKeydown(event: KeyboardEvent): void {
     if (!['ArrowDown', 'ArrowUp', 'Enter', ' ', 'Escape', 'Home', 'End'].includes(event.key)) return;
+    if (event.key === 'Escape' && !this.isOpen()) return;
     event.preventDefault();
     if (!this.isOpen()) {
       if (event.key !== 'Escape') this.toggleOpen();
@@ -195,9 +226,36 @@ export class NgAtomsSelectComponent implements AfterViewChecked {
     }
   }
 
-  private computePanelPosition(): void {
+  ngOnDestroy(): void {
+    this.detach();
+  }
+
+  /** Stops listening for outside clicks and scrolling. */
+  private detach(): void {
+    this.deregister?.();
+    this.deregister = null;
+    this.document.removeEventListener('scroll', this.onAnyScroll, true);
+  }
+
+  /** Places the panel under the trigger, or above it when there is no room below. */
+  private positionPanel(): void {
+    const panel = this.panelEl()?.nativeElement;
+    if (!panel) return;
     const rect = this.el.nativeElement.getBoundingClientRect();
-    const spaceBelow = window.innerHeight - rect.bottom;
-    this.panelAbove.set(spaceBelow < 240 && rect.top > spaceBelow);
+    const gap = 4;
+    const margin = 8;
+    const view = this.document.defaultView;
+    const viewHeight = view?.innerHeight ?? 0;
+    const viewWidth = view?.innerWidth ?? 0;
+
+    this.renderer.setStyle(panel, 'width', `${rect.width}px`);
+    const height = panel.offsetHeight;
+    const above = rect.bottom + gap + height > viewHeight - margin && rect.top > viewHeight - rect.bottom;
+    this.panelAbove.set(above);
+
+    const top = above ? rect.top - height - gap : rect.bottom + gap;
+    const left = Math.max(margin, Math.min(rect.left, viewWidth - rect.width - margin));
+    this.renderer.setStyle(panel, 'top', `${top}px`);
+    this.renderer.setStyle(panel, 'left', `${left}px`);
   }
 }

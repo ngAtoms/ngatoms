@@ -12,6 +12,7 @@ Thank you for your interest in contributing! NgAtoms is a collection of Angular 
 - [Changesets](#changesets)
 - [Adding a New Component](#adding-a-new-component)
 - [Code Guidelines](#code-guidelines)
+- [Keyboard Shortcuts](#keyboard-shortcuts)
 - [Commit Messages](#commit-messages)
 
 ---
@@ -165,6 +166,13 @@ Component checklist:
 - **Documentation in JSDoc, not in line comments** — `//` comments are not allowed in TypeScript. Every file starts with a `@file` header saying what it is responsible for, and every function, method, and class has a JSDoc header that says what it does and why. Keep it pragmatic: do not restate the signature. ESLint enforces this for the grid today; the remaining primitives will follow.
 
 ---
+
+## Keyboard Shortcuts
+
+- **Every shortcut is documented for Windows/Linux and for macOS.** A component page that has keyboard shortcuts carries a table with three columns — action, Windows / Linux, macOS — and prose that names a shortcut gives both forms (`Ctrl+C`, `⌘C` on a Mac).
+- The Mac form is not always a different modifier. `Ctrl` is `⌘`, `Alt` is `⌥`, `Enter` is `Return`; `Home` / `End` are `Fn+←` / `Fn+→` and `Page Up` / `Page Down` are `Fn+↑` / `Fn+↓` on keyboards without those keys; `Delete` is `Fn+Delete`.
+- **Code accepts both.** A shortcut on `Ctrl` also answers to `⌘` (`event.ctrlKey || event.metaKey`). Do not bind a shortcut the browser or the system already owns on either platform (`Ctrl+R`, `⌘W`, `⌘Q`…).
+- JSDoc that lists shortcuts follows the same rule.
 
 ## Commit Messages
 
