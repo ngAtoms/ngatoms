@@ -38,6 +38,15 @@
     </div>
 
     <div class="nga-grid__body" role="rowgroup" [style.height.px]="bodyHeight()">
+      @if (dropIndicator(); as indicator) {
+        <div
+          class="nga-grid__drop-indicator"
+          [class.nga-grid__drop-indicator--inside]="indicator.inside"
+          [class.nga-grid__drop-indicator--blocked]="!indicator.allowed"
+          [style.top.px]="indicator.top"
+          [style.height.px]="indicator.height"
+        ></div>
+      }
       <nga-grid-body-pane
         class="nga-grid__pane--left"
         [rows]="renderRows()"

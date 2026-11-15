@@ -88,10 +88,10 @@ describe('flattenRows', () => {
     expect(services).toMatchObject({ hasChildren: false, expanded: false });
   });
 
-  it('marks a row with unloaded children as expandable but not open', () => {
+  it('marks a row with unloaded children as expandable, and open once expanded', () => {
     const lazy = buildRowTree([row('entity', undefined, { hasChildren: true })]);
-    const entry = flattenRows(lazy, { expanded: new Set(['entity']) }).get(0);
-    expect(entry).toMatchObject({ hasChildren: true, expanded: false });
+    expect(flattenRows(lazy, {}).get(0)).toMatchObject({ hasChildren: true, expanded: false });
+    expect(flattenRows(lazy, { expanded: new Set(['entity']) }).get(0)).toMatchObject({ hasChildren: true, expanded: true });
   });
 
   it('orders siblings with the comparator without changing the tree', () => {
@@ -143,5 +143,34 @@ describe('windowedRows', () => {
 
   it('falls back to array position for rows without an index', () => {
     expect(list(windowedRows([row('a'), row('b')], 4))).toEqual(['a', 'b', '…2', '…3']);
+  });
+});
+
+describe('children that are loading', () => {
+  const lazy: GridRow[] = [
+    { id: 'a', hasChildren: true, data: {} },
+    { id: 'b', data: {} },
+  ];
+
+  it('shows placeholders under an open row with no children yet', () => {
+    const list = flattenRows(buildRowTree(lazy), { expanded: new Set(['a']) });
+    const kinds = Array.from({ length: list.length }, (_, index) => list.get(index).kind);
+    expect(kinds).toEqual(['row', 'placeholder', 'placeholder', 'placeholder', 'row']);
+    const first = list.get(0);
+    expect(first.kind === 'row' && first.expanded).toBe(true);
+    const ghost = list.get(1);
+    expect(ghost.kind === 'placeholder' && ghost.level).toBe(2);
+    expect(list.indexOf('b')).toBe(4);
+  });
+
+  it('shows none while the row is closed', () => {
+    expect(flattenRows(buildRowTree(lazy), {}).length).toBe(2);
+  });
+
+  it('gives way to the children once they arrive', () => {
+    const loaded = [...lazy, { id: 'a1', parentId: 'a', data: {} }];
+    const list = flattenRows(buildRowTree(loaded), { expanded: new Set(['a']) });
+    expect(list.length).toBe(3);
+    expect(list.get(1).kind).toBe('row');
   });
 });

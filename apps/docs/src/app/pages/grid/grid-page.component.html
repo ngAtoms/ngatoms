@@ -194,6 +194,71 @@
             <app-code-block [code]="codeFormatting" language="typescript" />
         </section>
 
+        <!-- Custom cells and editors -->
+        <section id="templates">
+            <h2 class="cp-h2">Custom cells and editors</h2>
+            <p class="cp-p">
+                A cell shows text by default. Give the grid an <code class="cp-code">ngaGridCell</code> template for a column and its cells show your markup instead — a badge, a link, a control that is always there, like the checkbox here.
+                An <code class="cp-code">ngaGridEditor</code> template replaces the built-in text field while a cell is edited: put any control in it, a dropdown, a date picker, your own component.
+                It receives the value and a <code class="cp-code">commit</code> function; committing emits <code class="cp-code">(cellsChange)</code> like any other edit, so undo and your rules apply the same way.
+                Keys typed in your controls stay with them, and <strong>Escape</strong> closes the editor. Here Status opens a dropdown and Due a date field: press <strong>Enter</strong> or double-click.
+            </p>
+            <preview-card>
+                <ng-container preview>
+                    <div class="grid-demo">
+                        <nga-grid
+                            [rows]="taskRows()"
+                            [columns]="taskColumns"
+                            [(expanded)]="taskExpanded"
+                            [cellState]="taskCellState"
+                            [rowReorder]="true"
+                            (cellsChange)="onTaskChange($event)"
+                            (rowMove)="onTaskMove($event)"
+                            density="comfortable"
+                            label="Tasks"
+                            style="--nga-grid-height: 21rem"
+                        >
+                            <ng-template ngaGridCell="status" let-value>
+                                @if (value) {
+                                    <span ngAtomsBadge [variant]="statusVariant(value)">{{ value }}</span>
+                                }
+                            </ng-template>
+                            <ng-template ngaGridEditor="status" let-value let-commit="commit">
+                                <select class="grid-demo-field" aria-label="Status" (change)="commit($any($event.target).value)">
+                                    @for (status of taskStatuses; track status) {
+                                        <option [value]="status" [selected]="status === value">{{ status }}</option>
+                                    }
+                                </select>
+                            </ng-template>
+                            <ng-template ngaGridEditor="due" let-value let-commit="commit">
+                                <input class="grid-demo-field" type="date" aria-label="Due" [value]="value ?? ''" (change)="commit($any($event.target).value || null)" />
+                            </ng-template>
+                            <ng-template ngaGridCell="done" let-value let-row="row">
+                                @if (value !== null) {
+                                    <input type="checkbox" ngAtomsCheckbox aria-label="Done" [checked]="value === true" (change)="setTaskDone(row.id, $any($event.target).checked)" />
+                                }
+                            </ng-template>
+                        </nga-grid>
+                        <p class="demo-note" style="margin-top: 10px">{{ lastMove() }}</p>
+                    </div>
+                </ng-container>
+                <ng-container code>
+                    <app-code-block [code]="codeTemplates" language="html" />
+                </ng-container>
+            </preview-card>
+        </section>
+
+        <!-- Reordering rows -->
+        <section id="row-reorder">
+            <h2 class="cp-h2">Reordering rows</h2>
+            <p class="cp-p">
+                With <code class="cp-code">rowReorder</code> each row gets a handle. Drag it between two rows to move the row there, or onto the middle of a row to make it a child of that row; <strong>Alt+Up</strong> and <strong>Alt+Down</strong> do it from the keyboard.
+                The grid does not move anything. It emits <code class="cp-code">(rowMove)</code> with the row, the row it was dropped on and the position, and the app moves the row in its data — try it on the task list above.
+                A row cannot be dropped into its own branch. Handles are hidden while the grid is sorting the rows, since their order is then not yours to set.
+            </p>
+            <app-code-block [code]="codeRowReorder" language="typescript" />
+        </section>
+
         <!-- Column width -->
         <section id="column-width">
             <h2 class="cp-h2">Column width</h2>
@@ -279,6 +344,7 @@
             <p class="cp-p">
                 A row with <code class="cp-code">hasChildren: true</code> shows the expand toggle before its children exist.
                 Expanding it emits <code class="cp-code">(rowExpand)</code>; the app loads the children and adds them to the rows with the right <code class="cp-code">parentId</code>.
+                Until they arrive the row shows placeholder rows under it. If a row turns out to have no children, set its <code class="cp-code">hasChildren</code> back to false.
             </p>
             <preview-card>
                 <ng-container preview>

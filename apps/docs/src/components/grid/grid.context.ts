@@ -4,7 +4,7 @@
  * Panes depend on this file only, never on the grid component class.
  */
 
-import { InjectionToken } from '@angular/core';
+import { InjectionToken, TemplateRef } from '@angular/core';
 import {
   GridCellState,
   GridCellValue,
@@ -15,6 +15,7 @@ import {
   GridVarianceTone,
   GridVisibleRow,
 } from '../grid-core';
+import { NgAtomsGridCellContext, NgAtomsGridEditorContext } from './grid-templates';
 
 /** A row to draw, with its vertical position. */
 export interface GridRenderRow<T = unknown> {
@@ -77,6 +78,18 @@ export interface NgAtomsGridContext<T = unknown> {
   openFilterColumn(): string | null;
   /** Opens the filter popover of a column, anchored to the given element. */
   openFilter(column: GridColumn<T>, anchor: HTMLElement): void;
+  /** The app's template for the cells of a column, if it gave one. */
+  cellTemplate(columnId: string): TemplateRef<NgAtomsGridCellContext<T>> | null;
+  /** The app's template for editing the cells of a column, if it gave one. */
+  editorTemplate(columnId: string): TemplateRef<NgAtomsGridEditorContext<T>> | null;
+  /** What the open editor's template receives; null while no cell is being edited. */
+  editorContext(): NgAtomsGridEditorContext<T> | null;
+  /** Whether rows show a handle to drag them by. */
+  canDragRows(): boolean;
+  /** Starts dragging the row at a display position, from a pointerdown on its handle. */
+  startRowDrag(row: number, event: PointerEvent): void;
+  /** Whether the row at a display position is the one being dragged. */
+  isDraggedRow(row: number): boolean;
   /** Gives a column a width, kept within the column's limits. */
   resizeColumn(column: GridColumn<T>, width: number): void;
   /** Fits a column to its header and the cells on screen. */

@@ -52,9 +52,14 @@ export type GridVisibleRow<T = unknown> =
       dimmed: boolean;
     }
   | {
-      /** A row the grid knows exists (`rowCount`) but has not been given. */
+      /**
+       * A row the grid knows exists but has not been given: a position of
+       * a result paged by scroll, or a child that is still being loaded.
+       */
       kind: 'placeholder';
       index: number;
+      /** Depth in the tree, 1-based; set on children that are loading. */
+      level?: number;
     };
 
 /** Side a column is pinned to. */
@@ -149,6 +154,21 @@ export interface GridSelection {
   rowIds: GridRowId[];
   /** Ids of the columns in the range, left to right. */
   columnIds: string[];
+}
+
+/** Where a dragged row lands relative to the row it is dropped on. */
+export type GridDropPosition = 'before' | 'after' | 'inside';
+
+/**
+ * A row the user dragged somewhere else. The grid does not reorder
+ * anything: the app moves the row in its data and passes rows back.
+ */
+export interface GridRowMove {
+  rowId: GridRowId;
+  /** The row it was dropped on. */
+  targetId: GridRowId;
+  /** `inside` makes the row a child of the target. */
+  position: GridDropPosition;
 }
 
 /** A pasted value that did not become a change. */

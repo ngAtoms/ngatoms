@@ -4,13 +4,17 @@
  * rows and columns are on show belong to the grid.
  */
 
+import { NgTemplateOutlet } from '@angular/common';
 import { Component, inject, input } from '@angular/core';
+import { GridColumn, GridRow, getCellValue } from '../grid-core';
 import { GRID_TREE_INDENT, GridRenderColumn, GridRenderRow, NGA_GRID, NgAtomsGridContext } from './grid.context';
+import { NgAtomsGridCellContext } from './grid-templates';
 
 /** Renders the rows and cells of one pane. */
 @Component({
   selector: 'nga-grid-body-pane',
   standalone: true,
+  imports: [NgTemplateOutlet],
   templateUrl: './grid-body-pane.component.html',
   host: { class: 'nga-grid__pane', role: 'presentation' },
 })
@@ -52,5 +56,20 @@ export class NgAtomsGridBodyPaneComponent<T = unknown> {
   /** Width of the indentation before a tree cell at the given level, in px. */
   protected indentOf(level: number): number {
     return (level - 1) * GRID_TREE_INDENT;
+  }
+
+  /** What a cell template receives for a cell. */
+  protected cellContext(row: GridRow<T>, column: GridColumn<T>, text: string): NgAtomsGridCellContext<T> {
+    return { $implicit: getCellValue(row, column), text, row, column };
+  }
+
+  /**
+   * Keeps keys typed in a custom editor away from the grid's own
+   * navigation. Escape closes the editor unless the control inside
+   * already used it, for closing its own popup for example.
+   */
+  protected onCustomEditorKeydown(event: KeyboardEvent): void {
+    event.stopPropagation();
+    if (event.key === 'Escape' && !event.defaultPrevented) this.grid.cancelEdit();
   }
 }

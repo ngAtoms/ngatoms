@@ -7,8 +7,10 @@
     [class.nga-grid__row--subtotal]="entry.kind === 'row' && entry.row.kind === 'subtotal'"
     [class.nga-grid__row--parent]="entry.kind === 'row' && entry.hasChildren"
     [class.nga-grid__row--dimmed]="entry.kind === 'row' && entry.dimmed"
+    [class.nga-grid__row--dragging]="grid.isDraggedRow(item.index)"
     [attr.aria-rowindex]="item.index + grid.headerDepth() + 1"
     [attr.aria-level]="entry.kind === 'row' ? entry.level : null"
+    [attr.aria-busy]="entry.kind === 'placeholder' ? true : null"
     [attr.aria-expanded]="entry.kind === 'row' && entry.hasChildren ? entry.expanded : null"
     [style.transform]="'translateY(' + item.top + 'px)'"
   >
@@ -48,6 +50,21 @@
           (click)="grid.tapCell(item.index, col.index)"
           (dblclick)="grid.startEdit(item.index, col.index)"
         >
+          @if (col.index === 0 && grid.canDragRows()) {
+            <span
+              class="nga-grid__drag-handle"
+              aria-hidden="true"
+              (pointerdown)="grid.startRowDrag(item.index, $event)"
+              (mousedown)="$event.stopPropagation()"
+              (dblclick)="$event.stopPropagation()"
+            >
+              <svg viewBox="0 0 16 16" focusable="false">
+                <circle cx="6" cy="4" r="1.1" /><circle cx="10" cy="4" r="1.1" />
+                <circle cx="6" cy="8" r="1.1" /><circle cx="10" cy="8" r="1.1" />
+                <circle cx="6" cy="12" r="1.1" /><circle cx="10" cy="12" r="1.1" />
+              </svg>
+            </span>
+          }
           @if (col.column.tree) {
             <span class="nga-grid__indent" [style.width.px]="indentOf(entry.level)"></span>
             @if (entry.hasChildren) {
@@ -68,32 +85,58 @@
             }
           }
           @if (draft !== null) {
-            <input
-              class="nga-grid__editor"
-              type="text"
-              autocomplete="off"
-              spellcheck="false"
-              [value]="draft"
-              [attr.aria-label]="col.column.header"
-              [attr.aria-invalid]="grid.isDraftInvalid() ? true : null"
-              (input)="onEditorInput($event)"
-              (keydown)="onEditorKeydown($event)"
-              (mousedown)="$event.stopPropagation()"
-              (dblclick)="$event.stopPropagation()"
-              (blur)="grid.leaveEdit()"
-            />
+            @let editorTemplate = grid.editorTemplate(col.column.id);
+            @let editorContext = grid.editorContext();
+            @if (editorTemplate && editorContext) {
+              <div
+                class="nga-grid__custom-editor"
+                (keydown)="onCustomEditorKeydown($event)"
+                (mousedown)="$event.stopPropagation()"
+                (dblclick)="$event.stopPropagation()"
+              >
+                <ng-container [ngTemplateOutlet]="editorTemplate" [ngTemplateOutletContext]="editorContext" />
+              </div>
+            } @else {
+              <input
+                class="nga-grid__editor"
+                type="text"
+                autocomplete="off"
+                spellcheck="false"
+                [value]="draft"
+                [attr.aria-label]="col.column.header"
+                [attr.aria-invalid]="grid.isDraftInvalid() ? true : null"
+                (input)="onEditorInput($event)"
+                (keydown)="onEditorKeydown($event)"
+                (mousedown)="$event.stopPropagation()"
+                (dblclick)="$event.stopPropagation()"
+                (blur)="grid.leaveEdit()"
+              />
+            }
           } @else {
-            <span class="nga-grid__cell-text">{{ view.text }}</span>
+            @let cellTemplate = grid.cellTemplate(col.column.id);
+            @if (cellTemplate) {
+              <ng-container
+                [ngTemplateOutlet]="cellTemplate"
+                [ngTemplateOutletContext]="cellContext(entry.row, col.column, view.text)"
+              />
+            } @else {
+              <span class="nga-grid__cell-text">{{ view.text }}</span>
+            }
           }
         </div>
       } @else {
         <div
           class="nga-grid__cell nga-grid__cell--placeholder"
           role="gridcell"
+          [class.nga-grid__cell--number]="col.column.type === 'number'"
           [attr.aria-colindex]="col.index + 1"
           [style.left.px]="col.left"
           [style.width.px]="col.width"
         >
+          @if (col.column.tree && entry.level) {
+            <span class="nga-grid__indent" [style.width.px]="indentOf(entry.level)"></span>
+            <span class="nga-grid__toggle-spacer"></span>
+          }
           <span class="nga-grid__placeholder-bar"></span>
         </div>
       }

@@ -168,9 +168,21 @@ function isBranchOpen<T>(row: GridRow<T>, children: GridRow<T>[] | undefined, op
   return !!expanded?.has(row.id);
 }
 
+/** Placeholder rows shown under an open row while its children load. */
+export const LOADING_CHILD_ROWS = 3;
+
+/**
+ * Whether a row is open and waiting for children the app has not
+ * supplied: it says it has them (`hasChildren`) and none are loaded.
+ */
+function isLoadingChildren<T>(row: GridRow<T>, children: GridRow<T>[] | undefined, options: GridFlattenOptions<T>): boolean {
+  return !!row.hasChildren && !children?.length && !!options.expanded?.has(row.id);
+}
+
 /**
  * Lists the rows on show, depth-first: children appear right under their
- * parent, and only while it is open.
+ * parent, and only while it is open. An open row whose children are
+ * still loading is followed by placeholders.
  * Uses an explicit stack, because a recursive walk would overflow the
  * call stack on very deep hierarchies.
  */
@@ -198,15 +210,20 @@ export function flattenRows<T>(tree: GridRowTree<T>, options: GridFlattenOptions
 
     const children = tree.childrenOf.get(row.id);
     const open = isBranchOpen(row, children, options);
+    const loading = isLoadingChildren(row, children, options);
 
     entries.push({
       kind: 'row',
       row,
       level: depth + 1,
       hasChildren: !!children?.length || !!row.hasChildren,
-      expanded: open,
+      expanded: open || loading,
       dimmed: !!filter && !filter.matched.has(row.id),
     });
+
+    for (let ghost = 0; loading && ghost < LOADING_CHILD_ROWS; ghost++) {
+      entries.push({ kind: 'placeholder', index: entries.length, level: depth + 2 });
+    }
 
     if (open && children) {
       lists.push(ordered(children));

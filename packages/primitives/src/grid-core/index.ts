@@ -16,3 +16,4 @@ export * from './clipboard';
 export * from './history';
 export * from './batch';
 export * from './export';
+export * from './row-drag';

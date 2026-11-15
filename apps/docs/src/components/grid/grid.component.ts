@@ -9,9 +9,11 @@ import {
   Component,
   DestroyRef,
   ElementRef,
+  TemplateRef,
   afterNextRender,
   afterRenderEffect,
   computed,
+  contentChildren,
   effect,
   inject,
   input,
@@ -32,6 +34,7 @@ import {
   GridCellValue,
   GridColumn,
   GridColumnNode,
+  GridDropTarget,
   GridExportOptions,
   GridFilter,
   GridFilters,
@@ -39,6 +42,7 @@ import {
   GridMove,
   GridRow,
   GridRowId,
+  GridRowMove,
   GridSelection,
   GridSort,
   applyFilters,
@@ -61,6 +65,7 @@ import {
   flattenRows,
   getCellValue,
   isCellEditable,
+  isRowMoveAllowed,
   moveForKey,
   movePosition,
   nextSort,
@@ -80,6 +85,13 @@ import { NgAtomsGridFilterComponent } from './grid-filter.component';
 import { NgAtomsGridHeaderPaneComponent } from './grid-header-pane.component';
 import { measureColumnWidth } from './grid-measure';
 import { isTypingKey, renderColumns, renderHeaderCells, toText } from './grid-render';
+import { trackRowDrag } from './grid-row-drag';
+import {
+  NgAtomsGridCellContext,
+  NgAtomsGridCellDirective,
+  NgAtomsGridEditorContext,
+  NgAtomsGridEditorDirective,
+} from './grid-templates';
 import {
   GridCellView,
   GridFilterOption,
@@ -126,6 +138,19 @@ export interface NgAtomsGridExportOptions extends GridExportOptions {
    */
   values?: 'raw' | 'formatted';
 }
+
+/** A row being dragged, and where it would land right now. */
+interface RowDrag {
+  rowId: GridRowId;
+  /** Display position of the dragged row. */
+  index: number;
+  target: GridDropTarget | null;
+  /** Whether dropping on the target is a move that makes sense. */
+  allowed: boolean;
+}
+
+/** Elements that take keys for themselves when they sit inside a cell. */
+const INTERACTIVE = 'input, select, textarea, button, a[href], [contenteditable]:not([contenteditable="false"])';
 
 /** Row density presets. */
 export type NgAtomsGridDensity = 'compact' | 'comfortable';
@@ -190,6 +215,12 @@ export class NgAtomsGridComponent<T = unknown> implements NgAtomsGridContext<T> 
   readonly cellState = input<NgAtomsGridCellStateFn<T> | null>(null);
   /** Widths the user gave columns by dragging, by column id. They win over `column.width`. */
   readonly columnWidths = model<Readonly<Record<string, number>>>({});
+  /**
+   * Shows a handle on each row to drag it by. The grid does not reorder
+   * rows: it emits `rowMove`. Handles are hidden while the grid sorts
+   * the rows itself, and for data paged by scroll.
+   */
+  readonly rowReorder = input(false);
   readonly density = input<NgAtomsGridDensity>('compact');
   /** BCP 47 locale for number formatting; defaults to the browser's. */
   readonly locale = input<string | undefined>(undefined);
@@ -205,6 +236,8 @@ export class NgAtomsGridComponent<T = unknown> implements NgAtomsGridContext<T> 
    * your data and pass the new rows in.
    */
   readonly cellsChange = output<GridCellChange[]>();
+  /** The user dragged a row onto another, or moved it with Alt+Up / Alt+Down. Move it in your data and pass rows back. */
+  readonly rowMove = output<GridRowMove>();
   /** Pasted values that were skipped: cells that do not accept edits, or text that is not a value for the column. */
   readonly cellsRejected = output<GridCellRejection[]>();
   /** The selected cells changed. Null while the grid has no active cell. */
@@ -386,6 +419,46 @@ export class NgAtomsGridComponent<T = unknown> implements NgAtomsGridContext<T> 
     return { range: { start: active, end: this.rangeEnd() ?? active }, rowIds, columnIds };
   });
   private readonly editSession = signal<EditSession | null>(null);
+  private readonly cellDirectives = contentChildren(NgAtomsGridCellDirective);
+  private readonly editorDirectives = contentChildren(NgAtomsGridEditorDirective);
+  private readonly cellTemplates = computed(
+    () => new Map(this.cellDirectives().map(slot => [slot.columnId(), slot.template])),
+  );
+  private readonly editorTemplates = computed(
+    () => new Map(this.editorDirectives().map(slot => [slot.columnId(), slot.template])),
+  );
+  /** Context of the open editor's template; one object per edit, so the template is not rebuilt on every render. */
+  private readonly openEditorContext = computed<NgAtomsGridEditorContext<T> | null>(() => {
+    const session = this.editSession();
+    const target = session && untracked(() => this.cellAt(session.position));
+    if (!target) return null;
+    return {
+      $implicit: getCellValue(target.row, target.column),
+      row: target.row,
+      column: target.column,
+      /** @inheritdoc */
+      commit: (value, move) => this.commitValue(value, move),
+      /** @inheritdoc */
+      cancel: () => this.cancelEdit(),
+    };
+  });
+
+  private readonly rowDrag = signal<RowDrag | null>(null);
+  /** Where the drop marker is drawn while a row is dragged. */
+  protected readonly dropIndicator = computed(() => {
+    const drag = this.rowDrag();
+    if (!drag?.target) return null;
+    const { index, position } = drag.target;
+    const height = this.rowHeight();
+    const inside = position === 'inside';
+    return {
+      top: (position === 'after' ? index + 1 : index) * height,
+      height: inside ? height : 0,
+      inside,
+      allowed: drag.allowed,
+    };
+  });
+
   /** Batches the user produced, for undo and redo. */
   private readonly history = createHistory();
   /** The mouse went down on a cell and has not been released since. */
@@ -447,6 +520,8 @@ export class NgAtomsGridComponent<T = unknown> implements NgAtomsGridContext<T> 
 
   /** @inheritdoc */
   activate(row: number, col: number): void {
+    const editing = this.editSession()?.position;
+    if (editing && (editing.row !== row || editing.col !== col)) this.leaveEdit();
     this.reactivated = this.isActive(row, col) && !this.hasRange();
     this.requestedRangeEnd.set(null);
     this.requestedActiveCell.set({ row, col });
@@ -471,6 +546,55 @@ export class NgAtomsGridComponent<T = unknown> implements NgAtomsGridContext<T> 
     const rect = this.selectionRect();
     if (!rect || !this.hasRange()) return null;
     return rectEdges(rect, { row, col })?.join(' ') ?? null;
+  }
+
+  /** @inheritdoc */
+  cellTemplate(columnId: string): TemplateRef<NgAtomsGridCellContext<T>> | null {
+    return (this.cellTemplates().get(columnId) as TemplateRef<NgAtomsGridCellContext<T>> | undefined) ?? null;
+  }
+
+  /** @inheritdoc */
+  editorTemplate(columnId: string): TemplateRef<NgAtomsGridEditorContext<T>> | null {
+    return (this.editorTemplates().get(columnId) as TemplateRef<NgAtomsGridEditorContext<T>> | undefined) ?? null;
+  }
+
+  /** @inheritdoc */
+  editorContext(): NgAtomsGridEditorContext<T> | null {
+    return this.openEditorContext();
+  }
+
+  /** @inheritdoc */
+  canDragRows(): boolean {
+    const sorting = this.sortMode() === 'client' && this.sort().length > 0;
+    return this.rowReorder() && !sorting && this.rowCount() === null;
+  }
+
+  /** @inheritdoc */
+  isDraggedRow(row: number): boolean {
+    return this.rowDrag()?.index === row;
+  }
+
+  /** @inheritdoc */
+  startRowDrag(row: number, event: PointerEvent): void {
+    const entry = this.rowList().get(row);
+    if (entry?.kind !== 'row') return;
+    const rowId = entry.row.id;
+
+    trackRowDrag(
+      event,
+      this.viewport().nativeElement,
+      () => ({
+        headerHeight: this.headerHeight(),
+        rowHeight: this.rowHeight(),
+        rowCount: this.rowList().length,
+        allowInside: this.hasHierarchy(),
+      }),
+      target => this.rowDrag.set({ rowId, index: row, target, allowed: !!target && this.canDropOn(rowId, target) }),
+      target => {
+        this.rowDrag.set(null);
+        if (target && this.canDropOn(rowId, target)) this.emitRowMove(rowId, target);
+      },
+    );
   }
 
   /** @inheritdoc */
@@ -547,6 +671,18 @@ export class NgAtomsGridComponent<T = unknown> implements NgAtomsGridContext<T> 
     }
 
     const change = createCellChange(target.row, target.column, parsed.value);
+    if (change) this.emitChanges([change]);
+    this.closeEditor();
+    if (move) this.moveActiveCell(move);
+  }
+
+  /** Ends an edit made in a custom editor with the value it produced. */
+  private commitValue(value: GridCellValue, move?: GridMove): void {
+    const session = this.editSession();
+    const target = session && this.cellAt(session.position);
+    if (!target) return;
+
+    const change = createCellChange(target.row, target.column, value);
     if (change) this.emitChanges([change]);
     this.closeEditor();
     if (move) this.moveActiveCell(move);
@@ -651,8 +787,8 @@ export class NgAtomsGridComponent<T = unknown> implements NgAtomsGridContext<T> 
    */
   protected onKeydown(event: KeyboardEvent): void {
     const active = this.activeCell();
-    const inHeader = !!(event.target as HTMLElement).closest('.nga-grid__header');
-    if (!active || inHeader) return;
+    const target = event.target as HTMLElement;
+    if (!active || target.closest('.nga-grid__header') || target.closest(INTERACTIVE)) return;
 
     const session = this.editSession();
     if (session) {
@@ -757,6 +893,7 @@ export class NgAtomsGridComponent<T = unknown> implements NgAtomsGridContext<T> 
    * Shortcuts that act on the selection: Escape collapses it to the
    * active cell, Ctrl+A selects everything, Ctrl+D fills down, Ctrl+Z
    * undoes and Ctrl+Y or Ctrl+Shift+Z redoes. Cmd stands in for Ctrl.
+   * Alt+Up and Alt+Down move the active row when rows can be reordered.
    *
    * @returns Whether the key was used.
    */
@@ -764,6 +901,9 @@ export class NgAtomsGridComponent<T = unknown> implements NgAtomsGridContext<T> 
     if (event.key === 'Escape' && this.hasRange()) {
       this.requestedRangeEnd.set(null);
       return true;
+    }
+    if (event.altKey && (event.key === 'ArrowUp' || event.key === 'ArrowDown')) {
+      return this.moveRowByKey(event.key === 'ArrowUp' ? -1 : 1);
     }
     if (!event.ctrlKey && !event.metaKey) return false;
 
@@ -787,6 +927,38 @@ export class NgAtomsGridComponent<T = unknown> implements NgAtomsGridContext<T> 
     if (isTypingKey(event)) return this.openEditor(active, event.key);
     if (event.key === 'Delete' || event.key === 'Backspace') return this.clearSelection();
     return false;
+  }
+
+  /** Whether a dragged row may be dropped on a target. */
+  private canDropOn(rowId: GridRowId, target: GridDropTarget): boolean {
+    const entry = this.rowList().get(target.index);
+    return entry?.kind === 'row' && isRowMoveAllowed(this.rowTree(), rowId, entry.row.id);
+  }
+
+  /** Emits the move of a row to a drop target. */
+  private emitRowMove(rowId: GridRowId, target: GridDropTarget): void {
+    const entry = this.rowList().get(target.index);
+    if (entry?.kind === 'row') this.rowMove.emit({ rowId, targetId: entry.row.id, position: target.position });
+  }
+
+  /**
+   * Moves the active row one place up or down, the keyboard's
+   * counterpart to dragging it. The active cell follows the row.
+   *
+   * @returns Whether rows can be reordered.
+   */
+  private moveRowByKey(step: -1 | 1): boolean {
+    const active = this.activeCell();
+    if (!active || !this.canDragRows()) return false;
+
+    const entry = this.rowList().get(active.row);
+    const target: GridDropTarget = { index: active.row + step, position: step < 0 ? 'before' : 'after' };
+    const inRange = target.index >= 0 && target.index < this.rowList().length;
+    if (entry?.kind === 'row' && inRange && this.canDropOn(entry.row.id, target)) {
+      this.emitRowMove(entry.row.id, target);
+      this.activate(target.index, active.col);
+    }
+    return true;
   }
 
   /** Moves the far corner of the selection, leaving the active cell where it is. */
@@ -862,7 +1034,9 @@ export class NgAtomsGridComponent<T = unknown> implements NgAtomsGridContext<T> 
     const format = resolveFormat(target.row, target.column);
     const current = editTextOf(getCellValue(target.row, target.column), format, this.locale());
     this.activate(position.row, position.col);
-    this.editSession.set({ position, text: typed ?? current, invalid: false, selectAll: typed === null });
+    const custom = !!this.editorTemplate(target.column.id);
+    const text = custom ? current : (typed ?? current);
+    this.editSession.set({ position, text, invalid: false, selectAll: typed === null });
     return true;
   }
 
@@ -918,7 +1092,8 @@ export class NgAtomsGridComponent<T = unknown> implements NgAtomsGridContext<T> 
 
   /**
    * Keeps DOM focus on the right element after each render: the editor
-   * while editing, otherwise the active cell — or the viewport when that
+   * while editing (the app's own control when it gave an editor
+   * template), otherwise the active cell — or the viewport when that
    * cell is scrolled out of the rendered window, since row elements are
    * recycled and would otherwise keep focus while showing another row.
    * Focus is never taken from outside the grid, nor from header controls.
@@ -937,8 +1112,14 @@ export class NgAtomsGridComponent<T = unknown> implements NgAtomsGridContext<T> 
       if (focused !== editor) this.focusEditor(editor);
       return;
     }
+    const custom = host.querySelector<HTMLElement>('.nga-grid__custom-editor');
+    if (custom) {
+      if (!custom.contains(focused)) custom.querySelector<HTMLElement>(`${INTERACTIVE}, [tabindex]`)?.focus();
+      return;
+    }
     const target = host.querySelector<HTMLElement>('.nga-grid__cell--active') ?? host;
-    if (focused !== target) target.focus({ preventScroll: true });
+    const insideTarget = target !== host && target.contains(focused);
+    if (focused !== target && !insideTarget) target.focus({ preventScroll: true });
   }
 
   /** Focuses the editor, selecting its text or placing the caret at the end. */

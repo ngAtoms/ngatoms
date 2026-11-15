@@ -4,7 +4,7 @@
  * computed here, by the "app" — the grid only displays what it is given.
  */
 
-import { GridCellChange, GridColumnNode, GridNumberFormat, GridRow } from "../../../components/grid";
+import { GridCellChange, GridColumnNode, GridNumberFormat, GridRow, GridRowMove } from "../../../components/grid";
 
 /** Record behind each row of the sales tree. Month keys are `m1`…`m12`. */
 export type SalesLine = { name: string } & Record<string, number | string>;
@@ -476,4 +476,80 @@ export function buildRegionColumns(): GridColumnNode<RegionLine>[] {
     { id: "stores", header: "Stores", type: "number", width: 100, format: UNITS },
     { id: "units", header: "Units", type: "number", width: 120, format: UNITS },
   ];
+}
+
+/** Record behind each row of the task list. */
+export interface TaskLine {
+  task: string;
+  status: string | null;
+  due: string | null;
+  done: boolean | null;
+}
+
+/** Statuses a task can have. */
+export const TASK_STATUSES = ["Planned", "In progress", "Blocked", "Done"];
+
+/** A small task tree: two phases with their tasks. */
+export function buildTaskRows(): GridRow<TaskLine>[] {
+  /** Builds a phase row. */
+  const phase = (id: string, task: string): GridRow<TaskLine> => ({
+    id,
+    data: { task, status: null, due: null, done: null },
+  });
+  /** Builds a task row under a phase. */
+  const task = (id: string, parentId: string, name: string, status: string, due: string): GridRow<TaskLine> => ({
+    id,
+    parentId,
+    data: { task: name, status, due, done: status === "Done" },
+  });
+  return [
+    phase("design", "Design"),
+    task("research", "design", "Interview five customers", "Done", "2026-11-03"),
+    task("wireframes", "design", "Wireframes for the checkout", "In progress", "2026-11-18"),
+    task("review", "design", "Design review", "Planned", "2026-11-24"),
+    phase("build", "Build"),
+    task("api", "build", "Orders endpoint", "In progress", "2026-12-02"),
+    task("payments", "build", "Payment provider contract", "Blocked", "2026-12-05"),
+    task("emails", "build", "Confirmation emails", "Planned", "2026-12-12"),
+  ];
+}
+
+/** Columns of the task list. Status and due date are edited with the app's own controls. */
+export function buildTaskColumns(): GridColumnNode<TaskLine>[] {
+  return [
+    { id: "task", header: "Task", tree: true, width: 300, editable: true },
+    { id: "status", header: "Status", width: 150, editable: true },
+    { id: "due", header: "Due", width: 150, editable: true },
+    { id: "done", header: "Done", width: 80, resizable: false },
+  ];
+}
+
+/** Applies a batch of edits to the tasks. */
+export function applyTaskChanges(rows: GridRow<TaskLine>[], changes: GridCellChange[]): GridRow<TaskLine>[] {
+  const byRow = new Map<string | number, GridCellChange[]>();
+  for (const change of changes) byRow.set(change.rowId, [...(byRow.get(change.rowId) ?? []), change]);
+  return rows.map((row) => {
+    const edits = byRow.get(row.id);
+    if (!edits) return row;
+    const data = { ...row.data } as Record<string, unknown>;
+    for (const edit of edits) data[edit.columnId] = edit.next;
+    return { ...row, data: data as unknown as TaskLine };
+  });
+}
+
+/**
+ * Moves a task where it was dropped. Siblings keep the order of the
+ * array, so placing the row next to its target is all it takes; a row
+ * dropped inside another becomes its last child.
+ */
+export function moveTaskRow(rows: GridRow<TaskLine>[], move: GridRowMove): GridRow<TaskLine>[] {
+  const row = rows.find((candidate) => candidate.id === move.rowId);
+  const rest = rows.filter((candidate) => candidate.id !== move.rowId);
+  const targetIndex = rest.findIndex((candidate) => candidate.id === move.targetId);
+  if (!row || targetIndex < 0) return rows;
+
+  const target = rest[targetIndex];
+  const moved = { ...row, parentId: move.position === "inside" ? target.id : target.parentId };
+  const at = move.position === "before" ? targetIndex : move.position === "after" ? targetIndex + 1 : rest.length;
+  return [...rest.slice(0, at), moved, ...rest.slice(at)];
 }

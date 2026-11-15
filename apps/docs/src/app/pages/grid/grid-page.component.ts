@@ -1,7 +1,10 @@
 import { Component, computed, signal, ChangeDetectionStrategy } from "@angular/core";
 import { RouterLink } from "@angular/router";
 import {
+  NgAtomsGridCellDirective,
   NgAtomsGridComponent,
+  NgAtomsGridEditorDirective,
+  type GridRowMove,
   type GridCellChange,
   type GridCellRejection,
   type GridColumn,
@@ -15,10 +18,19 @@ import {
   NgAtomsButtonDirective,
 } from "../../../components/button";
 import {
+  NgAtomsCheckboxDirective,
+} from "../../../components/checkbox";
+import {
   NgAtomsPaginationComponent,
 } from "../../../components/pagination";
 import {
   ORDER_COUNT,
+  TASK_STATUSES,
+  type TaskLine,
+  applyTaskChanges,
+  buildTaskColumns,
+  buildTaskRows,
+  moveTaskRow,
   type OrderLine,
   type PlanLine,
   type RegionLine,
@@ -50,8 +62,11 @@ import { PreviewCard } from "../../../components/preview-card/preview-card";
   standalone: true,
   imports: [
     RouterLink,
+    NgAtomsGridCellDirective,
     NgAtomsGridComponent,
+    NgAtomsGridEditorDirective,
     NgAtomsButtonDirective,
+    NgAtomsCheckboxDirective,
     NgAtomsPaginationComponent,
     NgAtomsBadgeDirective,
     CodeBlockComponent,
@@ -118,6 +133,34 @@ export class GridPageComponent {
   readonly regionColumns = buildRegionColumns();
   readonly regionRows = signal<GridRow<RegionLine>[]>(buildRegionRows());
   readonly regionExpanded = signal<ReadonlySet<GridRowId>>(new Set());
+
+  readonly taskStatuses = TASK_STATUSES;
+  readonly taskColumns = buildTaskColumns();
+  readonly taskRows = signal<GridRow<TaskLine>[]>(buildTaskRows());
+  readonly taskExpanded = signal<ReadonlySet<GridRowId>>(new Set(["design", "build"]));
+  readonly lastMove = signal("drag a row by its handle, or press Alt+Up / Alt+Down");
+
+  readonly taskCellState = (row: GridRow<TaskLine>, column: GridColumn<TaskLine>) =>
+    row.parentId === undefined && column.id !== "task" ? { readonly: true } : null;
+
+  statusVariant(status: unknown): "success" | "warning" | "destructive" | "default" {
+    if (status === "Done") return "success";
+    if (status === "In progress") return "warning";
+    return status === "Blocked" ? "destructive" : "default";
+  }
+
+  onTaskChange(changes: GridCellChange[]): void {
+    this.taskRows.update((rows) => applyTaskChanges(rows, changes));
+  }
+
+  onTaskMove(move: GridRowMove): void {
+    this.taskRows.update((rows) => moveTaskRow(rows, move));
+    this.lastMove.set(`${move.rowId} moved ${move.position} ${move.targetId}`);
+  }
+
+  setTaskDone(rowId: GridRowId, done: boolean): void {
+    this.onTaskChange([{ rowId, columnId: "done", previous: !done, next: done }]);
+  }
 
   get resizedColumns(): string {
     const entries = Object.entries(this.columnWidths());
@@ -191,6 +234,10 @@ export class GridPageComponent {
 
   readonly codeFormatting = "// 1,234 · (1,234) · –\nconst units: GridNumberFormat = { decimals: 0, negative: 'parentheses', zero: '–' };\n\n// Thousands, one decimal\nconst thousands: GridNumberFormat = { scale: 1000, decimals: 1 };\n\n// A value stored negative, shown positive\nconst reversed: GridNumberFormat = { reverseSign: true };\n\nconst columns = [\n  { id: 'difference', header: 'Diff', type: 'number', format: units, variance: true },\n];\n\nconst rows = [\n  { id: 'returns', data: returns, favorable: 'lower' },\n  { id: 'return-rate', data: returnRate, format: { style: 'percent', decimals: 1 } },\n];";
 
+  readonly codeTemplates = "<nga-grid [rows]=\"rows()\" [columns]=\"columns\" (cellsChange)=\"onCellsChange($event)\">\n  <!-- How the cells of the \"status\" column look -->\n  <ng-template ngaGridCell=\"status\" let-value>\n    <span ngAtomsBadge [variant]=\"variantOf(value)\">{{ value }}</span>\n  </ng-template>\n\n  <!-- How they are edited: any control; call commit with the new value -->\n  <ng-template ngaGridEditor=\"status\" let-value let-commit=\"commit\">\n    <select (change)=\"commit($any($event.target).value)\">\n      @for (status of statuses; track status) {\n        <option [value]=\"status\" [selected]=\"status === value\">{{ status }}</option>\n      }\n    </select>\n  </ng-template>\n\n  <ng-template ngaGridEditor=\"due\" let-value let-commit=\"commit\">\n    <input type=\"date\" [value]=\"value ?? ''\" (change)=\"commit($any($event.target).value || null)\" />\n  </ng-template>\n\n  <!-- A control that is always there: the app handles its change itself -->\n  <ng-template ngaGridCell=\"done\" let-value let-row=\"row\">\n    <input type=\"checkbox\" ngAtomsCheckbox [checked]=\"value === true\" (change)=\"setDone(row.id, $any($event.target).checked)\" />\n  </ng-template>\n</nga-grid>";
+
+  readonly codeRowReorder = "// <nga-grid [rows]=\"rows()\" [columns]=\"columns\" [rowReorder]=\"true\" (rowMove)=\"onRowMove($event)\" />\n\nonRowMove(move: GridRowMove): void {\n  // { rowId, targetId, position: 'before' | 'after' | 'inside' }\n  this.rows.update(rows => {\n    const row = rows.find(candidate => candidate.id === move.rowId)!;\n    const rest = rows.filter(candidate => candidate.id !== move.rowId);\n    const index = rest.findIndex(candidate => candidate.id === move.targetId);\n    const target = rest[index];\n\n    const moved = { ...row, parentId: move.position === 'inside' ? target.id : target.parentId };\n    const at = move.position === 'before' ? index : move.position === 'after' ? index + 1 : rest.length;\n    return [...rest.slice(0, at), moved, ...rest.slice(at)];\n  });\n}";
+
   readonly codeColumnWidth = "readonly columnWidths = signal<Record<string, number>>(loadSavedWidths());\n\n// <nga-grid [rows]=\"rows\" [columns]=\"columns\" [(columnWidths)]=\"columnWidths\" />\n\nconst columns: GridColumnNode<StockLine>[] = [\n  { id: 'product', header: 'Product', width: 170, minWidth: 120 },\n  { id: 'supplier', header: 'Supplier', resizable: false },\n  { id: 'internalCode', header: 'Code', hidden: true },\n];";
 
   readonly codePagingScroll = "// <nga-grid\n//   [rows]=\"rows()\"\n//   [rowCount]=\"total\"\n//   [columns]=\"columns\"\n//   (visibleRangeChange)=\"onRange($event)\"\n// />\n\nreadonly rows = signal<GridRow<Order>[]>([]);\nprivate readonly requested = new Set<number>();\n\nonRange(range: { start: number; end: number }): void {\n  const first = Math.floor(range.start / PAGE);\n  const last = Math.floor((range.end - 1) / PAGE);\n  for (let page = first; page <= last; page++) {\n    if (this.requested.has(page)) continue;\n    this.requested.add(page);\n    // Each row comes back with its index in the full result.\n    this.api.orders(page * PAGE, PAGE).then(rows => this.rows.update(loaded => [...loaded, ...rows]));\n  }\n}";
@@ -220,6 +267,7 @@ export class GridPageComponent {
         { name: "cellState", type: "(row, column) => GridCellState | null", defaultVal: "null", description: "Resolves per-cell state. Called for every rendered cell, so keep it cheap." },
         { name: "rowCount", type: "number | null", defaultVal: "null", description: "Size of the full result when flat data is paged by scroll. Rows not supplied yet render as placeholders." },
         { name: "columnWidths", type: "Record<string, number> (model)", defaultVal: "{}", description: "Two-way binding for the widths the user set by dragging, by column id." },
+        { name: "rowReorder", type: "boolean", defaultVal: "false", description: "Shows a handle on each row to drag it by. Moves are emitted, not applied." },
         { name: "density", type: "'compact' | 'comfortable'", defaultVal: "'compact'", description: "Row height preset." },
         { name: "locale", type: "string", defaultVal: "browser locale", description: "Locale used to format and parse numbers." },
         { name: "label", type: "string", defaultVal: "''", description: "Accessible name of the grid." },
@@ -232,8 +280,17 @@ export class GridPageComponent {
         { name: "cellsChange", type: "GridCellChange[]", defaultVal: "—", description: "The user edited cells. Each change has rowId, columnId, previous and next. Apply it and pass new rows in." },
         { name: "cellsRejected", type: "GridCellRejection[]", defaultVal: "—", description: "Pasted values that were skipped: the cell does not accept edits, or the text is not a value for the column." },
         { name: "selectionChange", type: "GridSelection | null", defaultVal: "—", description: "The selected block changed: its range in display positions, plus the row ids and column ids it covers." },
+        { name: "rowMove", type: "GridRowMove", defaultVal: "—", description: "A row was dragged onto another, or moved with Alt+Up / Alt+Down: rowId, targetId and position ('before' | 'after' | 'inside')." },
         { name: "rowExpand", type: "GridRowId", defaultVal: "—", description: "A row with hasChildren and no loaded children was expanded. Load them and pass them in." },
         { name: "visibleRangeChange", type: "{ start, end }", defaultVal: "—", description: "The rendered row window changed. Use it to load pages while scrolling." },
+      ],
+    },
+    {
+      kind: "Templates",
+      target: "nga-grid",
+      props: [
+        { name: "ngaGridCell=\"columnId\"", type: "ng-template", defaultVal: "—", description: "Draws the cells of a column. Variables: the value (implicit), text, row, column." },
+        { name: "ngaGridEditor=\"columnId\"", type: "ng-template", defaultVal: "—", description: "Edits the cells of a column in place of the text field. Variables: the value (implicit), row, column, commit(value, move?), cancel()." },
       ],
     },
     {
@@ -312,6 +369,7 @@ export class GridPageComponent {
     { icon: "tree-structure", title: "Hierarchy", body: "In the tree column, Right expands a row and Left collapses it. Rows expose aria-level and aria-expanded." },
     { icon: "pencil-simple", title: "Editing", body: "Enter, F2 or typing opens the editor; Enter and Tab commit and move, Escape cancels, and focus returns to the cell. Cells that cannot be edited expose aria-readonly, and invalid ones aria-invalid with their message." },
     { icon: "selection", title: "Selection", body: "Shift with any navigation key extends the selection; Ctrl+A selects all and Escape collapses it. Selected cells expose aria-selected. Copy, cut and paste use the standard clipboard shortcuts and need no permission prompt." },
+    { icon: "arrows-out-cardinal", title: "Reordering", body: "Alt+Up and Alt+Down move the active row one place, so reordering does not depend on dragging. The active cell follows the row." },
     { icon: "table", title: "Grid semantics", body: "role=\"treegrid\" (or \"grid\" without hierarchy), with aria-rowcount and aria-colcount for the full data and aria-rowindex and aria-colindex on rendered cells, so virtualization does not hide the real size." },
     { icon: "funnel", title: "Sorting and filters", body: "Sortable headers expose aria-sort. The filter popover is a labelled dialog that takes focus and returns it on close. Header controls — sort, filter and the resize handle — are not yet reachable from the keyboard." },
     { icon: "hand-tap", title: "Touch and small screens", body: "On coarse pointers rows grow to the comfortable height and header controls to a 44px target. Pinned columns release on narrow containers so the scrolling area never collapses." },
@@ -328,6 +386,8 @@ export class GridPageComponent {
     { id: "rows", label: "Rows and hierarchy" },
     { id: "columns", label: "Column groups and pinning" },
     { id: "formatting", label: "Number formatting" },
+    { id: "templates", label: "Custom cells and editors" },
+    { id: "row-reorder", label: "Reordering rows" },
     { id: "column-width", label: "Column width" },
     { id: "paging-scroll", label: "Paging by scroll" },
     { id: "paging-pages", label: "Paging with pages" },
