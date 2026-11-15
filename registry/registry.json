@@ -249,7 +249,10 @@
         "packages/primitives/src/date-picker/date-picker.styles.css",
         "packages/primitives/src/date-picker/index.ts"
       ],
-      "cssImport": "date-picker.styles.css"
+      "cssImport": "date-picker.styles.css",
+      "registryDependencies": [
+        "overlay"
+      ]
     },
     {
       "name": "dropdown-menu",
@@ -266,7 +269,10 @@
         "packages/primitives/src/dropdown-menu/dropdown-menu.styles.css",
         "packages/primitives/src/dropdown-menu/index.ts"
       ],
-      "cssImport": "dropdown-menu.styles.css"
+      "cssImport": "dropdown-menu.styles.css",
+      "registryDependencies": [
+        "overlay"
+      ]
     },
     {
       "name": "popover",
@@ -280,7 +286,10 @@
         "packages/primitives/src/popover/popover.styles.css",
         "packages/primitives/src/popover/index.ts"
       ],
-      "cssImport": "popover.styles.css"
+      "cssImport": "popover.styles.css",
+      "registryDependencies": [
+        "overlay"
+      ]
     },
     {
       "name": "overlay",
