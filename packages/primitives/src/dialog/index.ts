@@ -1,3 +1,7 @@
+/**
+ * @file Public entry point of the dialog.
+ */
+
 export * from './dialog.component';
 export * from './dialog-header.directive';
 export * from './dialog-title.directive';

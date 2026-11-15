@@ -1,3 +1,8 @@
+/**
+ * @file One set of global listeners shared by every open overlay: outside
+ * clicks, Escape and scrolling.
+ */
+
 import { Injectable, OnDestroy, inject } from '@angular/core';
 import { DOCUMENT } from '@angular/common';
 
@@ -51,16 +56,17 @@ export class NgAtomsOverlayService implements OnDestroy {
     return () => this.deregister(entry);
   }
 
+  /** Takes an overlay off the stack, and stops listening when it was the last. */
   private deregister(entry: OverlayEntry): void {
     const idx = this.stack.lastIndexOf(entry);
     if (idx >= 0) this.stack.splice(idx, 1);
     if (!this.stack.length) this.detach();
   }
 
+  /** Closes the overlays that asked to close on scroll, after taking them off the stack. */
   private readonly onScroll = (): void => {
     const toClose = this.stack.filter(e => e.closeOnScroll);
-    
-    // Remove closed entries from stack
+
     toClose.forEach(entry => {
       const idx = this.stack.indexOf(entry);
       if (idx >= 0) this.stack.splice(idx, 1);
@@ -70,6 +76,7 @@ export class NgAtomsOverlayService implements OnDestroy {
     toClose.forEach(e => e.close());
   };
 
+  /** Closes the overlay opened last when Escape is pressed. */
   private readonly onEscape = (e: KeyboardEvent): void => {
     if (e.key !== 'Escape') return;
     const entry = this.stack.pop();
@@ -77,6 +84,7 @@ export class NgAtomsOverlayService implements OnDestroy {
     entry?.close();
   };
 
+  /** Closes every overlay the click landed outside of. */
   private readonly onClick = (e: MouseEvent): void => {
     const target = e.target as Node;
     const toClose = this.stack.filter(
@@ -88,6 +96,7 @@ export class NgAtomsOverlayService implements OnDestroy {
     });
   };
 
+  /** Starts listening for scrolling and Escape. */
   private attachGlobal(): void {
     const win = this.document.defaultView;
     if (!win) return;
@@ -95,6 +104,10 @@ export class NgAtomsOverlayService implements OnDestroy {
     win.addEventListener('keydown', this.onEscape);
   }
 
+  /**
+   * Starts listening for clicks. Deferred by a tick, so the click that opened an
+   * overlay does not close it.
+   */
   private attachClick(): void {
     this.deferTimer = null;
     if (!this.stack.length) return;
@@ -102,6 +115,7 @@ export class NgAtomsOverlayService implements OnDestroy {
     this.clickAttached = true;
   }
 
+  /** Stops listening for everything. */
   private detach(): void {
     const win = this.document.defaultView;
     if (!win) return;
@@ -117,6 +131,7 @@ export class NgAtomsOverlayService implements OnDestroy {
     }
   }
 
+  /** Empties the stack and stops listening. */
   ngOnDestroy(): void {
     this.stack.length = 0;
     this.detach();

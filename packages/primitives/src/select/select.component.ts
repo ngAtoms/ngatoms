@@ -1,3 +1,8 @@
+/**
+ * @file Select: a button that opens a list of options, single or multiple,
+ * optionally searchable.
+ */
+
 import {
   AfterViewChecked,
   Component,
@@ -22,6 +27,7 @@ export interface NgAtomsSelectOption {
 export type NgAtomsSelectVariant = 'default' | 'filled' | 'ghost';
 export type NgAtomsSelectSize = 'xs' | 'sm' | 'md' | 'lg' | 'xl';
 
+/** Select: a button that opens a list of options, single or multiple, optionally searchable. */
 @Component({
   selector: 'nga-select',
   standalone: true,
@@ -93,12 +99,14 @@ export class NgAtomsSelectComponent implements AfterViewChecked {
     'nga-select-trigger--invalid': this.invalid(),
   }));
 
+  /** Whether an option is selected. */
   isSelected(optValue: string): boolean {
     const val = this.value();
     if (this.multiple()) return (Array.isArray(val) ? val : []).includes(optValue);
     return val === optValue;
   }
 
+  /** Opens or closes the panel. */
   toggleOpen(): void {
     if (this.disabled()) return;
     if (!this.isOpen()) {
@@ -115,6 +123,7 @@ export class NgAtomsSelectComponent implements AfterViewChecked {
     }
   }
 
+  /** Keeps the panel on the side of the trigger with room while the page scrolls. */
   @HostListener('window:scroll')
   onWindowScroll(): void {
     if (this.isOpen()) {
@@ -122,6 +131,12 @@ export class NgAtomsSelectComponent implements AfterViewChecked {
     }
   }
 
+  /**
+   * Closes the panel and clears the search.
+   *
+   * @param returnFocus Whether focus goes back to the trigger; false when a
+   * click elsewhere closed the panel.
+   */
   close(returnFocus = true): void {
     this.isOpen.set(false);
     this.searchQuery.set('');
@@ -133,6 +148,10 @@ export class NgAtomsSelectComponent implements AfterViewChecked {
     }
   }
 
+  /**
+   * Picks an option. In multiple mode it is added to or removed from the
+   * selection and the panel stays open.
+   */
   selectOption(option: NgAtomsSelectOption): void {
     if (option.disabled) return;
     if (this.multiple()) {
@@ -145,11 +164,17 @@ export class NgAtomsSelectComponent implements AfterViewChecked {
     }
   }
 
+  /** Filters the options by the text in the search field. */
   onSearch(event: Event): void {
     this.searchQuery.set((event.target as HTMLInputElement).value);
     this.focusedIndex.set(-1);
   }
 
+  /**
+   * Keyboard handling on the trigger. On a closed select, the arrow keys,
+   * Enter, Space, Home and End open the panel. While it is open they move
+   * through the options, Enter and Space pick, and Escape closes.
+   */
   onTriggerKeydown(event: KeyboardEvent): void {
     if (!['ArrowDown', 'ArrowUp', 'Enter', ' ', 'Escape', 'Home', 'End'].includes(event.key)) return;
     event.preventDefault();
@@ -173,6 +198,10 @@ export class NgAtomsSelectComponent implements AfterViewChecked {
     }
   }
 
+  /**
+   * Keyboard handling inside the panel: arrow keys, Home and End move, Enter
+   * picks, Escape closes.
+   */
   onPanelKeydown(event: KeyboardEvent): void {
     const opts = this.filteredOptions();
     switch (event.key) {
@@ -185,6 +214,7 @@ export class NgAtomsSelectComponent implements AfterViewChecked {
     }
   }
 
+  /** Focuses the search field once it has been rendered. */
   ngAfterViewChecked(): void {
     if (this._shouldFocusSearch) {
       const input = this.searchInputEl();
@@ -195,6 +225,7 @@ export class NgAtomsSelectComponent implements AfterViewChecked {
     }
   }
 
+  /** Opens the panel above the trigger when there is not enough room below and more room above. */
   private computePanelPosition(): void {
     const rect = this.el.nativeElement.getBoundingClientRect();
     const spaceBelow = window.innerHeight - rect.bottom;

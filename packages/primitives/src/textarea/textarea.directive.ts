@@ -1,3 +1,8 @@
+/**
+ * @file Textarea styling: variant, size, invalid state and optional
+ * auto-resize.
+ */
+
 import {
   Directive,
   ElementRef,
@@ -11,6 +16,7 @@ import {
 export type NgAtomsTextareaVariant = 'default' | 'filled' | 'ghost';
 export type NgAtomsTextareaSize = 'xs' | 'sm' | 'md' | 'lg' | 'xl';
 
+/** Textarea styling: variant, size, invalid state and optional auto-resize. */
 @Directive({
   selector: '[ngAtomsTextarea]',
   standalone: true,
@@ -74,12 +80,14 @@ export class NgAtomsTextareaDirective implements OnDestroy {
 
   private _onInput: (() => void) | null = null;
 
+  /** Makes the textarea as tall as its content. */
   private _resize(): void {
     const el = this.el.nativeElement;
     this.renderer.setStyle(el, 'height', 'auto');
     this.renderer.setStyle(el, 'height', `${el.scrollHeight}px`);
   }
 
+  /** Stops listening for input. */
   ngOnDestroy(): void {
     if (this._onInput) {
       this.el.nativeElement.removeEventListener('input', this._onInput);

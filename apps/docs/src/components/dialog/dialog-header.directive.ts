@@ -1,5 +1,10 @@
+/**
+ * @file Header of a dialog.
+ */
+
 import { Directive } from '@angular/core';
 
+/** Header of a dialog. */
 @Directive({
   selector: '[ngAtomsDialogHeader]',
   standalone: true,

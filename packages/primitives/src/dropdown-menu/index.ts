@@ -1,3 +1,7 @@
+/**
+ * @file Public entry point of the dropdown menu.
+ */
+
 export { NgAtomsDropdownMenuComponent, NGA_DROPDOWN_MENU } from './dropdown-menu.component';
 export type { NgAtomsDropdownPlacement, NgAtomsDropdownAlign, NgAtomsDropdownMenuContext } from './dropdown-menu.component';
 export { NgAtomsDropdownTriggerDirective } from './dropdown-trigger.directive';

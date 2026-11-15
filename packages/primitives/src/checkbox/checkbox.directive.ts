@@ -1,3 +1,7 @@
+/**
+ * @file Checkbox styling and two-way state for a native checkbox input.
+ */
+
 import {
   Directive,
   ElementRef,
@@ -11,6 +15,7 @@ import {
 
 export type NgAtomsCheckboxSize = 'sm' | 'md' | 'lg';
 
+/** Checkbox styling and two-way state for a native checkbox input. */
 @Directive({
   selector: '[ngAtomsCheckbox]',
   standalone: true,
@@ -47,6 +52,7 @@ export class NgAtomsCheckboxDirective {
     });
   }
 
+  /** Mirrors the native checked state into the model. */
   @HostListener('change', ['$event'])
   onChange(event: Event): void {
     this.checked.set((event.target as HTMLInputElement).checked);

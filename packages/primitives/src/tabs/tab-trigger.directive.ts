@@ -1,3 +1,7 @@
+/**
+ * @file The button that activates a tab.
+ */
+
 import {
   Directive,
   ElementRef,
@@ -11,6 +15,7 @@ import {
 } from '@angular/core';
 import { NgAtomsTabsComponent, NgAtomsTabTriggerDirectiveRef } from './tabs.component';
 
+/** The button that activates a tab. */
 @Directive({
   selector: '[ngAtomsTabTrigger]',
   standalone: true,
@@ -47,15 +52,21 @@ export class NgAtomsTabTriggerDirective implements OnInit, OnDestroy {
     });
   }
 
+  /** Registers the trigger with its tabs. */
   ngOnInit(): void {
     this.tabs.register(this._ref);
   }
 
+  /** Activates the tab. */
   @HostListener('click')
   onClick(): void {
     this.tabs.setActive(this.value());
   }
 
+  /**
+   * Arrow Left and Arrow Right move to the previous and next tab, wrapping
+   * at the ends.
+   */
   @HostListener('keydown', ['$event'])
   onKeydown(event: KeyboardEvent): void {
     if (event.key === 'ArrowRight') {
@@ -67,6 +78,7 @@ export class NgAtomsTabTriggerDirective implements OnInit, OnDestroy {
     }
   }
 
+  /** Unregisters the trigger. */
   ngOnDestroy(): void {
     this.tabs.unregister(this._ref);
   }

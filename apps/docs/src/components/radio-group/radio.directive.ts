@@ -1,3 +1,7 @@
+/**
+ * @file One radio button of a group.
+ */
+
 import {
   Directive,
   ElementRef,
@@ -11,6 +15,7 @@ import { NGA_RADIO_GROUP } from './radio-group.component';
 
 export type NgAtomsRadioSize = 'sm' | 'md' | 'lg';
 
+/** One radio button of a group. */
 @Directive({
   selector: '[ngAtomsRadio]',
   standalone: true,
@@ -45,6 +50,7 @@ export class NgAtomsRadioDirective {
     });
   }
 
+  /** Makes this radio the value of its group. */
   @HostListener('change')
   onChange(): void {
     this.group?.value.set(this.value());

@@ -1,3 +1,7 @@
+/**
+ * @file Horizontal or vertical rule between content.
+ */
+
 import {
   Directive,
   ElementRef,
@@ -9,6 +13,7 @@ import {
 
 export type NgAtomsSeparatorOrientation = 'horizontal' | 'vertical';
 
+/** Horizontal or vertical rule between content. */
 @Directive({
   selector: '[ngAtomsSeparator]',
   standalone: true,

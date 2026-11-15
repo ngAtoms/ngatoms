@@ -1,3 +1,7 @@
+/**
+ * @file Group of radio buttons sharing one value.
+ */
+
 import { Component, InjectionToken, ElementRef, Renderer2, effect, inject, input, model } from '@angular/core';
 
 export type NgAtomsRadioGroupOrientation = 'horizontal' | 'vertical';
@@ -11,6 +15,7 @@ export const NGA_RADIO_GROUP = new InjectionToken<NgAtomsRadioGroup>('NGA_RADIO_
 
 let _nextId = 0;
 
+/** Group of radio buttons sharing one value. */
 @Component({
   selector: 'nga-radio-group',
   standalone: true,

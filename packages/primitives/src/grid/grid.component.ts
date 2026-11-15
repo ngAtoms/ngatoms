@@ -926,7 +926,9 @@ export class NgAtomsGridComponent<T = unknown> implements NgAtomsGridContext<T> 
    * Ctrl+Y or Ctrl+Shift+Z redoes. On a Mac ⌘ stands in for Ctrl: ⌘A,
    * ⌘D, ⌘Return, ⌘Z, ⌘Y or ⇧⌘Z. The column shortcut stays Ctrl+Space,
    * because ⌘Space belongs to the system. Alt+↑ and Alt+↓ (⌥↑ and ⌥↓ on
-   * a Mac) move the active row when rows can be reordered.
+   * a Mac) move the active row when rows can be reordered. Space is
+   * checked before the Ctrl/⌘ guard: Shift+Space has neither modifier,
+   * and ⌘Space must stay with the system.
    *
    * @returns Whether the key was used.
    */
@@ -938,7 +940,6 @@ export class NgAtomsGridComponent<T = unknown> implements NgAtomsGridContext<T> 
     if (event.altKey && (event.key === 'ArrowUp' || event.key === 'ArrowDown')) {
       return this.reorder.moveByKey(event.key === 'ArrowUp' ? -1 : 1);
     }
-    // Before the Ctrl/⌘ guard: Shift+Space has neither, and ⌘Space must stay with the OS.
     if (event.key === ' ' && !event.altKey) {
       if (event.shiftKey && !event.ctrlKey && !event.metaKey) {
         this.selected.selectActiveRow();

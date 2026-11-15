@@ -1,3 +1,7 @@
+/**
+ * @file One item of an accordion: a trigger and the panel it opens.
+ */
+
 import {
   Component,
   computed,
@@ -6,6 +10,7 @@ import {
 } from '@angular/core';
 import { NgAtomsAccordionComponent } from './accordion.component';
 
+/** One item of an accordion: a trigger and the panel it opens. */
 @Component({
   selector: 'nga-accordion-item',
   standalone: true,
@@ -23,6 +28,7 @@ export class NgAtomsAccordionItemComponent {
 
   readonly isOpen = computed(() => this.accordion.openItems().has(this.value()));
 
+  /** Opens the item, or closes it when it is open. */
   toggle(): void {
     this.accordion.toggle(this.value());
   }

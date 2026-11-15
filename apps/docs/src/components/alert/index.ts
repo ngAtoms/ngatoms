@@ -1,3 +1,7 @@
+/**
+ * @file Public entry point of the alert.
+ */
+
 export {
   NgAtomsAlertDirective,
   NgAtomsAlertTitleDirective,

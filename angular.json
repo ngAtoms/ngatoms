@@ -59,13 +59,7 @@
             "buildTarget": "primitives:build:development",
             "runner": "vitest",
             "tsConfig": "packages/primitives/tsconfig.spec.json",
-            "include": [
-              "grid-core/**/*.spec.ts",
-              "button/button.directive.spec.ts",
-              "input/input.directive.spec.ts",
-              "grid/grid.component.spec.ts",
-              "grid/index.spec.ts"
-            ]
+            "include": ["**/*.spec.ts"]
           }
         }
       }

@@ -1,3 +1,7 @@
+/**
+ * @file Modal dialog on the native `<dialog>` element.
+ */
+
 import {
   Component,
   ElementRef,
@@ -10,6 +14,7 @@ import {
 
 export type NgAtomsDialogSize = 'sm' | 'md' | 'lg' | 'xl';
 
+/** Modal dialog on the native `<dialog>` element. */
 @Component({
   selector: 'nga-dialog',
   standalone: true,
@@ -34,16 +39,19 @@ export class NgAtomsDialogComponent implements OnDestroy {
     });
   }
 
+  /** Closes the dialog. */
   closeDialog(): void {
     this.open.set(false);
   }
 
+  /** Closes the dialog when the backdrop itself is clicked, not its content. */
   onBackdropClick(event: MouseEvent): void {
     if (event.target === this.dialogEl().nativeElement) {
       this.closeDialog();
     }
   }
 
+  /** Closes the native dialog if it is still open. */
   ngOnDestroy(): void {
     const el = this.dialogEl()?.nativeElement;
     if (el?.open) el.close();

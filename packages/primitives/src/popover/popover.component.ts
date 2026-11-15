@@ -1,3 +1,7 @@
+/**
+ * @file Popover: a floating panel anchored to a trigger.
+ */
+
 import {
   Component,
   ElementRef,
@@ -24,6 +28,7 @@ const OPPOSITE: Record<NgAtomsPopoverPlacement, NgAtomsPopoverPlacement> = {
   right: 'left',
 };
 
+/** Popover: a floating panel anchored to a trigger. */
 @Component({
   selector: 'nga-popover',
   standalone: true,
@@ -64,6 +69,7 @@ export class NgAtomsPopoverComponent implements OnDestroy {
     });
   }
 
+  /** Keeps the panel by the trigger while the page scrolls. */
   @HostListener('window:scroll')
   onWindowScroll(): void {
     if (this.open()) {
@@ -71,6 +77,7 @@ export class NgAtomsPopoverComponent implements OnDestroy {
     }
   }
 
+  /** Opens or closes the panel. */
   toggle(): void {
     this.open.update(v => !v);
     if (this.open()) {
@@ -78,10 +85,21 @@ export class NgAtomsPopoverComponent implements OnDestroy {
     }
   }
 
+  /** Closes the panel. */
   close(): void {
     this.open.set(false);
   }
 
+  /**
+   * Coordinates of the panel for a placement, centred on the trigger,
+   * before any check that it fits the viewport.
+   *
+   * @param p Side of the trigger the panel opens on.
+   * @param triggerRect Bounding box of the trigger.
+   * @param panelRect Bounding box of the panel.
+   * @param gap Space between the trigger and the panel, in px.
+   * @returns Viewport coordinates of the panel's top-left corner.
+   */
   private computeCoords(
     p: NgAtomsPopoverPlacement,
     triggerRect: DOMRect,
@@ -112,6 +130,7 @@ export class NgAtomsPopoverComponent implements OnDestroy {
     }
   }
 
+  /** Whether the panel at these coordinates stays inside the viewport, keeping a margin. */
   private fits(top: number, left: number, panelRect: DOMRect, margin: number): boolean {
     return (
       top >= margin &&
@@ -121,6 +140,11 @@ export class NgAtomsPopoverComponent implements OnDestroy {
     );
   }
 
+  /**
+   * Places the panel next to the trigger, flipping to the opposite side
+   * when it does not fit. When neither side fits, the preferred side is
+   * clamped inside the viewport, keeping the margin.
+   */
   private position(): void {
     const panel = this.panelEl().nativeElement;
     const triggerRect = this.el.nativeElement.getBoundingClientRect();
@@ -155,6 +179,7 @@ export class NgAtomsPopoverComponent implements OnDestroy {
     this.renderer.setStyle(panel, 'left', `${left}px`);
   }
 
+  /** Removes the panel from the body and stops listening for outside clicks. */
   ngOnDestroy(): void {
     this.deregister?.();
     const panel = this.panelEl().nativeElement;
