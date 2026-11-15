@@ -1,10 +1,12 @@
+/**
+ * @file Specs for the button directive.
+ */
+
 // @ts-nocheck
 import { Component } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { NgAtomsButtonDirective } from './button.directive';
-
-// ── Helpers ───────────────────────────────────────────────────
 
 function createFixture<T>(component: new () => T) {
   TestBed.configureTestingModule({ imports: [component] });
@@ -12,8 +14,6 @@ function createFixture<T>(component: new () => T) {
   fixture.detectChanges();
   return fixture;
 }
-
-// ── Defaults ──────────────────────────────────────────────────
 
 @Component({
   standalone: true,
@@ -41,8 +41,6 @@ describe('NgAtomsButtonDirective — defaults', () => {
     expect(btn.classList.contains('nga-btn--md')).toBe(true);
   });
 });
-
-// ── Variant classes ───────────────────────────────────────────
 
 @Component({
   standalone: true,
@@ -78,8 +76,6 @@ describe('NgAtomsButtonDirective — variant', () => {
   });
 });
 
-// ── Size classes ──────────────────────────────────────────────
-
 @Component({
   standalone: true,
   imports: [NgAtomsButtonDirective],
@@ -113,8 +109,6 @@ describe('NgAtomsButtonDirective — size', () => {
     expect(btn.classList.contains('nga-btn--xs')).toBe(true);
   });
 });
-
-// ── Loading state ─────────────────────────────────────────────
 
 @Component({
   standalone: true,
@@ -223,8 +217,6 @@ describe('NgAtomsButtonDirective — loading', () => {
   });
 });
 
-// ── loading + native disabled interaction ─────────────────────
-
 @Component({
   standalone: true,
   imports: [NgAtomsButtonDirective],
@@ -242,7 +234,6 @@ describe('NgAtomsButtonDirective — loading + native disabled', () => {
     fixture.componentInstance.loading = false;
     fixture.detectChanges();
     const btn = fixture.debugElement.query(By.directive(NgAtomsButtonDirective)).nativeElement;
-    // Native disabled is present — aria-disabled must NOT be removed
     expect(btn.getAttribute('aria-disabled')).toBe('true');
   });
 });

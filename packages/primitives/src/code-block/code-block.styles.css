@@ -8,11 +8,11 @@
    ============================================================= */
 
 :root {
-  --nga-code-block-bg:        var(--nga-color-card, #F7F8FA);
-  --nga-code-block-header-bg: var(--nga-color-muted, #F2F4F6);
-  --nga-code-block-border:    var(--nga-color-border, #D8DDE3);
-  --nga-code-block-fg:        var(--nga-color-foreground, #1A1A1A);
-  --nga-code-block-muted:     var(--nga-color-muted-foreground, #6E6E6E);
+  --nga-code-block-bg:        var(--nga-color-card, #FBF8F1);
+  --nga-code-block-header-bg: var(--nga-color-muted, #EAE3D4);
+  --nga-code-block-border:    var(--nga-color-border, #DDD4C1);
+  --nga-code-block-fg:        var(--nga-color-foreground, #111111);
+  --nga-code-block-muted:     var(--nga-color-muted-foreground, #756C5F);
   --nga-code-block-radius:    var(--nga-radius-lg, 10px);
   --nga-code-block-padding:   1rem;
   --nga-code-block-font-size: var(--nga-text-sm, 13px);
@@ -104,7 +104,7 @@
 }
 
 .nga-code-block__pre:focus-visible {
-  box-shadow: inset 0 0 0 0.125rem var(--nga-color-ring, #333333);
+  box-shadow: inset 0 0 0 0.125rem var(--nga-color-ring, #D9541E);
 }
 
 .nga-code-block__code {

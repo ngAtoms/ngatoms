@@ -6,16 +6,16 @@
 
 :root {
   --nga-file-upload-radius:        var(--nga-radius-lg, 10px);
-  --nga-file-upload-border:        var(--nga-color-border-strong, #B3B3B3);
-  --nga-file-upload-border-active: var(--nga-color-accent, #333333);
-  --nga-file-upload-bg:            color-mix(in oklab, var(--nga-color-card, #F7F8FA) 60%, transparent);
+  --nga-file-upload-border:        var(--nga-color-border-strong, #BDB29C);
+  --nga-file-upload-border-active: var(--nga-color-accent, #D9541E);
+  --nga-file-upload-bg:            color-mix(in oklab, var(--nga-color-card, #FBF8F1) 60%, transparent);
   --nga-file-upload-bg-active:     var(--nga-color-accent-soft, #E7EAEF);
-  --nga-file-upload-fg:            var(--nga-color-foreground, #1A1A1A);
-  --nga-file-upload-muted:         var(--nga-color-muted-foreground, #6E6E6E);
+  --nga-file-upload-fg:            var(--nga-color-foreground, #111111);
+  --nga-file-upload-muted:         var(--nga-color-muted-foreground, #756C5F);
   --nga-file-upload-padding:       1.75rem 1.25rem;
 
-  --nga-file-upload-file-bg:       color-mix(in oklab, var(--nga-color-card, #F7F8FA) 70%, transparent);
-  --nga-file-upload-file-border:   var(--nga-color-border, #D8DDE3);
+  --nga-file-upload-file-bg:       color-mix(in oklab, var(--nga-color-card, #FBF8F1) 70%, transparent);
+  --nga-file-upload-file-border:   var(--nga-color-border, #DDD4C1);
   --nga-file-upload-file-radius:   var(--nga-radius-md, 6px);
 }
 
@@ -57,7 +57,7 @@
 }
 
 .nga-file-upload__zone:focus-within {
-  border-color: var(--nga-color-ring, #333333);
+  border-color: var(--nga-color-ring, #D9541E);
   box-shadow: var(--nga-glow-ember, 0 0 0 4px rgba(26, 26, 26, 0.16));
 }
 
@@ -150,7 +150,7 @@
 }
 
 .nga-file-upload__remove:hover:not(:disabled) {
-  background: var(--nga-color-muted, #E7EAEF);
+  background: var(--nga-color-muted, #EAE3D4);
   color: var(--nga-file-upload-fg);
 }
 

@@ -10,7 +10,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Code Standards
 
-These apply to all TypeScript in the library. They are enforced by ESLint for `packages/primitives/src/grid-core` and `packages/primitives/src/grid` today and will be extended to every primitive.
+These apply to all TypeScript in the library and are enforced by ESLint for everything under `packages/primitives/src`.
 
 - **KISS** — pick the simplest design that solves the problem in front of you. No speculative options, layers, or abstractions.
 - **SOLID** — one reason to change per function, class, and file. Depend on small interfaces (see the `InjectionToken` context pattern), not on concrete classes.

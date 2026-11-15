@@ -1,6 +1,11 @@
+/**
+ * @file The button that opens a dropdown menu.
+ */
+
 import { Directive, HostListener, inject } from '@angular/core';
 import { NgAtomsDropdownMenuComponent } from './dropdown-menu.component';
 
+/** The button that opens a dropdown menu. */
 @Directive({
   selector: '[ngAtomsDropdownTrigger]',
   standalone: true,
@@ -13,11 +18,16 @@ import { NgAtomsDropdownMenuComponent } from './dropdown-menu.component';
 export class NgAtomsDropdownTriggerDirective {
   readonly menu = inject(NgAtomsDropdownMenuComponent);
 
+  /** Opens or closes the menu. */
   @HostListener('click')
   onClick(): void {
     this.menu.toggle();
   }
 
+  /**
+   * Arrow Down opens the menu on its first item and Arrow Up on its last; with
+   * the menu open they move focus there.
+   */
   @HostListener('keydown', ['$event'])
   onKeydown(event: KeyboardEvent): void {
     if (event.key === 'ArrowDown') {

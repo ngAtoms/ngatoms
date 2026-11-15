@@ -6,8 +6,8 @@
 
 :root {
   --nga-rating-gap:          0.125rem;
-  --nga-rating-color:        var(--nga-color-border-strong, #B3B3B3);
-  --nga-rating-color-on:     var(--nga-color-accent, #333333);
+  --nga-rating-color:        var(--nga-color-border-strong, #BDB29C);
+  --nga-rating-color-on:     var(--nga-color-accent, #D9541E);
   --nga-rating-radius:       var(--nga-radius-sm, 4px);
 
   --nga-rating-size-sm: 1rem;

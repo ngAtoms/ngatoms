@@ -5,15 +5,15 @@
    ============================================================= */
 
 :root {
-  --nga-skeleton-bg:        var(--nga-color-muted, #E7EAEF);
-  --nga-skeleton-highlight: color-mix(in oklab, var(--nga-color-card, #F7F8FA) 85%, transparent);
+  --nga-skeleton-bg:        var(--nga-color-muted, #EAE3D4);
+  --nga-skeleton-highlight: color-mix(in oklab, var(--nga-color-card, #FBF8F1) 85%, transparent);
   --nga-skeleton-radius:    var(--nga-radius-sm, 4px);
   --nga-skeleton-duration:  1.6s;
   --nga-skeleton-text-height: 0.75em;
 }
 
 .dark {
-  --nga-skeleton-highlight: color-mix(in oklab, #F7F8FA 10%, transparent);
+  --nga-skeleton-highlight: color-mix(in oklab, #FBF8F1 10%, transparent);
 }
 
 @keyframes nga-skeleton-shimmer {

@@ -1,3 +1,7 @@
+/**
+ * @file Stepper: an ordered list of steps with one active.
+ */
+
 import {
   Component,
   ElementRef,
@@ -16,6 +20,7 @@ import {
   NgAtomsStepperOrientation,
 } from './stepper.context';
 
+/** Stepper: an ordered list of steps with one active. */
 @Component({
   selector: 'nga-stepper',
   standalone: true,
@@ -51,20 +56,24 @@ export class NgAtomsStepperComponent implements NgAtomsStepperContext {
     });
   }
 
+  /** Position of a step among the steps. */
   indexOf(step: NgAtomsStepRef): number {
     return this.steps().indexOf(step);
   }
 
+  /** Makes a step active, unless it is disabled. */
   goTo(index: number): void {
     const step = this.steps()[index];
     if (!step || step.disabled()) return;
     this.activeStep.set(index);
   }
 
+  /** Goes to the next step. */
   next(): void {
     this.goTo(Math.min(this.steps().length - 1, this.activeStep() + 1));
   }
 
+  /** Goes to the previous step. */
   previous(): void {
     this.goTo(Math.max(0, this.activeStep() - 1));
   }

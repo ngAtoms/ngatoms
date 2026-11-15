@@ -1,3 +1,7 @@
+/**
+ * @file Dropdown menu: a trigger and a panel of items.
+ */
+
 import {
   Component,
   ElementRef,
@@ -35,6 +39,7 @@ export interface NgAtomsDropdownMenuContext {
 
 export const NGA_DROPDOWN_MENU = new InjectionToken<NgAtomsDropdownMenuContext>('NGA_DROPDOWN_MENU');
 
+/** Dropdown menu: a trigger and a panel of items. */
 @Component({
   selector: 'nga-dropdown-menu',
   standalone: true,
@@ -79,6 +84,7 @@ export class NgAtomsDropdownMenuComponent implements NgAtomsDropdownMenuContext,
     });
   }
 
+  /** Keeps the panel by the trigger while the page scrolls. */
   @HostListener('window:scroll')
   onWindowScroll(): void {
     if (this.open()) {
@@ -86,6 +92,7 @@ export class NgAtomsDropdownMenuComponent implements NgAtomsDropdownMenuContext,
     }
   }
 
+  /** Opens the menu with focus on the first item, or closes it. */
   toggle(): void {
     this.open.update(v => !v);
     if (this.open()) {
@@ -96,6 +103,7 @@ export class NgAtomsDropdownMenuComponent implements NgAtomsDropdownMenuContext,
     }
   }
 
+  /** Opens the menu with focus on the last item. */
   openAndFocusLast(): void {
     this.open.set(true);
     requestAnimationFrame(() => {
@@ -104,10 +112,12 @@ export class NgAtomsDropdownMenuComponent implements NgAtomsDropdownMenuContext,
     });
   }
 
+  /** Closes the menu. */
   close(): void {
     this.open.set(false);
   }
 
+  /** The items that can take focus, in order. */
   private items(): HTMLElement[] {
     return Array.from(
       this.panelEl().nativeElement.querySelectorAll<HTMLElement>(
@@ -116,27 +126,32 @@ export class NgAtomsDropdownMenuComponent implements NgAtomsDropdownMenuContext,
     );
   }
 
+  /** Focuses the first item. */
   focusFirst(): void {
     this.items()[0]?.focus();
   }
 
+  /** Focuses the last item. */
   focusLast(): void {
     const items = this.items();
     items[items.length - 1]?.focus();
   }
 
+  /** Focuses the item after the given one, wrapping to the first. */
   focusNext(current: HTMLElement): void {
     const items = this.items();
     const idx = items.indexOf(current);
     items[(idx + 1) % items.length]?.focus();
   }
 
+  /** Focuses the item before the given one, wrapping to the last. */
   focusPrev(current: HTMLElement): void {
     const items = this.items();
     const idx = items.indexOf(current);
     items[(idx - 1 + items.length) % items.length]?.focus();
   }
 
+  /** Places the panel next to the trigger, flipping when it does not fit. */
   private position(): void {
     const panel = this.panelEl().nativeElement;
     const pos = computeOverlayPosition(
@@ -150,6 +165,7 @@ export class NgAtomsDropdownMenuComponent implements NgAtomsDropdownMenuContext,
     this.renderer.setStyle(panel, 'left', `${pos.left}px`);
   }
 
+  /** Removes the panel from the body and stops listening for outside clicks. */
   ngOnDestroy(): void {
     this.deregister?.();
     const panel = this.panelEl().nativeElement;

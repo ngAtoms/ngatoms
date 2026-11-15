@@ -1,6 +1,11 @@
+/**
+ * @file Closes the dialog it is in when clicked.
+ */
+
 import { Directive, HostListener, inject } from '@angular/core';
 import { NgAtomsDialogComponent } from './dialog.component';
 
+/** Closes the dialog it is in when clicked. */
 @Directive({
   selector: '[ngAtomsDialogClose]',
   standalone: true,
@@ -13,6 +18,7 @@ import { NgAtomsDialogComponent } from './dialog.component';
 export class NgAtomsDialogCloseDirective {
   private readonly dialog = inject(NgAtomsDialogComponent);
 
+  /** Closes the dialog. */
   @HostListener('click')
   onClick(): void {
     this.dialog.closeDialog();

@@ -1,3 +1,8 @@
+/**
+ * @file Positioning for floating panels: where a panel goes next to its
+ * anchor, flipping to the other side or clamping to stay in the viewport.
+ */
+
 export type NgAtomsOverlayPlacement = 'top' | 'bottom' | 'left' | 'right';
 export type NgAtomsOverlayAlign = 'start' | 'center' | 'end';
 
@@ -36,6 +41,7 @@ const OPPOSITE: Record<NgAtomsOverlayPlacement, NgAtomsOverlayPlacement> = {
   right: 'left',
 };
 
+/** Top-left corner of a panel placed on one side of an anchor, with the given alignment. */
 function coords(
   p: NgAtomsOverlayPlacement,
   a: NgAtomsOverlayAlign,
@@ -75,6 +81,7 @@ export function computeOverlayPosition(
   const vw = options.viewport?.width ?? window.innerWidth;
   const vh = options.viewport?.height ?? window.innerHeight;
 
+  /** Whether a panel at these coordinates stays inside the viewport margins. */
   const fits = (c: { top: number; left: number }): boolean =>
     c.top >= margin &&
     c.left >= margin &&

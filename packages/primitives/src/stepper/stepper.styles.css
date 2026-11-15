@@ -7,16 +7,16 @@
 :root {
   --nga-stepper-gap:              0.75rem;
   --nga-stepper-indicator-size:   1.75rem;
-  --nga-stepper-indicator-bg:     var(--nga-color-muted, #E7EAEF);
-  --nga-stepper-indicator-fg:     var(--nga-color-muted-foreground, #6E6E6E);
-  --nga-stepper-indicator-border: var(--nga-color-border, #D8DDE3);
-  --nga-stepper-active-bg:        var(--nga-color-accent, #333333);
-  --nga-stepper-active-fg:        var(--nga-color-accent-foreground, #F7F8FA);
-  --nga-stepper-error-color:      var(--nga-color-destructive, #1A1A1A);
-  --nga-stepper-line-color:       var(--nga-color-border, #D8DDE3);
+  --nga-stepper-indicator-bg:     var(--nga-color-muted, #EAE3D4);
+  --nga-stepper-indicator-fg:     var(--nga-color-muted-foreground, #756C5F);
+  --nga-stepper-indicator-border: var(--nga-color-border, #DDD4C1);
+  --nga-stepper-active-bg:        var(--nga-color-accent, #D9541E);
+  --nga-stepper-active-fg:        var(--nga-color-accent-foreground, #111111);
+  --nga-stepper-error-color:      var(--nga-color-destructive, #C81E3A);
+  --nga-stepper-line-color:       var(--nga-color-border, #DDD4C1);
   --nga-stepper-line-width:       0.125rem;
-  --nga-stepper-label-color:      var(--nga-color-foreground, #1A1A1A);
-  --nga-stepper-muted-color:      var(--nga-color-muted-foreground, #6E6E6E);
+  --nga-stepper-label-color:      var(--nga-color-foreground, #111111);
+  --nga-stepper-muted-color:      var(--nga-color-muted-foreground, #756C5F);
 }
 
 /* ── Root ───────────────────────────────────────────────────── */

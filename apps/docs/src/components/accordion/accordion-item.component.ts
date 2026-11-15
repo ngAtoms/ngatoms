@@ -1,21 +1,24 @@
+/**
+ * @file One item of an accordion: a trigger and the panel it opens.
+ */
+
 import {
   Component,
   computed,
   inject,
   input,
-  ChangeDetectionStrategy,
-} from "@angular/core";
-import { NgAtomsAccordionComponent } from "./accordion.component";
+} from '@angular/core';
+import { NgAtomsAccordionComponent } from './accordion.component';
 
+/** One item of an accordion: a trigger and the panel it opens. */
 @Component({
-  selector: "nga-accordion-item",
+  selector: 'nga-accordion-item',
   standalone: true,
-  templateUrl: "./accordion-item.component.html",
-  styleUrl: "./accordion-item.component.css",
-  changeDetection: ChangeDetectionStrategy.Eager,
+  templateUrl: './accordion-item.component.html',
+  styleUrl: './accordion-item.component.css',
   host: {
-    class: "nga-accordion-item",
-    "[class.nga-accordion-item--open]": "isOpen()",
+    class: 'nga-accordion-item',
+    '[class.nga-accordion-item--open]': 'isOpen()',
   },
 })
 export class NgAtomsAccordionItemComponent {
@@ -23,11 +26,11 @@ export class NgAtomsAccordionItemComponent {
 
   readonly value = input.required<string>();
 
-  readonly isOpen = computed(() =>
-    this.accordion.openItems().has(this.value())
-  );
+  readonly isOpen = computed(() => this.accordion.openItems().has(this.value()));
 
+  /** Opens the item, or closes it when it is open. */
   toggle(): void {
     this.accordion.toggle(this.value());
   }
+
 }

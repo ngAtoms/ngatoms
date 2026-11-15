@@ -1,3 +1,7 @@
+/**
+ * @file Color picker, and the color conversions it needs.
+ */
+
 import { Component, computed, effect, input, model, signal, untracked } from '@angular/core';
 
 interface Hsv {
@@ -11,7 +15,9 @@ interface Hsv {
 
 const HEX_PATTERN = /^#?([0-9a-f]{3}|[0-9a-f]{6})$/i;
 
+/** Converts a hue, saturation and brightness to a `#rrggbb` string. */
 function hsvToHex({ h, s, v }: Hsv): string {
+  /** One color channel as two hex digits. */
   const f = (n: number): string => {
     const k = (n + h / 60) % 6;
     const channel = v - v * s * Math.max(0, Math.min(k, 4 - k, 1));
@@ -20,6 +26,7 @@ function hsvToHex({ h, s, v }: Hsv): string {
   return `#${f(5)}${f(3)}${f(1)}`;
 }
 
+/** Parses a 3- or 6-digit hex color; null when the text is not one. */
 function hexToHsv(hex: string): Hsv | null {
   const match = HEX_PATTERN.exec(hex.trim());
   if (!match) return null;
@@ -43,10 +50,15 @@ function hexToHsv(hex: string): Hsv | null {
   return { h, s: max ? delta / max : 0, v: max };
 }
 
+/** Restricts a number to the inclusive range `[min, max]`. */
 function clamp(n: number, min: number, max: number): number {
   return Math.min(max, Math.max(min, n));
 }
 
+/**
+ * Color picker: a saturation and brightness area, a hue slider, a hex field and
+ * optional swatches.
+ */
 @Component({
   selector: 'nga-color-picker',
   standalone: true,
@@ -78,8 +90,8 @@ export class NgAtomsColorPickerComponent {
   readonly brightnessPercent = computed(() => Math.round(this.hsv().v * 100));
   readonly hueDegrees = computed(() => Math.round(this.hsv().h));
 
+  /** Adopts changes made to the value from outside, ignoring the echoes of its own writes. */
   constructor() {
-    // Adopt external value changes, ignoring echoes of our own writes.
     effect(() => {
       const parsed = hexToHsv(this.value());
       untracked(() => {
@@ -88,11 +100,13 @@ export class NgAtomsColorPickerComponent {
     });
   }
 
+  /** Whether a swatch is the current color. */
   isSelected(swatch: string): boolean {
     const parsed = hexToHsv(swatch);
     return !!parsed && hsvToHex(parsed) === this.value().toLowerCase();
   }
 
+  /** Sets the color from a hex string; text that is not a color is ignored. */
   setHex(hex: string): void {
     if (this.disabled()) return;
     const parsed = hexToHsv(hex);
@@ -101,13 +115,22 @@ export class NgAtomsColorPickerComponent {
     this.value.set(hsvToHex(parsed));
   }
 
+  /**
+   * Applies what was typed in the hex field, then shows the normalised color —
+   * or the previous one, when the text was not a color.
+   */
   onHexChange(event: Event): void {
     const field = event.target as HTMLInputElement;
     this.setHex(field.value);
-    // Normalise what is shown, and restore it when the input was not a color.
     field.value = this.value();
   }
 
+  /**
+   * Sets saturation and brightness from a pointer on the area.
+   *
+   * @param start Whether this is the press that begins a drag; later moves only
+   * count while the pointer is captured.
+   */
   onAreaPointer(event: PointerEvent, start: boolean): void {
     const area = event.currentTarget as HTMLElement;
     if (this.disabled()) return;
@@ -127,6 +150,11 @@ export class NgAtomsColorPickerComponent {
     });
   }
 
+  /**
+   * Sets the hue from a pointer on the hue track.
+   *
+   * @param start Whether this is the press that begins a drag.
+   */
   onHuePointer(event: PointerEvent, start: boolean): void {
     const track = event.currentTarget as HTMLElement;
     if (this.disabled()) return;
@@ -143,11 +171,13 @@ export class NgAtomsColorPickerComponent {
     this.update({ h: clamp((event.clientX - rect.left) / rect.width, 0, 1) * 360 });
   }
 
+  /** Ends a drag by releasing the pointer. */
   onPointerEnd(event: PointerEvent): void {
     const target = event.currentTarget as HTMLElement;
     if (target.hasPointerCapture(event.pointerId)) target.releasePointerCapture(event.pointerId);
   }
 
+  /** Moves saturation and brightness with the arrow keys; Shift takes larger steps. */
   onAreaKeydown(event: KeyboardEvent): void {
     if (this.disabled()) return;
     const step = event.shiftKey ? 0.1 : 0.01;
@@ -163,6 +193,7 @@ export class NgAtomsColorPickerComponent {
     event.preventDefault();
   }
 
+  /** Moves the hue with the arrow keys, in larger steps with Shift; Home and End go to its ends. */
   onHueKeydown(event: KeyboardEvent): void {
     if (this.disabled()) return;
     const step = event.shiftKey ? 10 : 1;
@@ -184,6 +215,7 @@ export class NgAtomsColorPickerComponent {
     event.preventDefault();
   }
 
+  /** Changes part of the color and writes the result to the model. */
   private update(patch: Partial<Hsv>): void {
     const next = { ...this.hsv(), ...patch };
     this.hsv.set(next);

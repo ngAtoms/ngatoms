@@ -1,6 +1,12 @@
+/**
+ * @file The area that opens a context menu on right-click, or from the
+ * keyboard.
+ */
+
 import { Directive, ElementRef, HostListener, inject } from '@angular/core';
 import { NgAtomsContextMenuComponent } from './context-menu.component';
 
+/** The area that opens a context menu on right-click, or from the keyboard. */
 @Directive({
   selector: '[ngAtomsContextMenuTrigger]',
   standalone: true,
@@ -21,11 +27,20 @@ export class NgAtomsContextMenuTriggerDirective {
    */
   private keyboardInvoked = false;
 
+  /**
+   * Notes whether the coming `contextmenu` event was produced by the keyboard:
+   * the Menu key, or Shift+F10.
+   */
   @HostListener('keydown', ['$event'])
   onKeydown(event: KeyboardEvent): void {
     this.keyboardInvoked = event.key === 'ContextMenu' || (event.shiftKey && event.key === 'F10');
   }
 
+  /**
+   * Opens the menu at the pointer. When the keyboard opened it there is no
+   * pointer position, so it is anchored to the trigger and the first item takes
+   * focus.
+   */
   @HostListener('contextmenu', ['$event'])
   onContextMenu(event: MouseEvent): void {
     const fromKeyboard = this.keyboardInvoked;
@@ -34,8 +49,6 @@ export class NgAtomsContextMenuTriggerDirective {
     event.preventDefault();
 
     if (fromKeyboard) {
-      // No pointer position to use: anchor to the trigger and focus the
-      // first item, as keyboard users expect from a menu.
       const rect = this.el.nativeElement.getBoundingClientRect();
       this.menu.openAt(
         rect.left + Math.min(rect.width / 2, 24),

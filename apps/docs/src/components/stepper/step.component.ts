@@ -1,6 +1,11 @@
+/**
+ * @file One step of a stepper.
+ */
+
 import { Component, computed, inject, input } from '@angular/core';
 import { NGA_STEP, NGA_STEPPER, NgAtomsStepRef, NgAtomsStepState } from './stepper.context';
 
+/** One step of a stepper. */
 @Component({
   selector: 'nga-step',
   standalone: true,
@@ -44,6 +49,7 @@ export class NgAtomsStepComponent implements NgAtomsStepRef {
     }
   });
 
+  /** Makes this the active step, when the stepper lets steps be clicked. */
   activate(): void {
     if (!this.stepper.clickable()) return;
     this.stepper.goTo(this.index());

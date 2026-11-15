@@ -1,3 +1,7 @@
+/**
+ * @file Popover: a floating panel anchored to a trigger.
+ */
+
 import {
   Component,
   ElementRef,
@@ -11,21 +15,20 @@ import {
   model,
   signal,
   viewChild,
-  ChangeDetectionStrategy,
-} from "@angular/core";
-import { DOCUMENT } from "@angular/common";
-import { NgAtomsOverlayService } from "../overlay/overlay.service";
-import { NgAtomsOverlayPlacement, computeOverlayPosition } from "../overlay/position";
+} from '@angular/core';
+import { DOCUMENT } from '@angular/common';
+import { NgAtomsOverlayService } from '../overlay/overlay.service';
+import { NgAtomsOverlayPlacement, computeOverlayPosition } from '../overlay/position';
 
 export type NgAtomsPopoverPlacement = NgAtomsOverlayPlacement;
 
+/** Popover: a floating panel anchored to a trigger. */
 @Component({
-  selector: "nga-popover",
+  selector: 'nga-popover',
   standalone: true,
-  templateUrl: "./popover.component.html",
-  styleUrl: "./popover.component.css",
-  changeDetection: ChangeDetectionStrategy.Eager,
-  host: { class: "nga-popover-root" },
+  templateUrl: './popover.component.html',
+  styleUrl: './popover.component.css',
+  host: { class: 'nga-popover-root' },
 })
 export class NgAtomsPopoverComponent implements OnDestroy {
   private readonly el = inject(ElementRef<HTMLElement>);
@@ -34,20 +37,17 @@ export class NgAtomsPopoverComponent implements OnDestroy {
   private readonly overlay = inject(NgAtomsOverlayService);
 
   readonly open = model<boolean>(false);
-  readonly placement = input<NgAtomsPopoverPlacement>("bottom");
+  readonly placement = input<NgAtomsPopoverPlacement>('bottom');
 
-  readonly panelEl = viewChild.required<ElementRef<HTMLElement>>("panelEl");
+  readonly panelEl = viewChild.required<ElementRef<HTMLElement>>('panelEl');
 
-  readonly activePlacement = signal<NgAtomsPopoverPlacement>("bottom");
+  readonly activePlacement = signal<NgAtomsPopoverPlacement>('bottom');
 
   private deregister: (() => void) | null = null;
 
   constructor() {
     afterNextRender(() => {
-      this.renderer.appendChild(
-        this.document.body,
-        this.panelEl().nativeElement
-      );
+      this.renderer.appendChild(this.document.body, this.panelEl().nativeElement);
     });
     effect(() => {
       if (this.open()) {
@@ -63,24 +63,28 @@ export class NgAtomsPopoverComponent implements OnDestroy {
     });
   }
 
-  @HostListener("window:scroll")
+  /** Keeps the panel by the trigger while the page scrolls. */
+  @HostListener('window:scroll')
   onWindowScroll(): void {
     if (this.open()) {
       this.position();
     }
   }
 
+  /** Opens or closes the panel. */
   toggle(): void {
-    this.open.update((v) => !v);
+    this.open.update(v => !v);
     if (this.open()) {
       requestAnimationFrame(() => this.position());
     }
   }
 
+  /** Closes the panel. */
   close(): void {
     this.open.set(false);
   }
 
+  /** Places the panel next to the trigger, flipping when it does not fit. */
   private position(): void {
     const panel = this.panelEl().nativeElement;
     const pos = computeOverlayPosition(
@@ -90,10 +94,11 @@ export class NgAtomsPopoverComponent implements OnDestroy {
     );
 
     this.activePlacement.set(pos.placement);
-    this.renderer.setStyle(panel, "top", `${pos.top}px`);
-    this.renderer.setStyle(panel, "left", `${pos.left}px`);
+    this.renderer.setStyle(panel, 'top', `${pos.top}px`);
+    this.renderer.setStyle(panel, 'left', `${pos.left}px`);
   }
 
+  /** Removes the panel from the body and stops listening for outside clicks. */
   ngOnDestroy(): void {
     this.deregister?.();
     const panel = this.panelEl().nativeElement;

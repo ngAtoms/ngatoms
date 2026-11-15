@@ -1,4 +1,8 @@
-// NgAtoms primitives — components will be exported from here
+/**
+ * @file Public entry point of the primitives: every component, directive and
+ * helper.
+ */
+
 export * from './overlay';
 export * from './alert';
 export * from './badge';

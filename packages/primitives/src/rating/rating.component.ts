@@ -1,3 +1,7 @@
+/**
+ * @file Star rating input.
+ */
+
 import {
   Component,
   ElementRef,
@@ -12,6 +16,7 @@ import {
 
 export type NgAtomsRatingSize = 'sm' | 'md' | 'lg';
 
+/** Star rating input. */
 @Component({
   selector: 'nga-rating',
   standalone: true,
@@ -62,16 +67,19 @@ export class NgAtomsRatingComponent {
     return star === (this.value() || 1) ? 0 : -1;
   }
 
+  /** Sets the rating. Picking the current value clears it when `clearable` is set. */
   select(star: number): void {
     if (this.readonly() || this.disabled()) return;
     this.value.set(this.clearable() && star === this.value() ? 0 : star);
   }
 
+  /** Previews a rating while the pointer is over a star. */
   onEnter(star: number): void {
     if (this.readonly() || this.disabled()) return;
     this.hover.set(star);
   }
 
+  /** Arrow keys raise and lower the rating; Home and End jump to one star and to the maximum. */
   onKeydown(event: KeyboardEvent): void {
     if (this.readonly() || this.disabled()) return;
 

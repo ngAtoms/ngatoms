@@ -1,3 +1,7 @@
+/**
+ * @file One item of a dropdown menu.
+ */
+
 import {
   Directive,
   ElementRef,
@@ -9,6 +13,7 @@ import {
 } from '@angular/core';
 import { NGA_DROPDOWN_MENU } from './dropdown-menu.component';
 
+/** One item of a dropdown menu. */
 @Directive({
   selector: '[ngAtomsDropdownItem]',
   standalone: true,
@@ -52,12 +57,14 @@ export class NgAtomsDropdownItemDirective {
     if (!this.disabled()) this.el.nativeElement.focus({ preventScroll: true });
   }
 
+  /** Closes the menu after the item was chosen. */
   @HostListener('click')
   onClick(): void {
     if (this.disabled()) return;
     this.menu.close();
   }
 
+  /** Arrow keys, Home and End move between items; Tab closes the menu. */
   @HostListener('keydown', ['$event'])
   onKeydown(event: KeyboardEvent): void {
     switch (event.key) {

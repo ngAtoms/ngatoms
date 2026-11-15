@@ -1,3 +1,8 @@
+/**
+ * @file File upload: a drop zone over a native file input, with the list of
+ * chosen files.
+ */
+
 import { Component, ElementRef, input, model, output, signal, viewChild } from '@angular/core';
 
 export type NgAtomsFileRejectionReason = 'type' | 'size' | 'count';
@@ -7,6 +12,7 @@ export interface NgAtomsFileRejection {
   reason: NgAtomsFileRejectionReason;
 }
 
+/** File upload: a drop zone over a native file input, with the list of chosen files. */
 @Component({
   selector: 'nga-file-upload',
   standalone: true,
@@ -37,23 +43,29 @@ export class NgAtomsFileUploadComponent {
 
   readonly dragover = signal(false);
 
+  /**
+   * Takes the files picked in the file browser. The field is then reset, so
+   * picking the same file again still fires `change`.
+   */
   onChange(event: Event): void {
     const field = event.target as HTMLInputElement;
     this.addFiles(Array.from(field.files ?? []));
-    // Reset so picking the same file again still fires `change`.
     field.value = '';
   }
 
+  /** Marks the zone as a drop target while files are dragged over it. */
   onDragOver(event: DragEvent): void {
     if (this.disabled()) return;
     event.preventDefault();
     this.dragover.set(true);
   }
 
+  /** Clears the drop-target state. */
   onDragLeave(): void {
     this.dragover.set(false);
   }
 
+  /** Takes the files dropped on the zone. */
   onDrop(event: DragEvent): void {
     if (this.disabled()) return;
     event.preventDefault();
@@ -61,12 +73,14 @@ export class NgAtomsFileUploadComponent {
     this.addFiles(Array.from(event.dataTransfer?.files ?? []));
   }
 
+  /** Removes a file from the list. */
   remove(index: number): void {
     if (this.disabled()) return;
     this.files.update(files => files.filter((_, i) => i !== index));
     this.inputEl().nativeElement.focus();
   }
 
+  /** A file size as text, in B, KB, MB, GB or TB. */
   formatSize(bytes: number): string {
     if (bytes < 1024) return `${bytes} B`;
     const units = ['KB', 'MB', 'GB', 'TB'];
@@ -79,6 +93,10 @@ export class NgAtomsFileUploadComponent {
     return `${value >= 10 ? Math.round(value) : value.toFixed(1)} ${units[unit]}`;
   }
 
+  /**
+   * Adds files that pass the type, size and count limits, and reports the rest.
+   * Single mode replaces the selection; multiple mode appends to it.
+   */
   private addFiles(incoming: File[]): void {
     if (this.disabled() || !incoming.length) return;
 
@@ -91,7 +109,6 @@ export class NgAtomsFileUploadComponent {
       else accepted.push(file);
     }
 
-    // Single mode replaces the selection; multiple mode appends to it.
     const limit = this.multiple() ? this.maxFiles() : 1;
     const base = this.multiple() ? this.files() : [];
     const room = Math.max(0, limit - base.length);
@@ -102,6 +119,10 @@ export class NgAtomsFileUploadComponent {
     if (rejections.length) this.rejected.emit(rejections);
   }
 
+  /**
+   * Whether a file matches the `accept` list: an extension, a MIME type, or a
+   * wildcard such as `image/*`.
+   */
   private matchesAccept(file: File): boolean {
     const tokens = this.accept().split(',').map(t => t.trim().toLowerCase()).filter(Boolean);
     if (!tokens.length) return true;

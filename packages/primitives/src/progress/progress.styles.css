@@ -19,8 +19,8 @@
 /* ── Custom properties ──────────────────────────────────────── */
 :root {
   --nga-progress-radius:     var(--nga-radius-full, 9999px);
-  --nga-progress-track:      color-mix(in oklab, var(--nga-color-foreground, #1A1A1A) 10%, transparent);
-  --nga-progress-fill:       var(--nga-color-foreground, #1A1A1A);
+  --nga-progress-track:      color-mix(in oklab, var(--nga-color-foreground, #111111) 10%, transparent);
+  --nga-progress-fill:       var(--nga-color-foreground, #111111);
   --nga-progress-transition: width var(--nga-dur-slow, 320ms) var(--nga-ease-out, ease);
   --nga-progress-indeterminate-duration: 1.4s;
 
@@ -72,9 +72,9 @@
 .nga-progress--lg { height: var(--nga-progress-height-lg); }
 
 /* ── Variants ───────────────────────────────────────────────── */
-.nga-progress--default     { --nga-progress-fill: var(--nga-color-foreground, #1A1A1A); }
-.nga-progress--accent      { --nga-progress-fill: var(--nga-color-accent, #333333); }
-.nga-progress--success     { --nga-progress-fill: var(--nga-color-success, #404040); }
-.nga-progress--warning     { --nga-progress-fill: var(--nga-color-warning, #6E6E6E); }
-.nga-progress--destructive { --nga-progress-fill: var(--nga-color-destructive, #1A1A1A); }
-.nga-progress--info        { --nga-progress-fill: var(--nga-color-info, #555555); }
+.nga-progress--default     { --nga-progress-fill: var(--nga-color-foreground, #111111); }
+.nga-progress--accent      { --nga-progress-fill: var(--nga-color-accent, #D9541E); }
+.nga-progress--success     { --nga-progress-fill: var(--nga-color-success, #2B7A3B); }
+.nga-progress--warning     { --nga-progress-fill: var(--nga-color-warning, #94680A); }
+.nga-progress--destructive { --nga-progress-fill: var(--nga-color-destructive, #C81E3A); }
+.nga-progress--info        { --nga-progress-fill: var(--nga-color-info, #2F6BFF); }

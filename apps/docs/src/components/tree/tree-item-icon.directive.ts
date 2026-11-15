@@ -1,3 +1,7 @@
+/**
+ * @file Slot for an icon before the label of a tree item.
+ */
+
 import { Directive } from '@angular/core';
 
 /** Marks an element (icon, avatar…) to render before the item label. */

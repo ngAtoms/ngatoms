@@ -1,3 +1,7 @@
+/**
+ * @file Public entry point of the radio group.
+ */
+
 export { NgAtomsRadioGroupComponent } from './radio-group.component';
 export type { NgAtomsRadioGroupOrientation } from './radio-group.component';
 export { NgAtomsRadioDirective } from './radio.directive';

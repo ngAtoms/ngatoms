@@ -6,15 +6,15 @@
 
 :root {
   --nga-timeline-marker-size:    0.75rem;
-  --nga-timeline-marker-bg:      var(--nga-color-background, #F2F4F6);
-  --nga-timeline-marker-border:  var(--nga-color-border-strong, #B3B3B3);
-  --nga-timeline-marker-active:  var(--nga-color-accent, #333333);
-  --nga-timeline-line-color:     var(--nga-color-border, #D8DDE3);
+  --nga-timeline-marker-bg:      var(--nga-color-background, #F3EEE3);
+  --nga-timeline-marker-border:  var(--nga-color-border-strong, #BDB29C);
+  --nga-timeline-marker-active:  var(--nga-color-accent, #D9541E);
+  --nga-timeline-line-color:     var(--nga-color-border, #DDD4C1);
   --nga-timeline-line-width:     0.125rem;
   --nga-timeline-gap:            0.875rem;
   --nga-timeline-item-spacing:   1.5rem;
-  --nga-timeline-title-color:    var(--nga-color-foreground, #1A1A1A);
-  --nga-timeline-muted-color:    var(--nga-color-muted-foreground, #6E6E6E);
+  --nga-timeline-title-color:    var(--nga-color-foreground, #111111);
+  --nga-timeline-muted-color:    var(--nga-color-muted-foreground, #756C5F);
 }
 
 /* ── Root ───────────────────────────────────────────────────── */

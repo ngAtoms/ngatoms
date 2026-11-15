@@ -33,7 +33,10 @@ import { type DocsShortcut, ShortcutsTableComponent } from "../../../components/
 })
 export class DropdownMenuPageComponent {
   readonly shortcuts: DocsShortcut[] = [
-    { action: "Move between items", windows: "Arrow keys" },
+    { action: "Open the menu on its first / last item", windows: "↓ / ↑ on the trigger" },
+    { action: "Move between items", windows: "↑ / ↓" },
+    { action: "First / last item", windows: "Home / End", mac: "Fn+← / Fn+→" },
+    { action: "Close and move on", windows: "Tab" },
     { action: "Activate the item", windows: "Enter or Space", mac: "Return or Space" },
     { action: "Close", windows: "Esc" },
   ];

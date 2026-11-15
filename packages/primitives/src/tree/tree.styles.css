@@ -8,9 +8,9 @@
   --nga-tree-indent:        1.125rem;
   --nga-tree-row-height:    1.875rem;
   --nga-tree-row-radius:    var(--nga-radius-sm, 4px);
-  --nga-tree-fg:            var(--nga-color-foreground, #1A1A1A);
-  --nga-tree-muted:         var(--nga-color-muted-foreground, #6E6E6E);
-  --nga-tree-hover-bg:      color-mix(in oklab, var(--nga-color-foreground, #1A1A1A) 6%, transparent);
+  --nga-tree-fg:            var(--nga-color-foreground, #111111);
+  --nga-tree-muted:         var(--nga-color-muted-foreground, #756C5F);
+  --nga-tree-hover-bg:      color-mix(in oklab, var(--nga-color-foreground, #111111) 6%, transparent);
   --nga-tree-selected-bg:   var(--nga-color-accent-soft, #E7EAEF);
   --nga-tree-font-size:     var(--nga-text-sm, 13px);
 }
@@ -50,7 +50,7 @@
 }
 
 .nga-tree-item:focus-visible > .nga-tree-item__row {
-  box-shadow: inset 0 0 0 0.125rem var(--nga-color-ring, #333333);
+  box-shadow: inset 0 0 0 0.125rem var(--nga-color-ring, #D9541E);
 }
 
 /* ── Caret ──────────────────────────────────────────────────── */

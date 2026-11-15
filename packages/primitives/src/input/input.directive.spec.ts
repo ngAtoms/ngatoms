@@ -1,10 +1,12 @@
+/**
+ * @file Specs for the input directive.
+ */
+
 // @ts-nocheck
 import { Component } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { NgAtomsInputDirective } from './input.directive';
-
-// ── Helpers ───────────────────────────────────────────────────
 
 function createFixture<T>(component: new () => T) {
   TestBed.configureTestingModule({ imports: [component] });
@@ -12,8 +14,6 @@ function createFixture<T>(component: new () => T) {
   fixture.detectChanges();
   return fixture;
 }
-
-// ── Defaults ──────────────────────────────────────────────────
 
 @Component({
   standalone: true,
@@ -47,8 +47,6 @@ describe('NgAtomsInputDirective — defaults', () => {
     expect(el.hasAttribute('aria-invalid')).toBe(false);
   });
 });
-
-// ── Variant classes ───────────────────────────────────────────
 
 @Component({
   standalone: true,
@@ -84,8 +82,6 @@ describe('NgAtomsInputDirective — variant', () => {
   });
 });
 
-// ── Size classes ──────────────────────────────────────────────
-
 @Component({
   standalone: true,
   imports: [NgAtomsInputDirective],
@@ -119,8 +115,6 @@ describe('NgAtomsInputDirective — size', () => {
     expect(el.classList.contains('nga-input--xs')).toBe(true);
   });
 });
-
-// ── Invalid state ─────────────────────────────────────────────
 
 @Component({
   standalone: true,

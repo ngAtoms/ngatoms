@@ -6,11 +6,11 @@
 
 :root {
   /* Light */
-  --nga-drawer-panel-bg:      color-mix(in oklab, var(--nga-color-card, #F7F8FA) 86%, transparent);
-  --nga-drawer-panel-border:  color-mix(in oklab, var(--nga-color-border, #CCCCCC) 55%, transparent);
+  --nga-drawer-panel-bg:      color-mix(in oklab, var(--nga-color-card, #FBF8F1) 86%, transparent);
+  --nga-drawer-panel-border:  color-mix(in oklab, var(--nga-color-border, #DDD4C1) 55%, transparent);
   --nga-drawer-panel-blur:    blur(28px) saturate(180%);
-  --nga-drawer-footer-bg:     color-mix(in oklab, var(--nga-color-muted, #F2F4F6) 60%, transparent);
-  --nga-drawer-footer-border: color-mix(in oklab, var(--nga-color-border, #CCCCCC) 50%, transparent);
+  --nga-drawer-footer-bg:     color-mix(in oklab, var(--nga-color-muted, #EAE3D4) 60%, transparent);
+  --nga-drawer-footer-border: color-mix(in oklab, var(--nga-color-border, #DDD4C1) 50%, transparent);
   --nga-drawer-shadow:        0 24px 48px -8px rgba(26, 26, 26, 0.16), 0 8px 16px -4px rgba(26, 26, 26, 0.08);
   --nga-drawer-backdrop:      rgba(26, 26, 26, 0.32);
   --nga-drawer-backdrop-blur: blur(10px) saturate(140%);
@@ -25,10 +25,10 @@
 .dark {
   /* Dark */
   --nga-drawer-panel-bg:      color-mix(in oklab, var(--nga-color-card) 88%, transparent);
-  --nga-drawer-panel-border:  color-mix(in oklab, #F7F8FA 14%, transparent);
+  --nga-drawer-panel-border:  color-mix(in oklab, #FBF8F1 14%, transparent);
   --nga-drawer-panel-blur:    blur(32px) saturate(220%) brightness(1.08);
   --nga-drawer-footer-bg:     color-mix(in oklab, var(--nga-color-muted) 50%, transparent);
-  --nga-drawer-footer-border: color-mix(in oklab, #F7F8FA 10%, transparent);
+  --nga-drawer-footer-border: color-mix(in oklab, #FBF8F1 10%, transparent);
   --nga-drawer-shadow:        0 24px 64px rgba(0, 0, 0, 0.62), 0 8px 24px rgba(0, 0, 0, 0.4);
   --nga-drawer-backdrop:      var(--nga-color-scrim, rgba(0, 0, 0, 0.58));
   --nga-drawer-backdrop-blur: blur(12px) saturate(160%);
@@ -167,7 +167,7 @@
 
 .nga-drawer-title {
   margin: 0;
-  color: var(--nga-color-foreground, #1A1A1A);
+  color: var(--nga-color-foreground, #111111);
   font-size: var(--nga-text-base, 15px);
   font-weight: var(--nga-font-weight-semibold, 600);
   letter-spacing: var(--nga-tracking-snug, -0.01em);
@@ -176,7 +176,7 @@
 
 .nga-drawer-description {
   margin: 0.25rem 0 0;
-  color: var(--nga-color-muted-foreground, #6E6E6E);
+  color: var(--nga-color-muted-foreground, #756C5F);
   font-size: 0.84375rem;
   line-height: 1.5;
 }
@@ -186,7 +186,7 @@
   flex: 1;
   padding: 1.375rem;
   overflow-y: auto;
-  color: var(--nga-color-foreground, #1A1A1A);
+  color: var(--nga-color-foreground, #111111);
   font-size: var(--nga-size-font-sm, 13px);
   line-height: 1.6;
   scrollbar-width: thin;
@@ -216,15 +216,15 @@
   border: none;
   border-radius: var(--nga-radius-sm, 4px);
   background: transparent;
-  color: var(--nga-color-muted-foreground, #6E6E6E);
+  color: var(--nga-color-muted-foreground, #756C5F);
   cursor: pointer;
   outline: none;
   transition: background var(--nga-dur-base, 180ms) var(--nga-ease-out, ease), color var(--nga-dur-base, 180ms) var(--nga-ease-out, ease);
 }
 
 .nga-drawer-close:hover {
-  background: var(--nga-color-muted, #F2F4F6);
-  color: var(--nga-color-foreground, #1A1A1A);
+  background: var(--nga-color-muted, #EAE3D4);
+  color: var(--nga-color-foreground, #111111);
 }
 
 .nga-drawer-close:focus-visible {

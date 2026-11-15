@@ -1,3 +1,8 @@
+/**
+ * @file Date picker: a trigger and a calendar panel, for a single date or a
+ * range.
+ */
+
 import {
   Component,
   ElementRef,
@@ -34,6 +39,7 @@ export interface NgAtomsCalendarDay {
 
 export type NgAtomsDatePickerView = 'days' | 'months' | 'years';
 
+/** Date picker: a trigger and a calendar panel, for a single date or a range. */
 @Component({
   selector: 'nga-date-picker',
   standalone: true,
@@ -134,8 +140,6 @@ export class NgAtomsDatePickerComponent implements OnDestroy {
     return weeks;
   });
 
-  // ── Display value ──────────────────────────────────────────
-
   readonly displayValue = computed(() => {
     if (this.mode() === 'single') {
       return this.formatDate(this.value());
@@ -148,8 +152,11 @@ export class NgAtomsDatePickerComponent implements OnDestroy {
 
   readonly monthLabel = computed(() => `${this.monthLabels()[this.viewMonth()]} ${this.viewYear()}`);
 
-  // ── Calendar days ──────────────────────────────────────────
-
+  /**
+   * The 42 days of the calendar grid, with their state. While only the start of
+   * a range is set, the hovered day stands in for its end, which previews the
+   * range.
+   */
   readonly calendarDays = computed((): NgAtomsCalendarDay[] => {
     const year = this.viewYear();
     const month = this.viewMonth();
@@ -164,7 +171,6 @@ export class NgAtomsDatePickerComponent implements OnDestroy {
     const maxDate    = this.maxDate();
     const available  = new Set(this.availableDates());
 
-    // Effective range end: use committed end, or hover preview when only start is set
     const rawEnd = isRange && start && !end ? hover : end;
     const [lo, hi] = rawEnd ? ([start, rawEnd].sort() as [string, string]) : [start, ''];
 
@@ -172,6 +178,7 @@ export class NgAtomsDatePickerComponent implements OnDestroy {
     const firstDow   = new Date(year, month, 1).getDay();
     const daysInMonth = new Date(year, month + 1, 0).getDate();
 
+    /** Adds one day to the grid with its state. */
     const push = (date: Date, isCurrentMonth: boolean) => {
       const dateStr = this.toDateStr(date);
       const isDisabled =
@@ -199,8 +206,6 @@ export class NgAtomsDatePickerComponent implements OnDestroy {
     return days;
   });
 
-  // ── Constructor ────────────────────────────────────────────
-
   constructor() {
     afterNextRender(() => {
       this.renderer.appendChild(this.document.body, this.panelEl().nativeElement);
@@ -219,8 +224,6 @@ export class NgAtomsDatePickerComponent implements OnDestroy {
       }
     });
   }
-
-  // ── Helpers ────────────────────────────────────────────────
 
   /** Internal ISO representation — always YYYY-MM-DD. */
   private toDateStr(date: Date): string {
@@ -251,8 +254,7 @@ export class NgAtomsDatePickerComponent implements OnDestroy {
     return date.toLocaleDateString(this.locale(), { month: 'short', day: 'numeric', year: 'numeric' });
   }
 
-  // ── Interactions ───────────────────────────────────────────
-
+  /** Opens the calendar on the month of the current value, or closes it. */
   toggle(): void {
     if (this.disabled()) return;
     if (!this.open()) {
@@ -274,7 +276,12 @@ export class NgAtomsDatePickerComponent implements OnDestroy {
     }
   }
 
-  /** @param returnFocus Whether to move focus back to the trigger. Pass false when closing via outside click. */
+  /**
+   * Closes the calendar. A range with only its start picked is
+   * discarded, so a form never receives half a selection.
+   *
+   * @param returnFocus Whether focus goes back to the trigger; false when a click elsewhere closed the calendar.
+   */
   close(returnFocus = true): void {
     const wasOpen = this.open();
     this.open.set(false);
@@ -282,7 +289,6 @@ export class NgAtomsDatePickerComponent implements OnDestroy {
     this.view.set('days');
     this.deregister?.();
     this.deregister = null;
-    // Discard a half-committed range so forms never receive an incomplete selection.
     if (this.mode() === 'range' && this.startDate() && !this.endDate()) {
       this.startDate.set('');
     }
@@ -291,6 +297,7 @@ export class NgAtomsDatePickerComponent implements OnDestroy {
     }
   }
 
+  /** Clears the value, or both ends of the range. */
   clear(): void {
     if (this.mode() === 'single') {
       this.value.set('');
@@ -300,34 +307,44 @@ export class NgAtomsDatePickerComponent implements OnDestroy {
     }
   }
 
-  // ── Month / year picker ────────────────────────────────────
-
+  /** Switches between the days and the month list. */
   toggleMonthView(): void {
     this.view.set(this.view() === 'months' ? 'days' : 'months');
   }
 
+  /** Switches between the days and the year list. */
   toggleYearView(): void {
     this.view.set(this.view() === 'years' ? 'days' : 'years');
   }
 
+  /** Shows a month and goes back to the days. */
   selectMonth(month: number): void {
     this.viewMonth.set(month);
     this.view.set('days');
   }
 
+  /** Shows a year and goes back to the days. */
   selectYear(year: number): void {
     this.viewYear.set(year);
     this.view.set('days');
   }
 
+  /** Shows the previous range of years. */
   prevYearRange(): void {
     this.viewYear.update(y => y - 12);
   }
 
+  /** Shows the next range of years. */
   nextYearRange(): void {
     this.viewYear.update(y => y + 12);
   }
 
+  /**
+   * Picks a day. In single mode it becomes the value and the calendar closes. In
+   * range mode the first pick is the start; picking the start again removes it,
+   * a day before it becomes the new start, and a day after it is the end, which
+   * closes the calendar. With both ends set, a pick starts a new range.
+   */
   selectDay(day: NgAtomsCalendarDay): void {
     if (day.isDisabled) return;
 
@@ -337,24 +354,18 @@ export class NgAtomsDatePickerComponent implements OnDestroy {
       return;
     }
 
-    // Range mode
     const start = this.startDate();
     const end   = this.endDate();
 
     if (!start || (start && end)) {
-      // Start fresh
       this.startDate.set(this.toOutputStr(day.date));
       this.endDate.set('');
     } else {
-      // Start is set, no end yet
       if (day.dateStr === start) {
-        // Deselect
         this.startDate.set('');
       } else if (day.dateStr < start) {
-        // Clicked before start → becomes new start
         this.startDate.set(this.toOutputStr(day.date));
       } else {
-        // Valid end date
         this.endDate.set(this.toOutputStr(day.date));
         this.hoverDate.set('');
         this.close();
@@ -362,6 +373,7 @@ export class NgAtomsDatePickerComponent implements OnDestroy {
     }
   }
 
+  /** Picks today and closes the calendar. */
   selectToday(): void {
     const today = new Date();
     const todayStr = this.toOutputStr(today);
@@ -377,28 +389,31 @@ export class NgAtomsDatePickerComponent implements OnDestroy {
     this.close();
   }
 
+  /** Previews the range up to the hovered day while only the start is set. */
   onDayHover(day: NgAtomsCalendarDay): void {
     if (this.mode() === 'range' && this.startDate() && !this.endDate()) {
       this.hoverDate.set(day.dateStr);
     }
   }
 
+  /** Drops the range preview. */
   onGridLeave(): void {
     this.hoverDate.set('');
   }
 
+  /** Shows the previous month. */
   prevMonth(): void {
     if (this.viewMonth() === 0) { this.viewMonth.set(11); this.viewYear.update(y => y - 1); }
     else { this.viewMonth.update(m => m - 1); }
   }
 
+  /** Shows the next month. */
   nextMonth(): void {
     if (this.viewMonth() === 11) { this.viewMonth.set(0); this.viewYear.update(y => y + 1); }
     else { this.viewMonth.update(m => m + 1); }
   }
 
-  // ── Positioning ────────────────────────────────────────────
-
+  /** Places the panel under the trigger, or above it when there is no room below. */
   private position(): void {
     const panel = this.panelEl().nativeElement;
     const tr    = this.el.nativeElement.getBoundingClientRect();
@@ -416,6 +431,7 @@ export class NgAtomsDatePickerComponent implements OnDestroy {
     this.renderer.setStyle(panel, 'left', `${left}px`);
   }
 
+  /** Keeps the panel by the trigger while the page scrolls. */
   @HostListener('window:scroll')
   onWindowScroll(): void {
     if (this.open()) {
@@ -423,6 +439,11 @@ export class NgAtomsDatePickerComponent implements OnDestroy {
     }
   }
 
+  /**
+   * Keyboard navigation in the days: arrow keys move by a day or a week, Home
+   * and End go to the start and end of the week, Page Up and Page Down move by a
+   * month, Enter or Space picks.
+   */
   @HostListener('document:keydown', ['$event'])
   onDocumentKeydown(event: KeyboardEvent): void {
     if (!this.open()) return;
@@ -465,11 +486,13 @@ export class NgAtomsDatePickerComponent implements OnDestroy {
     }
   }
 
+  /** Focuses the cell of a date, when it is rendered. */
   private _focusCell(dateStr: string): void {
     const cell = this.panelEl().nativeElement.querySelector<HTMLElement>(`[data-date="${dateStr}"]`);
     cell?.focus();
   }
 
+  /** Removes the panel from the body. */
   ngOnDestroy(): void {
     const panel = this.panelEl().nativeElement;
     if (panel.parentElement === this.document.body) {

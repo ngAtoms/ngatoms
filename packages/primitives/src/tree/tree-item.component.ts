@@ -1,3 +1,7 @@
+/**
+ * @file One item of a tree, which may hold child items.
+ */
+
 import {
   Component,
   ElementRef,
@@ -10,6 +14,7 @@ import {
 } from '@angular/core';
 import { NGA_TREE, NgAtomsTreeItemRef } from './tree.component';
 
+/** One item of a tree, which may hold child items. */
 @Component({
   selector: 'nga-tree-item',
   standalone: true,
@@ -51,10 +56,12 @@ export class NgAtomsTreeItemComponent implements NgAtomsTreeItemRef, OnDestroy {
     this.tree.register(this);
   }
 
+  /** Opens or closes the branch. */
   setExpanded(expanded: boolean): void {
     this.expanded.set(expanded);
   }
 
+  /** Makes this the selected item, unless it is disabled. */
   select(): void {
     if (this.disabled()) return;
     this.tree.select(this.value());
@@ -68,6 +75,7 @@ export class NgAtomsTreeItemComponent implements NgAtomsTreeItemRef, OnDestroy {
     this.element.focus();
   }
 
+  /** Unregisters the item from its tree. */
   ngOnDestroy(): void {
     this.tree.unregister(this);
   }

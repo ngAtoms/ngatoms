@@ -1,3 +1,8 @@
+/**
+ * @file Contract between a stepper and its steps, so neither depends on the
+ * other's class.
+ */
+
 import { InjectionToken, Signal } from '@angular/core';
 
 export type NgAtomsStepperOrientation = 'horizontal' | 'vertical';

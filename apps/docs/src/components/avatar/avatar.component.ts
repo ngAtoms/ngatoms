@@ -1,3 +1,7 @@
+/**
+ * @file Avatar: an image, with initials or an icon to fall back on.
+ */
+
 import {
   Component,
   ElementRef,
@@ -6,30 +10,29 @@ import {
   inject,
   input,
   signal,
-  ChangeDetectionStrategy,
-} from "@angular/core";
+} from '@angular/core';
 
-export type NgAtomsAvatarSize = "sm" | "md" | "lg" | "xl";
+export type NgAtomsAvatarSize = 'sm' | 'md' | 'lg' | 'xl';
 
+/** Avatar: an image, with initials or an icon to fall back on. */
 @Component({
-  selector: "nga-avatar",
+  selector: 'nga-avatar',
   standalone: true,
-  templateUrl: "./avatar.component.html",
-  changeDetection: ChangeDetectionStrategy.Eager,
-  host: { class: "nga-avatar" },
+  templateUrl: './avatar.component.html',
+  host: { class: 'nga-avatar' },
 })
 export class NgAtomsAvatarComponent {
   private readonly el = inject(ElementRef<HTMLElement>);
   private readonly renderer = inject(Renderer2);
 
-  readonly src = input<string>("");
-  readonly alt = input<string>("");
-  readonly fallback = input<string>("");
-  readonly size = input<NgAtomsAvatarSize>("md");
+  readonly src      = input<string>('');
+  readonly alt      = input<string>('');
+  readonly fallback = input<string>('');
+  readonly size     = input<NgAtomsAvatarSize>('md');
 
   readonly imgError = signal(false);
 
-  private _prevSize: NgAtomsAvatarSize = "md";
+  private _prevSize: NgAtomsAvatarSize = 'md';
 
   constructor() {
     effect(() => {
@@ -39,15 +42,13 @@ export class NgAtomsAvatarComponent {
 
     effect(() => {
       const s = this.size();
-      this.renderer.removeClass(
-        this.el.nativeElement,
-        `nga-avatar--${this._prevSize}`
-      );
+      this.renderer.removeClass(this.el.nativeElement, `nga-avatar--${this._prevSize}`);
       this.renderer.addClass(this.el.nativeElement, `nga-avatar--${s}`);
       this._prevSize = s;
     });
   }
 
+  /** Notes that the image failed to load, so the fallback shows. */
   onError(): void {
     this.imgError.set(true);
   }

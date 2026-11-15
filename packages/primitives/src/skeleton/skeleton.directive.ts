@@ -1,7 +1,12 @@
+/**
+ * @file Placeholder shown while content loads.
+ */
+
 import { Directive, ElementRef, Renderer2, effect, inject, input } from '@angular/core';
 
 export type NgAtomsSkeletonVariant = 'text' | 'circle' | 'rect';
 
+/** Placeholder shown while content loads. */
 @Directive({
   selector: '[ngAtomsSkeleton]',
   standalone: true,

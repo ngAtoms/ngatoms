@@ -1,3 +1,7 @@
+/**
+ * @file Badge: a small label, styled by variant.
+ */
+
 import {
   Directive,
   ElementRef,
@@ -17,6 +21,7 @@ export type NgAtomsBadgeVariant =
   | 'solid'
   | 'outline';
 
+/** Badge: a small label, styled by variant. */
 @Directive({
   selector: '[ngAtomsBadge]',
   standalone: true,

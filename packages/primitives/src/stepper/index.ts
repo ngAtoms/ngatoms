@@ -1,3 +1,7 @@
+/**
+ * @file Public entry point of the stepper.
+ */
+
 export { NgAtomsStepperComponent } from './stepper.component';
 export { NgAtomsStepComponent } from './step.component';
 export { NGA_STEP, NGA_STEPPER } from './stepper.context';

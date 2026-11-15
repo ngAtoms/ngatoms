@@ -7,11 +7,11 @@
 :root {
   --nga-pagination-gap:        0.25rem;
   --nga-pagination-radius:     var(--nga-radius-md, 6px);
-  --nga-pagination-fg:         var(--nga-color-foreground, #1A1A1A);
-  --nga-pagination-muted:      var(--nga-color-muted-foreground, #6E6E6E);
-  --nga-pagination-hover-bg:   color-mix(in oklab, var(--nga-color-foreground, #1A1A1A) 7%, transparent);
-  --nga-pagination-active-bg:  var(--nga-color-accent, #333333);
-  --nga-pagination-active-fg:  var(--nga-color-accent-foreground, #F7F8FA);
+  --nga-pagination-fg:         var(--nga-color-foreground, #111111);
+  --nga-pagination-muted:      var(--nga-color-muted-foreground, #756C5F);
+  --nga-pagination-hover-bg:   color-mix(in oklab, var(--nga-color-foreground, #111111) 7%, transparent);
+  --nga-pagination-active-bg:  var(--nga-color-accent, #D9541E);
+  --nga-pagination-active-fg:  var(--nga-color-accent-foreground, #111111);
 
   --nga-pagination-size-sm: 1.75rem;
   --nga-pagination-size-md: 2.25rem;

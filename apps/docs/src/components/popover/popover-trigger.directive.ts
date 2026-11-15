@@ -1,6 +1,11 @@
+/**
+ * @file The element that opens a popover when clicked.
+ */
+
 import { Directive, inject } from '@angular/core';
 import { NgAtomsPopoverComponent } from './popover.component';
 
+/** The element that opens a popover when clicked. */
 @Directive({
   selector: '[ngAtomsPopoverTrigger]',
   standalone: true,

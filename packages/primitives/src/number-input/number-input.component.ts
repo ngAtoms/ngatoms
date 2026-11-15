@@ -1,7 +1,12 @@
+/**
+ * @file Number input with increment and decrement buttons.
+ */
+
 import { Component, ElementRef, Renderer2, computed, effect, inject, input, model } from '@angular/core';
 
 export type NgAtomsNumberInputSize = 'sm' | 'md' | 'lg';
 
+/** Number input with increment and decrement buttons. */
 @Component({
   selector: 'nga-number-input',
   standalone: true,
@@ -34,16 +39,19 @@ export class NgAtomsNumberInputComponent {
     });
   }
 
+  /** Adds one step, when the maximum allows. */
   increment(): void {
     if (this.disabled() || !this.canIncrement()) return;
     this.value.set(this.round(this.value() + this.step()));
   }
 
+  /** Subtracts one step, when the minimum allows. */
   decrement(): void {
     if (this.disabled() || !this.canDecrement()) return;
     this.value.set(this.round(this.value() - this.step()));
   }
 
+  /** Takes a typed number, kept within the minimum and maximum. */
   onInput(event: Event): void {
     const raw = +(event.target as HTMLInputElement).value;
     if (!isNaN(raw)) {
@@ -51,6 +59,7 @@ export class NgAtomsNumberInputComponent {
     }
   }
 
+  /** Rounds to the number of decimals the step has, which removes floating-point noise. */
   private round(n: number): number {
     const decimals = (String(this.step()).split('.')[1] ?? '').length;
     return +n.toFixed(decimals);

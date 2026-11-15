@@ -1,3 +1,8 @@
+/**
+ * @file Code display with a copy button, optional line numbers and a
+ * pluggable highlighter.
+ */
+
 import { Component, OnDestroy, computed, input, signal } from '@angular/core';
 
 /**
@@ -8,6 +13,7 @@ import { Component, OnDestroy, computed, input, signal } from '@angular/core';
  */
 export type NgAtomsCodeHighlighter = (code: string, language: string) => string;
 
+/** Code display with a copy button, optional line numbers and a pluggable highlighter. */
 @Component({
   selector: 'nga-code-block',
   standalone: true,
@@ -47,11 +53,15 @@ export class NgAtomsCodeBlockComponent implements OnDestroy {
 
   private resetTimer: ReturnType<typeof setTimeout> | null = null;
 
+  /**
+   * Copies the source to the clipboard and shows the confirmation for two
+   * seconds. Does nothing when the clipboard is unavailable: an insecure
+   * context, or permission denied.
+   */
   async copy(): Promise<void> {
     try {
       await navigator.clipboard.writeText(this.source());
     } catch {
-      // Clipboard unavailable (insecure context or denied permission).
       return;
     }
     this.copied.set(true);
@@ -59,6 +69,7 @@ export class NgAtomsCodeBlockComponent implements OnDestroy {
     this.resetTimer = setTimeout(() => this.copied.set(false), 2000);
   }
 
+  /** Cancels the pending reset of the confirmation. */
   ngOnDestroy(): void {
     if (this.resetTimer !== null) clearTimeout(this.resetTimer);
   }

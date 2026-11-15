@@ -1,3 +1,7 @@
+/**
+ * @file Slider with one thumb, or two for a range.
+ */
+
 import {
   Component,
   ElementRef,
@@ -23,6 +27,7 @@ interface SliderThumb {
   label: string;
 }
 
+/** Slider with one thumb, or two for a range. */
 @Component({
   selector: 'nga-slider',
   standalone: true,
@@ -90,14 +95,16 @@ export class NgAtomsSliderComponent {
     });
   }
 
+  /**
+   * Starts a drag. The thumb closest to the press is taken; when both are
+   * equally close, the one the pointer can move away from the other.
+   */
   onPointerDown(event: PointerEvent): void {
     if (this.disabled() || event.button !== 0) return;
     event.preventDefault();
 
     const raw = this.valueFromPointer(event);
     const thumbs = this.thumbs();
-    // Grab whichever thumb is closest to the press; ties go to the one the
-    // pointer can actually move away from the other.
     let index = 0;
     if (thumbs.length === 2) {
       const d0 = Math.abs(raw - thumbs[0].value);
@@ -111,11 +118,13 @@ export class NgAtomsSliderComponent {
     this.focusThumb(index);
   }
 
+  /** Moves the dragged thumb. */
   onPointerMove(event: PointerEvent): void {
     if (this.dragging === null) return;
     this.setThumb(this.dragging, this.valueFromPointer(event));
   }
 
+  /** Ends the drag. */
   onPointerUp(event: PointerEvent): void {
     if (this.dragging === null) return;
     this.dragging = null;
@@ -123,6 +132,10 @@ export class NgAtomsSliderComponent {
     if (track.hasPointerCapture(event.pointerId)) track.releasePointerCapture(event.pointerId);
   }
 
+  /**
+   * Arrow keys move a thumb by one step, Page Up and Page Down by a tenth of the
+   * range, Home and End to its bounds.
+   */
   onKeydown(event: KeyboardEvent, thumb: SliderThumb): void {
     if (this.disabled()) return;
     const step = this.step();
@@ -158,6 +171,7 @@ export class NgAtomsSliderComponent {
     this.setThumb(thumb.index, next);
   }
 
+  /** Sets the value of a thumb, snapped to the step and kept within the thumb's bounds. */
   private setThumb(index: number, raw: number): void {
     const thumb = this.thumbs()[index];
     const next = this.clamp(this.snap(raw), thumb.min, thumb.max);
@@ -171,17 +185,20 @@ export class NgAtomsSliderComponent {
     }
   }
 
+  /** Focuses a thumb. */
   private focusThumb(index: number): void {
     const thumbs = this.el.nativeElement.querySelectorAll('.nga-slider__thumb');
     (thumbs[index] as HTMLElement | undefined)?.focus();
   }
 
+  /** The value under the pointer along the track. */
   private valueFromPointer(event: PointerEvent): number {
     const rect = this.track().nativeElement.getBoundingClientRect();
     const ratio = rect.width ? (event.clientX - rect.left) / rect.width : 0;
     return this.min() + this.clamp(ratio, 0, 1) * (this.max() - this.min());
   }
 
+  /** Rounds a value to the nearest step. */
   private snap(raw: number): number {
     const step = this.step();
     if (step <= 0) return raw;
@@ -190,11 +207,13 @@ export class NgAtomsSliderComponent {
     return +snapped.toFixed(decimals);
   }
 
+  /** Position of a value along the track, in percent. */
   private percent(value: number): number {
     const span = this.max() - this.min();
     return span > 0 ? ((value - this.min()) / span) * 100 : 0;
   }
 
+  /** Restricts a number to the inclusive range `[min, max]`. */
   private clamp(n: number, min: number, max: number): number {
     return Math.min(max, Math.max(min, n));
   }

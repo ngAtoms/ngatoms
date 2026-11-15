@@ -10,29 +10,29 @@
   --nga-alert-blur:    blur(14px) saturate(150%);
 
   /* Variant: default */
-  --nga-alert-default-bg:     color-mix(in oklab, var(--nga-color-card, #F7F8FA) 78%, transparent);
-  --nga-alert-default-fg:     var(--nga-color-foreground, #1A1A1A);
-  --nga-alert-default-border: color-mix(in oklab, var(--nga-color-border, #CCCCCC) 70%, transparent);
+  --nga-alert-default-bg:     color-mix(in oklab, var(--nga-color-card, #FBF8F1) 78%, transparent);
+  --nga-alert-default-fg:     var(--nga-color-foreground, #111111);
+  --nga-alert-default-border: color-mix(in oklab, var(--nga-color-border, #DDD4C1) 70%, transparent);
 
   /* Variant: info */
-  --nga-alert-info-bg:     var(--nga-color-info-soft, color-mix(in oklab, var(--nga-color-info, #6E6E6E) 12%, transparent));
-  --nga-alert-info-fg:     color-mix(in oklab, var(--nga-color-info, #333333) 82%, var(--nga-color-foreground, #1A1A1A));
-  --nga-alert-info-border: color-mix(in oklab, var(--nga-color-info, #8A8A8A) 32%, transparent);
+  --nga-alert-info-bg:     var(--nga-color-info-soft, color-mix(in oklab, var(--nga-color-info, #2F6BFF) 12%, transparent));
+  --nga-alert-info-fg:     color-mix(in oklab, var(--nga-color-info, #2F6BFF) 82%, var(--nga-color-foreground, #111111));
+  --nga-alert-info-border: color-mix(in oklab, var(--nga-color-info, #2F6BFF) 32%, transparent);
 
   /* Variant: success */
-  --nga-alert-success-bg:     var(--nga-color-success-soft, color-mix(in oklab, var(--nga-color-success, #6E6E6E) 12%, transparent));
-  --nga-alert-success-fg:     color-mix(in oklab, var(--nga-color-success, #333333) 82%, var(--nga-color-foreground, #1A1A1A));
-  --nga-alert-success-border: color-mix(in oklab, var(--nga-color-success, #8A8A8A) 32%, transparent);
+  --nga-alert-success-bg:     var(--nga-color-success-soft, color-mix(in oklab, var(--nga-color-success, #2B7A3B) 12%, transparent));
+  --nga-alert-success-fg:     color-mix(in oklab, var(--nga-color-success, #2B7A3B) 82%, var(--nga-color-foreground, #111111));
+  --nga-alert-success-border: color-mix(in oklab, var(--nga-color-success, #2B7A3B) 32%, transparent);
 
   /* Variant: warning */
-  --nga-alert-warning-bg:     var(--nga-color-warning-soft, color-mix(in oklab, var(--nga-color-warning, #6E6E6E) 12%, transparent));
-  --nga-alert-warning-fg:     color-mix(in oklab, var(--nga-color-warning, #333333) 82%, var(--nga-color-foreground, #1A1A1A));
-  --nga-alert-warning-border: color-mix(in oklab, var(--nga-color-warning, #8A8A8A) 32%, transparent);
+  --nga-alert-warning-bg:     var(--nga-color-warning-soft, color-mix(in oklab, var(--nga-color-warning, #94680A) 12%, transparent));
+  --nga-alert-warning-fg:     color-mix(in oklab, var(--nga-color-warning, #94680A) 82%, var(--nga-color-foreground, #111111));
+  --nga-alert-warning-border: color-mix(in oklab, var(--nga-color-warning, #94680A) 32%, transparent);
 
   /* Variant: destructive */
-  --nga-alert-destructive-bg:     var(--nga-color-destructive-soft, color-mix(in oklab, var(--nga-color-destructive, #6E6E6E) 12%, transparent));
-  --nga-alert-destructive-fg:     color-mix(in oklab, var(--nga-color-destructive, #333333) 82%, var(--nga-color-foreground, #1A1A1A));
-  --nga-alert-destructive-border: color-mix(in oklab, var(--nga-color-destructive, #8A8A8A) 32%, transparent);
+  --nga-alert-destructive-bg:     var(--nga-color-destructive-soft, color-mix(in oklab, var(--nga-color-destructive, #C81E3A) 12%, transparent));
+  --nga-alert-destructive-fg:     color-mix(in oklab, var(--nga-color-destructive, #C81E3A) 82%, var(--nga-color-foreground, #111111));
+  --nga-alert-destructive-border: color-mix(in oklab, var(--nga-color-destructive, #C81E3A) 32%, transparent);
 }
 
 /* ── Base ───────────────────────────────────────────────────── */

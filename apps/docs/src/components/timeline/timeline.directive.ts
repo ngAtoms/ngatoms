@@ -1,10 +1,16 @@
+/**
+ * @file Timeline: the list, its events and the parts of an event.
+ */
+
 import { Directive, ElementRef, Renderer2, effect, inject, input } from '@angular/core';
 
 export type NgAtomsTimelineItemStatus = 'default' | 'active' | 'complete';
 
+/** Timeline: a vertical list of events. */
 @Directive({ selector: '[ngAtomsTimeline]', standalone: true, host: { class: 'nga-timeline' } })
 export class NgAtomsTimelineDirective {}
 
+/** One event of a timeline. */
 @Directive({
   selector: '[ngAtomsTimelineItem]',
   standalone: true,
@@ -28,6 +34,7 @@ export class NgAtomsTimelineItemDirective {
   }
 }
 
+/** The dot or icon marking an event. */
 @Directive({
   selector: '[ngAtomsTimelineMarker]',
   standalone: true,
@@ -35,15 +42,19 @@ export class NgAtomsTimelineItemDirective {
 })
 export class NgAtomsTimelineMarkerDirective {}
 
+/** Content of an event. */
 @Directive({ selector: '[ngAtomsTimelineContent]', standalone: true, host: { class: 'nga-timeline-content' } })
 export class NgAtomsTimelineContentDirective {}
 
+/** Title of an event. */
 @Directive({ selector: '[ngAtomsTimelineTitle]', standalone: true, host: { class: 'nga-timeline-title' } })
 export class NgAtomsTimelineTitleDirective {}
 
+/** When an event happened. */
 @Directive({ selector: '[ngAtomsTimelineTime]', standalone: true, host: { class: 'nga-timeline-time' } })
 export class NgAtomsTimelineTimeDirective {}
 
+/** Description of an event. */
 @Directive({
   selector: '[ngAtomsTimelineDescription]',
   standalone: true,

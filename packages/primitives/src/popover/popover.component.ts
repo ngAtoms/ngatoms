@@ -1,3 +1,7 @@
+/**
+ * @file Popover: a floating panel anchored to a trigger.
+ */
+
 import {
   Component,
   ElementRef,
@@ -18,6 +22,7 @@ import { NgAtomsOverlayPlacement, computeOverlayPosition } from '../overlay/posi
 
 export type NgAtomsPopoverPlacement = NgAtomsOverlayPlacement;
 
+/** Popover: a floating panel anchored to a trigger. */
 @Component({
   selector: 'nga-popover',
   standalone: true,
@@ -58,6 +63,7 @@ export class NgAtomsPopoverComponent implements OnDestroy {
     });
   }
 
+  /** Keeps the panel by the trigger while the page scrolls. */
   @HostListener('window:scroll')
   onWindowScroll(): void {
     if (this.open()) {
@@ -65,6 +71,7 @@ export class NgAtomsPopoverComponent implements OnDestroy {
     }
   }
 
+  /** Opens or closes the panel. */
   toggle(): void {
     this.open.update(v => !v);
     if (this.open()) {
@@ -72,10 +79,12 @@ export class NgAtomsPopoverComponent implements OnDestroy {
     }
   }
 
+  /** Closes the panel. */
   close(): void {
     this.open.set(false);
   }
 
+  /** Places the panel next to the trigger, flipping when it does not fit. */
   private position(): void {
     const panel = this.panelEl().nativeElement;
     const pos = computeOverlayPosition(
@@ -89,6 +98,7 @@ export class NgAtomsPopoverComponent implements OnDestroy {
     this.renderer.setStyle(panel, 'left', `${pos.left}px`);
   }
 
+  /** Removes the panel from the body and stops listening for outside clicks. */
   ngOnDestroy(): void {
     this.deregister?.();
     const panel = this.panelEl().nativeElement;

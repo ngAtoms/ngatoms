@@ -163,7 +163,7 @@ Component checklist:
 - **TypeScript strict mode** — all packages run with strict TypeScript settings.
 - **Minimal abstractions** — do not add helpers or utilities for one-off operations. Prefer clarity over cleverness.
 - **KISS, SOLID, Clean Code** — the simplest design that works; one responsibility per function, class, and file; intention-revealing names; no dead code or magic numbers.
-- **Documentation in JSDoc, not in line comments** — `//` comments are not allowed in TypeScript. Every file starts with a `@file` header saying what it is responsible for, and every function, method, and class has a JSDoc header that says what it does and why. Keep it pragmatic: do not restate the signature. ESLint enforces this for the grid today; the remaining primitives will follow.
+- **Documentation in JSDoc, not in line comments** — `//` comments are not allowed in TypeScript. Every file starts with a `@file` header saying what it is responsible for, and every function, method, and class has a JSDoc header that says what it does and why. Keep it pragmatic: do not restate the signature. ESLint enforces this for every primitive.
 
 ---
 

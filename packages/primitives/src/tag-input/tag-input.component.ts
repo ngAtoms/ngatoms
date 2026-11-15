@@ -1,3 +1,8 @@
+/**
+ * @file Tag input: a text field that turns what is typed into removable
+ * tags.
+ */
+
 import {
   Component,
   ElementRef,
@@ -12,6 +17,7 @@ import {
 
 export type NgAtomsTagInputSize = 'sm' | 'md' | 'lg';
 
+/** Tag input: a text field that turns what is typed into removable tags. */
 @Component({
   selector: 'nga-tag-input',
   standalone: true,
@@ -54,6 +60,7 @@ export class NgAtomsTagInputComponent {
     });
   }
 
+  /** Focuses the text field. */
   focus(): void {
     if (!this.disabled()) this.field().nativeElement.focus();
   }
@@ -69,6 +76,7 @@ export class NgAtomsTagInputComponent {
     return true;
   }
 
+  /** Removes a tag and returns focus to the field. */
   remove(index: number): void {
     if (this.disabled()) return;
     this.tags.update(tags => tags.filter((_, i) => i !== index));
@@ -81,11 +89,15 @@ export class NgAtomsTagInputComponent {
     if (this.add(field.value) || !field.value.trim()) field.value = '';
   }
 
+  /**
+   * Enter or a separator adds the typed text; Backspace in an empty field
+   * removes the last tag. Enter with nothing typed is left alone, so it can
+   * submit the surrounding form.
+   */
   onKeydown(event: KeyboardEvent): void {
     const field = this.field().nativeElement;
 
     if (event.key === 'Enter' || this.separators().includes(event.key)) {
-      // Let Enter submit the surrounding form when there is nothing to commit.
       if (event.key === 'Enter' && !field.value.trim()) return;
       event.preventDefault();
       this.commit();
@@ -94,6 +106,7 @@ export class NgAtomsTagInputComponent {
     }
   }
 
+  /** Turns pasted text holding several values into one tag each. */
   onPaste(event: ClipboardEvent): void {
     const text = event.clipboardData?.getData('text') ?? '';
     const parts = this.split(text);
@@ -103,6 +116,7 @@ export class NgAtomsTagInputComponent {
     parts.forEach(part => this.add(part));
   }
 
+  /** Splits text on line breaks, tabs and the separators. */
   private split(text: string): string[] {
     const separators = ['\n', '\r', '\t', ...this.separators()];
     let parts = [text];

@@ -1,3 +1,7 @@
+/**
+ * @file Closes the menu.
+ */
+
 import {
   Component,
   ElementRef,
@@ -41,6 +45,11 @@ export class NgAtomsContextMenuComponent implements NgAtomsDropdownMenuContext, 
   /** Element focused before the menu opened, so focus can go back to it. */
   private returnFocusTo: HTMLElement | null = null;
 
+  /**
+   * Registers the open menu for outside clicks and Escape. On close, focus goes
+   * back to where it was only if it was still inside the menu: a click elsewhere
+   * keeps the focus the user just chose.
+   */
   constructor() {
     effect(() => {
       if (this.open()) {
@@ -51,8 +60,6 @@ export class NgAtomsContextMenuComponent implements NgAtomsDropdownMenuContext, 
       } else {
         this.deregister?.();
         this.deregister = null;
-        // Only pull focus back when it was inside the menu; a click elsewhere
-        // should keep the focus the user just chose.
         if (this.panelEl().nativeElement.contains(this.document.activeElement)) {
           this.returnFocusTo?.focus();
         }
@@ -68,13 +75,14 @@ export class NgAtomsContextMenuComponent implements NgAtomsDropdownMenuContext, 
    * Opens the menu with its top-left corner at the given viewport point.
    * A pointer opens it with nothing highlighted; `focusFirstItem` is for
    * keyboard invocation, where the first item is expected to take focus.
+   * The panel is placed before it shows, so it never flashes at its
+   * previous spot.
    */
   openAt(x: number, y: number, focusFirstItem = false): void {
     if (this.disabled()) return;
     if (!this.open()) {
       this.returnFocusTo = this.document.activeElement as HTMLElement | null;
     }
-    // Place it before it shows so it never flashes at its previous spot.
     const panel = this.panelEl().nativeElement;
     this.renderer.setStyle(panel, 'top', `${y}px`);
     this.renderer.setStyle(panel, 'left', `${x}px`);
@@ -101,10 +109,12 @@ export class NgAtomsContextMenuComponent implements NgAtomsDropdownMenuContext, 
     }
   }
 
+  /** Closes the menu. */
   close(): void {
     this.open.set(false);
   }
 
+  /** The items that can take focus, in order. */
   private items(): HTMLElement[] {
     return Array.from(
       this.panelEl().nativeElement.querySelectorAll<HTMLElement>(
@@ -113,33 +123,40 @@ export class NgAtomsContextMenuComponent implements NgAtomsDropdownMenuContext, 
     );
   }
 
+  /** Focuses the first item. */
   focusFirst(): void {
     this.items()[0]?.focus();
   }
 
+  /** Focuses the last item. */
   focusLast(): void {
     const items = this.items();
     items[items.length - 1]?.focus();
   }
 
+  /** Focuses the item after the given one, wrapping to the first. */
   focusNext(current: HTMLElement): void {
     const items = this.items();
     const idx = items.indexOf(current);
     items[(idx + 1) % items.length]?.focus();
   }
 
+  /** Focuses the item before the given one, wrapping to the last. */
   focusPrev(current: HTMLElement): void {
     const items = this.items();
     const idx = items.indexOf(current);
     items[(idx - 1 + items.length) % items.length]?.focus();
   }
 
+  /**
+   * Places the panel at a point: it flips to the other side of the pointer when
+   * it would overflow, and is then kept inside the viewport.
+   */
   private position(x: number, y: number): void {
     const panel = this.panelEl().nativeElement;
     const rect = panel.getBoundingClientRect();
     const margin = 8;
 
-    // Flip to the other side of the pointer when it would overflow, then clamp.
     let left = x + rect.width > window.innerWidth - margin ? x - rect.width : x;
     let top = y + rect.height > window.innerHeight - margin ? y - rect.height : y;
     left = Math.max(margin, Math.min(left, window.innerWidth - rect.width - margin));
@@ -149,6 +166,7 @@ export class NgAtomsContextMenuComponent implements NgAtomsDropdownMenuContext, 
     this.renderer.setStyle(panel, 'left', `${left}px`);
   }
 
+  /** Removes the panel from the body and stops listening for outside clicks. */
   ngOnDestroy(): void {
     this.deregister?.();
     const panel = this.panelEl().nativeElement;

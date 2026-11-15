@@ -1,3 +1,7 @@
+/**
+ * @file Loading spinner.
+ */
+
 import {
   Directive,
   ElementRef,
@@ -9,6 +13,7 @@ import {
 
 export type NgAtomsSpinnerSize = 'sm' | 'md' | 'lg';
 
+/** Loading spinner. */
 @Directive({
   selector: '[ngAtomsSpinner]',
   standalone: true,

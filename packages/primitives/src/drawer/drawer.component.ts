@@ -1,3 +1,8 @@
+/**
+ * @file Side panel on the native `<dialog>` element, sliding in from one of
+ * four sides.
+ */
+
 import {
   Component,
   ElementRef,
@@ -11,6 +16,7 @@ import {
 export type NgAtomsDrawerSide = 'left' | 'right' | 'top' | 'bottom';
 export type NgAtomsDrawerSize = 'sm' | 'md' | 'lg' | 'full';
 
+/** Side panel on the native `<dialog>` element, sliding in from one of four sides. */
 @Component({
   selector: 'nga-drawer',
   standalone: true,
@@ -30,15 +36,18 @@ export class NgAtomsDrawerComponent implements OnDestroy {
   /** Accessible name of the dialog. */
   readonly label = input<string>('');
 
+  /**
+   * Opens and closes the native dialog with `open`. `showModal()` focuses the
+   * first control, which would light up its focus ring before the user has done
+   * anything, so focus starts on the panel instead; Tab still goes to the first
+   * control.
+   */
   constructor() {
     effect(() => {
       const el = this.dialogEl().nativeElement;
       if (this.open()) {
         if (!el.open) {
           el.showModal();
-          // showModal() focuses the first control, which lights up its focus
-          // ring before the user has done anything. Start on the panel instead;
-          // Tab still goes to the first control.
           this.panelEl().nativeElement.focus({ preventScroll: true });
         }
       } else {
@@ -47,16 +56,19 @@ export class NgAtomsDrawerComponent implements OnDestroy {
     });
   }
 
+  /** Closes the drawer. */
   closeDrawer(): void {
     this.open.set(false);
   }
 
+  /** Closes the drawer when the backdrop itself is clicked, not the panel. */
   onBackdropClick(event: MouseEvent): void {
     if (this.dismissible() && event.target === this.dialogEl().nativeElement) {
       this.closeDrawer();
     }
   }
 
+  /** Closes the native dialog if it is still open. */
   ngOnDestroy(): void {
     const el = this.dialogEl()?.nativeElement;
     if (el?.open) el.close();

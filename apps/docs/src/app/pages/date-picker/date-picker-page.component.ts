@@ -26,6 +26,7 @@ import { type DocsShortcut, ShortcutsTableComponent } from "../../../components/
 export class DatePickerPageComponent {
   readonly shortcuts: DocsShortcut[] = [
     { action: "Move between days", windows: "Arrow keys" },
+    { action: "Start / end of the week", windows: "Home / End", mac: "Fn+← / Fn+→" },
     { action: "Previous / next month", windows: "Page Up / Page Down", mac: "Fn+↑ / Fn+↓" },
     { action: "Select the day", windows: "Enter or Space", mac: "Return or Space" },
     { action: "Close the calendar", windows: "Esc" },

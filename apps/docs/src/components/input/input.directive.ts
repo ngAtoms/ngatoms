@@ -1,3 +1,7 @@
+/**
+ * @file Text input styling: variant, size and invalid state.
+ */
+
 import {
   Directive,
   ElementRef,
@@ -11,6 +15,7 @@ export type NgAtomsInputVariant = 'default' | 'filled' | 'ghost';
 
 export type NgAtomsInputSize = 'xs' | 'sm' | 'md' | 'lg' | 'xl';
 
+/** Text input styling: variant, size and invalid state. */
 @Directive({
   selector: '[ngAtomsInput]',
   standalone: true,

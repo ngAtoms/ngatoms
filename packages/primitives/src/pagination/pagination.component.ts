@@ -1,3 +1,8 @@
+/**
+ * @file Pagination: previous and next buttons around a windowed list of
+ * pages.
+ */
+
 import {
   Component,
   ElementRef,
@@ -12,6 +17,7 @@ import {
 export type NgAtomsPaginationSize = 'sm' | 'md' | 'lg';
 export type NgAtomsPaginationItem = number | 'ellipsis-start' | 'ellipsis-end';
 
+/** Pagination: previous and next buttons around a windowed list of pages. */
 @Component({
   selector: 'nga-pagination',
   standalone: true,
@@ -47,12 +53,16 @@ export class NgAtomsPaginationComponent {
   /** Current page clamped into the valid range. */
   readonly current = computed(() => Math.min(this.pageCount(), Math.max(1, this.page())));
 
+  /**
+   * The pages to show, with ellipses where pages are left out. Every page is
+   * listed when they fit in the slots: first, last, current, the siblings on
+   * both sides and two ellipses.
+   */
   readonly items = computed<NgAtomsPaginationItem[]>(() => {
     const count = this.pageCount();
     const current = this.current();
     const siblings = Math.max(0, this.siblingCount());
 
-    // first + last + current + 2 * siblings + 2 ellipsis slots
     const slots = siblings * 2 + 5;
     if (count <= slots) return this.range(1, count);
 
@@ -81,19 +91,23 @@ export class NgAtomsPaginationComponent {
     });
   }
 
+  /** Goes to a page, kept within the valid range. */
   goTo(page: number): void {
     if (this.disabled()) return;
     this.page.set(Math.min(this.pageCount(), Math.max(1, page)));
   }
 
+  /** Goes to the previous page. */
   previous(): void {
     this.goTo(this.current() - 1);
   }
 
+  /** Goes to the next page. */
   next(): void {
     this.goTo(this.current() + 1);
   }
 
+  /** The whole numbers from one bound to the other, inclusive. */
   private range(from: number, to: number): number[] {
     return Array.from({ length: to - from + 1 }, (_, i) => from + i);
   }

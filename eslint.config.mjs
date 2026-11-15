@@ -36,10 +36,7 @@ const noLineComments = {
  * a JSDoc header per function, and no line comments. It starts with the
  * grid and will widen to every primitive.
  */
-const DOCUMENTED_CODE = [
-  'packages/primitives/src/grid-core/**/*.ts',
-  'packages/primitives/src/grid/**/*.ts',
-];
+const DOCUMENTED_CODE = ['packages/primitives/src/**/*.ts'];
 
 export default tseslint.config(
   // ── Ignored paths ─────────────────────────────────────────────
@@ -130,7 +127,7 @@ export default tseslint.config(
   // ── Specs and benchmarks keep the file header and the comment rule,
   //    but their small local helpers do not each need a JSDoc block.
   {
-    files: ['packages/primitives/src/grid-core/**/*.{spec,bench}.ts', 'packages/primitives/src/grid/**/*.spec.ts'],
+    files: ['packages/primitives/src/**/*.{spec,bench}.ts'],
     rules: { 'jsdoc/require-jsdoc': 'off' },
   },
 

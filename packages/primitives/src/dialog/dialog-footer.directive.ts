@@ -1,5 +1,10 @@
+/**
+ * @file Footer of a dialog, usually its actions.
+ */
+
 import { Directive } from '@angular/core';
 
+/** Footer of a dialog, usually its actions. */
 @Directive({
   selector: '[ngAtomsDialogFooter]',
   standalone: true,

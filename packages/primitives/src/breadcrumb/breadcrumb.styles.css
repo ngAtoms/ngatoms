@@ -7,10 +7,10 @@
 :root {
   --nga-breadcrumb-gap:             0.5rem;
   --nga-breadcrumb-font-size:       var(--nga-text-sm, 13px);
-  --nga-breadcrumb-color:           var(--nga-color-muted-foreground, #6E6E6E);
-  --nga-breadcrumb-color-hover:     var(--nga-color-foreground, #1A1A1A);
-  --nga-breadcrumb-color-current:   var(--nga-color-foreground, #1A1A1A);
-  --nga-breadcrumb-separator-color: var(--nga-color-border-strong, #B3B3B3);
+  --nga-breadcrumb-color:           var(--nga-color-muted-foreground, #756C5F);
+  --nga-breadcrumb-color-hover:     var(--nga-color-foreground, #111111);
+  --nga-breadcrumb-color-current:   var(--nga-color-foreground, #111111);
+  --nga-breadcrumb-separator-color: var(--nga-color-border-strong, #BDB29C);
   --nga-breadcrumb-radius:          var(--nga-radius-sm, 4px);
 }
 
