@@ -17,14 +17,14 @@ Direct publish from a 2FA-bypass granular token is being removed. Each public pa
 
 A new trusted publisher must complete its first successful stage within 2 days.
 
-Every workspace package is on `1.0.0-rc.0`. Only these two are published:
+`ngatoms` is `1.0.0-rc.1`. Every other workspace package is `1.0.0-rc.0`. Only these two are published:
 
 | Package | npm name | Why it publishes |
 |---|---|---|
 | `packages/ngatoms` | `ngatoms` | The CLI people run with `npx ngatoms` |
 | `packages/tokens` | `@ngatoms/ngatoms-tokens` | The design tokens |
 
-These stay private, at the same version:
+These stay private, at `1.0.0-rc.0`:
 
 | Package | Why it stays private |
 |---|---|
@@ -47,27 +47,27 @@ Select the affected packages and bump type (patch / minor / major). Commit the g
 
 ## Release Channels
 
-| Branch | Channel | Example version |
-|--------|---------|----------------|
-| `main` | stable | `1.2.0` |
-| `alpha` | alpha | `1.2.0-alpha.0` |
-| `beta` | beta | `1.2.0-beta.0` |
-| `rc` | release candidate | `1.2.0-rc.0` |
+| Branch | Channel | npm tag |
+|--------|---------|---------|
+| `main` | stable | `latest` |
+| `lts` | long-term support | `lts` |
+| `rc` | release candidate | `rc` |
+
+The workflow and the `publish:latest`, `publish:lts`, and `publish:rc` scripts use these three tags. There is no `alpha` or `beta` channel.
 
 ## Stable Release (`main`)
 
-Merge to `main`. CI will automatically:
+Push to `main`. The release workflow, after CI passes:
 
-1. Open a version PR that bumps packages and updates changelogs
-2. On merge of the version PR — publish packages and create a GitHub release
+1. Runs `changeset version` and commits the version bump on that branch
+2. Stages the packages for npm approval with 2FA. It does not publish them directly
 
-## Preview Releases (`alpha` / `beta` / `rc`)
+## Preview Releases (`lts` / `rc`)
 
-Push to the corresponding branch. CI will version and publish immediately to the matching npm tag.
+Push to `lts` or `rc`. The release workflow versions packages and stages them on the matching npm tag. `main` stages `latest`. A version is not public until a maintainer approves the stage.
 
 ```bash
-npm install ngatoms@alpha
-npm install ngatoms@beta
+npm install ngatoms@lts
 npm install ngatoms@rc
 ```
 
@@ -84,9 +84,11 @@ npm run version:packages
 
 # Dry run before publishing
 npm run publish:latest:dry
-npm run publish:alpha:dry
+npm run publish:lts:dry
+npm run publish:rc:dry
 
 # Publish
 npm run publish:latest
-npm run publish:alpha
+npm run publish:lts
+npm run publish:rc
 ```

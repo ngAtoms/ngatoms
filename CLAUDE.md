@@ -37,8 +37,8 @@ npm workspaces monorepo with the following packages:
 
 | Package | Name | Purpose |
 |---|---|---|
-| `packages/ngatoms` | `ngatoms` | Main entry point |
-| `packages/cli` | `@ngatoms/ngatoms-cli` | CLI for component scaffolding |
+| `packages/ngatoms` | `ngatoms` | Published CLI (`npx ngatoms`) |
+| `packages/cli` | `@ngatoms/ngatoms-cli` | Placeholder. The published CLI is `packages/ngatoms` |
 | `packages/primitives` | `@ngatoms/ngatoms-primitives` | Angular UI primitive components |
 | `packages/tokens` | `@ngatoms/ngatoms-tokens` | Design tokens / CSS variables |
 | `packages/utils` | `@ngatoms/ngatoms-utils` | Shared utilities |
@@ -111,7 +111,7 @@ The project supports multiple release channels via branch strategy:
 ## Deployment
 
 - **Cloudflare Pages** (current): `apps/docs` is deployed via Cloudflare Pages on push to `main`. Build command: `npm run build --workspace=apps/docs`. Output: `apps/docs/dist/browser`. Config in `wrangler.toml`.
-- When editing `wrangler.toml`: use `pages_build_output_dir` (not `assets`) — this is a Pages deployment, not a Workers deployment.
+- `wrangler.toml` uses `[assets]` with `directory = "apps/docs/dist/browser"`. Keep that. Do not switch it to `pages_build_output_dir` unless the deploy target changes.
 - Do not add `<base href>` other than `/` to `apps/docs/src/index.html`.
 
 ## npm Publishing
@@ -135,4 +135,4 @@ Node version: **22.x**
 - Each package explicitly declares its `files` array — only those files are published
 - The `registry/registry.json` is the component registry that the CLI reads from; it lists available components with metadata
 - Design tokens in `packages/tokens` are distributed as CSS variables
-- The CLI (`packages/cli/bin/`) is the main user-facing tool for scaffolding components into consumer projects
+- The CLI people run is `packages/ngatoms` (`bin/cli.js`, command `ngatoms`). `packages/cli/bin/ngatoms.js` only prints a placeholder.

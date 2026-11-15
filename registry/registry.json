@@ -142,6 +142,8 @@
       "status": "stable",
       "files": [
         "packages/primitives/src/select/select.component.ts",
+        "packages/primitives/src/select/select.component.html",
+        "packages/primitives/src/select/select.component.css",
         "packages/primitives/src/select/select.styles.css",
         "packages/primitives/src/select/index.ts"
       ],
