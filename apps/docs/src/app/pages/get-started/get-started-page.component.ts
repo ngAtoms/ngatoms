@@ -159,6 +159,12 @@ export class AppComponent {}`;
       status: "stable",
     },
     {
+      name: "grid",
+      route: "/grid",
+      description: "Data grid with tree rows, editing and virtualization.",
+      status: "alpha",
+    },
+    {
       name: "input",
       route: "/input",
       description: "3 variants, 5 sizes, invalid state.",
@@ -195,7 +201,7 @@ export class AppComponent {}`;
     {
       name: "select",
       route: "/select",
-      description: "Styled native select — 3 variants, 5 sizes.",
+      description: "Custom select list — 3 variants, 5 sizes, invalid state.",
       status: "stable",
     },
     {

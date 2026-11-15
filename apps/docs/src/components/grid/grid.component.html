@@ -1,0 +1,97 @@
+@for (item of renderRows(); track item.key) {
+  @if (item.entry.kind === 'row') {
+    <span class="nga-sr-only" [attr.id]="rowHeaderDomId(item.entry.row.id)">{{ rowHeaderText(item.entry.row) }}</span>
+  }
+}
+<div
+  #viewport
+  class="nga-grid__viewport"
+  [attr.role]="hasHierarchy() ? 'treegrid' : 'grid'"
+  [attr.aria-label]="label() || null"
+  [attr.aria-rowcount]="rowList().length + columnModel().headerDepth"
+  [attr.aria-colcount]="columnModel().columns.length"
+  aria-multiselectable="true"
+  [attr.tabindex]="activeCell() ? -1 : 0"
+  (scroll)="onScroll()"
+  (keydown)="onKeydown($event)"
+  (focusin)="onFocusIn($event)"
+  (copy)="batch.copy($event)"
+  (cut)="batch.cut($event)"
+  (paste)="batch.paste($event)"
+>
+  <div
+    class="nga-grid__canvas"
+    role="presentation"
+    [style.width.px]="totalWidth()"
+    [style.height.px]="headerHeight() + bodyHeight()"
+  >
+    <div class="nga-grid__header" role="rowgroup" [style.height.px]="headerHeight()">
+      <nga-grid-header-pane
+        class="nga-grid__pane--left"
+        pane="left"
+        [cells]="leftHeader()"
+        [style.width.px]="columnModel().panes.left.width"
+      />
+      <nga-grid-header-pane
+        class="nga-grid__pane--center"
+        pane="center"
+        [cells]="centerHeader()"
+        [style.width.px]="columnModel().panes.center.width"
+      />
+      <nga-grid-header-pane
+        class="nga-grid__pane--right"
+        pane="right"
+        [cells]="rightHeader()"
+        [style.width.px]="columnModel().panes.right.width"
+      />
+    </div>
+
+    <div class="nga-grid__body" role="rowgroup" [style.height.px]="bodyHeight()">
+      @if (dropIndicator(); as indicator) {
+        <div
+          class="nga-grid__drop-indicator"
+          [class.nga-grid__drop-indicator--inside]="indicator.inside"
+          [class.nga-grid__drop-indicator--blocked]="!indicator.allowed"
+          [style.top.px]="indicator.top"
+          [style.height.px]="indicator.height"
+        ></div>
+      }
+      <nga-grid-body-pane
+        class="nga-grid__pane--left"
+        [rows]="renderRows()"
+        [columns]="leftColumns()"
+        [style.width.px]="columnModel().panes.left.width"
+      />
+      <nga-grid-body-pane
+        class="nga-grid__pane--center"
+        [rows]="renderRows()"
+        [columns]="centerColumns()"
+        [style.width.px]="columnModel().panes.center.width"
+      />
+      <nga-grid-body-pane
+        class="nga-grid__pane--right"
+        [rows]="renderRows()"
+        [columns]="rightColumns()"
+        [style.width.px]="columnModel().panes.right.width"
+      />
+    </div>
+  </div>
+
+  @if (isFilteredEmpty()) {
+    <div class="nga-grid__empty" role="status">
+      <p class="nga-grid__empty-text">No rows match the filters.</p>
+      <button type="button" class="nga-grid__empty-action" (click)="clearFilters()">Clear filters</button>
+    </div>
+  }
+</div>
+
+@for (open of openFilters(); track open.column.id) {
+  <nga-grid-filter
+    [column]="open.column"
+    [anchor]="open.anchor"
+    [filter]="filters()[open.column.id]"
+    [options]="filterOptions()"
+    (apply)="applyFilter(open.column.id, $event)"
+    (dismiss)="closeFilter(open.column.id)"
+  />
+}

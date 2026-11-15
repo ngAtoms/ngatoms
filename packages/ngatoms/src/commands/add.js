@@ -1,8 +1,15 @@
 import { createInterface } from 'readline';
-import { existsSync, mkdirSync, writeFileSync, readFileSync } from 'fs';
+import { existsSync, mkdirSync, writeFileSync, readFileSync, readdirSync } from 'fs';
 import { join, relative, dirname } from 'path';
 import { readConfig } from '../lib/config.js';
-import { fetchRegistry, findComponent, listComponents } from '../lib/registry.js';
+import {
+  fetchRegistry,
+  findComponent,
+  listComponents,
+  resolveDependencies,
+  missingDependencyFiles,
+  dependencyGapWarning,
+} from '../lib/registry.js';
 import { fetchText, getRawUrl } from '../lib/github.js';
 
 async function confirm(rl, question) {
@@ -26,6 +33,28 @@ export function patchStylesFile(stylesFilePath, importLine) {
   if (existing.includes(importLine)) return false;
   writeFileSync(stylesFilePath, existing + `\n${importLine}\n`, 'utf8');
   return true;
+}
+
+async function writeComponent(component, config, cwd, stylesFilePath) {
+  const targetDir = join(cwd, config.componentsDir, component.name);
+  mkdirSync(targetDir, { recursive: true });
+
+  for (const filepath of component.files) {
+    const content = await fetchText(getRawUrl(filepath));
+    writeFileSync(join(targetDir, filepath.split('/').pop()), content, 'utf8');
+  }
+
+  // Style-less entries (e.g. overlay) have no cssImport.
+  if (!component.cssImport) return { patched: false, importLine: null };
+
+  const importPath = computeImportPath(
+    config.stylesFile,
+    config.componentsDir,
+    component.name,
+    component.cssImport
+  );
+  const importLine = `@import '${importPath}';`;
+  return { patched: patchStylesFile(stylesFilePath, importLine), importLine };
 }
 
 export async function add(componentName, cwd = process.cwd()) {
@@ -62,29 +91,35 @@ export async function add(componentName, cwd = process.cwd()) {
     if (!overwrite) process.exit(0);
   }
 
-  mkdirSync(targetDir, { recursive: true });
+  const stylesFilePath = join(cwd, config.stylesFile);
 
-  for (const filepath of component.files) {
-    const url = getRawUrl(filepath);
-    const content = await fetchText(url);
-    const filename = filepath.split('/').pop();
-    writeFileSync(join(targetDir, filename), content, 'utf8');
+  // Dependencies first. An existing folder is never overwritten, so a
+  // local edit to a shared piece (e.g. overlay) survives. If that folder
+  // is missing a file this component imports, say so instead of failing
+  // later in the consumer's build.
+  const installedDeps = [];
+  for (const depName of resolveDependencies(registry, componentName)) {
+    const depDir = join(cwd, config.componentsDir, depName);
+    const dep = findComponent(registry, depName);
+    if (existsSync(depDir)) {
+      const present = new Set(readdirSync(depDir));
+      const warning = dependencyGapWarning(componentName, depName, missingDependencyFiles(dep.files, present));
+      if (warning) console.warn(`⚠ ${warning}`);
+      continue;
+    }
+    await writeComponent(dep, config, cwd, stylesFilePath);
+    installedDeps.push(depName);
   }
 
-  const importPath = computeImportPath(
-    config.stylesFile,
-    config.componentsDir,
-    componentName,
-    component.cssImport
-  );
-  const importLine = `@import '${importPath}';`;
-  const stylesFilePath = join(cwd, config.stylesFile);
-  const patched = patchStylesFile(stylesFilePath, importLine);
+  const { patched, importLine } = await writeComponent(component, config, cwd, stylesFilePath);
 
   console.log(`\n✓ Added ${componentName} to ${config.componentsDir}/${componentName}/`);
+  if (installedDeps.length) {
+    console.log(`✓ Added dependencies: ${installedDeps.join(', ')}`);
+  }
   if (patched) {
     console.log(`✓ Updated ${config.stylesFile}`);
-  } else if (!existsSync(stylesFilePath)) {
+  } else if (importLine && !existsSync(stylesFilePath)) {
     console.warn(`⚠ Could not find ${config.stylesFile} — add the import manually:\n  ${importLine}`);
   }
 }

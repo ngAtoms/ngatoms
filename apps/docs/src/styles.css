@@ -21,6 +21,7 @@
 @import './components/popover/popover.styles.css';
 @import './components/dropdown-menu/dropdown-menu.styles.css';
 @import './components/date-picker/date-picker.styles.css';
+@import './components/grid/grid.styles.css';
 @import './components/code-block/code-block.styles.css';
 @import '@phosphor-icons/web/regular';
 @import '@phosphor-icons/web/bold';

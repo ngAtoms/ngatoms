@@ -1,0 +1,18 @@
+<nga-grid
+  [rows]="rows()"
+  [columns]="columns()"
+  [(filters)]="filters"
+  [rowHeight]="rowHeight"
+  [fitRows]="true"
+  [label]="label()"
+>
+  <ng-template ngaGridCell="name" let-value>
+    <code class="props-name">{{ value }}</code>
+  </ng-template>
+  <ng-template ngaGridCell="type" let-value let-text="text">
+    <code class="props-type" [title]="text">{{ value }}</code>
+  </ng-template>
+  <ng-template ngaGridCell="defaultVal" let-value let-text="text">
+    <code class="props-default" [title]="text">{{ value }}</code>
+  </ng-template>
+</nga-grid>
