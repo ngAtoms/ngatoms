@@ -17,7 +17,7 @@ These apply to all TypeScript in the library. They are enforced by ESLint for `p
 - **Clean Code** — intention-revealing names, small functions, no dead code, no magic numbers (name the constant).
 - **No inline comments.** `//` comments are not allowed in TypeScript. If code needs explaining, first make it clearer (rename, extract a function); what still needs saying goes in the JSDoc header.
 - **Every file starts with a header**: a JSDoc block with `@file` stating what the file is responsible for.
-- **Every function, method, and class has a JSDoc header.** Keep it clean, correct, and pragmatic: say what it does and why it exists, plus any non-obvious behavior. Do not restate the signature, and do not add `@param`/`@returns` lines that only repeat names and types. Methods implementing an interface may use `/** @inheritdoc */`.
+- **Every function, method, and class has a JSDoc header.** Keep it clean, correct, and pragmatic: say what it does and why it exists, plus any non-obvious behavior. Do not restate the signature, and do not add `@param`/`@returns` lines that only repeat names and types. Methods implementing an interface may use `/** @inheritdoc */`. An arrow function written inline to fill in a documented interface member (a callback in an options object) needs no JSDoc of its own: the member's documentation is the documentation.
 - Interface members are documented with JSDoc where the name alone is not enough.
 
 ## Keyboard Shortcuts

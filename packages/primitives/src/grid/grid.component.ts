@@ -1,8 +1,11 @@
 /**
- * @file The data grid. Owns the state (scroll position, viewport
- * size, expansion) and derives from it, through grid-core, exactly which
- * rows, columns and header cells each pane should draw. It never mutates
- * the data it is given and applies no business rules.
+ * @file The data grid. Owns the layout state (scroll position, viewport
+ * size, expansion, column widths) and derives from it, through grid-core,
+ * exactly which rows, columns and header cells each pane should draw.
+ * Selection, editing, batch edits, row reordering, the header keys and
+ * focus each have their own collaborator; this class wires them together
+ * and dispatches the keyboard. It never mutates the data it is given and
+ * applies no business rules.
  */
 
 import {
@@ -25,17 +28,14 @@ import {
 } from '@angular/core';
 import { DOCUMENT } from '@angular/common';
 import {
+  GridBatchRejection,
   GridCellChange,
   GridCellPosition,
-  GridCellRect,
-  GridBatchRejection,
   GridCellRejection,
-  GridCellResolver,
   GridCellState,
   GridCellValue,
   GridColumn,
   GridColumnNode,
-  GridDropTarget,
   GridExportOptions,
   GridFilter,
   GridFilters,
@@ -49,47 +49,36 @@ import {
   applyFilters,
   buildRowTree,
   clampColumnWidth,
-  clampPosition,
   columnHeaderPaths,
-  clearChanges,
-  copyText,
-  createCellChange,
-  createHistory,
   createNumberFormatter,
   createRowComparator,
   distinctValues,
-  editTextOf,
   exportDelimited,
-  MAX_BATCH_CELLS,
-  fillDownChanges,
-  fillFromChanges,
   fitColumnModel,
   fixedSizeRange,
   flattenRows,
   getCellValue,
   isCellEditable,
-  isRowMoveAllowed,
   moveForKey,
   movePosition,
   nextSort,
-  parseCellInput,
-  parseTsv,
-  pasteChanges,
-  rangeRect,
-  rectEdges,
-  rectSize,
   resolveFormat,
   variableSizeRange,
   varianceTone,
   windowedRows,
 } from '../grid-core';
+import { GridBatchController } from './grid-batch-edits';
 import { NgAtomsGridBodyPaneComponent } from './grid-body-pane.component';
-import { NgAtomsGridFilterComponent } from './grid-filter.component';
-import { NgAtomsGridHeaderPaneComponent } from './grid-header-pane.component';
 import { trackDragSelect } from './grid-drag-select';
+import { GridCellRef, GridEditController } from './grid-editing';
+import { NgAtomsGridFilterComponent } from './grid-filter.component';
+import { GridFocusController } from './grid-focus';
+import { NgAtomsGridHeaderPaneComponent } from './grid-header-pane.component';
+import { GridHeaderKeysController } from './grid-header-keys';
 import { measureColumnWidth } from './grid-measure';
-import { isTypingKey, renderColumns, renderHeaderCells, toText } from './grid-render';
-import { trackRowDrag } from './grid-row-drag';
+import { INTERACTIVE_SELECTOR, isTypingKey, renderColumns, renderHeaderCells, toText } from './grid-render';
+import { GridRowReorderController } from './grid-row-reorder';
+import { GridSelectionController } from './grid-selection';
 import {
   NgAtomsGridCellContext,
   NgAtomsGridCellDirective,
@@ -123,16 +112,6 @@ export type NgAtomsGridCellStateFn<T = unknown> = (
   column: GridColumn<T>,
 ) => GridCellState | null | undefined;
 
-/** An edit in progress. */
-interface EditSession {
-  position: GridCellPosition;
-  text: string;
-  /** The draft was rejected on the last attempt to commit it. */
-  invalid: boolean;
-  /** Select the whole text when the editor opens, rather than placing the caret at the end. */
-  selectAll: boolean;
-}
-
 /** How `exportText` writes the grid. */
 export interface NgAtomsGridExportOptions extends GridExportOptions {
   /**
@@ -142,19 +121,6 @@ export interface NgAtomsGridExportOptions extends GridExportOptions {
    */
   values?: 'raw' | 'formatted';
 }
-
-/** A row being dragged, and where it would land right now. */
-interface RowDrag {
-  rowId: GridRowId;
-  /** Display position of the dragged row. */
-  index: number;
-  target: GridDropTarget | null;
-  /** Whether dropping on the target is a move that makes sense. */
-  allowed: boolean;
-}
-
-/** Elements that take keys for themselves when they sit inside a cell. */
-const INTERACTIVE = 'input, select, textarea, button, a[href], [contenteditable]:not([contenteditable="false"])';
 
 /** Row density presets. */
 export type NgAtomsGridDensity = 'compact' | 'comfortable';
@@ -166,9 +132,6 @@ const HEADER_ROOM = { single: 12, grouped: 4 };
 
 /** Matches devices whose primary pointer is a finger. */
 const COARSE_POINTER = '(pointer: coarse)';
-
-/** Step of a column resize made from the keyboard, in px. */
-const HEADER_RESIZE_STEP = 16;
 
 /** Vertical room a wrapped cell keeps free around its text, in px. */
 const WRAP_PADDING = 10;
@@ -410,44 +373,6 @@ export class NgAtomsGridComponent<T = unknown> implements NgAtomsGridContext<T> 
     renderHeaderCells(this.columnModel().panes.right, this.headerRowHeight()),
   );
 
-  /** The active cell as last set; may point outside the grid after rows change. */
-  private readonly requestedActiveCell = signal<GridCellPosition | null>(null);
-  /** The active cell, kept inside the grid as rows and columns come and go. */
-  protected readonly activeCell = computed(() => {
-    const requested = this.requestedActiveCell();
-    return requested ? clampPosition(requested, this.bounds()) : null;
-  });
-  /** The far corner of the selection as last set; the active cell is the near one. */
-  private readonly requestedRangeEnd = signal<GridCellPosition | null>(null);
-  private readonly rangeEnd = computed(() => {
-    const requested = this.requestedRangeEnd();
-    return requested ? clampPosition(requested, this.bounds()) : null;
-  });
-  /** The block of selected cells; a single cell when nothing was extended. */
-  private readonly selectionRect = computed<GridCellRect | null>(() => {
-    const active = this.activeCell();
-    return active ? rangeRect({ start: active, end: this.rangeEnd() ?? active }) : null;
-  });
-  /** More than the active cell is selected. */
-  private readonly hasRange = computed(() => {
-    const rect = this.selectionRect();
-    return !!rect && rectSize(rect) > 1;
-  });
-  private readonly selection = computed<GridSelection | null>(() => {
-    const active = this.activeCell();
-    const rect = this.selectionRect();
-    if (!active || !rect) return null;
-
-    const rowIds: GridRowId[] = [];
-    const list = this.rowList();
-    for (let index = rect.top; index <= rect.bottom; index++) {
-      const entry = list.get(index);
-      if (entry?.kind === 'row') rowIds.push(entry.row.id);
-    }
-    const columnIds = this.columnModel().columns.slice(rect.left, rect.right + 1).map(column => column.id);
-    return { range: { start: active, end: this.rangeEnd() ?? active }, rowIds, columnIds };
-  });
-  private readonly editSession = signal<EditSession | null>(null);
   private readonly cellDirectives = contentChildren(NgAtomsGridCellDirective);
   private readonly editorDirectives = contentChildren(NgAtomsGridEditorDirective);
   private readonly cellTemplates = computed(
@@ -456,70 +381,100 @@ export class NgAtomsGridComponent<T = unknown> implements NgAtomsGridContext<T> 
   private readonly editorTemplates = computed(
     () => new Map(this.editorDirectives().map(slot => [slot.columnId(), slot.template])),
   );
-  /** Context of the open editor's template; one object per edit, so the template is not rebuilt on every render. */
-  private readonly openEditorContext = computed<NgAtomsGridEditorContext<T> | null>(() => {
-    const session = this.editSession();
-    const target = session && untracked(() => this.cellAt(session.position));
-    if (!target) return null;
-    return {
-      $implicit: getCellValue(target.row, target.column),
-      row: target.row,
-      column: target.column,
-      /** @inheritdoc */
-      commit: (value, move) => this.commitValue(value, move),
-      /** @inheritdoc */
-      cancel: () => this.cancelEdit(),
-    };
-  });
 
-  /** Position among the leaf columns of the header that has keyboard focus, if one has. */
-  private readonly headerFocus = signal<number | null>(null);
-  private readonly rowDrag = signal<RowDrag | null>(null);
-  /** Where the drop marker is drawn while a row is dragged. */
-  protected readonly dropIndicator = computed(() => {
-    const drag = this.rowDrag();
-    if (!drag?.target) return null;
-    const { index, position } = drag.target;
-    const height = this.rowHeightPx();
-    const inside = position === 'inside';
-    return {
-      top: (position === 'after' ? index + 1 : index) * height,
-      height: inside ? height : 0,
-      inside,
-      allowed: drag.allowed,
-    };
-  });
-
-  /** Batches the user produced, for undo and redo. */
-  private readonly history = createHistory();
-  /** The mouse went down on a cell and has not been released since. */
-  private selecting = false;
   private readonly bounds = computed(() => ({
     rowCount: this.rowList().length,
     columnCount: this.columnModel().columns.length,
     pageSize: Math.floor((this.viewportHeight() - this.headerHeight()) / this.rowHeightPx()),
   }));
-  /**
-   * Set when the grid itself removes the focused element (closing the
-   * editor), so the next render knows focus belongs back on the active cell.
-   */
-  private focusOwed = false;
-  /** The last activation landed on the cell that was already active. */
-  private reactivated = false;
+
+  /** Places DOM focus after each render, and scrolls cells into view. */
+  private readonly focus = new GridFocusController<T>({
+    viewport: () => this.viewport().nativeElement,
+    document: this.document,
+    rowHeight: () => this.rowHeightPx(),
+    headerHeight: () => this.headerHeight(),
+    columnModel: () => this.columnModel(),
+    headerColumn: () => this.headerKeys.focused(),
+    selectsAllOnEdit: () => this.editing.selectsAll(),
+  });
+
+  /** The active cell and the selected block. */
+  private readonly selected = new GridSelectionController<T>({
+    bounds: () => this.bounds(),
+    rowList: () => this.rowList(),
+    columns: () => this.columnModel().columns,
+  });
+  protected readonly activeCell = this.selected.activeCell;
+
+  /** Copy, cut, paste, clear, fill, undo and redo over the selection. */
+  protected readonly batch = new GridBatchController<T>({
+    rect: () => this.selected.rect(),
+    active: () => this.selected.activeCell(),
+    bounds: () => this.bounds(),
+    cellAt: position => this.cellAt(position),
+    canEdit: cell => this.canEdit(cell),
+    locale: () => this.locale(),
+    isEditing: () => this.editing.isOpen(),
+    select: rect => this.selected.select(rect),
+    changed: changes => this.cellsChange.emit(changes),
+    rejected: rejections => this.cellsRejected.emit(rejections),
+    refused: rejection => this.batchRejected.emit(rejection),
+  });
+
+  /** The cell being edited, if any. */
+  private readonly editing = new GridEditController<T>({
+    cellAt: position => this.cellAt(position),
+    canEdit: cell => this.canEdit(cell),
+    locale: () => this.locale(),
+    hasEditorTemplate: columnId => this.editorTemplates().has(columnId),
+    emit: changes => this.batch.emit(changes),
+    activate: position => this.activate(position.row, position.col),
+    move: move => this.moveActiveCell(move),
+    requestFocus: () => this.focus.request(),
+    releaseFocus: () => this.focus.release(),
+  });
+
+  /** Dragging rows by their handle, and moving them from the keyboard. */
+  private readonly reorder = new GridRowReorderController<T>({
+    enabled: () => this.canDragRows(),
+    viewport: () => this.viewport().nativeElement,
+    rowList: () => this.rowList(),
+    rowTree: () => this.rowTree(),
+    rowHeight: () => this.rowHeightPx(),
+    headerHeight: () => this.headerHeight(),
+    allowInside: () => this.hasHierarchy(),
+    active: () => this.selected.activeCell(),
+    activate: position => this.activate(position.row, position.col),
+    moved: move => this.rowMove.emit(move),
+  });
+  protected readonly dropIndicator = this.reorder.indicator;
+
+  /** Keyboard focus on the column headers. */
+  private readonly headerKeys = new GridHeaderKeysController<T>({
+    columnModel: () => this.columnModel(),
+    scrollColumnIntoView: col => this.focus.scrollColumnIntoView(col),
+    resize: (column, width) => this.resizeColumn(column, width),
+    toggleSort: column => this.toggleSort(column),
+    openFilter: (column, anchor) => this.openFilter(column, anchor),
+    active: () => this.selected.activeCell(),
+    activate: position => this.activate(position.row, position.col),
+    requestFocus: () => this.focus.request(),
+  });
 
   constructor() {
     effect(() => this.visibleRangeChange.emit(this.rowRange()));
     effect(() => {
-      const selection = this.selection();
+      const selection = this.selected.selection();
       untracked(() => this.selectionChange.emit(selection));
     });
     afterRenderEffect(() => {
-      this.headerFocus();
-      this.activeCell();
-      this.editSession();
+      this.headerKeys.focused();
+      this.selected.activeCell();
+      this.editing.position();
       this.renderRows();
       this.centerColumns();
-      this.syncFocus();
+      this.focus.sync();
     });
     afterNextRender(() => this.observeViewportSize());
     this.observePointer();
@@ -546,44 +501,42 @@ export class NgAtomsGridComponent<T = unknown> implements NgAtomsGridContext<T> 
 
   /** @inheritdoc */
   isActive(row: number, col: number): boolean {
-    const active = this.activeCell();
-    return !!active && active.row === row && active.col === col;
+    return this.selected.isActive(row, col);
   }
 
-  /** @inheritdoc */
+  /**
+   * @inheritdoc
+   * An edit in progress on another cell is closed first, keyboard focus
+   * leaves the header, and the cell is scrolled into view.
+   */
   activate(row: number, col: number): void {
-    const editing = this.editSession()?.position;
-    if (editing && (editing.row !== row || editing.col !== col)) this.leaveEdit();
-    this.headerFocus.set(null);
-    this.reactivated = this.isActive(row, col) && !this.hasRange();
-    this.requestedRangeEnd.set(null);
-    this.requestedActiveCell.set({ row, col });
-    this.scrollIntoView({ row, col });
+    const editing = this.editing.position();
+    if (editing && (editing.row !== row || editing.col !== col)) this.editing.leave();
+    this.headerKeys.blur();
+    this.selected.setActive({ row, col });
+    this.focus.scrollIntoView({ row, col });
   }
 
   /** @inheritdoc */
   pressCell(row: number, col: number, extend: boolean): void {
-    this.selecting = true;
-    if (extend && this.activeCell()) this.extendTo({ row, col });
+    this.selected.beginDrag();
+    if (extend && this.selected.activeCell()) this.selected.extendTo({ row, col });
     else this.activate(row, col);
     trackDragSelect(
       this.viewport().nativeElement,
       () => this.headerHeight(),
-      cell => this.extendToElement(cell),
+      cell => this.selected.dragOverElement(cell, this.headerDepth()),
     );
   }
 
   /** @inheritdoc */
   dragOverCell(row: number, col: number, pressed: boolean): void {
-    if (!pressed) this.selecting = false;
-    else if (this.selecting) this.extendTo({ row, col });
+    this.selected.dragOver({ row, col }, pressed);
   }
 
   /** @inheritdoc */
   selectionEdges(row: number, col: number): string | null {
-    const rect = this.selectionRect();
-    if (!rect || !this.hasRange()) return null;
-    return rectEdges(rect, { row, col })?.join(' ') ?? null;
+    return this.selected.edges(row, col);
   }
 
   /** @inheritdoc */
@@ -598,7 +551,7 @@ export class NgAtomsGridComponent<T = unknown> implements NgAtomsGridContext<T> 
 
   /** @inheritdoc */
   editorContext(): NgAtomsGridEditorContext<T> | null {
-    return this.openEditorContext();
+    return this.editing.context();
   }
 
   /** @inheritdoc */
@@ -609,42 +562,17 @@ export class NgAtomsGridComponent<T = unknown> implements NgAtomsGridContext<T> 
 
   /** @inheritdoc */
   isDraggedRow(row: number): boolean {
-    return this.rowDrag()?.index === row;
+    return this.reorder.isDragged(row);
   }
 
   /** @inheritdoc */
   startRowDrag(row: number, event: PointerEvent): void {
-    const entry = this.rowList().get(row);
-    if (entry?.kind !== 'row') return;
-    const rowId = entry.row.id;
-
-    trackRowDrag(
-      event,
-      this.viewport().nativeElement,
-      () => ({
-        headerHeight: this.headerHeight(),
-        rowHeight: this.rowHeightPx(),
-        rowCount: this.rowList().length,
-        allowInside: this.hasHierarchy(),
-      }),
-      target => this.rowDrag.set({ rowId, index: row, target, allowed: !!target && this.canDropOn(rowId, target) }),
-      target => {
-        this.rowDrag.set(null);
-        if (target && this.canDropOn(rowId, target)) this.emitRowMove(rowId, target);
-      },
-    );
+    this.reorder.start(row, event);
   }
 
-  /**
-   * @inheritdoc
-   * Left, Right, Home and End move along the header; Enter or Space
-   * sorts; Alt+↓ (⌥↓ on a Mac) opens the filter; Shift+← and Shift+→
-   * resize; ↓ or Escape goes back to the cells.
-   */
+  /** @inheritdoc */
   headerKey(column: GridColumn<T>, event: KeyboardEvent): void {
-    const index = this.columnModel().indexById.get(column.id);
-    const onControl = event.target !== event.currentTarget;
-    if (index === undefined || this.handleHeaderKey(column, index, event, onControl)) event.preventDefault();
+    if (this.headerKeys.handle(column, event)) event.preventDefault();
   }
 
   /** @inheritdoc */
@@ -678,80 +606,47 @@ export class NgAtomsGridComponent<T = unknown> implements NgAtomsGridContext<T> 
 
   /** Forgets the undo history. Call it after loading different data. */
   clearHistory(): void {
-    this.history.clear();
+    this.batch.clearHistory();
   }
 
   /** @inheritdoc */
   tapCell(row: number, col: number): void {
-    if (this.coarsePointer() && this.reactivated) this.startEdit(row, col);
+    if (this.coarsePointer() && this.selected.wasReactivated()) this.startEdit(row, col);
   }
 
   /** @inheritdoc */
   editDraft(row: number, col: number): string | null {
-    const session = this.editSession();
-    return session && session.position.row === row && session.position.col === col ? session.text : null;
+    return this.editing.draftAt(row, col);
   }
 
   /** @inheritdoc */
   isDraftInvalid(): boolean {
-    return !!this.editSession()?.invalid;
+    return this.editing.isDraftInvalid();
   }
 
   /** @inheritdoc */
   startEdit(row: number, col: number): void {
-    this.openEditor({ row, col }, null);
+    this.editing.open({ row, col }, null);
   }
 
   /** @inheritdoc */
   updateDraft(text: string): void {
-    this.editSession.update(session => session && { ...session, text, invalid: false });
+    this.editing.update(text);
   }
 
   /** @inheritdoc */
   commitEdit(move?: GridMove): void {
-    const session = this.editSession();
-    const target = session && this.cellAt(session.position);
-    if (!session || !target) return;
-
-    const format = resolveFormat(target.row, target.column);
-    const parsed = parseCellInput(session.text, target.column, format, this.locale());
-    if (!parsed.valid) {
-      this.editSession.set({ ...session, invalid: true });
-      return;
-    }
-
-    const change = createCellChange(target.row, target.column, parsed.value);
-    if (change) this.emitChanges([change]);
-    this.closeEditor();
-    if (move) this.moveActiveCell(move);
-  }
-
-  /** Ends an edit made in a custom editor with the value it produced. */
-  private commitValue(value: GridCellValue, move?: GridMove): void {
-    const session = this.editSession();
-    const target = session && this.cellAt(session.position);
-    if (!target) return;
-
-    const change = createCellChange(target.row, target.column, value);
-    if (change) this.emitChanges([change]);
-    this.closeEditor();
-    if (move) this.moveActiveCell(move);
+    this.editing.commit(move);
   }
 
   /** @inheritdoc */
   cancelEdit(): void {
-    this.closeEditor();
+    this.editing.cancel();
   }
 
-  /**
-   * @inheritdoc
-   * Focus is not pulled back afterwards: the user moved it on purpose.
-   */
+  /** @inheritdoc */
   leaveEdit(): void {
-    if (!this.editSession()) return;
-    this.commitEdit();
-    this.editSession.set(null);
-    this.focusOwed = false;
+    this.editing.leave();
   }
 
   /** @inheritdoc */
@@ -831,19 +726,20 @@ export class NgAtomsGridComponent<T = unknown> implements NgAtomsGridContext<T> 
 
   /**
    * Keyboard handling for the cell area: navigation, tree expand and
-   * collapse, opening the editor and clearing a cell. Keys pressed in the
-   * header are not handled here. The editor handles its own keys; the ones
-   * that still arrive with an editor open were typed before it took focus.
+   * collapse, opening the editor and the shortcuts that act on the
+   * selection. Keys pressed in the header, or in a control the app put
+   * inside a cell, are not handled here. The editor handles its own
+   * keys; the ones that still arrive with an editor open were typed
+   * before it took focus.
    */
   protected onKeydown(event: KeyboardEvent): void {
-    const active = this.activeCell();
+    const active = this.selected.activeCell();
     const target = event.target as HTMLElement;
-    if (!active || target.closest('.nga-grid__header') || target.closest(INTERACTIVE)) return;
+    if (!active || target.closest('.nga-grid__header') || target.closest(INTERACTIVE_SELECTOR)) return;
 
-    const session = this.editSession();
-    if (session) {
+    if (this.editing.isOpen()) {
       if (isTypingKey(event)) {
-        this.updateDraft(session.text + event.key);
+        this.editing.append(event.key);
         event.preventDefault();
       }
       return;
@@ -857,50 +753,13 @@ export class NgAtomsGridComponent<T = unknown> implements NgAtomsGridContext<T> 
     if (handled) event.preventDefault();
   }
 
-  /** Puts the selection on the clipboard as tab-separated text. */
-  protected onCopy(event: ClipboardEvent): void {
-    const rect = this.clipboardRect(event);
-    if (!rect) return;
-    const text = copyText(rect, this.resolveCell, this.locale());
-    if (text === null) return this.rejectBatch(event.type === 'cut' ? 'cut' : 'copy');
-    event.clipboardData?.setData('text/plain', text);
-    event.preventDefault();
-  }
-
-  /** Copies the selection, then clears its editable cells. */
-  protected onCut(event: ClipboardEvent): void {
-    this.onCopy(event);
-    if (event.defaultPrevented) this.clearSelection();
-  }
-
-  /**
-   * Turns pasted text into one batch of changes, starting at the
-   * selection. Cells that cannot take their value are reported through
-   * `cellsRejected`, and the pasted block becomes the selection.
-   */
-  protected onPaste(event: ClipboardEvent): void {
-    const rect = this.clipboardRect(event);
-    const text = event.clipboardData?.getData('text/plain');
-    if (!rect || !text) return;
-    event.preventDefault();
-
-    const result = pasteChanges(parseTsv(text), rect, this.bounds(), this.resolveCell, this.locale());
-    if (!result) return this.rejectBatch('paste');
-    this.emitChanges(result.changes);
-    if (result.rejected.length) this.cellsRejected.emit(result.rejected);
-    if (result.rect) {
-      this.requestedActiveCell.set({ row: result.rect.top, col: result.rect.left });
-      this.requestedRangeEnd.set({ row: result.rect.bottom, col: result.rect.right });
-    }
-  }
-
   /**
    * Gives the grid an active cell the first time it receives focus, and
    * notes when focus leaves the header for the cells.
    */
   protected onFocusIn(event: FocusEvent): void {
-    if (!this.activeCell()) this.requestedActiveCell.set({ row: 0, col: 0 });
-    if (!(event.target as HTMLElement).closest('.nga-grid__header')) this.headerFocus.set(null);
+    this.selected.ensureActive();
+    if (!(event.target as HTMLElement).closest('.nga-grid__header')) this.headerKeys.blur();
   }
 
   /** Mirrors the scroll position into signals, which drives virtualization. */
@@ -912,7 +771,8 @@ export class NgAtomsGridComponent<T = unknown> implements NgAtomsGridContext<T> 
 
   /**
    * In the tree column, Right opens a collapsed branch and Left closes an
-   * open one, before either key moves the active cell.
+   * open one, before either key moves the active cell. Left on a row
+   * with nothing to collapse goes to its parent.
    *
    * @returns Whether the key was used.
    */
@@ -930,7 +790,8 @@ export class NgAtomsGridComponent<T = unknown> implements NgAtomsGridContext<T> 
   }
 
   /**
-   * Moves the active cell for a navigation key.
+   * Moves the active cell for a navigation key; with Shift, extends the
+   * selection instead. ↑ on the first row moves focus to the header.
    *
    * @returns Whether the key was a navigation key.
    */
@@ -938,14 +799,14 @@ export class NgAtomsGridComponent<T = unknown> implements NgAtomsGridContext<T> 
     const move = moveForKey(event.key, event.ctrlKey || event.metaKey);
     if (!move) return false;
     if (move === 'up' && active.row === 0 && !event.shiftKey) {
-      this.focusHeader(active.col);
+      this.headerKeys.focus(active.col);
       return true;
     }
-    const from = event.shiftKey ? (this.rangeEnd() ?? active) : active;
+    const from = event.shiftKey ? (this.selected.rangeEnd() ?? active) : active;
     const next = movePosition(from, move, this.bounds());
     if (next && event.shiftKey) {
-      this.extendTo(next);
-      this.scrollIntoView(next);
+      this.selected.extendTo(next);
+      this.focus.scrollIntoView(next);
     } else if (next) this.activate(next.row, next.col);
     return true;
   }
@@ -953,196 +814,48 @@ export class NgAtomsGridComponent<T = unknown> implements NgAtomsGridContext<T> 
   /**
    * Shortcuts that act on the selection: Escape collapses it to the
    * active cell, Ctrl+A selects everything, Ctrl+D fills down, Ctrl+Enter
-   * gives the whole selection the active cell's value, Ctrl+Z
-   * undoes and Ctrl+Y or Ctrl+Shift+Z redoes. On a Mac ⌘ stands in for
-   * Ctrl: ⌘A, ⌘D, ⌘Return, ⌘Z, ⌘Y or ⇧⌘Z. Alt+↑ and Alt+↓ (⌥↑ and ⌥↓ on a Mac)
+   * gives the whole selection the active cell's value, Ctrl+Z undoes and
+   * Ctrl+Y or Ctrl+Shift+Z redoes. On a Mac ⌘ stands in for Ctrl: ⌘A,
+   * ⌘D, ⌘Return, ⌘Z, ⌘Y or ⇧⌘Z. Alt+↑ and Alt+↓ (⌥↑ and ⌥↓ on a Mac)
    * move the active row when rows can be reordered.
    *
    * @returns Whether the key was used.
    */
   private handleCommandKey(event: KeyboardEvent): boolean {
-    if (event.key === 'Escape' && this.hasRange()) {
-      this.requestedRangeEnd.set(null);
+    if (event.key === 'Escape' && this.selected.hasRange()) {
+      this.selected.collapse();
       return true;
     }
     if (event.altKey && (event.key === 'ArrowUp' || event.key === 'ArrowDown')) {
-      return this.moveRowByKey(event.key === 'ArrowUp' ? -1 : 1);
+      return this.reorder.moveByKey(event.key === 'ArrowUp' ? -1 : 1);
     }
     if (!event.ctrlKey && !event.metaKey) return false;
 
     const key = event.key.toLowerCase();
-    if (key === 'enter') this.fillFromActive();
-    else if (key === 'a') this.selectAll();
-    else if (key === 'd') this.fillDown();
-    else if (key === 'y' || (key === 'z' && event.shiftKey)) this.replay(this.history.redo());
-    else if (key === 'z') this.replay(this.history.undo());
+    if (key === 'enter') this.batch.fillFromActive();
+    else if (key === 'a') this.selected.selectAll();
+    else if (key === 'd') this.batch.fillDown();
+    else if (key === 'y' || (key === 'z' && event.shiftKey)) this.batch.redo();
+    else if (key === 'z') this.batch.undo();
     else return false;
     return true;
   }
 
   /**
-   * Opens the editor (Enter, F2, or simply typing) or clears the cell
-   * (Delete, Backspace).
+   * Opens the editor (Enter, F2, or simply typing) or clears the
+   * selection (Delete, Backspace).
    *
    * @returns Whether the key was used.
    */
   private handleEditKey(event: KeyboardEvent, active: GridCellPosition): boolean {
-    if (event.key === 'Enter' || event.key === 'F2') return this.openEditor(active, null);
-    if (isTypingKey(event)) return this.openEditor(active, event.key);
-    if (event.key === 'Delete' || event.key === 'Backspace') return this.clearSelection();
+    if (event.key === 'Enter' || event.key === 'F2') return this.editing.open(active, null);
+    if (isTypingKey(event)) return this.editing.open(active, event.key);
+    if (event.key === 'Delete' || event.key === 'Backspace') return this.batch.clear();
     return false;
   }
 
-  /** Moves keyboard focus to the header of a column, bringing it into view first. */
-  private focusHeader(col: number): void {
-    const last = this.columnModel().columns.length - 1;
-    if (last < 0) return;
-    const index = Math.min(last, Math.max(0, col));
-    this.scrollColumnIntoView(index);
-    this.headerFocus.set(index);
-    this.focusOwed = true;
-  }
-
   /**
-   * Acts on a key pressed in the header.
-   *
-   * @param onControl The key was pressed on a button inside the header, which handles Enter and Space itself.
-   * @returns Whether the key was used.
-   */
-  private handleHeaderKey(column: GridColumn<T>, index: number, event: KeyboardEvent, onControl: boolean): boolean {
-    const { key } = event;
-    const step = key === 'ArrowLeft' ? -1 : key === 'ArrowRight' ? 1 : 0;
-    if (step && event.shiftKey) return this.resizeByKey(column, step);
-    if (step) this.focusHeader(index + step);
-    else if (key === 'Home') this.focusHeader(0);
-    else if (key === 'End') this.focusHeader(this.columnModel().columns.length - 1);
-    else if (key === 'ArrowDown' && event.altKey) this.openFilterByKey(column, event.currentTarget as HTMLElement);
-    else if (key === 'ArrowDown' || key === 'Escape') this.leaveHeader(index);
-    else if ((key === 'Enter' || key === ' ') && !onControl && column.sortable) this.toggleSort(column);
-    else return false;
-    return true;
-  }
-
-  /**
-   * Resizes a column one step from the keyboard.
-   *
-   * @returns Whether the column can be resized.
-   */
-  private resizeByKey(column: GridColumn<T>, step: number): boolean {
-    if (column.resizable === false) return false;
-    const current = this.widthOf(column);
-    this.resizeColumn(column, current + step * HEADER_RESIZE_STEP);
-    return true;
-  }
-
-  /** Current width of a column, in px. */
-  private widthOf(column: GridColumn<T>): number {
-    const { left, center, right } = this.columnModel().panes;
-    for (const pane of [left, center, right]) {
-      const at = pane.columns.indexOf(column);
-      if (at >= 0) return pane.offsets[at + 1] - pane.offsets[at];
-    }
-    return 0;
-  }
-
-  /** Opens a column's filter from its header cell, when the column has one. */
-  private openFilterByKey(column: GridColumn<T>, headerCell: HTMLElement): void {
-    const button = headerCell.querySelector<HTMLElement>('.nga-grid__header-filter');
-    if (column.filter && button) this.openFilter(column, button);
-  }
-
-  /** Returns keyboard focus from the header to the cells, on the column it was on. */
-  private leaveHeader(col: number): void {
-    const active = this.activeCell();
-    this.headerFocus.set(null);
-    this.focusOwed = true;
-    if (active) this.activate(active.row, col);
-  }
-
-  /** Whether a dragged row may be dropped on a target. */
-  private canDropOn(rowId: GridRowId, target: GridDropTarget): boolean {
-    const entry = this.rowList().get(target.index);
-    return entry?.kind === 'row' && isRowMoveAllowed(this.rowTree(), rowId, entry.row.id);
-  }
-
-  /** Emits the move of a row to a drop target. */
-  private emitRowMove(rowId: GridRowId, target: GridDropTarget): void {
-    const entry = this.rowList().get(target.index);
-    if (entry?.kind === 'row') this.rowMove.emit({ rowId, targetId: entry.row.id, position: target.position });
-  }
-
-  /**
-   * Moves the active row one place up or down, the keyboard's
-   * counterpart to dragging it. The active cell follows the row.
-   *
-   * @returns Whether rows can be reordered.
-   */
-  private moveRowByKey(step: -1 | 1): boolean {
-    const active = this.activeCell();
-    if (!active || !this.canDragRows()) return false;
-
-    const entry = this.rowList().get(active.row);
-    const target: GridDropTarget = { index: active.row + step, position: step < 0 ? 'before' : 'after' };
-    const inRange = target.index >= 0 && target.index < this.rowList().length;
-    if (entry?.kind === 'row' && inRange && this.canDropOn(entry.row.id, target)) {
-      this.emitRowMove(entry.row.id, target);
-      this.activate(target.index, active.col);
-    }
-    return true;
-  }
-
-  /** Moves the far corner of the selection, leaving the active cell where it is. */
-  private extendTo(position: GridCellPosition): void {
-    this.reactivated = false;
-    this.requestedRangeEnd.set(position);
-  }
-
-  /** Selects every cell, from the first to the last. */
-  private selectAll(): void {
-    const { rowCount, columnCount } = this.bounds();
-    this.requestedActiveCell.set({ row: 0, col: 0 });
-    this.requestedRangeEnd.set({ row: rowCount - 1, col: columnCount - 1 });
-  }
-
-  /** Emits a batch the user produced and remembers it for undo. */
-  private emitChanges(changes: GridCellChange[]): void {
-    if (!changes.length) return;
-    this.history.record(changes);
-    this.cellsChange.emit(changes);
-  }
-
-  /** Emits a batch that comes from the history, which already holds it. */
-  private replay(changes: GridCellChange[] | null): void {
-    if (changes) this.cellsChange.emit(changes);
-  }
-
-  /** Copies the first row of the selection into the rows below it. */
-  private fillDown(): void {
-    const rect = this.selectionRect();
-    if (!rect) return;
-    const changes = fillDownChanges(rect, this.resolveCell);
-    if (changes) this.emitChanges(changes);
-    else this.rejectBatch('fill');
-  }
-
-  /** Gives every editable cell of the selection the value of the active cell. */
-  private fillFromActive(): void {
-    const rect = this.selectionRect();
-    const active = this.activeCell();
-    if (!rect || !active) return;
-    const changes = fillFromChanges(rect, active, this.resolveCell);
-    if (changes) this.emitChanges(changes);
-    else this.rejectBatch('fill');
-  }
-
-  /** Reports an operation that was too large to carry out. */
-  private rejectBatch(operation: GridBatchRejection['operation']): void {
-    this.batchRejected.emit({ operation, limit: MAX_BATCH_CELLS });
-  }
-
-  /**
-   * Moves the active cell to the parent of a row, which is what Left
-   * does on a row that has nothing left to collapse.
+   * Moves the active cell to the parent of a row.
    *
    * @returns Whether the row has a parent on show.
    */
@@ -1153,168 +866,23 @@ export class NgAtomsGridComponent<T = unknown> implements NgAtomsGridContext<T> 
     return true;
   }
 
-  /** Extends the selection to the cell an element draws. */
-  private extendToElement(cell: HTMLElement): void {
-    const row = Number(cell.parentElement?.getAttribute('aria-rowindex')) - this.headerDepth() - 1;
-    const col = Number(cell.getAttribute('aria-colindex')) - 1;
-    if (this.selecting && row >= 0 && col >= 0) this.extendTo({ row, col });
-  }
-
-  /**
-   * The selection a clipboard event applies to, or null when the event
-   * belongs to something else: the header, a text field, an open editor.
-   */
-  private clipboardRect(event: ClipboardEvent): GridCellRect | null {
-    const elsewhere = !!(event.target as HTMLElement).closest('.nga-grid__header, input, textarea');
-    return elsewhere || this.editSession() ? null : this.selectionRect();
-  }
-
-  /** Looks a display position up for batch edits. */
-  private readonly resolveCell: GridCellResolver<T> = position => {
-    const target = this.cellAt(position);
-    return target && { ...target, editable: this.canEdit(target) };
-  };
-
-  /** The row and column at a display position, or null for a placeholder row. */
-  private cellAt(position: GridCellPosition): { row: GridRow<T>; column: GridColumn<T> } | null {
+  /** The row and column at a display position, or null for a row that is not loaded. */
+  private cellAt(position: GridCellPosition): GridCellRef<T> | null {
     const entry = this.rowList().get(position.row);
     const column = this.columnModel().columns[position.col];
     return entry?.kind === 'row' && column ? { row: entry.row, column } : null;
   }
 
-  /** Whether the cell at a position accepts edits. */
-  private canEdit(target: { row: GridRow<T>; column: GridColumn<T> }): boolean {
-    return isCellEditable(target.column, this.cellState()?.(target.row, target.column));
-  }
-
-  /**
-   * Opens the editor on a cell.
-   *
-   * @param typed The character that triggered the edit; it replaces the
-   * cell's content. Null starts from the current value, fully selected.
-   * @returns Whether the editor opened.
-   */
-  private openEditor(position: GridCellPosition, typed: string | null): boolean {
-    const target = this.cellAt(position);
-    if (!target || !this.canEdit(target)) return false;
-
-    const format = resolveFormat(target.row, target.column);
-    const current = editTextOf(getCellValue(target.row, target.column), format, this.locale());
-    this.activate(position.row, position.col);
-    const custom = !!this.editorTemplate(target.column.id);
-    const text = custom ? current : (typed ?? current);
-    this.editSession.set({ position, text, invalid: false, selectAll: typed === null });
-    return true;
-  }
-
-  /** Closes the editor and asks for focus to return to the active cell. */
-  private closeEditor(): void {
-    this.editSession.set(null);
-    this.focusOwed = true;
-  }
-
-  /**
-   * Emits one batch that empties the editable cells of the selection.
-   *
-   * @returns Whether there was a selection to clear.
-   */
-  private clearSelection(): boolean {
-    const rect = this.selectionRect();
-    if (!rect) return false;
-    const changes = clearChanges(rect, this.resolveCell);
-    if (changes) this.emitChanges(changes);
-    else this.rejectBatch('clear');
-    return true;
+  /** Whether a cell accepts edits. */
+  private canEdit(cell: GridCellRef<T>): boolean {
+    return isCellEditable(cell.column, this.cellState()?.(cell.row, cell.column));
   }
 
   /** Moves the active cell by one step. */
   private moveActiveCell(move: GridMove): void {
-    const active = this.activeCell();
+    const active = this.selected.activeCell();
     const next = active && movePosition(active, move, this.bounds());
     if (next) this.activate(next.row, next.col);
-  }
-
-  /**
-   * Scrolls just enough to bring a cell fully into view.
-   * Pinned columns are always visible, so only center columns scroll
-   * sideways, within the strip left between the pinned panes.
-   */
-  private scrollIntoView(position: GridCellPosition): void {
-    const element = this.viewport().nativeElement;
-    const top = position.row * this.rowHeightPx();
-    const visibleHeight = element.clientHeight - this.headerHeight();
-    if (top < element.scrollTop) element.scrollTop = top;
-    else if (top + this.rowHeightPx() > element.scrollTop + visibleHeight) {
-      element.scrollTop = top + this.rowHeightPx() - visibleHeight;
-    }
-
-    this.scrollColumnIntoView(position.col);
-  }
-
-  /** Scrolls sideways just enough to bring a column fully into view; pinned columns always are. */
-  private scrollColumnIntoView(col: number): void {
-    const element = this.viewport().nativeElement;
-    const { left, center, right } = this.columnModel().panes;
-    const centerIndex = col - left.columns.length;
-    if (centerIndex < 0 || centerIndex >= center.columns.length) return;
-    const start = center.offsets[centerIndex];
-    const end = center.offsets[centerIndex + 1];
-    const visibleWidth = element.clientWidth - left.width - right.width;
-    if (start < element.scrollLeft) element.scrollLeft = start;
-    else if (end > element.scrollLeft + visibleWidth) element.scrollLeft = end - visibleWidth;
-  }
-
-  /**
-   * Keeps DOM focus on the right element after each render: the editor
-   * while editing (the app's own control when it gave an editor
-   * template), otherwise the active cell — or the viewport when that
-   * cell is scrolled out of the rendered window, since row elements are
-   * recycled and would otherwise keep focus while showing another row.
-   * Focus is never taken from outside the grid, nor from header controls.
-   */
-  private syncFocus(): void {
-    const host = this.viewport().nativeElement;
-    const focused = this.document.activeElement as HTMLElement | null;
-    const owed = this.focusOwed;
-    this.focusOwed = false;
-
-    const headerCol = this.headerFocus();
-    if (headerCol !== null) {
-      if (owed) this.headerCellAt(headerCol)?.focus({ preventScroll: true });
-      return;
-    }
-    const focusInCells = !!focused && host.contains(focused) && !focused.closest('.nga-grid__header');
-    if (!focusInCells && !owed) return;
-
-    const editor = host.querySelector<HTMLInputElement>('.nga-grid__editor');
-    if (editor) {
-      if (focused !== editor) this.focusEditor(editor);
-      return;
-    }
-    const custom = host.querySelector<HTMLElement>('.nga-grid__custom-editor');
-    if (custom) {
-      if (!custom.contains(focused)) custom.querySelector<HTMLElement>(`${INTERACTIVE}, [tabindex]`)?.focus();
-      return;
-    }
-    const target = host.querySelector<HTMLElement>('.nga-grid__cell--active') ?? host;
-    const insideTarget = target !== host && target.contains(focused);
-    if (focused !== target && !insideTarget) target.focus({ preventScroll: true });
-  }
-
-  /** The header cell element of a leaf column, when it is rendered. */
-  private headerCellAt(col: number): HTMLElement | null {
-    const column = this.columnModel().columns[col];
-    if (!column) return null;
-    return this.viewport().nativeElement.querySelector<HTMLElement>(
-      `.nga-grid__header-cell[data-column-id="${CSS.escape(column.id)}"]`,
-    );
-  }
-
-  /** Focuses the editor, selecting its text or placing the caret at the end. */
-  private focusEditor(editor: HTMLInputElement): void {
-    editor.focus({ preventScroll: true });
-    if (this.editSession()?.selectAll) editor.select();
-    else editor.setSelectionRange(editor.value.length, editor.value.length);
   }
 
   /** Tracks the size of the scroll viewport for as long as the grid lives. */

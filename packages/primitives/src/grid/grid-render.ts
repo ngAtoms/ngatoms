@@ -60,3 +60,7 @@ export function renderHeaderCells<T>(
 export function isTypingKey(event: KeyboardEvent): boolean {
   return event.key.length === 1 && !event.ctrlKey && !event.metaKey && !event.altKey;
 }
+
+/** Elements that take keys for themselves when they sit inside a cell. */
+export const INTERACTIVE_SELECTOR =
+  'input, select, textarea, button, a[href], [contenteditable]:not([contenteditable="false"])';

@@ -10,9 +10,9 @@
   (scroll)="onScroll()"
   (keydown)="onKeydown($event)"
   (focusin)="onFocusIn($event)"
-  (copy)="onCopy($event)"
-  (cut)="onCut($event)"
-  (paste)="onPaste($event)"
+  (copy)="batch.copy($event)"
+  (cut)="batch.cut($event)"
+  (paste)="batch.paste($event)"
 >
   <div
     class="nga-grid__canvas"

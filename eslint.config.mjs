@@ -114,8 +114,9 @@ export default tseslint.config(
         'error',
         {
           checkConstructors: false,
+          contexts: ['VariableDeclarator > ArrowFunctionExpression', 'PropertyDefinition > ArrowFunctionExpression'],
           require: {
-            ArrowFunctionExpression: true,
+            ArrowFunctionExpression: false,
             ClassDeclaration: true,
             FunctionDeclaration: true,
             FunctionExpression: true,
