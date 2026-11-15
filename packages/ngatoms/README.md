@@ -75,7 +75,8 @@ Full docs and previews at **[ngatoms.com](https://ngatoms.com)**.
 | `popover` | Floating content anchored to a trigger — 4 placements, flip | ![stable](https://img.shields.io/badge/stable-green?style=flat-square) |
 | `progress` | Progress bar — determinate and indeterminate | ![stable](https://img.shields.io/badge/stable-green?style=flat-square) |
 | `radio-group` | Radio button group with keyboard navigation | ![stable](https://img.shields.io/badge/stable-green?style=flat-square) |
-| `select` | Styled native select — 3 variants, 5 sizes | ![stable](https://img.shields.io/badge/stable-green?style=flat-square) |
+| `grid` | Data grid with tree rows, column groups, editing and virtualization. | ![alpha](https://img.shields.io/badge/alpha-yellow?style=flat-square) |
+| `select` | Custom select list — 3 variants, 5 sizes, invalid state | ![stable](https://img.shields.io/badge/stable-green?style=flat-square) |
 | `separator` | Horizontal or vertical divider | ![stable](https://img.shields.io/badge/stable-green?style=flat-square) |
 | `spinner` | Loading spinner | ![stable](https://img.shields.io/badge/stable-green?style=flat-square) |
 | `switch` | Toggle switch — 3 sizes | ![stable](https://img.shields.io/badge/stable-green?style=flat-square) |

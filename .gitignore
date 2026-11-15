@@ -6,3 +6,6 @@ coverage
 .superpowers/
 apps/docs/dist/
 /.angular/*
+/test-results/
+/playwright-report/
+/blob-report/

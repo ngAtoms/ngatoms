@@ -1,0 +1,68 @@
+@for (group of headerRows(); track group.row) {
+  <div role="row" [attr.aria-rowindex]="group.row + 1">
+    @for (item of group.cells; track item.key) {
+      @let column = item.cell.column;
+      <div
+    class="nga-grid__header-cell"
+    role="columnheader"
+    [attr.id]="grid.headerDomId(pane(), item.cell.key, item.cell.row)"
+    [class.nga-grid__header-cell--group]="!column"
+    [class.nga-grid__header-cell--number]="column?.type === 'number'"
+    [attr.aria-colspan]="item.cell.colSpan > 1 ? item.cell.colSpan : null"
+    [attr.aria-sort]="ariaSort(column)"
+    [attr.data-column-id]="column?.id ?? null"
+    [attr.tabindex]="column ? -1 : null"
+    (keydown)="column && grid.headerKey(column, $event)"
+    [style.left.px]="item.left"
+    [style.top.px]="item.top"
+    [style.width.px]="item.width"
+    [style.height.px]="item.height"
+  >
+    @if (column?.sortable && column) {
+      @let direction = grid.sortDirection(column.id);
+      <button type="button" class="nga-grid__header-sort" tabindex="-1" (click)="grid.toggleSort(column)">
+        <span class="nga-grid__header-text">{{ item.cell.header }}</span>
+        <svg
+          class="nga-grid__sort-icon"
+          viewBox="0 0 16 16"
+          aria-hidden="true"
+          focusable="false"
+          [class.nga-grid__sort-icon--active]="!!direction"
+          [class.nga-grid__sort-icon--desc]="direction === 'desc'"
+        >
+          <path d="M8 3.5v9M4.5 7L8 3.5 11.5 7" />
+        </svg>
+      </button>
+    } @else {
+      <span class="nga-grid__header-text">{{ item.cell.header }}</span>
+    }
+
+    @if (column?.filter && column) {
+      <button
+        type="button"
+        class="nga-grid__header-filter"
+        tabindex="-1"
+        aria-haspopup="dialog"
+        [class.nga-grid__header-filter--active]="grid.hasFilter(column.id)"
+        [attr.aria-expanded]="grid.openFilterColumn() === column.id"
+        [attr.aria-label]="(grid.hasFilter(column.id) ? 'Edit filter on ' : 'Filter ') + item.cell.header"
+        (click)="openFilter(column, $event)"
+      >
+        <svg viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M2.5 3.5h11L9.5 8.5v4l-3 1v-5L2.5 3.5z" /></svg>
+      </button>
+    }
+
+    @if (column && column.resizable !== false) {
+      <span
+        class="nga-grid__resize-handle"
+        aria-hidden="true"
+        [class.nga-grid__resize-handle--start]="column.pinned === 'right'"
+        (pointerdown)="startResize(column, item.width, $event)"
+        (dblclick)="grid.autoSizeColumn(column)"
+        (click)="$event.stopPropagation()"
+      ></span>
+    }
+      </div>
+    }
+  </div>
+}

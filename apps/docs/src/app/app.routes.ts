@@ -117,4 +117,9 @@ export const routes: Routes = [
     loadComponent: () =>
       import('./pages/dropdown-menu/dropdown-menu-page.component').then(m => m.DropdownMenuPageComponent),
   },
+  {
+    path: 'grid',
+    loadComponent: () =>
+      import('./pages/grid/grid-page.component').then(m => m.GridPageComponent),
+  },
 ];

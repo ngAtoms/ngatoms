@@ -32,6 +32,43 @@
           }
         }
       }
+    },
+    "primitives": {
+      "projectType": "application",
+      "root": "packages/primitives",
+      "sourceRoot": "packages/primitives/src",
+      "architect": {
+        "build": {
+          "builder": "@angular/build:application",
+          "options": {
+            "outputPath": "dist/primitives-test",
+            "tsConfig": "packages/primitives/tsconfig.spec.json",
+            "polyfills": []
+          },
+          "configurations": {
+            "development": {
+              "optimization": false,
+              "sourceMap": true
+            }
+          },
+          "defaultConfiguration": "development"
+        },
+        "test": {
+          "builder": "@angular/build:unit-test",
+          "options": {
+            "buildTarget": "primitives:build:development",
+            "runner": "vitest",
+            "tsConfig": "packages/primitives/tsconfig.spec.json",
+            "include": [
+              "grid-core/**/*.spec.ts",
+              "button/button.directive.spec.ts",
+              "input/input.directive.spec.ts",
+              "grid/grid.component.spec.ts",
+              "grid/index.spec.ts"
+            ]
+          }
+        }
+      }
     }
   }
 }

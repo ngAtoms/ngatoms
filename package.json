@@ -10,6 +10,7 @@
     "build": "npm run build --workspaces --if-present",
     "test": "npm run test --workspaces --if-present",
     "lint": "eslint packages/primitives/src packages/utils/src packages/ngatoms/src packages/ngatoms/bin apps/docs/src",
+    "e2e:grid": "playwright test",
     "changeset": "changeset",
     "version:packages": "changeset version",
     "publish:changesets": "changeset publish",
@@ -39,10 +40,14 @@
     "@changesets/cli": "^2.31.1",
     "@eslint/js": "^10.0.1",
     "@phosphor-icons/web": "^2.1.2",
+    "@playwright/test": "^1.65.1",
+    "axe-core": "^4.14.0",
     "eslint": "^10.11.0",
     "globals": "^17.13.0",
+    "jsdom": "^31.0.1",
     "rxjs": "^7.8.0",
     "typescript": "~6.0.3",
-    "typescript-eslint": "^8.70.0"
+    "typescript-eslint": "^8.70.0",
+    "vitest": "^5.1.0"
   }
 }

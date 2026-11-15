@@ -1,0 +1,153 @@
+@if (columns().length) {
+@for (item of rows(); track item.key) {
+  @let entry = item.entry;
+  <div
+    class="nga-grid__row"
+    role="row"
+    [class.nga-grid__row--total]="entry.kind === 'row' && entry.row.kind === 'total'"
+    [class.nga-grid__row--subtotal]="entry.kind === 'row' && entry.row.kind === 'subtotal'"
+    [class.nga-grid__row--parent]="entry.kind === 'row' && entry.hasChildren"
+    [class.nga-grid__row--dimmed]="entry.kind === 'row' && entry.dimmed"
+    [class.nga-grid__row--dragging]="grid.isDraggedRow(item.index)"
+    [attr.aria-rowindex]="item.index + grid.headerDepth() + 1"
+    [attr.aria-level]="entry.kind === 'row' && grid.hasHierarchy() ? entry.level : null"
+    [attr.aria-busy]="entry.kind === 'placeholder' ? true : null"
+    [attr.aria-expanded]="entry.kind === 'row' && entry.hasChildren ? entry.expanded : null"
+    [style.transform]="'translateY(' + item.top + 'px)'"
+  >
+    @for (col of columns(); track col.column.id) {
+      @if (entry.kind === 'row') {
+        @let view = grid.cell(entry.row, col.column);
+        @let active = grid.isActive(item.index, col.index);
+        @let draft = grid.editDraft(item.index, col.index);
+        @let edges = grid.selectionEdges(item.index, col.index);
+        @let rowHeader = col.index === 0;
+        <div
+          class="nga-grid__cell"
+          [attr.role]="rowHeader ? 'rowheader' : 'gridcell'"
+          [attr.aria-labelledby]="grid.cellLabelledBy(entry.row.id, col.column.id, rowHeader)"
+          [class.nga-grid__cell--number]="view.numeric"
+          [class.nga-grid__cell--favorable]="view.tone === 'favorable'"
+          [class.nga-grid__cell--unfavorable]="view.tone === 'unfavorable'"
+          [class.nga-grid__cell--active]="active"
+          [class.nga-grid__cell--wrap]="col.column.wrap"
+          [class.nga-grid__cell--selected]="edges !== null"
+          [class.nga-grid__cell--editing]="draft !== null"
+          [class.nga-grid__cell--editable]="view.editable"
+          [class.nga-grid__cell--locked]="view.state?.locked"
+          [class.nga-grid__cell--calculated]="view.state?.calculated"
+          [class.nga-grid__cell--dirty]="view.state?.dirty"
+          [class.nga-grid__cell--invalid]="!!view.state?.invalid"
+          [class.nga-grid__cell--pending]="view.state?.pending"
+          [class.nga-grid__cell--note]="view.state?.note"
+          [attr.aria-colindex]="col.index + 1"
+          [attr.aria-selected]="edges !== null || active ? true : null"
+          [attr.data-edges]="edges"
+          [attr.aria-readonly]="view.editable ? null : true"
+          [attr.aria-invalid]="view.state?.invalid ? true : null"
+          [attr.title]="invalidMessage(view.state?.invalid) ?? (col.column.wrap ? view.text : null)"
+          [attr.tabindex]="active ? 0 : -1"
+          [style.left.px]="col.left"
+          [style.width.px]="col.width"
+          (mousedown)="grid.pressCell(item.index, col.index, $event.shiftKey)"
+          (mouseenter)="grid.dragOverCell(item.index, col.index, $event.buttons === 1)"
+          (click)="grid.tapCell(item.index, col.index)"
+          (dblclick)="grid.startEdit(item.index, col.index)"
+        >
+          @if (col.index === 0 && grid.canDragRows()) {
+            <span
+              class="nga-grid__drag-handle"
+              aria-hidden="true"
+              (pointerdown)="grid.startRowDrag(item.index, $event)"
+              (mousedown)="$event.stopPropagation()"
+              (dblclick)="$event.stopPropagation()"
+            >
+              <svg viewBox="0 0 16 16" focusable="false">
+                <circle cx="6" cy="4" r="1.1" /><circle cx="10" cy="4" r="1.1" />
+                <circle cx="6" cy="8" r="1.1" /><circle cx="10" cy="8" r="1.1" />
+                <circle cx="6" cy="12" r="1.1" /><circle cx="10" cy="12" r="1.1" />
+              </svg>
+            </span>
+          }
+          @if (col.column.tree) {
+            <span class="nga-grid__indent" [style.width.px]="indentOf(entry.level)"></span>
+            @if (entry.hasChildren) {
+              <button
+                type="button"
+                class="nga-grid__toggle"
+                tabindex="-1"
+                [class.nga-grid__toggle--open]="entry.expanded"
+                [attr.aria-label]="entry.expanded ? 'Collapse row' : 'Expand row'"
+                (mousedown)="$event.stopPropagation()"
+                (dblclick)="$event.stopPropagation()"
+                (click)="grid.toggleRow(entry.row)"
+              >
+                <svg viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M6 3.5L10.5 8 6 12.5" /></svg>
+              </button>
+            } @else {
+              <span class="nga-grid__toggle-spacer"></span>
+            }
+          }
+          @if (draft !== null) {
+            <span class="nga-sr-only" [attr.id]="grid.cellValueDomId(entry.row.id, col.column.id)">{{ view.text }}</span>
+            @let editorTemplate = grid.editorTemplate(col.column.id);
+            @let editorContext = grid.editorContext();
+            @if (editorTemplate && editorContext) {
+              <div
+                class="nga-grid__custom-editor"
+                (keydown)="onCustomEditorKeydown($event)"
+                (mousedown)="$event.stopPropagation()"
+                (dblclick)="$event.stopPropagation()"
+              >
+                <ng-container [ngTemplateOutlet]="editorTemplate" [ngTemplateOutletContext]="editorContext" />
+              </div>
+            } @else {
+              <input
+                class="nga-grid__editor"
+                type="text"
+                autocomplete="off"
+                spellcheck="false"
+                [value]="draft"
+                [attr.aria-label]="col.column.header"
+                [attr.aria-invalid]="grid.isDraftInvalid() ? true : null"
+                (input)="onEditorInput($event)"
+                (keydown)="onEditorKeydown($event)"
+                (mousedown)="$event.stopPropagation()"
+                (dblclick)="$event.stopPropagation()"
+                (blur)="grid.leaveEdit()"
+              />
+            }
+          } @else {
+            @let cellTemplate = grid.cellTemplate(col.column.id);
+            @if (cellTemplate) {
+              <span class="nga-grid__cell-value" [attr.id]="grid.cellValueDomId(entry.row.id, col.column.id)">
+                <ng-container
+                  [ngTemplateOutlet]="cellTemplate"
+                  [ngTemplateOutletContext]="cellContext(entry.row, col.column, view.text)"
+                />
+              </span>
+            } @else {
+              <span class="nga-grid__cell-text" [attr.id]="grid.cellValueDomId(entry.row.id, col.column.id)">{{ view.text }}</span>
+            }
+          }
+        </div>
+      } @else {
+        <div
+          class="nga-grid__cell nga-grid__cell--placeholder"
+          role="gridcell"
+          [class.nga-grid__cell--number]="col.column.type === 'number'"
+          [attr.aria-colindex]="col.index + 1"
+          [style.left.px]="col.left"
+          [style.width.px]="col.width"
+        >
+          @if (col.column.tree && entry.level) {
+            <span class="nga-grid__indent" [style.width.px]="indentOf(entry.level)"></span>
+            <span class="nga-grid__toggle-spacer"></span>
+          }
+          <span class="nga-grid__placeholder-bar"></span>
+        </div>
+      }
+    }
+  </div>
+}
+}
