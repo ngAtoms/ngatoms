@@ -8,7 +8,7 @@ import { Component, provideZonelessChangeDetection, Type } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import axe from 'axe-core';
 import { beforeAll, describe, expect, it } from 'vitest';
-import { GridColumnNode, GridRow } from '../grid-core';
+import { GridColumnNode, GridRow, GridRowId, GridRowMove } from '../grid-core';
 import { NgAtomsGridComponent } from './grid.component';
 
 interface Line {
@@ -219,6 +219,42 @@ describe('nga-grid', () => {
     expect(label).toBeTruthy();
     expect(grid.contains(label)).toBe(false);
     expect(referencedName(fixture.nativeElement, cell)).toBe('Alpha H1 Bravo');
+  });
+
+  it('is a treegrid with levels while announced children have not loaded yet', async () => {
+    const fixture = await mount(LazyTreeGrid);
+    const grid = gridOf(fixture);
+    expect(grid.getAttribute('role')).toBe('treegrid');
+    const rowsShown = [...grid.querySelectorAll('[role="row"][aria-expanded]')];
+    expect(rowsShown).toHaveLength(2);
+    for (const row of rowsShown) expect(row.getAttribute('aria-level')).toBe('1');
+
+    const results = await axe.run(fixture.nativeElement, {
+      rules: { 'color-contrast': { enabled: false } },
+    });
+    expect(results.violations.map(violation => violation.id)).not.toContain('aria-conditional-attr');
+  });
+
+  it('moves a row past an expanded sibling with Alt+↓ and back with Alt+↑', async () => {
+    const fixture = await mount(ReorderTreeGrid);
+    const grid = await focusGrid(fixture);
+    const host = fixture.componentInstance;
+
+    // The host records moves without applying them, so positions are those of p1, a, b, p2, c.
+    await key(fixture, grid, { key: 'ArrowDown', altKey: true });
+    expect(host.moves).toEqual([{ rowId: 'p1', targetId: 'p2', position: 'after' }]);
+
+    // The active cell went to p1's landing place, which in unchanged data is b, the last child of p1.
+    await key(fixture, grid, { key: 'ArrowDown', altKey: true });
+    expect(host.moves).toHaveLength(1);
+    await key(fixture, grid, { key: 'ArrowUp', altKey: true });
+    expect(host.moves[1]).toEqual({ rowId: 'b', targetId: 'a', position: 'before' });
+
+    // From p2, Alt+↑ skips p1's children and lands before p1.
+    await key(fixture, grid, { key: 'ArrowDown' });
+    await key(fixture, grid, { key: 'ArrowDown' });
+    await key(fixture, grid, { key: 'ArrowUp', altKey: true });
+    expect(host.moves[2]).toEqual({ rowId: 'p2', targetId: 'p1', position: 'before' });
   });
 
   it('keeps the filter open when the values list scrolls', async () => {
@@ -435,6 +471,44 @@ class TreeGrid {
   readonly rows: GridRow<{ name: string }>[] = [
     { id: 'p', data: { name: 'Parent' } },
     { id: 'c', data: { name: 'Child' }, parentId: 'p' },
+  ];
+  readonly columns: GridColumnNode<{ name: string }>[] = [{ id: 'name', header: 'Name', width: 160, tree: true }];
+}
+
+@Component({
+  standalone: true,
+  imports: [NgAtomsGridComponent],
+  template: `<nga-grid [rows]="rows" [columns]="columns" label="Regions" />`,
+})
+class LazyTreeGrid {
+  readonly rows: GridRow<{ name: string }>[] = [
+    { id: 'north', hasChildren: true, data: { name: 'North' } },
+    { id: 'south', hasChildren: true, data: { name: 'South' } },
+  ];
+  readonly columns: GridColumnNode<{ name: string }>[] = [{ id: 'name', header: 'Name', width: 160, tree: true }];
+}
+
+@Component({
+  standalone: true,
+  imports: [NgAtomsGridComponent],
+  template: `<nga-grid
+    [rows]="rows"
+    [columns]="columns"
+    [expanded]="expanded"
+    [rowReorder]="true"
+    (rowMove)="moves.push($event)"
+    label="Phases"
+  />`,
+})
+class ReorderTreeGrid {
+  readonly moves: GridRowMove[] = [];
+  readonly expanded: ReadonlySet<GridRowId> = new Set(['p1', 'p2']);
+  readonly rows: GridRow<{ name: string }>[] = [
+    { id: 'p1', data: { name: 'Plan' } },
+    { id: 'a', parentId: 'p1', data: { name: 'Scope' } },
+    { id: 'b', parentId: 'p1', data: { name: 'Budget' } },
+    { id: 'p2', data: { name: 'Build' } },
+    { id: 'c', parentId: 'p2', data: { name: 'Code' } },
   ];
   readonly columns: GridColumnNode<{ name: string }>[] = [{ id: 'name', header: 'Name', width: 160, tree: true }];
 }

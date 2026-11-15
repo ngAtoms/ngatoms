@@ -352,10 +352,17 @@ export class NgAtomsGridComponent<T = unknown> implements NgAtomsGridContext<T> 
   protected readonly hasContentAfter = computed(
     () => this.scrollLeft() + this.viewportWidth() < this.totalWidth() - 1,
   );
-  /** True when any row has children. A flat grid stays `role="grid"` and omits `aria-level`. */
+  /**
+   * True when any row has children, loaded or announced with `hasChildren`.
+   * A flat grid stays `role="grid"` and omits `aria-level`.
+   */
   hasHierarchy(): boolean {
-    return this.rowTree().childrenOf.size > 0;
+    return this.hierarchical();
   }
+
+  private readonly hierarchical = computed(
+    () => this.rowTree().childrenOf.size > 0 || this.rows().some(row => !!row.hasChildren),
+  );
 
   private readonly rowRange = computed(() =>
     fixedSizeRange(

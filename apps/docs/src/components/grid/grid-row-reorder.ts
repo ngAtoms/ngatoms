@@ -13,6 +13,7 @@ import {
   GridRowMove,
   GridRowTree,
   isRowMoveAllowed,
+  siblingMove,
 } from '../grid-core';
 import { trackRowDrag } from './grid-row-drag';
 
@@ -115,13 +116,11 @@ export class GridRowReorderController<T> {
     const active = this.deps.active();
     if (!active || !this.deps.enabled()) return false;
 
-    const list = this.deps.rowList();
-    const entry = list.get(active.row);
-    const target: GridDropTarget = { index: active.row + step, position: step < 0 ? 'before' : 'after' };
-    const inRange = target.index >= 0 && target.index < list.length;
-    if (entry?.kind === 'row' && inRange && this.canDropOn(entry.row.id, target)) {
-      this.report(entry.row.id, target);
-      this.deps.activate({ row: target.index, col: active.col });
+    const entry = this.deps.rowList().get(active.row);
+    const move = siblingMove(this.deps.rowList(), active.row, step);
+    if (entry?.kind === 'row' && move && this.canDropOn(entry.row.id, move.target)) {
+      this.report(entry.row.id, move.target);
+      this.deps.activate({ row: move.landing, col: active.col });
     }
     return true;
   }

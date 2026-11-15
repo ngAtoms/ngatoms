@@ -182,6 +182,34 @@ test('grid page contrast, focus, selection and filter scroll', async ({ page }) 
   expect(gridNodes, JSON.stringify(summary)).toBe(0);
 });
 
+test('Alt+↓ / Alt+↑ move an expanded phase past its sibling in the task demo', async ({ page }) => {
+  await page.goto('/grid');
+  const section = page.locator('#templates');
+  const grid = section.locator('nga-grid');
+  const design = grid.locator('[role="row"][aria-level="1"] [role="rowheader"]', { hasText: 'Design' });
+  await design.scrollIntoViewIfNeeded();
+  await design.click();
+
+  /** Phase rows in display order. */
+  const phases = () =>
+    grid.locator('[role="row"][aria-level="1"] [role="rowheader"]').evaluateAll((cells) =>
+      cells.map((cell) => cell.textContent?.trim()),
+    );
+  const before = await phases();
+  expect(before.indexOf('Design')).toBeLessThan(before.indexOf('Build'));
+
+  await page.keyboard.press('Alt+ArrowDown');
+  await expect(section.locator('.demo-note')).toHaveText('design moved after build');
+  await expect.poll(async () => (await phases()).indexOf('Design')).toBeGreaterThan((await phases()).indexOf('Build'));
+  await expect(grid.locator('.nga-grid__cell--active')).toContainText('Design');
+  await page.screenshot({ path: `${shots}/task-alt-down.png` });
+
+  await page.keyboard.press('Alt+ArrowUp');
+  await expect(section.locator('.demo-note')).toHaveText('design moved before build');
+  await expect.poll(phases).toEqual(before);
+  await expect(grid.locator('.nga-grid__cell--active')).toContainText('Design');
+});
+
 test('K1: Ctrl jumps keep focus in the grid and arrows do not scroll the page', async ({ page }) => {
   await page.goto('/grid');
   const grid = page.locator('#simple nga-grid');
@@ -202,6 +230,7 @@ test('K1: Ctrl jumps keep focus in the grid and arrows do not scroll the page', 
   }
   await page.keyboard.press('Control+ArrowDown');
   await expect.poll(focusInGrid).toBe(true);
+  await expect.poll(async () => Number(await activeRow())).toBeGreaterThan(100);
   const bottomRow = Number(await activeRow());
   const before = await pageScroll();
   await page.keyboard.press('ArrowUp');

@@ -132,6 +132,8 @@ export class GridPageComponent {
   readonly regionColumns = buildRegionColumns();
   readonly regionRows = signal<GridRow<RegionLine>[]>(buildRegionRows());
   readonly regionExpanded = signal<ReadonlySet<GridRowId>>(new Set());
+  /** Regions whose stores were asked for, so a quick collapse and expand loads once. */
+  private readonly regionRequests = new Set<GridRowId>();
 
   readonly shortcutColumns: GridColumn<Record<string, string>>[] = [
     { id: "group", header: "Group", width: 105, filter: "set" },
@@ -227,6 +229,8 @@ export class GridPageComponent {
   }
 
   onRegionExpand(regionId: GridRowId): void {
+    if (this.regionRequests.has(regionId)) return;
+    this.regionRequests.add(regionId);
     void fetchRegionStores(regionId).then((stores) => this.regionRows.update((rows) => [...rows, ...stores]));
   }
 
@@ -288,7 +292,7 @@ export class GridPageComponent {
   readonly codePagingScroll = "// <nga-grid\n//   [rows]=\"rows()\"\n//   [rowCount]=\"total\"\n//   [columns]=\"columns\"\n//   (visibleRangeChange)=\"onRange($event)\"\n// />\n\nreadonly rows = signal<GridRow<Order>[]>([]);\nprivate readonly requested = new Set<number>();\n\nonRange(range: { start: number; end: number }): void {\n  const first = Math.floor(range.start / PAGE);\n  const last = Math.floor((range.end - 1) / PAGE);\n  for (let page = first; page <= last; page++) {\n    if (this.requested.has(page)) continue;\n    this.requested.add(page);\n    // Each row comes back with its index in the full result.\n    this.api.orders(page * PAGE, PAGE).then(rows => this.rows.update(loaded => [...loaded, ...rows]));\n  }\n}";
 
 
-  readonly codeLazyChildren = "// <nga-grid\n//   [rows]=\"rows()\"\n//   [columns]=\"columns\"\n//   [(expanded)]=\"expanded\"\n//   (rowExpand)=\"onRowExpand($event)\"\n// />\n\nreadonly rows = signal<GridRow<Region>[]>([\n  { id: 'iberia', hasChildren: true, data: { name: 'Iberia', units: 8420 } },\n]);\n\nonRowExpand(regionId: GridRowId): void {\n  this.api.stores(regionId).then(stores => this.rows.update(rows => [...rows, ...stores]));\n}";
+  readonly codeLazyChildren = "// <nga-grid\n//   [rows]=\"rows()\"\n//   [columns]=\"columns\"\n//   [(expanded)]=\"expanded\"\n//   (rowExpand)=\"onRowExpand($event)\"\n// />\n\nreadonly rows = signal<GridRow<Region>[]>([\n  { id: 'iberia', hasChildren: true, data: { name: 'Iberia', units: 8420 } },\n]);\n\n// Collapsing and expanding again before the reply must not load twice.\nprivate readonly requested = new Set<GridRowId>();\n\nonRowExpand(regionId: GridRowId): void {\n  if (this.requested.has(regionId)) return;\n  this.requested.add(regionId);\n  this.api.stores(regionId).then(stores => this.rows.update(rows => [...rows, ...stores]));\n}";
 
   readonly codeExport = "// <nga-grid #grid [rows]=\"rows\" [columns]=\"columns\" />\n// <button (click)=\"download(grid.exportText())\">Download CSV</button>\n\ndownload(csv: string): void {\n  const url = URL.createObjectURL(new Blob([csv], { type: 'text/csv' }));\n  const link = Object.assign(document.createElement('a'), { href: url, download: 'units.csv' });\n  link.click();\n  URL.revokeObjectURL(url);\n}\n\n// Semicolon-separated, written as shown on screen:\ngrid.exportText({ delimiter: ';', values: 'formatted' });";
 
