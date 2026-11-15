@@ -15,17 +15,28 @@ import {
   NgAtomsButtonDirective,
 } from "../../../components/button";
 import {
+  NgAtomsPaginationComponent,
+} from "../../../components/pagination";
+import {
+  ORDER_COUNT,
+  type OrderLine,
   type PlanLine,
+  type RegionLine,
   type StockLine,
   applyPlanChanges,
+  buildOrderColumns,
   buildPlanColumns,
   buildPlanLeaves,
+  buildRegionColumns,
+  buildRegionRows,
   buildSalesColumns,
   buildSalesRows,
   buildScaleColumns,
   buildScaleRows,
   buildStockColumns,
   buildStockRows,
+  fetchOrders,
+  fetchRegionStores,
   isPlanMonthLocked,
   withPlanTotals,
 } from "./grid-demo-data";
@@ -41,6 +52,7 @@ import { PreviewCard } from "../../../components/preview-card/preview-card";
     RouterLink,
     NgAtomsGridComponent,
     NgAtomsButtonDirective,
+    NgAtomsPaginationComponent,
     NgAtomsBadgeDirective,
     CodeBlockComponent,
     TocComponent,
@@ -87,6 +99,53 @@ export class GridPageComponent {
 
   readonly density = signal<"compact" | "comfortable">("compact");
 
+  readonly columnWidths = signal<Readonly<Record<string, number>>>({});
+  readonly exportSample = signal("");
+
+  readonly orderCount = ORDER_COUNT;
+  readonly orderColumns = buildOrderColumns();
+  readonly orderRows = signal<GridRow<OrderLine>[]>([]);
+  private readonly orderPages = new Set<number>();
+  private readonly orderPageSize = 100;
+
+  readonly page = signal(1);
+  readonly pageSize = 10;
+  readonly pageRows = computed(() => {
+    const start = (this.page() - 1) * this.pageSize;
+    return this.stockRows.slice(start, start + this.pageSize);
+  });
+
+  readonly regionColumns = buildRegionColumns();
+  readonly regionRows = signal<GridRow<RegionLine>[]>(buildRegionRows());
+  readonly regionExpanded = signal<ReadonlySet<GridRowId>>(new Set());
+
+  get resizedColumns(): string {
+    const entries = Object.entries(this.columnWidths());
+    return entries.length ? entries.map(([id, width]) => `${id}: ${width}px`).join(" · ") : "drag a column edge, or double-click it";
+  }
+
+  showExport(text: string): void {
+    const lines = text.split("\r\n");
+    this.exportSample.set(`${lines.slice(0, 4).join("\n")}\n… ${lines.length} lines`);
+  }
+
+  onOrdersRange(range: { start: number; end: number }): void {
+    const first = Math.floor(range.start / this.orderPageSize);
+    const last = Math.floor(Math.max(range.start, range.end - 1) / this.orderPageSize);
+    for (let page = first; page <= last; page++) {
+      if (this.orderPages.has(page)) continue;
+      this.orderPages.add(page);
+      const start = page * this.orderPageSize;
+      void fetchOrders(start, start + this.orderPageSize).then((rows) =>
+        this.orderRows.update((loaded) => [...loaded, ...rows]),
+      );
+    }
+  }
+
+  onRegionExpand(regionId: GridRowId): void {
+    void fetchRegionStores(regionId).then((stores) => this.regionRows.update((rows) => [...rows, ...stores]));
+  }
+
   get activeFilterCount(): number {
     return Object.keys(this.stockFilters()).length;
   }
@@ -132,6 +191,16 @@ export class GridPageComponent {
 
   readonly codeFormatting = "// 1,234 · (1,234) · –\nconst units: GridNumberFormat = { decimals: 0, negative: 'parentheses', zero: '–' };\n\n// Thousands, one decimal\nconst thousands: GridNumberFormat = { scale: 1000, decimals: 1 };\n\n// A value stored negative, shown positive\nconst reversed: GridNumberFormat = { reverseSign: true };\n\nconst columns = [\n  { id: 'difference', header: 'Diff', type: 'number', format: units, variance: true },\n];\n\nconst rows = [\n  { id: 'returns', data: returns, favorable: 'lower' },\n  { id: 'return-rate', data: returnRate, format: { style: 'percent', decimals: 1 } },\n];";
 
+  readonly codeColumnWidth = "readonly columnWidths = signal<Record<string, number>>(loadSavedWidths());\n\n// <nga-grid [rows]=\"rows\" [columns]=\"columns\" [(columnWidths)]=\"columnWidths\" />\n\nconst columns: GridColumnNode<StockLine>[] = [\n  { id: 'product', header: 'Product', width: 170, minWidth: 120 },\n  { id: 'supplier', header: 'Supplier', resizable: false },\n  { id: 'internalCode', header: 'Code', hidden: true },\n];";
+
+  readonly codePagingScroll = "// <nga-grid\n//   [rows]=\"rows()\"\n//   [rowCount]=\"total\"\n//   [columns]=\"columns\"\n//   (visibleRangeChange)=\"onRange($event)\"\n// />\n\nreadonly rows = signal<GridRow<Order>[]>([]);\nprivate readonly requested = new Set<number>();\n\nonRange(range: { start: number; end: number }): void {\n  const first = Math.floor(range.start / PAGE);\n  const last = Math.floor((range.end - 1) / PAGE);\n  for (let page = first; page <= last; page++) {\n    if (this.requested.has(page)) continue;\n    this.requested.add(page);\n    // Each row comes back with its index in the full result.\n    this.api.orders(page * PAGE, PAGE).then(rows => this.rows.update(loaded => [...loaded, ...rows]));\n  }\n}";
+
+  readonly codePagingPages = "readonly page = signal(1);\nreadonly pageSize = 10;\nreadonly pageRows = computed(() => {\n  const start = (this.page() - 1) * this.pageSize;\n  return this.allRows.slice(start, start + this.pageSize);\n});\n\n// <nga-grid [rows]=\"pageRows()\" [columns]=\"columns\" />\n// <nga-pagination [(page)]=\"page\" [total]=\"allRows.length\" [pageSize]=\"pageSize\" />";
+
+  readonly codeLazyChildren = "// <nga-grid\n//   [rows]=\"rows()\"\n//   [columns]=\"columns\"\n//   [(expanded)]=\"expanded\"\n//   (rowExpand)=\"onRowExpand($event)\"\n// />\n\nreadonly rows = signal<GridRow<Region>[]>([\n  { id: 'iberia', hasChildren: true, data: { name: 'Iberia', units: 8420 } },\n]);\n\nonRowExpand(regionId: GridRowId): void {\n  this.api.stores(regionId).then(stores => this.rows.update(rows => [...rows, ...stores]));\n}";
+
+  readonly codeExport = "// <nga-grid #grid [rows]=\"rows\" [columns]=\"columns\" />\n// <button (click)=\"download(grid.exportText())\">Download CSV</button>\n\ndownload(csv: string): void {\n  const url = URL.createObjectURL(new Blob([csv], { type: 'text/csv' }));\n  const link = Object.assign(document.createElement('a'), { href: url, download: 'units.csv' });\n  link.click();\n  URL.revokeObjectURL(url);\n}\n\n// Semicolon-separated, written as shown on screen:\ngrid.exportText({ delimiter: ';', values: 'formatted' });";
+
   readonly codeDensity = "<nga-grid [rows]=\"rows\" [columns]=\"columns\" density=\"comfortable\" />";
 
   readonly codeScale = "<nga-grid [rows]=\"rows\" [columns]=\"columns\" [(expanded)]=\"expanded\" />";
@@ -150,6 +219,7 @@ export class GridPageComponent {
         { name: "sortMode", type: "'client' | 'external'", defaultVal: "'client'", description: "Who sorts: the grid, or the app." },
         { name: "cellState", type: "(row, column) => GridCellState | null", defaultVal: "null", description: "Resolves per-cell state. Called for every rendered cell, so keep it cheap." },
         { name: "rowCount", type: "number | null", defaultVal: "null", description: "Size of the full result when flat data is paged by scroll. Rows not supplied yet render as placeholders." },
+        { name: "columnWidths", type: "Record<string, number> (model)", defaultVal: "{}", description: "Two-way binding for the widths the user set by dragging, by column id." },
         { name: "density", type: "'compact' | 'comfortable'", defaultVal: "'compact'", description: "Row height preset." },
         { name: "locale", type: "string", defaultVal: "browser locale", description: "Locale used to format and parse numbers." },
         { name: "label", type: "string", defaultVal: "''", description: "Accessible name of the grid." },
@@ -167,6 +237,14 @@ export class GridPageComponent {
       ],
     },
     {
+      kind: "Methods",
+      target: "nga-grid",
+      props: [
+        { name: "exportText(options?)", type: "string", defaultVal: "—", description: "The rows on show as delimited text. Options: delimiter (','), headers (true), values ('raw' | 'formatted')." },
+        { name: "clearHistory()", type: "void", defaultVal: "—", description: "Forgets the undo history. Call it after loading different data." },
+      ],
+    },
+    {
       kind: "Fields",
       target: "GridRow",
       props: [
@@ -177,6 +255,7 @@ export class GridPageComponent {
         { name: "favorable", type: "'higher' | 'lower'", defaultVal: "'higher'", description: "Which direction of a variance is good news." },
         { name: "format", type: "GridNumberFormat", defaultVal: "—", description: "Overrides the column format for the whole row." },
         { name: "hasChildren", type: "boolean", defaultVal: "false", description: "The row has children that are not loaded yet." },
+        { name: "index", type: "number", defaultVal: "—", description: "Position in the full result, for rows paged by scroll." },
       ],
     },
     {
@@ -189,6 +268,9 @@ export class GridPageComponent {
         { name: "valueGetter", type: "(row) => value", defaultVal: "—", description: "Computes the value; wins over field." },
         { name: "type", type: "'text' | 'number'", defaultVal: "'text'", description: "Number columns are right-aligned and formatted." },
         { name: "width", type: "number", defaultVal: "120", description: "Width in px." },
+        { name: "minWidth", type: "number", defaultVal: "48", description: "Smallest width a resize can reach, in px." },
+        { name: "resizable", type: "boolean", defaultVal: "true", description: "Whether the user can drag the edge of the header." },
+        { name: "hidden", type: "boolean", defaultVal: "false", description: "Leaves the column out without removing it from the column tree." },
         { name: "pinned", type: "'left' | 'right'", defaultVal: "—", description: "Keeps the column in view." },
         { name: "tree", type: "boolean", defaultVal: "false", description: "Shows the hierarchy in this column." },
         { name: "format", type: "GridNumberFormat", defaultVal: "—", description: "Number format." },
@@ -231,7 +313,7 @@ export class GridPageComponent {
     { icon: "pencil-simple", title: "Editing", body: "Enter, F2 or typing opens the editor; Enter and Tab commit and move, Escape cancels, and focus returns to the cell. Cells that cannot be edited expose aria-readonly, and invalid ones aria-invalid with their message." },
     { icon: "selection", title: "Selection", body: "Shift with any navigation key extends the selection; Ctrl+A selects all and Escape collapses it. Selected cells expose aria-selected. Copy, cut and paste use the standard clipboard shortcuts and need no permission prompt." },
     { icon: "table", title: "Grid semantics", body: "role=\"treegrid\" (or \"grid\" without hierarchy), with aria-rowcount and aria-colcount for the full data and aria-rowindex and aria-colindex on rendered cells, so virtualization does not hide the real size." },
-    { icon: "funnel", title: "Sorting and filters", body: "Sortable headers expose aria-sort. The filter popover is a labelled dialog that takes focus and returns it on close. Header controls are not yet reachable from the keyboard." },
+    { icon: "funnel", title: "Sorting and filters", body: "Sortable headers expose aria-sort. The filter popover is a labelled dialog that takes focus and returns it on close. Header controls — sort, filter and the resize handle — are not yet reachable from the keyboard." },
     { icon: "hand-tap", title: "Touch and small screens", body: "On coarse pointers rows grow to the comfortable height and header controls to a 44px target. Pinned columns release on narrow containers so the scrolling area never collapses." },
     { icon: "palette", title: "Not color alone", body: "Variance values keep their sign or parentheses, and cell states have a marker or a text equivalent as well as a color." },
   ];
@@ -246,6 +328,11 @@ export class GridPageComponent {
     { id: "rows", label: "Rows and hierarchy" },
     { id: "columns", label: "Column groups and pinning" },
     { id: "formatting", label: "Number formatting" },
+    { id: "column-width", label: "Column width" },
+    { id: "paging-scroll", label: "Paging by scroll" },
+    { id: "paging-pages", label: "Paging with pages" },
+    { id: "lazy-children", label: "Loading children on demand" },
+    { id: "export", label: "Export" },
     { id: "density", label: "Density" },
     { id: "scale", label: "Scale" },
     { id: "api", label: "API" },

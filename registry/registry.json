@@ -491,6 +491,53 @@
         "packages/primitives/src/code-block/index.ts"
       ],
       "cssImport": "code-block.styles.css"
+    },
+    {
+      "name": "grid-core",
+      "description": "Framework-free models behind the data grid: columns, rows, viewport, filters, sorting, selection, editing, clipboard. Installed automatically as a dependency.",
+      "status": "alpha",
+      "files": [
+        "packages/primitives/src/grid-core/batch.ts",
+        "packages/primitives/src/grid-core/clipboard.ts",
+        "packages/primitives/src/grid-core/column-model.ts",
+        "packages/primitives/src/grid-core/edit.ts",
+        "packages/primitives/src/grid-core/export.ts",
+        "packages/primitives/src/grid-core/filter.ts",
+        "packages/primitives/src/grid-core/format.ts",
+        "packages/primitives/src/grid-core/history.ts",
+        "packages/primitives/src/grid-core/index.ts",
+        "packages/primitives/src/grid-core/row-model.ts",
+        "packages/primitives/src/grid-core/selection.ts",
+        "packages/primitives/src/grid-core/sort.ts",
+        "packages/primitives/src/grid-core/types.ts",
+        "packages/primitives/src/grid-core/value.ts",
+        "packages/primitives/src/grid-core/viewport.ts"
+      ]
+    },
+    {
+      "name": "grid",
+      "description": "Data grid: tree rows, column groups, pinned columns, filters, sorting, editing, range selection, two-axis virtualization.",
+      "status": "alpha",
+      "files": [
+        "packages/primitives/src/grid/grid-body-pane.component.html",
+        "packages/primitives/src/grid/grid-body-pane.component.ts",
+        "packages/primitives/src/grid/grid-filter.component.html",
+        "packages/primitives/src/grid/grid-filter.component.ts",
+        "packages/primitives/src/grid/grid-header-pane.component.html",
+        "packages/primitives/src/grid/grid-header-pane.component.ts",
+        "packages/primitives/src/grid/grid-measure.ts",
+        "packages/primitives/src/grid/grid-render.ts",
+        "packages/primitives/src/grid/grid.component.html",
+        "packages/primitives/src/grid/grid.component.ts",
+        "packages/primitives/src/grid/grid.context.ts",
+        "packages/primitives/src/grid/grid.styles.css",
+        "packages/primitives/src/grid/index.ts"
+      ],
+      "registryDependencies": [
+        "grid-core",
+        "overlay"
+      ],
+      "cssImport": "grid.styles.css"
     }
   ]
 }

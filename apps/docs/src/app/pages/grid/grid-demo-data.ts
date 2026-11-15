@@ -371,3 +371,109 @@ export function buildScaleColumns(count: number): GridColumnNode<ScaleLine>[] {
   }
   return nodes;
 }
+
+/** Record behind each row of the paged order list. */
+export interface OrderLine {
+  order: string;
+  customer: string;
+  city: string;
+  items: number;
+  total: number;
+}
+
+/** Record behind each row of the tree that loads its children on demand. */
+export interface RegionLine {
+  name: string;
+  stores: number | null;
+  units: number;
+}
+
+/** Size of the order list the mock server holds. */
+export const ORDER_COUNT = 50_000;
+
+/** How long the mock server takes to answer, in ms. */
+const SERVER_DELAY = 350;
+
+const ORDER_CUSTOMERS = ["Alder & Co", "Brightline", "Cedar Works", "Dovetail", "Elm Street", "Foxglove", "Greyfield"];
+const ORDER_CITIES = ["Lisbon", "Porto", "Madrid", "Lyon", "Milan", "Vienna", "Prague", "Dublin"];
+const MONEY: GridNumberFormat = { decimals: 2 };
+
+/** Resolves a value after the mock server's delay. */
+function afterDelay<V>(value: V): Promise<V> {
+  return new Promise((resolve) => setTimeout(() => resolve(value), SERVER_DELAY));
+}
+
+/** The order at a position of the full list. `index` tells the grid where the row belongs. */
+function orderAt(index: number): GridRow<OrderLine> {
+  const items = 1 + Math.floor(noise(index, 3) * 12);
+  return {
+    id: `order-${index}`,
+    index,
+    data: {
+      order: `#${String(100000 + index)}`,
+      customer: ORDER_CUSTOMERS[Math.floor(noise(index, 1) * ORDER_CUSTOMERS.length)],
+      city: ORDER_CITIES[Math.floor(noise(index, 2) * ORDER_CITIES.length)],
+      items,
+      total: Math.round(items * (12 + noise(index, 4) * 180) * 100) / 100,
+    },
+  };
+}
+
+/** Stands in for a server: answers one slice of the orders. */
+export function fetchOrders(start: number, end: number): Promise<GridRow<OrderLine>[]> {
+  const rows: GridRow<OrderLine>[] = [];
+  for (let index = start; index < Math.min(end, ORDER_COUNT); index++) rows.push(orderAt(index));
+  return afterDelay(rows);
+}
+
+/** Columns of the order list. */
+export function buildOrderColumns(): GridColumnNode<OrderLine>[] {
+  return [
+    { id: "order", header: "Order", width: 110 },
+    { id: "customer", header: "Customer", width: 170 },
+    { id: "city", header: "City", width: 130 },
+    { id: "items", header: "Items", type: "number", width: 90, format: UNITS },
+    { id: "total", header: "Total", type: "number", width: 120, format: MONEY },
+  ];
+}
+
+const REGIONS = ["Iberia", "Central Europe", "Nordics", "British Isles"];
+
+/** The regions, each flagged as having children the app has not loaded. */
+export function buildRegionRows(): GridRow<RegionLine>[] {
+  return REGIONS.map((name, region) => {
+    const stores = 3 + Math.floor(noise(region, 7) * 4);
+    let units = 0;
+    for (let store = 0; store < stores; store++) units += storeUnits(region, store);
+    return { id: `region-${region}`, hasChildren: true, data: { name, stores, units } };
+  });
+}
+
+/** Units of one store of a region. */
+function storeUnits(region: number, store: number): number {
+  return 400 + Math.floor(noise(region * 31 + store, 9) * 2600);
+}
+
+/** Stands in for a server: answers the stores of one region. */
+export function fetchRegionStores(regionId: string | number): Promise<GridRow<RegionLine>[]> {
+  const region = Number(String(regionId).replace("region-", ""));
+  const stores = 3 + Math.floor(noise(region, 7) * 4);
+  const rows: GridRow<RegionLine>[] = [];
+  for (let store = 0; store < stores; store++) {
+    rows.push({
+      id: `${regionId}-store-${store}`,
+      parentId: regionId,
+      data: { name: `${REGIONS[region]} store ${store + 1}`, stores: null, units: storeUnits(region, store) },
+    });
+  }
+  return afterDelay(rows);
+}
+
+/** Columns of the region tree. */
+export function buildRegionColumns(): GridColumnNode<RegionLine>[] {
+  return [
+    { id: "name", header: "Region", tree: true, width: 260 },
+    { id: "stores", header: "Stores", type: "number", width: 100, format: UNITS },
+    { id: "units", header: "Units", type: "number", width: 120, format: UNITS },
+  ];
+}

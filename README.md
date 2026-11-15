@@ -69,6 +69,7 @@ Full docs and previews at **[ngatoms.com](https://ngatoms.com)**.
 | `color-picker` | HSL/hex color selector | ![alpha](https://img.shields.io/badge/alpha-yellow?style=flat-square) |
 | `context-menu` | Right-click triggered menu | ![alpha](https://img.shields.io/badge/alpha-yellow?style=flat-square) |
 | `drawer` | Side-panel overlay | ![alpha](https://img.shields.io/badge/alpha-yellow?style=flat-square) |
+| `grid` | Data grid with tree rows, column groups, editing and virtualization | ![alpha](https://img.shields.io/badge/alpha-yellow?style=flat-square) |
 | `rating` | Star rating input | ![alpha](https://img.shields.io/badge/alpha-yellow?style=flat-square) |
 | `skeleton` | Placeholder loading shimmer | ![alpha](https://img.shields.io/badge/alpha-yellow?style=flat-square) |
 | `timeline` | Vertical event timeline | ![alpha](https://img.shields.io/badge/alpha-yellow?style=flat-square) |

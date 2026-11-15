@@ -12,9 +12,10 @@
             </p>
             <div class="cp-chips">
                 <span ngAtomsBadge variant="default"><i class="ph ph-angular-logo"></i> ngAtoms v1.0+</span>
-                <span ngAtomsBadge variant="warning"><i class="ph ph-hammer"></i> In development</span>
-                <a ngAtomsBadge variant="outline" href="https://github.com/ngAtoms/ngatoms/blob/rc/docs/adr/0001-data-grid.md" target="_blank" rel="noopener noreferrer">
-                    <i class="ph ph-arrow-square-out"></i> Decision record
+                <span ngAtomsBadge variant="default"><i class="ph ph-package"></i> ngatoms add grid</span>
+                <span ngAtomsBadge variant="warning"><i class="ph ph-flask"></i> Alpha</span>
+                <a ngAtomsBadge variant="outline" href="https://github.com/ngAtoms/ngatoms/tree/rc/packages/primitives/src/grid" target="_blank" rel="noopener noreferrer">
+                    <i class="ph ph-arrow-square-out"></i> Source
                 </a>
             </div>
         </header>
@@ -40,7 +41,12 @@
         <!-- Usage -->
         <section id="usage">
             <h2 class="cp-h2">Usage</h2>
-            <p class="cp-p">The grid is in development and not in the registry yet. This page documents what is built so far.</p>
+            <p class="cp-p">Add the grid to your project. Its models, <code class="cp-code">grid-core</code>, and the shared overlay helpers come along automatically.</p>
+            <div class="inline-terminal">
+                <span class="inline-terminal-dollar">$</span>
+                <span class="inline-terminal-cmd">ngatoms add grid</span>
+            </div>
+            <p class="cp-p" style="margin-top: 14px;">Then import into your component:</p>
             <app-code-block [code]="usageCode" language="typescript" />
         </section>
 
@@ -186,6 +192,147 @@
                 more returns than the target is bad news, more sales than the target is good news.
             </p>
             <app-code-block [code]="codeFormatting" language="typescript" />
+        </section>
+
+        <!-- Column width -->
+        <section id="column-width">
+            <h2 class="cp-h2">Column width</h2>
+            <p class="cp-p">
+                Drag the edge of a header to resize a column, or double-click it to fit the header and the cells on screen.
+                Widths live in <code class="cp-code">[(columnWidths)]</code>, by column id, so the app can save and restore them. A column never goes below its <code class="cp-code">minWidth</code>,
+                and <code class="cp-code">resizable: false</code> takes the handle away. To hide a column without rebuilding the column tree, set <code class="cp-code">hidden</code>.
+            </p>
+            <preview-card>
+                <ng-container preview>
+                    <div class="grid-demo">
+                        <p class="demo-note" style="margin-bottom: 12px">{{ resizedColumns }}</p>
+                        <nga-grid
+                            [rows]="stockRows"
+                            [columns]="stockColumns"
+                            [(columnWidths)]="columnWidths"
+                            locale="en-US"
+                            label="Stock by warehouse"
+                            style="--nga-grid-height: 16rem"
+                        />
+                    </div>
+                </ng-container>
+                <ng-container code>
+                    <app-code-block [code]="codeColumnWidth" language="typescript" />
+                </ng-container>
+            </preview-card>
+        </section>
+
+        <!-- Paging by scroll -->
+        <section id="paging-scroll">
+            <h2 class="cp-h2">Paging by scroll</h2>
+            <p class="cp-p">
+                When the data is too large to load at once, tell the grid how big it is with <code class="cp-code">rowCount</code> and pass in the rows you have.
+                Each row carries its <code class="cp-code">index</code> in the full result; positions without a row show a placeholder. <code class="cp-code">(visibleRangeChange)</code> reports what is on screen,
+                and the app loads the pages it is missing. This list has <strong>50,000 orders</strong> on a mock server that answers 100 at a time.
+                Filtering and sorting are the server's job in this mode: use the external modes.
+            </p>
+            <preview-card>
+                <ng-container preview>
+                    <div class="grid-demo">
+                        <nga-grid
+                            [rows]="orderRows()"
+                            [rowCount]="orderCount"
+                            [columns]="orderColumns"
+                            (visibleRangeChange)="onOrdersRange($event)"
+                            locale="en-US"
+                            label="Orders"
+                            style="--nga-grid-height: 18rem"
+                        />
+                        <p class="demo-note" style="margin-top: 10px">{{ orderRows().length.toLocaleString('en-US') }} of {{ orderCount.toLocaleString('en-US') }} rows loaded</p>
+                    </div>
+                </ng-container>
+                <ng-container code>
+                    <app-code-block [code]="codePagingScroll" language="typescript" />
+                </ng-container>
+            </preview-card>
+        </section>
+
+        <!-- Paging with pages -->
+        <section id="paging-pages">
+            <h2 class="cp-h2">Paging with pages</h2>
+            <p class="cp-p">
+                Or page the classic way: give the grid one page of rows and let <code class="cp-code">nga-pagination</code> choose which. The grid needs nothing special for this.
+            </p>
+            <preview-card>
+                <ng-container preview>
+                    <div class="grid-demo">
+                        <nga-grid [rows]="pageRows()" [columns]="stockColumns" locale="en-US" label="Stock by warehouse" style="--nga-grid-height: 20.1rem" />
+                        <div class="demo-row" style="margin-top: 12px; justify-content: flex-end">
+                            <nga-pagination [(page)]="page" [total]="stockRows.length" [pageSize]="pageSize" size="sm" />
+                        </div>
+                    </div>
+                </ng-container>
+                <ng-container code>
+                    <app-code-block [code]="codePagingPages" language="typescript" />
+                </ng-container>
+            </preview-card>
+        </section>
+
+        <!-- Loading children on demand -->
+        <section id="lazy-children">
+            <h2 class="cp-h2">Loading children on demand</h2>
+            <p class="cp-p">
+                A row with <code class="cp-code">hasChildren: true</code> shows the expand toggle before its children exist.
+                Expanding it emits <code class="cp-code">(rowExpand)</code>; the app loads the children and adds them to the rows with the right <code class="cp-code">parentId</code>.
+            </p>
+            <preview-card>
+                <ng-container preview>
+                    <div class="grid-demo">
+                        <nga-grid
+                            [rows]="regionRows()"
+                            [columns]="regionColumns"
+                            [(expanded)]="regionExpanded"
+                            (rowExpand)="onRegionExpand($event)"
+                            locale="en-US"
+                            label="Units by region"
+                            style="--nga-grid-height: 16rem"
+                        />
+                    </div>
+                </ng-container>
+                <ng-container code>
+                    <app-code-block [code]="codeLazyChildren" language="typescript" />
+                </ng-container>
+            </preview-card>
+        </section>
+
+        <!-- Export -->
+        <section id="export">
+            <h2 class="cp-h2">Export</h2>
+            <p class="cp-p">
+                <code class="cp-code">exportText()</code> returns the rows on show as CSV: every visible column, one header line, collapsed and filtered-out rows left out.
+                Grouped columns get their full path as header, so two months of different quarters stay distinct. Values are written raw by default, which other programs read back unchanged;
+                ask for <strong>formatted</strong> to write them as the grid shows them. What to do with the text — download it, upload it, copy it — is up to the app.
+            </p>
+            <preview-card>
+                <ng-container preview>
+                    <div class="grid-demo">
+                        <div class="demo-row" style="margin-bottom: 12px">
+                            <button ngAtomsButton size="sm" variant="outline" (click)="showExport(exportGrid.exportText())">CSV, raw values</button>
+                            <button ngAtomsButton size="sm" variant="outline" (click)="showExport(exportGrid.exportText({ delimiter: ';', values: 'formatted' }))">Semicolons, formatted</button>
+                        </div>
+                        <nga-grid
+                            #exportGrid
+                            [rows]="salesRows"
+                            [columns]="salesColumns"
+                            [(expanded)]="salesExpanded"
+                            locale="en-US"
+                            label="Units sold in 2026"
+                            style="--nga-grid-height: 14rem"
+                        />
+                        @if (exportSample()) {
+                            <pre class="demo-note export-sample">{{ exportSample() }}</pre>
+                        }
+                    </div>
+                </ng-container>
+                <ng-container code>
+                    <app-code-block [code]="codeExport" language="typescript" />
+                </ng-container>
+            </preview-card>
         </section>
 
         <!-- Density -->

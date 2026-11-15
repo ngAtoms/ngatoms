@@ -263,6 +263,12 @@ export class AppComponent {}`;
       status: "alpha",
     },
     {
+      name: "grid",
+      route: "/grid",
+      description: "Data grid with tree rows, editing and virtualization.",
+      status: "alpha",
+    },
+    {
       name: "file-upload",
       route: "/file-upload",
       description: "Drag-and-drop file input zone.",

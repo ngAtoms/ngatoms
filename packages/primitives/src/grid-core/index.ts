@@ -15,3 +15,4 @@ export * from './edit';
 export * from './clipboard';
 export * from './history';
 export * from './batch';
+export * from './export';

@@ -77,6 +77,10 @@ export interface NgAtomsGridContext<T = unknown> {
   openFilterColumn(): string | null;
   /** Opens the filter popover of a column, anchored to the given element. */
   openFilter(column: GridColumn<T>, anchor: HTMLElement): void;
+  /** Gives a column a width, kept within the column's limits. */
+  resizeColumn(column: GridColumn<T>, width: number): void;
+  /** Fits a column to its header and the cells on screen. */
+  autoSizeColumn(column: GridColumn<T>): void;
   /** Whether the cell at a display position is the active cell. */
   isActive(row: number, col: number): boolean;
   /** Makes a cell the active cell and the only selected one. */

@@ -32,10 +32,9 @@ import {
   GridCellValue,
   GridColumn,
   GridColumnNode,
-  GridColumnPane,
+  GridExportOptions,
   GridFilter,
   GridFilters,
-  GridHeaderCell,
   GridIndexRange,
   GridMove,
   GridRow,
@@ -44,7 +43,9 @@ import {
   GridSort,
   applyFilters,
   buildRowTree,
+  clampColumnWidth,
   clampPosition,
+  columnHeaderPaths,
   clearChanges,
   copyText,
   createCellChange,
@@ -53,13 +54,13 @@ import {
   createRowComparator,
   distinctValues,
   editTextOf,
+  exportDelimited,
   fillDownChanges,
   fitColumnModel,
   fixedSizeRange,
   flattenRows,
   getCellValue,
   isCellEditable,
-  isEmptyValue,
   moveForKey,
   movePosition,
   nextSort,
@@ -77,11 +78,11 @@ import {
 import { NgAtomsGridBodyPaneComponent } from './grid-body-pane.component';
 import { NgAtomsGridFilterComponent } from './grid-filter.component';
 import { NgAtomsGridHeaderPaneComponent } from './grid-header-pane.component';
+import { measureColumnWidth } from './grid-measure';
+import { isTypingKey, renderColumns, renderHeaderCells, toText } from './grid-render';
 import {
   GridCellView,
   GridFilterOption,
-  GridRenderColumn,
-  GridRenderHeaderCell,
   GridRenderRow,
   NGA_GRID,
   NgAtomsGridContext,
@@ -116,6 +117,16 @@ interface EditSession {
   selectAll: boolean;
 }
 
+/** How `exportText` writes the grid. */
+export interface NgAtomsGridExportOptions extends GridExportOptions {
+  /**
+   * `raw` writes values as they are stored, which other programs read
+   * back unchanged. `formatted` writes them as the grid shows them.
+   * Defaults to `raw`.
+   */
+  values?: 'raw' | 'formatted';
+}
+
 /** Row density presets. */
 export type NgAtomsGridDensity = 'compact' | 'comfortable';
 
@@ -132,61 +143,6 @@ const ROW_OVERSCAN = 6;
 
 /** Columns rendered left and right of the viewport, for the same reason. */
 const COLUMN_OVERSCAN = 2;
-
-/** Text shown for a non-numeric cell value. */
-function toText(value: GridCellValue): string {
-  return isEmptyValue(value) ? '' : String(value);
-}
-
-/** Positions the columns of a pane, optionally limited to a visible range. */
-function renderColumns<T>(pane: GridColumnPane<T>, firstIndex: number, range?: GridIndexRange): GridRenderColumn<T>[] {
-  const start = range?.start ?? 0;
-  const end = range?.end ?? pane.columns.length;
-  const out: GridRenderColumn<T>[] = [];
-  for (let i = start; i < end; i++) {
-    out.push({
-      column: pane.columns[i],
-      index: firstIndex + i,
-      left: pane.offsets[i],
-      width: pane.offsets[i + 1] - pane.offsets[i],
-    });
-  }
-  return out;
-}
-
-/** Whether a header cell covers at least one column of the range. */
-function intersects<T>(cell: GridHeaderCell<T>, range: GridIndexRange): boolean {
-  return cell.colStart < range.end && cell.colStart + cell.colSpan > range.start;
-}
-
-/** Positions the header cells of a pane, optionally limited to a visible column range. */
-function renderHeaderCells<T>(
-  pane: GridColumnPane<T>,
-  rowHeight: number,
-  range?: GridIndexRange,
-): GridRenderHeaderCell<T>[] {
-  const out: GridRenderHeaderCell<T>[] = [];
-  for (const cells of pane.headerRows) {
-    for (const cell of cells) {
-      if (range && !intersects(cell, range)) continue;
-      const left = pane.offsets[cell.colStart];
-      out.push({
-        key: `${cell.row}:${cell.key}`,
-        cell,
-        left,
-        top: cell.row * rowHeight,
-        width: pane.offsets[cell.colStart + cell.colSpan] - left,
-        height: cell.rowSpan * rowHeight,
-      });
-    }
-  }
-  return out;
-}
-
-/** Whether a key press produces a character, as opposed to a command or a shortcut. */
-function isTypingKey(event: KeyboardEvent): boolean {
-  return event.key.length === 1 && !event.ctrlKey && !event.metaKey && !event.altKey;
-}
 
 /**
  * Data grid with hierarchical rows, multi-level column
@@ -232,6 +188,8 @@ export class NgAtomsGridComponent<T = unknown> implements NgAtomsGridContext<T> 
   readonly sortMode = input<NgAtomsGridDataMode>('client');
   /** Resolves per-cell state: locked, calculated, dirty, invalid, pending, note. */
   readonly cellState = input<NgAtomsGridCellStateFn<T> | null>(null);
+  /** Widths the user gave columns by dragging, by column id. They win over `column.width`. */
+  readonly columnWidths = model<Readonly<Record<string, number>>>({});
   readonly density = input<NgAtomsGridDensity>('compact');
   /** BCP 47 locale for number formatting; defaults to the browser's. */
   readonly locale = input<string | undefined>(undefined);
@@ -266,7 +224,10 @@ export class NgAtomsGridComponent<T = unknown> implements NgAtomsGridContext<T> 
   protected readonly rowHeight = computed(() => ROW_HEIGHT[this.effectiveDensity()]);
   private readonly formatter = computed(() => createNumberFormatter(this.locale()));
 
-  protected readonly columnModel = computed(() => fitColumnModel(this.columns(), this.viewportWidth()));
+  private readonly widthsById = computed(() => new Map(Object.entries(this.columnWidths())));
+  protected readonly columnModel = computed(() =>
+    fitColumnModel(this.columns(), this.viewportWidth(), this.widthsById()),
+  );
   private readonly headerRowHeight = computed(() => {
     const room = this.columnModel().headerDepth === 1 ? HEADER_ROOM.single : HEADER_ROOM.grouped;
     return this.rowHeight() + room;
@@ -510,6 +471,35 @@ export class NgAtomsGridComponent<T = unknown> implements NgAtomsGridContext<T> 
     const rect = this.selectionRect();
     if (!rect || !this.hasRange()) return null;
     return rectEdges(rect, { row, col })?.join(' ') ?? null;
+  }
+
+  /** @inheritdoc */
+  resizeColumn(column: GridColumn<T>, width: number): void {
+    const clamped = clampColumnWidth(column, width);
+    this.columnWidths.update(widths => ({ ...widths, [column.id]: clamped }));
+  }
+
+  /** @inheritdoc */
+  autoSizeColumn(column: GridColumn<T>): void {
+    const index = this.columnModel().indexById.get(column.id);
+    if (index === undefined) return;
+    this.resizeColumn(column, measureColumnWidth(this.viewport().nativeElement, column.id, index));
+  }
+
+  /**
+   * The rows on show as delimited text — CSV unless another delimiter
+   * is given — with every visible column and a header line. Collapsed
+   * and filtered-out rows are not included.
+   */
+  exportText(options: NgAtomsGridExportOptions = {}): string {
+    const formatted = options.values === 'formatted';
+    return exportDelimited(
+      this.rowList(),
+      this.columnModel().columns,
+      columnHeaderPaths(this.columns()),
+      options,
+      formatted ? (row, column) => this.cell(row, column).text : undefined,
+    );
   }
 
   /** Forgets the undo history. Call it after loading different data. */

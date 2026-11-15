@@ -58,3 +58,4 @@ section { scroll-margin-top: calc(var(--nga-nav-height, 56px) + 24px); }
 
 .cp-main { max-width: 100%; }
 .grid-demo { width: 736px; max-width: 100%; min-width: 0; }
+.export-sample { margin-top: 12px; padding: 10px 12px; border: 1px solid var(--nga-color-border); border-radius: var(--nga-radius-md); overflow-x: auto; white-space: pre; }

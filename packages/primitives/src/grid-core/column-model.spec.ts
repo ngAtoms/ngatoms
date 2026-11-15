@@ -3,7 +3,7 @@
  */
 
 import { describe, expect, it } from 'vitest';
-import { DEFAULT_COLUMN_WIDTH, DEFAULT_MIN_COLUMN_WIDTH, buildColumnModel, fitColumnModel } from './column-model';
+import { DEFAULT_COLUMN_WIDTH, DEFAULT_MIN_COLUMN_WIDTH, buildColumnModel, clampColumnWidth, columnHeaderPaths, fitColumnModel } from './column-model';
 import { GridColumnNode } from './types';
 
 const months = (quarter: string, names: string[]): GridColumnNode => ({
@@ -145,5 +145,37 @@ describe('fitColumnModel', () => {
     const model = fitColumnModel(nodes, 300);
     expect(model.panes.left.width).toBe(0);
     expect(model.panes.center.width).toBe(400);
+  });
+});
+
+describe('hidden columns', () => {
+  const nodes: GridColumnNode[] = [
+    { id: 'name', header: 'Name' },
+    { id: 'q1', header: 'Q1', children: [{ id: 'jan', header: 'Jan', hidden: true }, { id: 'feb', header: 'Feb' }] },
+  ];
+
+  it('are left out of the model', () => {
+    const model = buildColumnModel(nodes);
+    expect(model.columns.map(column => column.id)).toEqual(['name', 'feb']);
+    expect(model.panes.center.headerRows[0].find(cell => cell.key === 'q1')?.colSpan).toBe(1);
+  });
+});
+
+describe('columnHeaderPaths', () => {
+  it('lists the group headers above each leaf', () => {
+    const paths = columnHeaderPaths([
+      { id: 'name', header: 'Name' },
+      { id: 'y', header: '2026', children: [{ id: 'q', header: 'Q1', children: [{ id: 'jan', header: 'Jan' }] }] },
+    ]);
+    expect(paths.get('name')).toEqual(['Name']);
+    expect(paths.get('jan')).toEqual(['2026', 'Q1', 'Jan']);
+  });
+});
+
+describe('clampColumnWidth', () => {
+  it('rounds and respects the minimum', () => {
+    expect(clampColumnWidth({ id: 'a', header: 'A' }, 100.6)).toBe(101);
+    expect(clampColumnWidth({ id: 'a', header: 'A' }, 10)).toBe(DEFAULT_MIN_COLUMN_WIDTH);
+    expect(clampColumnWidth({ id: 'a', header: 'A', minWidth: 80 }, 10)).toBe(80);
   });
 });

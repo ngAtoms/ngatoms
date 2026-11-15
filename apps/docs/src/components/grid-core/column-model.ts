@@ -66,12 +66,30 @@ export function columnWidth<T>(column: GridColumn<T>, widths?: ReadonlyMap<strin
   return Math.max(min, widths?.get(column.id) ?? column.width ?? DEFAULT_COLUMN_WIDTH);
 }
 
-/** Collects the leaves of a column tree depth-first, recording each leaf's groups. */
+/** Collects the visible leaves of a column tree depth-first, recording each leaf's groups. */
 function collectLeaves<T>(nodes: GridColumnNode<T>[], path: GridColumnGroup<T>[], out: Leaf<T>[]): void {
   for (const node of nodes) {
     if (isColumnGroup(node)) collectLeaves(node.children, [...path, node], out);
-    else out.push({ column: node, path });
+    else if (!node.hidden) out.push({ column: node, path });
   }
+}
+
+/**
+ * Full header of every visible leaf column: the headers of its groups,
+ * outermost first, then its own. This is what tells two "Jan" columns
+ * of different years apart outside the grid, in an export for example.
+ *
+ * @returns Header paths by column id.
+ */
+export function columnHeaderPaths<T>(nodes: GridColumnNode<T>[]): Map<string, string[]> {
+  const leaves: Leaf<T>[] = [];
+  collectLeaves(nodes, [], leaves);
+  return new Map(leaves.map(leaf => [leaf.column.id, [...leaf.path.map(group => group.header), leaf.column.header]]));
+}
+
+/** Keeps a width a user asked for within the column's limits, in whole pixels. */
+export function clampColumnWidth<T>(column: GridColumn<T>, width: number): number {
+  return Math.max(column.minWidth ?? DEFAULT_MIN_COLUMN_WIDTH, Math.round(width));
 }
 
 /**

@@ -147,6 +147,12 @@
   transition: box-shadow var(--nga-dur-base, 180ms) var(--nga-ease-out, ease);
 }
 
+/* The center pane takes whatever width the columns leave, so row lines
+   and row backgrounds reach the edge of the grid. */
+.nga-grid__pane--center {
+  flex-grow: 1;
+}
+
 .nga-grid__pane--left  { left: 0; }
 .nga-grid__pane--right { right: 0; margin-left: auto; }
 
@@ -417,6 +423,55 @@
 /* In text columns the filter button sits at the far end of the header */
 .nga-grid__header-cell:not(.nga-grid__header-cell--number) .nga-grid__header-filter {
   margin-left: auto;
+}
+
+/* ── Column resize handle ───────────────────────────────────── */
+/* A strip on the edge of a leaf header. It shows a rule on hover and
+   while dragging; double-click fits the column to its content. */
+.nga-grid__resize-handle {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1;
+  width: 0.5625rem;
+  cursor: col-resize;
+  touch-action: none;
+}
+
+.nga-grid__resize-handle--start {
+  right: auto;
+  left: 0;
+}
+
+.nga-grid__resize-handle::after {
+  content: '';
+  position: absolute;
+  top: 25%;
+  right: 0;
+  bottom: 25%;
+  width: 2px;
+  border-radius: var(--nga-radius-full, 9999px);
+  background: var(--nga-color-border-strong, #BDB29C);
+  opacity: 0;
+  transition: opacity var(--nga-dur-fast, 120ms) var(--nga-ease-out, ease), background var(--nga-dur-fast, 120ms) var(--nga-ease-out, ease);
+}
+
+.nga-grid__resize-handle--start::after {
+  right: auto;
+  left: 0;
+}
+
+.nga-grid__header-cell:hover .nga-grid__resize-handle::after {
+  opacity: 1;
+}
+
+.nga-grid__resize-handle:hover::after,
+.nga-grid__resize-handle:active::after {
+  top: 0;
+  bottom: 0;
+  background: var(--nga-color-accent, #D9541E);
+  opacity: 1;
 }
 
 /* ── Empty state under an active filter ─────────────────────── */
@@ -696,6 +751,14 @@
 
   .nga-grid__header-filter {
     opacity: 0.75;
+  }
+
+  .nga-grid__resize-handle {
+    width: 1.5rem;
+  }
+
+  .nga-grid__resize-handle::after {
+    opacity: 1;
   }
 
   .nga-grid__sort-icon {

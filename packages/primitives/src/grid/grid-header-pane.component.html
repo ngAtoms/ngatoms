@@ -7,6 +7,7 @@
     [class.nga-grid__header-cell--number]="column?.type === 'number'"
     [attr.aria-colspan]="item.cell.colSpan > 1 ? item.cell.colSpan : null"
     [attr.aria-sort]="ariaSort(column)"
+    [attr.data-column-id]="column?.id ?? null"
     [style.left.px]="item.left"
     [style.top.px]="item.top"
     [style.width.px]="item.width"
@@ -44,6 +45,17 @@
       >
         <svg viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M2.5 3.5h11L9.5 8.5v4l-3 1v-5L2.5 3.5z" /></svg>
       </button>
+    }
+
+    @if (column && column.resizable !== false) {
+      <span
+        class="nga-grid__resize-handle"
+        aria-hidden="true"
+        [class.nga-grid__resize-handle--start]="column.pinned === 'right'"
+        (pointerdown)="startResize(column, item.width, $event)"
+        (dblclick)="grid.autoSizeColumn(column)"
+        (click)="$event.stopPropagation()"
+      ></span>
     }
   </div>
 }

@@ -81,6 +81,10 @@ export interface GridColumn<T = unknown> {
   /** Width in px. */
   width?: number;
   minWidth?: number;
+  /** Whether the user can drag the column's edge to resize it. Defaults to true. */
+  resizable?: boolean;
+  /** Leaves the column out of the grid without removing it from the column tree. */
+  hidden?: boolean;
   pinned?: GridColumnPin;
   format?: GridNumberFormat;
   /** Color the value by the row's `favorable` direction. */
