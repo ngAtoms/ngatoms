@@ -99,6 +99,8 @@ Full docs and previews at **[ngatoms.com](https://ngatoms.com)**.
 | `timeline` | Vertical event timeline | ![planned](https://img.shields.io/badge/planned-lightgrey?style=flat-square) |
 | `tree` | Collapsible tree view | ![planned](https://img.shields.io/badge/planned-lightgrey?style=flat-square) |
 
+**Stability.** The public API of a `stable` component follows semver: it changes only in a major release. A component marked `alpha` is outside semver and can change in a minor or patch release. Today that is `grid`, with `grid-core`, including the exported helpers `fillDownChanges` and `fillFromChanges`.
+
 ## Config (`ngatoms.json`)
 
 ```json

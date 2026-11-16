@@ -1,9 +1,9 @@
-import { describe, it, beforeEach, afterEach } from 'node:test';
+import { describe, it, beforeEach, afterEach, mock } from 'node:test';
 import assert from 'node:assert/strict';
-import { mkdtempSync, rmSync, writeFileSync, readFileSync } from 'fs';
+import { existsSync, mkdtempSync, rmSync, writeFileSync, readFileSync } from 'fs';
 import { tmpdir } from 'os';
 import { join } from 'path';
-import { computeImportPath, patchStylesFile } from './add.js';
+import { add, computeImportPath, patchStylesFile, writeComponent } from './add.js';
 
 let tmpDir;
 
@@ -55,5 +55,58 @@ describe('add.js — patchStylesFile', () => {
     const content = readFileSync(file, 'utf8');
     const count = (content.match(/@import/g) || []).length;
     assert.equal(count, 1);
+  });
+});
+
+describe('add.js — ngatoms.json paths and component names', () => {
+  let fetchCalls;
+
+  beforeEach(() => {
+    tmpDir = mkdtempSync(join(tmpdir(), 'ngatoms-test-'));
+    fetchCalls = 0;
+    mock.method(globalThis, 'fetch', async () => {
+      fetchCalls++;
+      throw new Error('no network in tests');
+    });
+  });
+
+  afterEach(() => {
+    mock.restoreAll();
+    rmSync(tmpDir, { recursive: true, force: true });
+  });
+
+  /** Writes an ngatoms.json in the temp project. */
+  const config = (componentsDir, stylesFile) =>
+    writeFileSync(join(tmpDir, 'ngatoms.json'), JSON.stringify({ componentsDir, stylesFile, themes: [] }), 'utf8');
+
+  it('refuses a folder outside the project, before any download', async () => {
+    config('../../home/dev/.ssh', 'src/styles.css');
+    await assert.rejects(add('button', tmpDir), /componentsDir in ngatoms.json/);
+    assert.equal(fetchCalls, 0);
+  });
+
+  it('refuses a stylesheet outside the project, before any download', async () => {
+    config('src/components', '../../.zshrc');
+    await assert.rejects(add('button', tmpDir), /stylesFile in ngatoms.json/);
+    assert.equal(fetchCalls, 0);
+  });
+
+  it('refuses a component folder outside the components folder', async () => {
+    const component = { name: '../../escape', files: ['packages/primitives/src/x/x.ts'] };
+    await assert.rejects(writeComponent(component, { componentsDir: 'src/components', stylesFile: 'src/styles.css' }, tmpDir, join(tmpDir, 'src/styles.css')), /component folder/);
+    assert.equal(existsSync(join(tmpDir, 'escape')), false);
+    assert.equal(fetchCalls, 0);
+  });
+
+  it('refuses a file outside its component folder', async () => {
+    const component = { name: 'x', files: ['packages/primitives/src/x/..'] };
+    await assert.rejects(writeComponent(component, { componentsDir: 'src/components', stylesFile: 'src/styles.css' }, tmpDir, join(tmpDir, 'src/styles.css')), /file packages/);
+    assert.equal(fetchCalls, 0);
+  });
+
+  it('refuses a component name with unsupported characters, before any download', async () => {
+    config('src/components', 'src/styles.css');
+    await assert.rejects(add('../../../.vscode', tmpDir), /Refusing component name/);
+    assert.equal(fetchCalls, 0);
   });
 });

@@ -1,5 +1,6 @@
 import { describe, it, mock } from 'node:test';
 import assert from 'node:assert/strict';
+import { createHash } from 'node:crypto';
 import {
   findComponent,
   listComponents,
@@ -45,14 +46,25 @@ describe('registry.js — pure helpers', () => {
 
 describe('registry.js — fetchRegistry', () => {
   it('fetches and parses registry JSON', async () => {
+    const body = new TextEncoder().encode(JSON.stringify(MOCK_REGISTRY));
+    const src = { commit: 'a'.repeat(40), files: { 'registry/registry.json': createHash('sha256').update(body).digest('hex') } };
     mock.method(globalThis, 'fetch', async () => ({
       ok: true,
       status: 200,
-      text: async () => JSON.stringify(MOCK_REGISTRY),
+      arrayBuffer: async () => body.buffer,
     }));
-    const registry = await fetchRegistry();
+    const registry = await fetchRegistry(src);
     assert.equal(registry.components.length, 1);
     assert.equal(registry.components[0].name, 'button');
+    mock.restoreAll();
+  });
+
+  it('refuses a registry with an invalid component name', async () => {
+    const bad = { components: [{ ...MOCK_REGISTRY.components[0], name: '../../../home/dev/.ssh' }] };
+    const body = new TextEncoder().encode(JSON.stringify(bad));
+    const src = { commit: 'a'.repeat(40), files: { 'registry/registry.json': createHash('sha256').update(body).digest('hex') } };
+    mock.method(globalThis, 'fetch', async () => ({ ok: true, status: 200, arrayBuffer: async () => body.buffer }));
+    await assert.rejects(fetchRegistry(src), /Refusing component name/);
     mock.restoreAll();
   });
 });

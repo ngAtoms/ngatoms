@@ -9,3 +9,5 @@ apps/docs/dist/
 /test-results/
 /playwright-report/
 /blob-report/
+# Written by the ngatoms build at release time (scripts/pin-source.mjs)
+packages/ngatoms/src/lib/source.json

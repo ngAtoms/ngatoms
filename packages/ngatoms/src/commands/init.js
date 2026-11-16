@@ -2,7 +2,7 @@ import { createInterface } from 'readline';
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'fs';
 import { join, relative, dirname } from 'path';
 import { configExists, writeConfig } from '../lib/config.js';
-import { fetchText, getRawUrl } from '../lib/github.js';
+import { fetchPinned } from '../lib/github.js';
 
 async function ask(rl, question, defaultValue) {
   return new Promise(resolve => {
@@ -58,7 +58,7 @@ export async function init(cwd = process.cwd()) {
   const config = { componentsDir, stylesFile, themes: [] };
 
   if (createTheme) {
-    const tokensContent = await fetchText(getRawUrl('packages/tokens/src/tokens.css'));
+    const tokensContent = await fetchPinned('packages/tokens/src/tokens.css');
     await writeTheme(stylesFile, themePath, tokensContent, cwd);
     config.themes = [themePath];
   }

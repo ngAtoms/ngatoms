@@ -1,0 +1,5 @@
+---
+"ngatoms": patch
+---
+
+CLI hardening

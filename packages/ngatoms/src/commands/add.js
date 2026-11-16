@@ -10,7 +10,8 @@ import {
   missingDependencyFiles,
   dependencyGapWarning,
 } from '../lib/registry.js';
-import { fetchText, getRawUrl } from '../lib/github.js';
+import { fetchPinned } from '../lib/github.js';
+import { assertInside, assertName } from '../lib/validate.js';
 
 async function confirm(rl, question) {
   return new Promise(resolve => {
@@ -35,14 +36,26 @@ export function patchStylesFile(stylesFilePath, importLine) {
   return true;
 }
 
-async function writeComponent(component, config, cwd, stylesFilePath) {
-  const targetDir = join(cwd, config.componentsDir, component.name);
-  mkdirSync(targetDir, { recursive: true });
+/**
+ * Copies a registry component into the components folder and adds its CSS
+ * import. The folder and every file are checked to stay inside the
+ * components folder, and every file is downloaded and verified, before
+ * anything is written.
+ */
+export async function writeComponent(component, config, cwd, stylesFilePath) {
+  const componentsBase = join(cwd, config.componentsDir);
+  const targetDir = join(componentsBase, component.name);
+  assertInside(componentsBase, targetDir, `component folder "${component.name}"`);
 
+  const downloads = [];
   for (const filepath of component.files) {
-    const content = await fetchText(getRawUrl(filepath));
-    writeFileSync(join(targetDir, filepath.split('/').pop()), content, 'utf8');
+    const target = join(targetDir, filepath.split('/').pop());
+    assertInside(targetDir, target, `file ${filepath}`);
+    downloads.push([target, await fetchPinned(filepath)]);
   }
+
+  mkdirSync(targetDir, { recursive: true });
+  for (const [target, content] of downloads) writeFileSync(target, content, 'utf8');
 
   // Style-less entries (e.g. overlay) have no cssImport.
   if (!component.cssImport) return { patched: false, importLine: null };
@@ -68,6 +81,10 @@ export async function add(componentName, cwd = process.cwd()) {
     console.error('ngatoms.json is missing required fields. Re-run `npx ngatoms init`.');
     process.exit(1);
   }
+
+  assertName(componentName);
+  assertInside(cwd, join(cwd, config.componentsDir), 'componentsDir in ngatoms.json');
+  assertInside(cwd, join(cwd, config.stylesFile), 'stylesFile in ngatoms.json');
 
   const registry = await fetchRegistry();
   const component = findComponent(registry, componentName);

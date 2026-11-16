@@ -15,7 +15,9 @@
     "src/commands/init.js",
     "src/lib/config.js",
     "src/lib/github.js",
-    "src/lib/registry.js"
+    "src/lib/registry.js",
+    "src/lib/source.json",
+    "src/lib/validate.js"
   ],
   "repository": {
     "type": "git",
@@ -30,7 +32,8 @@
     "node": ">=18"
   },
   "scripts": {
-    "build": "echo 'CLI has no build step'",
+    "build": "node scripts/pin-source.mjs",
+    "prepack": "node scripts/pin-source.mjs --check",
     "test": "node --test 'src/**/*.test.js'",
     "lint": "eslint src/ bin/"
   }

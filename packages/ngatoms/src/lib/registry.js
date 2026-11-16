@@ -1,9 +1,10 @@
-import { fetchText, getRawUrl } from './github.js';
+import { fetchPinned } from './github.js';
+import { validateRegistry } from './validate.js';
 
-export async function fetchRegistry() {
-  const url = getRawUrl('registry/registry.json');
-  const text = await fetchText(url);
-  return JSON.parse(text);
+/** Downloads the pinned registry and refuses it if any entry is malformed. */
+export async function fetchRegistry(src) {
+  const text = await fetchPinned('registry/registry.json', src);
+  return validateRegistry(JSON.parse(text));
 }
 
 export function findComponent(registry, name) {
