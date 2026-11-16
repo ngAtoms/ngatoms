@@ -1,18 +1,26 @@
+/**
+ * @file Select: a button that opens a list of options, single or multiple,
+ * optionally searchable.
+ */
+
 import {
   AfterViewChecked,
   Component,
   ElementRef,
-  HostListener,
+  OnDestroy,
+  Renderer2,
+  afterNextRender,
   computed,
+  effect,
   inject,
   input,
   model,
   signal,
   viewChild,
-  ChangeDetectionStrategy,
-} from "@angular/core";
-import { NgClass } from "@angular/common";
-import { NgAtomsOverlayService } from "../overlay/overlay.service";
+} from '@angular/core';
+import { DOCUMENT, NgClass } from '@angular/common';
+import { NgAtomsOverlayService } from '../overlay/overlay.service';
+import { placeFixed, showInTopLayer } from '../overlay/top-layer';
 
 export interface NgAtomsSelectOption {
   value: string;
@@ -20,54 +28,93 @@ export interface NgAtomsSelectOption {
   disabled?: boolean;
 }
 
-export type NgAtomsSelectVariant = "default" | "filled" | "ghost";
-export type NgAtomsSelectSize = "xs" | "sm" | "md" | "lg" | "xl";
+export type NgAtomsSelectVariant = 'default' | 'filled' | 'ghost';
+export type NgAtomsSelectSize = 'xs' | 'sm' | 'md' | 'lg' | 'xl';
 
+/** Select: a button that opens a list of options, single or multiple, optionally searchable. */
 @Component({
-  selector: "nga-select",
+  selector: 'nga-select',
   standalone: true,
   imports: [NgClass],
-  host: { class: "nga-select-root" },
-  templateUrl: "./select.component.html",
-  changeDetection: ChangeDetectionStrategy.Eager,
-  styleUrl: "./select.component.css",
+  host: { class: 'nga-select-root' },
+  templateUrl: './select.component.html',
+  styleUrl: './select.component.css',
 })
-export class NgAtomsSelectComponent implements AfterViewChecked {
+export class NgAtomsSelectComponent implements AfterViewChecked, OnDestroy {
   private readonly el = inject(ElementRef);
   private readonly overlay = inject(NgAtomsOverlayService);
+  private readonly renderer = inject(Renderer2);
+  private readonly document = inject(DOCUMENT);
   private deregister: (() => void) | null = null;
 
-  readonly searchInputEl =
-    viewChild<ElementRef<HTMLInputElement>>("searchInput");
+  readonly triggerEl = viewChild.required<ElementRef<HTMLButtonElement>>('triggerEl');
+  readonly searchInputEl = viewChild<ElementRef<HTMLInputElement>>('searchInput');
+  protected readonly panelEl = viewChild<ElementRef<HTMLElement>>('panelEl');
 
   readonly options = input<NgAtomsSelectOption[]>([]);
-  readonly placeholder = input<string>("Select...");
+  readonly placeholder = input<string>('Select...');
   readonly multiple = input<boolean>(false);
   readonly searchable = input<boolean>(false);
   readonly disabled = input<boolean>(false);
   readonly invalid = input<boolean>(false);
-  readonly variant = input<NgAtomsSelectVariant>("default");
-  readonly size = input<NgAtomsSelectSize>("md");
+  readonly variant = input<NgAtomsSelectVariant>('default');
+  readonly size = input<NgAtomsSelectSize>('md');
+  /** Opens the panel as soon as the select is created — for a select that appears on demand, such as an inline editor. */
+  readonly defaultOpen = input<boolean>(false);
 
   readonly value = model<string | string[] | null>(null);
 
   readonly isOpen = signal(false);
-  readonly searchQuery = signal("");
+  readonly searchQuery = signal('');
   readonly focusedIndex = signal(-1);
   readonly panelAbove = signal(false);
 
   private _shouldFocusSearch = false;
 
+  /** Repositions the panel when anything but the panel itself scrolls. */
+  private readonly onAnyScroll = (event: Event): void => {
+    const panel = this.panelEl()?.nativeElement;
+    if (panel && !panel.contains(event.target as Node)) this.positionPanel();
+  };
+
+  constructor() {
+    /*
+     * Once the panel renders it is shown in the browser's top layer, so no
+     * scroll container, transformed ancestor or modal dialog hides it. It
+     * stays in place in the DOM, so it keeps the local theme; Angular removes
+     * it when the select closes.
+     */
+    effect(() => {
+      const panel = this.panelEl()?.nativeElement;
+      if (!panel) return;
+      showInTopLayer(panel);
+      this.positionPanel();
+      this.deregister?.();
+      this.deregister = this.overlay.register(
+        reason => this.close(reason === 'escape'),
+        [this.el.nativeElement, panel],
+        { closeOnScroll: false }
+      );
+    });
+    afterNextRender(() => {
+      if (this.defaultOpen()) this.toggleOpen();
+    });
+  }
+
   readonly filteredOptions = computed(() => {
     const query = this.searchQuery().toLowerCase().trim();
     if (!query) return this.options();
-    return this.options().filter((o) => o.label.toLowerCase().includes(query));
+    return this.options().filter(o => o.label.toLowerCase().includes(query));
   });
+
+  readonly focusedOptionId = computed(() =>
+    this.focusedIndex() >= 0 ? `nga-select-opt-${this.focusedIndex()}` : null
+  );
 
   readonly hasValue = computed(() => {
     const val = this.value();
     if (this.multiple()) return Array.isArray(val) && val.length > 0;
-    return val !== null && val !== undefined && val !== "";
+    return val !== null && val !== undefined && val !== '';
   });
 
   readonly displayValue = computed(() => {
@@ -76,117 +123,124 @@ export class NgAtomsSelectComponent implements AfterViewChecked {
     if (this.multiple()) {
       const values = (Array.isArray(val) ? val : []) as string[];
       if (values.length === 0) return this.placeholder();
-      if (values.length === 1)
-        return opts.find((o) => o.value === values[0])?.label ?? values[0];
+      if (values.length === 1) return opts.find(o => o.value === values[0])?.label ?? values[0];
       return `${values.length} selected`;
     }
     if (!val) return this.placeholder();
-    return opts.find((o) => o.value === (val as string))?.label ?? String(val);
+    return opts.find(o => o.value === (val as string))?.label ?? String(val);
   });
 
   readonly triggerClasses = computed(() => ({
-    "nga-select-trigger": true,
+    'nga-select-trigger': true,
     [`nga-select-trigger--${this.variant()}`]: true,
     [`nga-select-trigger--${this.size()}`]: true,
-    "nga-select-trigger--open": this.isOpen(),
-    "nga-select-trigger--invalid": this.invalid(),
+    'nga-select-trigger--open': this.isOpen(),
+    'nga-select-trigger--invalid': this.invalid(),
   }));
 
+  /** Whether an option is selected. */
   isSelected(optValue: string): boolean {
     const val = this.value();
-    if (this.multiple())
-      return (Array.isArray(val) ? val : []).includes(optValue);
+    if (this.multiple()) return (Array.isArray(val) ? val : []).includes(optValue);
     return val === optValue;
   }
 
+  /** Opens or closes the panel. */
   toggleOpen(): void {
     if (this.disabled()) return;
     if (!this.isOpen()) {
-      this.computePanelPosition();
       this.isOpen.set(true);
-      this.deregister = this.overlay.register(
-        () => this.close(),
-        [this.el.nativeElement],
-        { closeOnScroll: false }
-      );
+      this.document.addEventListener('scroll', this.onAnyScroll, true);
       if (this.searchable()) this._shouldFocusSearch = true;
     } else {
       this.close();
     }
   }
 
-  @HostListener("window:scroll")
-  onWindowScroll(): void {
-    if (this.isOpen()) {
-      this.computePanelPosition();
+  /**
+   * Closes the panel and clears the search.
+   *
+   * @param returnFocus Whether focus goes back to the trigger; false when a
+   * click elsewhere closed the panel.
+   */
+  close(returnFocus = true): void {
+    this.isOpen.set(false);
+    this.searchQuery.set('');
+    this.focusedIndex.set(-1);
+    this.detach();
+    if (returnFocus) {
+      this.triggerEl().nativeElement.focus();
     }
   }
 
-  close(): void {
-    this.isOpen.set(false);
-    this.searchQuery.set("");
-    this.focusedIndex.set(-1);
-    this.deregister?.();
-    this.deregister = null;
-  }
-
+  /**
+   * Picks an option. In multiple mode it is added to or removed from the
+   * selection and the panel stays open.
+   */
   selectOption(option: NgAtomsSelectOption): void {
     if (option.disabled) return;
     if (this.multiple()) {
-      const current = (
-        Array.isArray(this.value()) ? this.value() : []
-      ) as string[];
+      const current = (Array.isArray(this.value()) ? this.value() : []) as string[];
       const idx = current.indexOf(option.value);
-      this.value.set(
-        idx >= 0
-          ? current.filter((v) => v !== option.value)
-          : [...current, option.value]
-      );
+      this.value.set(idx >= 0 ? current.filter(v => v !== option.value) : [...current, option.value]);
     } else {
       this.value.set(option.value);
       this.close();
     }
   }
 
+  /** Filters the options by the text in the search field. */
   onSearch(event: Event): void {
     this.searchQuery.set((event.target as HTMLInputElement).value);
     this.focusedIndex.set(-1);
   }
 
+  /**
+   * Keyboard handling on the trigger. Escape on a closed select is left
+   * alone: it belongs to whatever contains the select, a dialog or an
+   * inline editor.
+   */
   onTriggerKeydown(event: KeyboardEvent): void {
-    if (["ArrowDown", "ArrowUp", "Enter", " "].includes(event.key)) {
-      event.preventDefault();
-      if (!this.isOpen()) {
-        this.toggleOpen();
-      } else {
-        const opts = this.filteredOptions();
-        if (event.key === "ArrowDown")
-          this.focusedIndex.update((i) => Math.min(i + 1, opts.length - 1));
-        if (event.key === "ArrowUp")
-          this.focusedIndex.update((i) => Math.max(i - 1, 0));
-        if (event.key === "Enter" || event.key === " ") {
-          const idx = this.focusedIndex();
-          if (idx >= 0 && idx < opts.length) this.selectOption(opts[idx]);
-        }
+    if (!['ArrowDown', 'ArrowUp', 'Enter', ' ', 'Escape', 'Home', 'End'].includes(event.key)) return;
+    if (event.key === 'Escape' && !this.isOpen()) return;
+    event.preventDefault();
+    if (!this.isOpen()) {
+      if (event.key !== 'Escape') this.toggleOpen();
+      return;
+    }
+    const opts = this.filteredOptions();
+    switch (event.key) {
+      case 'ArrowDown': this.focusedIndex.update(i => Math.min(i + 1, opts.length - 1)); break;
+      case 'ArrowUp':   this.focusedIndex.update(i => Math.max(i - 1, 0)); break;
+      case 'Home':      this.focusedIndex.set(0); break;
+      case 'End':       this.focusedIndex.set(opts.length - 1); break;
+      case 'Enter':
+      case ' ': {
+        const idx = this.focusedIndex();
+        if (idx >= 0 && idx < opts.length) this.selectOption(opts[idx]);
+        break;
       }
+      case 'Escape': this.close(); break;
     }
   }
 
+  /**
+   * Keyboard handling inside the panel: arrow keys, Home and End move, Enter
+   * picks, Escape closes.
+   */
   onPanelKeydown(event: KeyboardEvent): void {
     const opts = this.filteredOptions();
-    if (event.key === "ArrowDown") {
-      event.preventDefault();
-      this.focusedIndex.update((i) => Math.min(i + 1, opts.length - 1));
-    } else if (event.key === "ArrowUp") {
-      event.preventDefault();
-      this.focusedIndex.update((i) => Math.max(i - 1, 0));
-    } else if (event.key === "Enter") {
-      event.preventDefault();
-      const idx = this.focusedIndex();
-      if (idx >= 0 && idx < opts.length) this.selectOption(opts[idx]);
+    switch (event.key) {
+      case 'ArrowDown': event.preventDefault(); this.focusedIndex.update(i => Math.min(i + 1, opts.length - 1)); break;
+      case 'ArrowUp':   event.preventDefault(); this.focusedIndex.update(i => Math.max(i - 1, 0)); break;
+      case 'Home':      event.preventDefault(); this.focusedIndex.set(0); break;
+      case 'End':       event.preventDefault(); this.focusedIndex.set(opts.length - 1); break;
+      case 'Enter':     event.preventDefault(); { const idx = this.focusedIndex(); if (idx >= 0 && idx < opts.length) this.selectOption(opts[idx]); } break;
+      case 'Escape':    event.preventDefault(); this.close(); break;
     }
   }
 
+  /** Focuses the search field once it has been rendered. */
   ngAfterViewChecked(): void {
     if (this._shouldFocusSearch) {
       const input = this.searchInputEl();
@@ -197,9 +251,46 @@ export class NgAtomsSelectComponent implements AfterViewChecked {
     }
   }
 
-  private computePanelPosition(): void {
+  /**
+   * Places the panel by the trigger again.
+   *
+   * @deprecated The panel now follows any scroll by itself; this stays so
+   * code that called it keeps compiling.
+   */
+  onWindowScroll(): void {
+    if (this.isOpen()) this.positionPanel();
+  }
+
+  /** Stops listening for outside clicks and scrolling. */
+  ngOnDestroy(): void {
+    this.detach();
+  }
+
+  /** Stops listening for outside clicks and scrolling. */
+  private detach(): void {
+    this.deregister?.();
+    this.deregister = null;
+    this.document.removeEventListener('scroll', this.onAnyScroll, true);
+  }
+
+  /** Places the panel under the trigger, or above it when there is no room below. */
+  private positionPanel(): void {
+    const panel = this.panelEl()?.nativeElement;
+    if (!panel) return;
     const rect = this.el.nativeElement.getBoundingClientRect();
-    const spaceBelow = window.innerHeight - rect.bottom;
-    this.panelAbove.set(spaceBelow < 240 && rect.top > spaceBelow);
+    const gap = 4;
+    const margin = 8;
+    const view = this.document.defaultView;
+    const viewHeight = view?.innerHeight ?? 0;
+    const viewWidth = view?.innerWidth ?? 0;
+
+    this.renderer.setStyle(panel, 'width', `${rect.width}px`);
+    const height = panel.offsetHeight;
+    const above = rect.bottom + gap + height > viewHeight - margin && rect.top > viewHeight - rect.bottom;
+    this.panelAbove.set(above);
+
+    const top = above ? rect.top - height - gap : rect.bottom + gap;
+    const left = Math.max(margin, Math.min(rect.left, viewWidth - rect.width - margin));
+    placeFixed(panel, top, left);
   }
 }

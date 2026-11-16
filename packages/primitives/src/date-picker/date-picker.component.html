@@ -48,7 +48,7 @@
   aria-label="Date picker"
   [attr.aria-hidden]="!open() || null"
 >
-  <!-- Screen-reader live region for month/year navigation announcements -->
+  <!-- Live region (aria-live): the month and year on show -->
   <span class="nga-sr-only" aria-live="polite" aria-atomic="true">{{ open() ? monthLabel() : '' }}</span>
 
   <!-- ── Header ───────────────────────────────────────────── -->

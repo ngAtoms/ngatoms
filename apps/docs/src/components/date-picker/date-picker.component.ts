@@ -1,9 +1,13 @@
+/**
+ * @file Date picker: a trigger and a calendar panel, for a single date or a
+ * range.
+ */
+
 import {
   Component,
   ElementRef,
   HostListener,
   OnDestroy,
-  Renderer2,
   afterNextRender,
   computed,
   effect,
@@ -12,13 +16,13 @@ import {
   model,
   signal,
   viewChild,
-  ChangeDetectionStrategy,
-} from "@angular/core";
-import { DOCUMENT } from "@angular/common";
-import { NgAtomsOverlayService } from "../overlay/overlay.service";
+} from '@angular/core';
+import { DOCUMENT } from '@angular/common';
+import { NgAtomsOverlayService } from '../overlay/overlay.service';
+import { hideFromTopLayer, placeFixed, prepareTopLayer, showInTopLayer } from '../overlay/top-layer';
 
-export type NgAtomsDatePickerSize = "sm" | "md" | "lg";
-export type NgAtomsDatePickerMode = "single" | "range";
+export type NgAtomsDatePickerSize = 'sm' | 'md' | 'lg';
+export type NgAtomsDatePickerMode = 'single' | 'range';
 
 export interface NgAtomsCalendarDay {
   date: Date;
@@ -33,56 +37,43 @@ export interface NgAtomsCalendarDay {
   isDisabled: boolean;
 }
 
-export type NgAtomsDatePickerView = "days" | "months" | "years";
+export type NgAtomsDatePickerView = 'days' | 'months' | 'years';
 
-const MONTHS_SHORT = [
-  "Jan",
-  "Feb",
-  "Mar",
-  "Apr",
-  "May",
-  "Jun",
-  "Jul",
-  "Aug",
-  "Sep",
-  "Oct",
-  "Nov",
-  "Dec",
-];
-
+/** Date picker: a trigger and a calendar panel, for a single date or a range. */
 @Component({
-  selector: "nga-date-picker",
+  selector: 'nga-date-picker',
   standalone: true,
-  templateUrl: "./date-picker.component.html",
-  styleUrl: "./date-picker.component.css",
-  changeDetection: ChangeDetectionStrategy.Eager,
-  host: { class: "nga-date-picker-root" },
+  templateUrl: './date-picker.component.html',
+  styleUrl: './date-picker.component.css',
+  host: { class: 'nga-date-picker-root' },
 })
 export class NgAtomsDatePickerComponent implements OnDestroy {
   private readonly el = inject(ElementRef<HTMLElement>);
-  private readonly renderer = inject(Renderer2);
   private readonly document = inject(DOCUMENT);
   private readonly overlay = inject(NgAtomsOverlayService);
+  private deregister: (() => void) | null = null;
 
   /** Single mode: the selected date (YYYY-MM-DD). */
-  readonly value = model<string>("");
+  readonly value = model<string>('');
   /** Range mode: start of the selected range (YYYY-MM-DD). */
-  readonly startDate = model<string>("");
+  readonly startDate = model<string>('');
   /** Range mode: end of the selected range (YYYY-MM-DD). */
-  readonly endDate = model<string>("");
+  readonly endDate = model<string>('');
 
-  readonly mode = input<NgAtomsDatePickerMode>("single");
-  readonly size = input<NgAtomsDatePickerSize>("md");
+  readonly mode = input<NgAtomsDatePickerMode>('single');
+  readonly size = input<NgAtomsDatePickerSize>('md');
   readonly invalid = input<boolean>(false);
   readonly disabled = input<boolean>(false);
-  readonly placeholder = input<string>("Pick a date");
+  /** Opens the calendar as soon as the picker is created — for a picker that appears on demand, such as an inline editor. */
+  readonly defaultOpen = input<boolean>(false);
+  readonly placeholder = input<string>('Pick a date');
   readonly showToday = input<boolean>(false);
-  readonly todayLabel = input<string>("Today");
+  readonly todayLabel = input<string>('Today');
 
   /** Earliest selectable date (YYYY-MM-DD). */
-  readonly minDate = input<string>("");
+  readonly minDate = input<string>('');
   /** Latest selectable date (YYYY-MM-DD). */
-  readonly maxDate = input<string>("");
+  readonly maxDate = input<string>('');
   /**
    * Whitelist of selectable dates (YYYY-MM-DD[]).
    * When non-empty all other dates are disabled.
@@ -93,55 +84,36 @@ export class NgAtomsDatePickerComponent implements OnDestroy {
    * Locale used for trigger display text.
    * Defaults to browser locale. Example: 'en-US', 'pt-BR', 'fr-FR'.
    */
-  readonly locale = input<string>(
-    typeof navigator !== "undefined" ? navigator.language : "en-US"
-  );
+  readonly locale = input<string>(typeof navigator !== 'undefined' ? navigator.language : 'en-US');
 
   /**
    * Output format for the model value.
    * 'iso'    → YYYY-MM-DD (default, safe for date inputs / APIs)
    * 'locale' → formatted string using the locale input
    */
-  readonly outputFormat = input<"iso" | "locale">("iso");
+  readonly outputFormat = input<'iso' | 'locale'>('iso');
 
   /** Abbreviated day labels for the column headers (7 items, starting Sunday). */
-  readonly dayLabels = input<string[]>([
-    "Su",
-    "Mo",
-    "Tu",
-    "We",
-    "Th",
-    "Fr",
-    "Sa",
-  ]);
+  readonly dayLabels = input<string[]>(['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa']);
 
   /** Full month names used in the month picker (12 items, January first). */
   readonly monthLabels = input<string[]>([
-    "January",
-    "February",
-    "March",
-    "April",
-    "May",
-    "June",
-    "July",
-    "August",
-    "September",
-    "October",
-    "November",
-    "December",
+    'January', 'February', 'March', 'April', 'May', 'June',
+    'July', 'August', 'September', 'October', 'November', 'December',
   ]);
 
   readonly open = signal(false);
-  readonly view = signal<NgAtomsDatePickerView>("days");
+  readonly view = signal<NgAtomsDatePickerView>('days');
   readonly viewYear = signal(new Date().getFullYear());
   readonly viewMonth = signal(new Date().getMonth());
   /** Tracks hovered date for range preview (range mode only). */
-  readonly hoverDate = signal("");
+  readonly hoverDate = signal('');
 
-  readonly panelEl = viewChild.required<ElementRef<HTMLElement>>("panelEl");
-  readonly monthsShort = MONTHS_SHORT;
+  readonly panelEl = viewChild.required<ElementRef<HTMLElement>>('panelEl');
+  readonly triggerEl = viewChild.required<ElementRef<HTMLButtonElement>>('triggerEl');
 
-  private deregister: (() => void) | null = null;
+  /** Tracks the date cell with tabindex="0" for roving tabindex grid navigation. */
+  readonly focusedDateStr = signal('');
 
   /** Year range shown in year picker: 12 years centred on viewYear. */
   readonly yearRange = computed(() => {
@@ -154,48 +126,58 @@ export class NgAtomsDatePickerComponent implements OnDestroy {
     return `${r[0]} – ${r[r.length - 1]}`;
   });
 
-  // ── Display value ──────────────────────────────────────────
+  /** Short month names derived from monthLabels — keeps i18n in sync. */
+  readonly monthLabelsShort = computed(() =>
+    this.monthLabels().map(m => m.slice(0, 3))
+  );
+
+  /** calendarDays chunked into rows of 7 for role="row" grid semantics. */
+  readonly calendarWeeks = computed(() => {
+    const days = this.calendarDays();
+    const weeks: NgAtomsCalendarDay[][] = [];
+    for (let i = 0; i < days.length; i += 7) weeks.push(days.slice(i, i + 7));
+    return weeks;
+  });
 
   readonly displayValue = computed(() => {
-    if (this.mode() === "single") {
+    if (this.mode() === 'single') {
       return this.formatDate(this.value());
     }
     const s = this.formatDate(this.startDate());
     const e = this.formatDate(this.endDate());
-    if (!s) return "";
+    if (!s) return '';
     return e ? `${s} → ${e}` : `${s} →`;
   });
 
-  readonly monthLabel = computed(
-    () => `${this.monthLabels()[this.viewMonth()]} ${this.viewYear()}`
-  );
+  readonly monthLabel = computed(() => `${this.monthLabels()[this.viewMonth()]} ${this.viewYear()}`);
 
-  // ── Calendar days ──────────────────────────────────────────
-
+  /**
+   * The 42 days of the calendar grid, with their state. While only the start of
+   * a range is set, the hovered day stands in for its end, which previews the
+   * range.
+   */
   readonly calendarDays = computed((): NgAtomsCalendarDay[] => {
     const year = this.viewYear();
     const month = this.viewMonth();
     const today = new Date();
 
-    const single = this.value();
-    const start = this.startDate();
-    const end = this.endDate();
-    const hover = this.hoverDate();
-    const isRange = this.mode() === "range";
-    const minDate = this.minDate();
-    const maxDate = this.maxDate();
-    const available = new Set(this.availableDates());
+    const single     = this.value();
+    const start      = this.startDate();
+    const end        = this.endDate();
+    const hover      = this.hoverDate();
+    const isRange    = this.mode() === 'range';
+    const minDate    = this.minDate();
+    const maxDate    = this.maxDate();
+    const available  = new Set(this.availableDates());
 
-    // Effective range end: use committed end, or hover preview when only start is set
     const rawEnd = isRange && start && !end ? hover : end;
-    const [lo, hi] = rawEnd
-      ? ([start, rawEnd].sort() as [string, string])
-      : [start, ""];
+    const [lo, hi] = rawEnd ? ([start, rawEnd].sort() as [string, string]) : [start, ''];
 
     const days: NgAtomsCalendarDay[] = [];
-    const firstDow = new Date(year, month, 1).getDay();
+    const firstDow   = new Date(year, month, 1).getDay();
     const daysInMonth = new Date(year, month + 1, 0).getDate();
 
+    /** Adds one day to the grid with its state. */
     const push = (date: Date, isCurrentMonth: boolean) => {
       const dateStr = this.toDateStr(date);
       const isDisabled =
@@ -203,77 +185,56 @@ export class NgAtomsDatePickerComponent implements OnDestroy {
         (!!maxDate && dateStr > maxDate) ||
         (available.size > 0 && !available.has(dateStr));
 
-      const isSelected = isRange
-        ? dateStr === lo || dateStr === hi
-        : dateStr === single;
-      const isRangeStart = isRange && !!lo && dateStr === lo;
-      const isRangeEnd = isRange && !!hi && dateStr === hi;
-      const isInRange = isRange && !!lo && !!hi && dateStr > lo && dateStr < hi;
+      const isSelected    = isRange ? (dateStr === lo || dateStr === hi) : dateStr === single;
+      const isRangeStart  = isRange && !!lo && dateStr === lo;
+      const isRangeEnd    = isRange && !!hi && dateStr === hi;
+      const isInRange     = isRange && !!lo && !!hi && dateStr > lo && dateStr < hi;
 
       days.push({
-        date,
-        dateStr,
-        day: date.getDate(),
-        isCurrentMonth,
+        date, dateStr, day: date.getDate(), isCurrentMonth,
         isToday: date.toDateString() === today.toDateString(),
-        isSelected,
-        isRangeStart,
-        isRangeEnd,
-        isInRange,
-        isDisabled,
+        isSelected, isRangeStart, isRangeEnd, isInRange, isDisabled,
       });
     };
 
-    for (let i = firstDow - 1; i >= 0; i--)
-      push(new Date(year, month, -i), false);
-    for (let d = 1; d <= daysInMonth; d++) push(new Date(year, month, d), true);
+    for (let i = firstDow - 1; i >= 0; i--) push(new Date(year, month, -i), false);
+    for (let d = 1; d <= daysInMonth; d++)  push(new Date(year, month, d), true);
     let t = 1;
     while (days.length < 42) push(new Date(year, month + 1, t++), false);
 
     return days;
   });
 
-  // ── Constructor ────────────────────────────────────────────
-
   constructor() {
     afterNextRender(() => {
-      this.renderer.appendChild(
-        this.document.body,
-        this.panelEl().nativeElement
-      );
+      prepareTopLayer(this.panelEl().nativeElement);
+      if (this.defaultOpen()) this.toggle();
     });
     effect(() => {
       if (this.open()) {
+        showInTopLayer(this.panelEl().nativeElement);
         this.deregister = this.overlay.register(
-          () => this.close(),
+          reason => this.close(reason === 'escape'),
           [this.el.nativeElement, this.panelEl().nativeElement],
           { closeOnScroll: false }
         );
       } else {
+        hideFromTopLayer(this.panelEl().nativeElement);
         this.deregister?.();
         this.deregister = null;
       }
     });
   }
 
-  // ── Helpers ────────────────────────────────────────────────
-
   /** Internal ISO representation — always YYYY-MM-DD. */
   private toDateStr(date: Date): string {
-    return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(
-      2,
-      "0"
-    )}-${String(date.getDate()).padStart(2, "0")}`;
+    return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
   }
 
   /** Value emitted to the model — ISO or locale-formatted depending on outputFormat. */
   private toOutputStr(date: Date): string {
-    if (this.outputFormat() === "locale") {
-      return date.toLocaleDateString(this.locale(), {
-        year: "numeric",
-        month: "2-digit",
-        day: "2-digit",
-      });
+    if (this.outputFormat() === 'locale') {
+      return date.toLocaleDateString(this.locale(), { year: 'numeric', month: '2-digit', day: '2-digit' });
     }
     return this.toDateStr(date);
   }
@@ -288,197 +249,251 @@ export class NgAtomsDatePickerComponent implements OnDestroy {
 
   /** Formats a stored value for trigger display. */
   private formatDate(str: string): string {
-    if (!str) return "";
+    if (!str) return '';
     const date = this.parseIso(str);
     if (!date) return str;
-    return date.toLocaleDateString(this.locale(), {
-      month: "short",
-      day: "numeric",
-      year: "numeric",
-    });
+    return date.toLocaleDateString(this.locale(), { month: 'short', day: 'numeric', year: 'numeric' });
   }
 
-  // ── Interactions ───────────────────────────────────────────
-
+  /** Opens the calendar on the month of the current value, or closes it. */
   toggle(): void {
     if (this.disabled()) return;
-    this.open.update((v) => !v);
-    if (this.open()) {
-      // Navigate to relevant month
-      const anchor = this.mode() === "range" ? this.startDate() : this.value();
+    if (!this.open()) {
+      this.open.set(true);
+      const anchor = this.mode() === 'range' ? this.startDate() : this.value();
       if (anchor) {
-        const [year, month] = anchor.split("-").map(Number);
+        const [year, month] = anchor.split('-').map(Number);
         this.viewYear.set(year);
         this.viewMonth.set(month - 1);
       }
-      requestAnimationFrame(() => this.position());
+      const focusTarget = anchor || this.toDateStr(new Date());
+      this.focusedDateStr.set(focusTarget);
+      requestAnimationFrame(() => {
+        this.position();
+        this._focusCell(this.focusedDateStr());
+      });
+    } else {
+      this.close();
     }
   }
 
-  close(): void {
+  /**
+   * Closes the calendar. A range with only its start picked is
+   * discarded, so a form never receives an incomplete selection.
+   *
+   * @param returnFocus Whether focus goes back to the trigger; false when a click elsewhere closed the calendar.
+   */
+  close(returnFocus = true): void {
+    const wasOpen = this.open();
     this.open.set(false);
-    this.hoverDate.set("");
-    this.view.set("days");
+    this.hoverDate.set('');
+    this.view.set('days');
     this.deregister?.();
     this.deregister = null;
+    if (this.mode() === 'range' && this.startDate() && !this.endDate()) {
+      this.startDate.set('');
+    }
+    if (wasOpen && returnFocus) {
+      setTimeout(() => this.triggerEl().nativeElement.focus());
+    }
   }
 
-  // ── Month / year picker ────────────────────────────────────
+  /** Clears the value, or both ends of the range. */
+  clear(): void {
+    if (this.mode() === 'single') {
+      this.value.set('');
+    } else {
+      this.startDate.set('');
+      this.endDate.set('');
+    }
+  }
 
+  /** Switches between the days and the month list. */
   toggleMonthView(): void {
-    this.view.set(this.view() === "months" ? "days" : "months");
+    this.view.set(this.view() === 'months' ? 'days' : 'months');
   }
 
+  /** Switches between the days and the year list. */
   toggleYearView(): void {
-    this.view.set(this.view() === "years" ? "days" : "years");
+    this.view.set(this.view() === 'years' ? 'days' : 'years');
   }
 
+  /** Shows a month and goes back to the days. */
   selectMonth(month: number): void {
     this.viewMonth.set(month);
-    this.view.set("days");
+    this.view.set('days');
   }
 
+  /** Shows a year and goes back to the days. */
   selectYear(year: number): void {
     this.viewYear.set(year);
-    this.view.set("days");
+    this.view.set('days');
   }
 
+  /** Shows the previous range of years. */
   prevYearRange(): void {
-    this.viewYear.update((y) => y - 12);
+    this.viewYear.update(y => y - 12);
   }
 
+  /** Shows the next range of years. */
   nextYearRange(): void {
-    this.viewYear.update((y) => y + 12);
+    this.viewYear.update(y => y + 12);
   }
 
+  /**
+   * Picks a day. In single mode it becomes the value and the calendar closes. In
+   * range mode the first pick is the start; picking the start again removes it,
+   * a day before it becomes the new start, and a day after it is the end, which
+   * closes the calendar. With both ends set, a pick starts a new range.
+   */
   selectDay(day: NgAtomsCalendarDay): void {
     if (day.isDisabled) return;
 
-    if (this.mode() === "single") {
+    if (this.mode() === 'single') {
       this.value.set(this.toOutputStr(day.date));
       this.close();
       return;
     }
 
-    // Range mode
     const start = this.startDate();
-    const end = this.endDate();
+    const end   = this.endDate();
 
     if (!start || (start && end)) {
-      // Start fresh
       this.startDate.set(this.toOutputStr(day.date));
-      this.endDate.set("");
+      this.endDate.set('');
     } else {
-      // Start is set, no end yet
       if (day.dateStr === start) {
-        // Deselect
-        this.startDate.set("");
+        this.startDate.set('');
       } else if (day.dateStr < start) {
-        // Clicked before start → becomes new start
         this.startDate.set(this.toOutputStr(day.date));
       } else {
-        // Valid end date
         this.endDate.set(this.toOutputStr(day.date));
-        this.hoverDate.set("");
+        this.hoverDate.set('');
         this.close();
       }
     }
   }
 
+  /** Picks today and closes the calendar. */
   selectToday(): void {
     const today = new Date();
     const todayStr = this.toOutputStr(today);
-    if (this.mode() === "single") {
+    if (this.mode() === 'single') {
       this.value.set(todayStr);
     } else {
       this.startDate.set(todayStr);
-      this.endDate.set("");
+      this.endDate.set('');
     }
     this.viewYear.set(today.getFullYear());
     this.viewMonth.set(today.getMonth());
-    this.view.set("days");
+    this.view.set('days');
     this.close();
   }
 
+  /** Previews the range up to the hovered day while only the start is set. */
   onDayHover(day: NgAtomsCalendarDay): void {
-    if (this.mode() === "range" && this.startDate() && !this.endDate()) {
+    if (this.mode() === 'range' && this.startDate() && !this.endDate()) {
       this.hoverDate.set(day.dateStr);
     }
   }
 
+  /** Drops the range preview. */
   onGridLeave(): void {
-    this.hoverDate.set("");
+    this.hoverDate.set('');
   }
 
+  /** Shows the previous month. */
   prevMonth(): void {
-    if (this.viewMonth() === 0) {
-      this.viewMonth.set(11);
-      this.viewYear.update((y) => y - 1);
-    } else {
-      this.viewMonth.update((m) => m - 1);
-    }
+    if (this.viewMonth() === 0) { this.viewMonth.set(11); this.viewYear.update(y => y - 1); }
+    else { this.viewMonth.update(m => m - 1); }
   }
 
+  /** Shows the next month. */
   nextMonth(): void {
-    if (this.viewMonth() === 11) {
-      this.viewMonth.set(0);
-      this.viewYear.update((y) => y + 1);
-    } else {
-      this.viewMonth.update((m) => m + 1);
-    }
+    if (this.viewMonth() === 11) { this.viewMonth.set(0); this.viewYear.update(y => y + 1); }
+    else { this.viewMonth.update(m => m + 1); }
   }
 
-  // ── Positioning ────────────────────────────────────────────
-
+  /** Places the panel under the trigger, or above it when there is no room below. */
   private position(): void {
     const panel = this.panelEl().nativeElement;
-    const tr = this.el.nativeElement.getBoundingClientRect();
-    const pr = panel.getBoundingClientRect();
-    const gap = 4;
+    const tr    = this.el.nativeElement.getBoundingClientRect();
+    const pr    = panel.getBoundingClientRect();
+    const gap   = 4;
     const margin = 8;
 
-    let top = tr.bottom + gap;
+    let top  = tr.bottom + gap;
     let left = tr.left;
 
-    if (top + pr.height > window.innerHeight - margin)
-      top = tr.top - pr.height - gap;
-    left = Math.max(
-      margin,
-      Math.min(left, window.innerWidth - pr.width - margin)
-    );
+    if (top + pr.height > window.innerHeight - margin) top = tr.top - pr.height - gap;
+    left = Math.max(margin, Math.min(left, window.innerWidth - pr.width - margin));
 
-    this.renderer.setStyle(panel, "top", `${top}px`);
-    this.renderer.setStyle(panel, "left", `${left}px`);
+    placeFixed(panel, top, left);
   }
 
-  @HostListener("window:scroll")
+  /** Keeps the panel by the trigger while the page scrolls. */
+  @HostListener('window:scroll')
   onWindowScroll(): void {
     if (this.open()) {
       this.position();
     }
   }
 
-  @HostListener("document:click", ["$event"])
-  onDocumentClick(event: MouseEvent): void {
-    const target = event.target as Node;
-    if (
-      !this.el.nativeElement.contains(target) &&
-      !this.panelEl().nativeElement.contains(target)
-    ) {
-      this.close();
+  /**
+   * Keyboard navigation in the days: arrow keys move by a day or a week, Home
+   * and End go to the start and end of the week, Page Up and Page Down move by a
+   * month, Enter or Space picks.
+   */
+  @HostListener('document:keydown', ['$event'])
+  onDocumentKeydown(event: KeyboardEvent): void {
+    if (!this.open()) return;
+    if (this.view() !== 'days') return;
+    const panel = this.panelEl().nativeElement;
+    if (!panel.contains(event.target as Node)) return;
+
+    const focused = this.focusedDateStr();
+    const date = focused ? this.parseIso(focused) : null;
+    if (!date) return;
+
+    let moved = false;
+    switch (event.key) {
+      case 'ArrowLeft':  date.setDate(date.getDate() - 1); moved = true; break;
+      case 'ArrowRight': date.setDate(date.getDate() + 1); moved = true; break;
+      case 'ArrowUp':    date.setDate(date.getDate() - 7); moved = true; break;
+      case 'ArrowDown':  date.setDate(date.getDate() + 7); moved = true; break;
+      case 'Home':       date.setDate(date.getDate() - date.getDay()); moved = true; break;
+      case 'End':        date.setDate(date.getDate() + (6 - date.getDay())); moved = true; break;
+      case 'PageUp':     date.setMonth(date.getMonth() - 1); moved = true; break;
+      case 'PageDown':   date.setMonth(date.getMonth() + 1); moved = true; break;
+      case 'Enter':
+      case ' ': {
+        const day = this.calendarDays().find(d => d.dateStr === focused);
+        if (day) this.selectDay(day);
+        event.preventDefault();
+        return;
+      }
+    }
+
+    if (moved) {
+      event.preventDefault();
+      const newStr = this.toDateStr(date);
+      this.focusedDateStr.set(newStr);
+      if (date.getMonth() !== this.viewMonth() || date.getFullYear() !== this.viewYear()) {
+        this.viewMonth.set(date.getMonth());
+        this.viewYear.set(date.getFullYear());
+      }
+      requestAnimationFrame(() => this._focusCell(newStr));
     }
   }
 
-  @HostListener("document:keydown.escape")
-  onEscape(): void {
-    if (this.open()) this.close();
+  /** Focuses the cell of a date, when it is rendered. */
+  private _focusCell(dateStr: string): void {
+    const cell = this.panelEl().nativeElement.querySelector<HTMLElement>(`[data-date="${dateStr}"]`);
+    cell?.focus();
   }
 
+  /** Stops listening for outside clicks, Escape and scrolling. */
   ngOnDestroy(): void {
     this.deregister?.();
-    const panel = this.panelEl().nativeElement;
-    if (panel.parentElement === this.document.body) {
-      this.renderer.removeChild(this.document.body, panel);
-    }
   }
 }

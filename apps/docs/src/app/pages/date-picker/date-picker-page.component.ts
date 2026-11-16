@@ -195,6 +195,12 @@ export class MyComponent {
       defaultVal: "false",
       description: "Prevents interaction with the date picker.",
     },
+    {
+      name: "defaultOpen",
+      type: "boolean",
+      defaultVal: "false",
+      description: "Opens the calendar as soon as the picker is created, for a picker that appears on demand.",
+    },
   ];
 
   readonly a11yItems = [

@@ -37,6 +37,7 @@
             </div>
             <div ngAtomsDialogBody>
               <p style="font-size:14px;color:var(--nga-color-muted-foreground)">Dialog body content goes here.</p>
+              <nga-select [options]="roles" [(value)]="role" />
             </div>
             <div ngAtomsDialogFooter>
               <button ngAtomsButton variant="outline" (click)="editOpen.set(false)">Cancel</button>

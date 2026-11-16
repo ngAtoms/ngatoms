@@ -182,6 +182,12 @@ export class MyComponent {
       defaultVal: "false",
       description: "Prevents interaction with the select.",
     },
+    {
+      name: "defaultOpen",
+      type: "boolean",
+      defaultVal: "false",
+      description: "Opens the panel as soon as the select is created, for a select that appears on demand.",
+    },
   ];
 
   readonly a11yItems = [

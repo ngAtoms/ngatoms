@@ -8,6 +8,7 @@ import { NgAtomsDialogBodyDirective } from "../../../components/dialog/dialog-bo
 import { NgAtomsDialogFooterDirective } from "../../../components/dialog/dialog-footer.directive";
 import { NgAtomsDialogCloseDirective } from "../../../components/dialog/dialog-close.directive";
 import { NgAtomsButtonDirective } from "../../../components/button";
+import { NgAtomsSelectComponent, NgAtomsSelectOption } from "../../../components/select";
 import { CodeBlockComponent } from "../../../components/code-block/code-block.component";
 import { TocComponent } from "../../../components/toc/toc.component";
 
@@ -24,6 +25,7 @@ import { TocComponent } from "../../../components/toc/toc.component";
     NgAtomsDialogFooterDirective,
     NgAtomsDialogCloseDirective,
     NgAtomsButtonDirective,
+    NgAtomsSelectComponent,
     CodeBlockComponent,
     TocComponent,
   ],
@@ -37,6 +39,12 @@ export class DialogPageComponent {
   readonly editOpen = signal(false);
   readonly confirmOpen = signal(false);
   readonly largeOpen = signal(false);
+  readonly role = signal<string | string[] | null>("viewer");
+  readonly roles: NgAtomsSelectOption[] = [
+    { value: "viewer", label: "Viewer" },
+    { value: "editor", label: "Editor" },
+    { value: "admin", label: "Admin" },
+  ];
 
   tab(id: string): "preview" | "code" {
     return this.previewTabs[id] ?? "preview";
@@ -65,7 +73,7 @@ export class DialogPageComponent {
     <button ngAtomsDialogClose>✕</button>
   </div>
   <div ngAtomsDialogBody>
-    <!-- content -->
+    <nga-select [options]="roles" [(value)]="role" />
   </div>
   <div ngAtomsDialogFooter>
     <button ngAtomsButton variant="outline" (click)="isOpen.set(false)">Cancel</button>

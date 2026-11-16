@@ -8,7 +8,6 @@ import {
   ElementRef,
   HostListener,
   OnDestroy,
-  Renderer2,
   afterNextRender,
   computed,
   effect,
@@ -20,6 +19,7 @@ import {
 } from '@angular/core';
 import { DOCUMENT } from '@angular/common';
 import { NgAtomsOverlayService } from '../overlay/overlay.service';
+import { hideFromTopLayer, placeFixed, prepareTopLayer, showInTopLayer } from '../overlay/top-layer';
 
 export type NgAtomsDatePickerSize = 'sm' | 'md' | 'lg';
 export type NgAtomsDatePickerMode = 'single' | 'range';
@@ -49,7 +49,6 @@ export type NgAtomsDatePickerView = 'days' | 'months' | 'years';
 })
 export class NgAtomsDatePickerComponent implements OnDestroy {
   private readonly el = inject(ElementRef<HTMLElement>);
-  private readonly renderer = inject(Renderer2);
   private readonly document = inject(DOCUMENT);
   private readonly overlay = inject(NgAtomsOverlayService);
   private deregister: (() => void) | null = null;
@@ -65,6 +64,8 @@ export class NgAtomsDatePickerComponent implements OnDestroy {
   readonly size = input<NgAtomsDatePickerSize>('md');
   readonly invalid = input<boolean>(false);
   readonly disabled = input<boolean>(false);
+  /** Opens the calendar as soon as the picker is created — for a picker that appears on demand, such as an inline editor. */
+  readonly defaultOpen = input<boolean>(false);
   readonly placeholder = input<string>('Pick a date');
   readonly showToday = input<boolean>(false);
   readonly todayLabel = input<string>('Today');
@@ -206,16 +207,19 @@ export class NgAtomsDatePickerComponent implements OnDestroy {
 
   constructor() {
     afterNextRender(() => {
-      this.renderer.appendChild(this.document.body, this.panelEl().nativeElement);
+      prepareTopLayer(this.panelEl().nativeElement);
+      if (this.defaultOpen()) this.toggle();
     });
     effect(() => {
       if (this.open()) {
+        showInTopLayer(this.panelEl().nativeElement);
         this.deregister = this.overlay.register(
-          () => this.close(false),
+          reason => this.close(reason === 'escape'),
           [this.el.nativeElement, this.panelEl().nativeElement],
           { closeOnScroll: false }
         );
       } else {
+        hideFromTopLayer(this.panelEl().nativeElement);
         this.deregister?.();
         this.deregister = null;
       }
@@ -424,8 +428,7 @@ export class NgAtomsDatePickerComponent implements OnDestroy {
     if (top + pr.height > window.innerHeight - margin) top = tr.top - pr.height - gap;
     left = Math.max(margin, Math.min(left, window.innerWidth - pr.width - margin));
 
-    this.renderer.setStyle(panel, 'top',  `${top}px`);
-    this.renderer.setStyle(panel, 'left', `${left}px`);
+    placeFixed(panel, top, left);
   }
 
   /** Keeps the panel by the trigger while the page scrolls. */
@@ -489,11 +492,8 @@ export class NgAtomsDatePickerComponent implements OnDestroy {
     cell?.focus();
   }
 
-  /** Removes the panel from the body. */
+  /** Stops listening for outside clicks, Escape and scrolling. */
   ngOnDestroy(): void {
-    const panel = this.panelEl().nativeElement;
-    if (panel.parentElement === this.document.body) {
-      this.renderer.removeChild(this.document.body, panel);
-    }
+    this.deregister?.();
   }
 }

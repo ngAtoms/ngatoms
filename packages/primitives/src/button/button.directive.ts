@@ -89,7 +89,7 @@ export class NgAtomsButtonDirective implements OnDestroy {
     }
   }
 
-  /** Marks the button busy and disabled for assistive technology, and inserts the spinner. */
+  /** Marks the button busy (aria-busy) and disabled, and inserts the spinner. */
   private _activateLoading(): void {
     if (this._spinnerEl) return;
 
