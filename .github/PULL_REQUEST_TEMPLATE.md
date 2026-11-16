@@ -27,6 +27,7 @@
 - [ ] InfoSec review: link to the report (reviewed commit SHA: ______)
 - [ ] QA review: link to the report (reviewed commit SHA: ______)
 - [ ] UI/UX review, if the PR changes visuals or interaction: link, or "N/A" confirmed by the design reviewer
+
 If the PR changes after an approval, the reviewer re-checks the new commits before merge.
 Without these approvals, the PR is not sent for merge.
 
