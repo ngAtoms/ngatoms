@@ -23,6 +23,13 @@
 - [ ] Changeset included (`npm run changeset`) — required for changes to `packages/*` or `registry/`
 - [ ] Docs updated if the component API or behavior changed
 
+## Required approvals before merge
+- [ ] InfoSec review: link to the report (reviewed commit SHA: ______)
+- [ ] QA review: link to the report (reviewed commit SHA: ______)
+- [ ] UI/UX review, if the PR changes visuals or interaction: link, or "N/A" confirmed by the design reviewer
+If the PR changes after an approval, the reviewer re-checks the new commits before merge.
+Without these approvals, the PR is not sent for merge.
+
 ## Security checklist
 
 <!-- Tick each item, or write "N/A — reason". Do not leave items blank. -->
