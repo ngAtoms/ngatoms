@@ -17,6 +17,7 @@ export type NgAtomsBadgeVariant =
   | 'success'
   | 'warning'
   | 'destructive'
+  | 'info'
   | 'solid'
   | 'outline';
 

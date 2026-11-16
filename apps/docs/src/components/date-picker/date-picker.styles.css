@@ -29,12 +29,12 @@
   --nga-date-picker-trigger-invalid-border: var(--nga-color-destructive, oklch(47% 0 0));
 
   /* Panel */
-  --nga-date-picker-panel-bg:     color-mix(in oklab, var(--nga-color-card, #F7F8FA) 78%, transparent);
-  --nga-date-picker-panel-border: color-mix(in oklab, var(--nga-color-border, #CCCCCC) 55%, transparent);
-  --nga-date-picker-panel-inset:  inset 0 1px 0 rgba(230, 230, 230, 0.85);
+  --nga-date-picker-panel-bg:     color-mix(in oklab, var(--nga-color-card, #FBF8F1) 78%, transparent);
+  --nga-date-picker-panel-border: color-mix(in oklab, var(--nga-color-border, #DDD4C1) 55%, transparent);
+  --nga-date-picker-panel-inset:  inset 0 1px 0 rgba(251, 248, 241, 0.85);
   --nga-date-picker-panel-blur:   blur(20px) saturate(180%);
   --nga-date-picker-panel-radius: var(--nga-radius-md, 0.5rem);
-  --nga-date-picker-panel-shadow: 0 8px 24px -4px rgba(26, 26, 26, 0.10), 0 2px 8px -2px rgba(26, 26, 26, 0.06);
+  --nga-date-picker-panel-shadow: 0 8px 24px -4px rgba(17, 17, 17, 0.10), 0 2px 8px -2px rgba(17, 17, 17, 0.06);
   --nga-date-picker-panel-width:  280px;
   --nga-date-picker-panel-p:      0.75rem;
 
@@ -65,10 +65,10 @@
 
 .dark {
   --nga-date-picker-panel-bg:     color-mix(in oklab, var(--nga-color-card) 82%, transparent);
-  --nga-date-picker-panel-border: color-mix(in oklab, #F7F8FA 14%, transparent);
-  --nga-date-picker-panel-inset:  inset 0 1px 0 rgba(230, 230, 230, 0.07);
+  --nga-date-picker-panel-border: color-mix(in oklab, #FBF8F1 14%, transparent);
+  --nga-date-picker-panel-inset:  inset 0 1px 0 rgba(251, 248, 241, 0.07);
   --nga-date-picker-panel-blur:   blur(24px) saturate(200%) brightness(1.06);
-  --nga-date-picker-panel-shadow: 0 8px 32px rgba(26, 26, 26, 0.45), 0 2px 8px rgba(26, 26, 26, 0.28);
+  --nga-date-picker-panel-shadow: 0 8px 32px rgba(17, 17, 17, 0.45), 0 2px 8px rgba(17, 17, 17, 0.28);
   --nga-date-picker-day-outside-fg: var(--nga-color-muted-foreground, oklch(45% 0 0));
 }
 
@@ -398,7 +398,7 @@
 .nga-date-picker-day--selected:hover,
 .nga-date-picker-day--range-start:hover,
 .nga-date-picker-day--range-end:hover {
-  background: color-mix(in oklch, var(--nga-date-picker-selected-bg) 90%, #1A1A1A);
+  background: color-mix(in oklch, var(--nga-date-picker-selected-bg) 90%, #111111);
 }
 
 /* Range fill */
@@ -410,7 +410,7 @@
 }
 
 .nga-date-picker-day--in-range:hover {
-  background: color-mix(in oklch, var(--nga-date-picker-range-bg) 90%, #1A1A1A);
+  background: color-mix(in oklch, var(--nga-date-picker-range-bg) 90%, #111111);
 }
 
 /* Rounded caps on range endpoints */

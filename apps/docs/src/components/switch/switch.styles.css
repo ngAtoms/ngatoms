@@ -7,10 +7,10 @@
 :root {
   --nga-switch-transition:   background var(--nga-dur-base, 180ms) var(--nga-ease-out, ease);
 
-  --nga-switch-bg:           var(--nga-color-border, #CCCCCC);
-  --nga-switch-checked-bg:   var(--nga-color-accent, #333333);
-  --nga-switch-thumb-bg:          #F7F8FA;
-  --nga-switch-thumb-checked-bg:  var(--nga-color-accent-foreground, #F7F8FA);
+  --nga-switch-bg:           var(--nga-color-border, #DDD4C1);
+  --nga-switch-checked-bg:   var(--nga-color-accent, #D9541E);
+  --nga-switch-thumb-bg:          #FBF8F1;
+  --nga-switch-thumb-checked-bg:  var(--nga-color-accent-foreground, #111111);
   --nga-switch-thumb-inset:  0.125rem;
   --nga-switch-thumb-size:   1rem;
 
@@ -57,7 +57,8 @@
 }
 
 .nga-switch:focus-visible {
-  box-shadow: var(--nga-glow-ember, 0 0 0 4px rgba(26, 26, 26, 0.16));
+  outline: none;
+  box-shadow: var(--nga-focus-ring, 0 0 0 2px var(--nga-color-background, #F3EEE3), 0 0 0 4px var(--nga-color-ring, #D9541E));
 }
 
 .nga-switch:disabled {
@@ -77,7 +78,7 @@
 
 /* Dark accent is a light chip, so the on-state thumb has to be ink */
 .dark .nga-switch:checked::before {
-  background: var(--nga-stone-950, #1A1A1A);
+  background: var(--nga-stone-950, #111111);
   box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.55);
 }
 

@@ -15,13 +15,13 @@
   /* Secondary text (locked cells, empty states) mixes the grid's own
      foreground into its background, so it keeps 4.5:1 in light and dark
      whatever the global muted token is. */
-  --nga-grid-muted:         color-mix(in oklab, var(--nga-grid-fg) 65%, var(--nga-grid-bg));
+  --nga-grid-muted:         color-mix(in oklab, var(--nga-grid-fg) 72%, var(--nga-grid-bg));
   --nga-grid-border:        var(--nga-color-border, #DDD4C1);
   --nga-grid-row-border:    color-mix(in oklab, var(--nga-color-border, #DDD4C1) 55%, transparent);
 
   /* Opaque, because pinned panes and the header sit over scrolling cells */
   --nga-grid-header-bg:     color-mix(in oklab, var(--nga-color-muted, #EAE3D4) 55%, var(--nga-grid-bg));
-  --nga-grid-header-fg:     color-mix(in oklab, var(--nga-grid-fg) 65%, var(--nga-grid-header-bg));
+  --nga-grid-header-fg:     color-mix(in oklab, var(--nga-grid-fg) 72%, var(--nga-grid-header-bg));
   --nga-grid-row-hover-bg:  color-mix(in oklab, var(--nga-color-foreground, #111111) 4%, var(--nga-grid-bg));
   --nga-grid-subtotal-bg:   color-mix(in oklab, var(--nga-color-muted, #EAE3D4) 35%, var(--nga-grid-bg));
   --nga-grid-total-bg:      color-mix(in oklab, var(--nga-color-muted, #EAE3D4) 70%, var(--nga-grid-bg));
@@ -466,6 +466,7 @@
 }
 
 .nga-grid__header-filter:hover,
+.nga-grid__header-filter:focus-visible,
 .nga-grid__header-filter[aria-expanded='true'] {
   opacity: 1;
   background: color-mix(in oklab, var(--nga-grid-fg) 9%, transparent);
@@ -615,7 +616,7 @@
 
 .nga-grid-filter__field:focus-visible {
   border-color: var(--nga-color-ring, #D9541E);
-  box-shadow: var(--nga-glow-ember, 0 0 0 4px rgba(217, 84, 30, 0.24));
+  box-shadow: var(--nga-focus-ring, 0 0 0 2px var(--nga-color-background, #F3EEE3), 0 0 0 4px var(--nga-color-ring, #D9541E));
 }
 
 .nga-grid-filter__options {
@@ -678,7 +679,7 @@
 .nga-grid__empty-action:focus-visible,
 .nga-grid-filter__button:focus-visible {
   outline: none;
-  box-shadow: var(--nga-glow-ember, 0 0 0 4px rgba(217, 84, 30, 0.24));
+  box-shadow: var(--nga-focus-ring, 0 0 0 2px var(--nga-color-background, #F3EEE3), 0 0 0 4px var(--nga-color-ring, #D9541E));
 }
 
 /* ── Active cell and editing ────────────────────────────────── */

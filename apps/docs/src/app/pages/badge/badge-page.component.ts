@@ -11,6 +11,7 @@ const VARIANTS = [
   "success",
   "warning",
   "destructive",
+  "info",
   "solid",
   "outline",
 ] as const;
@@ -54,6 +55,7 @@ export class MyComponent {}`;
 <span ngAtomsBadge variant="success">Success</span>
 <span ngAtomsBadge variant="warning">Warning</span>
 <span ngAtomsBadge variant="destructive">Destructive</span>
+<span ngAtomsBadge variant="info">Info</span>
 <span ngAtomsBadge variant="solid">Solid</span>
 <span ngAtomsBadge variant="outline">Outline</span>`;
 
@@ -68,7 +70,7 @@ export class MyComponent {}`;
   readonly props = [
     {
       name: "variant",
-      type: `'default' | 'ember' | 'success' | 'warning' | 'destructive' | 'solid' | 'outline'`,
+      type: `'default' | 'ember' | 'success' | 'warning' | 'destructive' | 'info' | 'solid' | 'outline'`,
       defaultVal: `'default'`,
       description: "Visual style and semantic color of the badge.",
     },
@@ -78,7 +80,7 @@ export class MyComponent {}`;
     {
       icon: "text-aa",
       title: "Color + text",
-      body: "Each variant pairs color with a text label so meaning is never conveyed by color alone.",
+      body: "Give every badge a text label: the label carries the meaning and the variant color only reinforces it.",
     },
     {
       icon: "link",
