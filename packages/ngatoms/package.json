@@ -1,6 +1,6 @@
 {
   "name": "ngatoms",
-  "version": "1.0.0-rc.7",
+  "version": "1.0.0",
   "description": "Angular UI primitives you own.",
   "author": "Lázaro Dutra",
   "license": "MIT",
