@@ -2,7 +2,7 @@
  * @file Specs for tabs keyboard navigation.
  */
 
-import { Component, Type } from '@angular/core';
+import { Component, Type, signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { describe, expect, it } from 'vitest';
 import { NgAtomsTabListDirective } from './tab-list.directive';
@@ -46,6 +46,26 @@ class TabsHost {}
   `,
 })
 class DisabledTabsHost {}
+
+@Component({
+  standalone: true,
+  imports: [NgAtomsTabsComponent, NgAtomsTabListDirective, NgAtomsTabTriggerDirective, NgAtomsTabPanelDirective],
+  template: `
+    <nga-tabs>
+      <div ngAtomsTabList>
+        <button ngAtomsTabTrigger value="one">One</button>
+        <button ngAtomsTabTrigger value="two" [disabled]="twoDisabled()">Two</button>
+        <button ngAtomsTabTrigger value="three">Three</button>
+      </div>
+      <div ngAtomsTabPanel value="one">Panel one</div>
+      <div ngAtomsTabPanel value="two">Panel two</div>
+      <div ngAtomsTabPanel value="three">Panel three</div>
+    </nga-tabs>
+  `,
+})
+class RuntimeDisabledHost {
+  readonly twoDisabled = signal(false);
+}
 
 /** Renders a host and returns the fixture with a trigger lookup by its text. */
 function mount(
@@ -156,5 +176,59 @@ describe('NgAtomsTabTriggerDirective — disabled tabs', () => {
     press(fixture, { key: 'ArrowLeft' });
     expect(document.activeElement).toBe(trigger('One'));
     expectDisabledOut(trigger);
+  });
+});
+
+describe('NgAtomsTabTriggerDirective — active tab disabled at runtime', () => {
+  /** Lets the disabled watch see the attribute, then renders the result. */
+  async function settle(fixture: ComponentFixture<unknown>): Promise<void> {
+    fixture.detectChanges();
+    await new Promise(resolve => setTimeout(resolve));
+    await fixture.whenStable();
+    fixture.detectChanges();
+  }
+
+  /** `tabindex` of One, Two and Three. */
+  const tabStops = (trigger: (text: string) => HTMLButtonElement) =>
+    ['One', 'Two', 'Three'].map(text => trigger(text).getAttribute('tabindex'));
+
+  it('moves the tab stop to the first enabled tab and keeps the selection', async () => {
+    const { fixture, trigger } = mount(RuntimeDisabledHost);
+    trigger('Two').click();
+    await settle(fixture);
+    expect(tabStops(trigger)).toEqual(['-1', '0', '-1']);
+
+    (fixture.componentInstance as RuntimeDisabledHost).twoDisabled.set(true);
+    await settle(fixture);
+
+    expect(trigger('Two').disabled).toBe(true);
+    expect(trigger('Two').getAttribute('aria-selected')).toBe('true');
+    expect(tabStops(trigger)).toEqual(['0', '-1', '-1']);
+  });
+
+  it('gives the tab stop back when the active tab is enabled again', async () => {
+    const { fixture, trigger } = mount(RuntimeDisabledHost);
+    trigger('Two').click();
+    const host = fixture.componentInstance as RuntimeDisabledHost;
+    host.twoDisabled.set(true);
+    await settle(fixture);
+    host.twoDisabled.set(false);
+    await settle(fixture);
+
+    expect(tabStops(trigger)).toEqual(['-1', '0', '-1']);
+  });
+
+  it('moves on from the tab stop with the arrows, skipping the disabled active tab', async () => {
+    const { fixture, trigger } = mount(RuntimeDisabledHost);
+    trigger('Two').click();
+    (fixture.componentInstance as RuntimeDisabledHost).twoDisabled.set(true);
+    await settle(fixture);
+    trigger('One').focus();
+
+    press(fixture, { key: 'ArrowRight' });
+    await settle(fixture);
+    expect(document.activeElement).toBe(trigger('Three'));
+    expect(trigger('Three').getAttribute('aria-selected')).toBe('true');
+    expect(tabStops(trigger)).toEqual(['-1', '-1', '0']);
   });
 });

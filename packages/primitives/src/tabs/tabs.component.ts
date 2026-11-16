@@ -88,14 +88,14 @@ export class NgAtomsTabsComponent {
 
   /**
    * Moves one enabled tab forward or back from the active one, wrapping.
-   * When the active tab is not among the enabled ones, forward goes to the
-   * first and back to the last.
+   * When the active tab is not among the enabled ones (disabled at runtime),
+   * it moves from the tab stop, the first enabled tab, which is where focus is.
    */
   private step(direction: 1 | -1): void {
     const enabled = this.enabledTriggers();
     if (!enabled.length) return;
     const idx = enabled.findIndex(t => t.value() === this.activeTab());
-    const from = idx < 0 ? (direction > 0 ? -1 : 0) : idx;
+    const from = idx < 0 ? 0 : idx;
     this.activate(enabled[(from + direction + enabled.length) % enabled.length]);
   }
 

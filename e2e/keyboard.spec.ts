@@ -129,4 +129,36 @@ for (const theme of THEMES) {
     await page.keyboard.press('Shift+Tab');
     await expect(tab('Notifications')).toBeFocused();
   });
+
+  test(`tabs: an active tab disabled at runtime hands the tab stop on (${theme})`, async ({ page }) => {
+    await page.goto('/tabs');
+    await useTheme(page, theme);
+    const section = page.locator('#pills');
+    const tab = (name: string) => section.getByRole('tab', { name });
+    await tab('Analytics').scrollIntoViewIfNeeded();
+    await tab('Analytics').click();
+    await expect(tab('Analytics')).toHaveAttribute('tabindex', '0');
+
+    await tab('Analytics').evaluate(element => ((element as HTMLButtonElement).disabled = true));
+    await expect(tab('Overview')).toHaveAttribute('tabindex', '0');
+    await expect(tab('Analytics')).toHaveAttribute('tabindex', '-1');
+    await expect(tab('Analytics')).toHaveAttribute('aria-selected', 'true');
+    await expect(tab('Reports')).toHaveAttribute('tabindex', '-1');
+
+    /** Focuses the last tabbable element before the tab list, so Tab is the next step into it. */
+    await section.locator('[ngAtomsTabList], [role="tablist"]').first().evaluate(list => {
+      const tabbable = Array.from(
+        document.querySelectorAll<HTMLElement>('a[href], button, input, select, textarea, [tabindex]'),
+      ).filter(element => element.tabIndex >= 0 && !(element as HTMLButtonElement).disabled && element.offsetParent !== null);
+      const before = tabbable.filter(element => element.compareDocumentPosition(list) & Node.DOCUMENT_POSITION_FOLLOWING);
+      before[before.length - 1]?.focus();
+    });
+    await page.keyboard.press('Tab');
+    await expect(tab('Overview')).toBeFocused();
+    await page.screenshot({ path: `${shots}/tabs-runtime-disabled-${theme}.png` });
+
+    await page.keyboard.press('ArrowRight');
+    await expect(tab('Reports')).toBeFocused();
+    await expect(tab('Reports')).toHaveAttribute('aria-selected', 'true');
+  });
 }
