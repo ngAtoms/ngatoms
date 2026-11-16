@@ -119,10 +119,15 @@ for (const theme of THEMES) {
     await expect(section.getByRole('tabpanel').filter({ visible: true })).toHaveCount(1);
     await page.screenshot({ path: `${shots}/tabs-disabled-end-${theme}.png` });
 
+    // Focus moves at once; the selection and the tab stop follow on the next
+    // render. Wait for them before the next key, as a person would.
     await page.keyboard.press('ArrowRight');
     await expect(tab('Account')).toBeFocused();
+    await expect(tab('Account')).toHaveAttribute('tabindex', '0');
     await page.keyboard.press('ArrowLeft');
     await expect(tab('Notifications')).toBeFocused();
+    await expect(tab('Notifications')).toHaveAttribute('aria-selected', 'true');
+    await expect(tab('Notifications')).toHaveAttribute('tabindex', '0');
 
     await page.keyboard.press('Tab');
     await expect(tab('Notifications')).not.toBeFocused();
