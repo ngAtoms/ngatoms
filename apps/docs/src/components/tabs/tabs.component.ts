@@ -15,6 +15,14 @@ export class NgAtomsTabTriggerDirectiveRef {
   focus!: () => void;
 }
 
+/** Sorts triggers by where their elements sit in the document; unlinked ones keep their place. */
+function byPageOrder(a: NgAtomsTabTriggerDirectiveRef, b: NgAtomsTabTriggerDirectiveRef): number {
+  const first = TAB_TRIGGER_ELEMENTS.get(a);
+  const second = TAB_TRIGGER_ELEMENTS.get(b);
+  if (!first || !second || first === second) return 0;
+  return first.compareDocumentPosition(second) & Node.DOCUMENT_POSITION_FOLLOWING ? -1 : 1;
+}
+
 @Component({
   selector: "nga-tabs",
   standalone: true,
@@ -77,9 +85,14 @@ export class NgAtomsTabsComponent {
     return TAB_TRIGGER_ELEMENTS.get(trigger)?.matches(':disabled') ?? false;
   }
 
-  /** The triggers keyboard navigation can land on, in order. */
+  /**
+   * The triggers keyboard navigation can land on, in the order they appear
+   * on the page. Registration order is not enough: a tab added later by an
+   * `@if`, or moved by an `@for`, registers out of place. The triggers'
+   * Home/End and tab stop read the same DOM order.
+   */
   private enabledTriggers(): NgAtomsTabTriggerDirectiveRef[] {
-    return this._triggers.filter(trigger => !this.isDisabled(trigger));
+    return this._triggers.filter(trigger => !this.isDisabled(trigger)).sort(byPageOrder);
   }
 
   /**

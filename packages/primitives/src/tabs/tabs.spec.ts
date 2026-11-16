@@ -67,6 +67,61 @@ class RuntimeDisabledHost {
   readonly twoDisabled = signal(false);
 }
 
+@Component({
+  standalone: true,
+  imports: [NgAtomsTabsComponent, NgAtomsTabListDirective, NgAtomsTabTriggerDirective, NgAtomsTabPanelDirective],
+  template: `
+    <nga-tabs>
+      <div ngAtomsTabList>
+        <button ngAtomsTabTrigger value="a">A</button>
+        @if (showB()) {
+          <button ngAtomsTabTrigger value="b">B</button>
+        }
+        <button ngAtomsTabTrigger value="c">C</button>
+      </div>
+    </nga-tabs>
+  `,
+})
+class InsertedTabHost {
+  readonly showB = signal(false);
+}
+
+@Component({
+  standalone: true,
+  imports: [NgAtomsTabsComponent, NgAtomsTabListDirective, NgAtomsTabTriggerDirective, NgAtomsTabPanelDirective],
+  template: `
+    <nga-tabs>
+      <div ngAtomsTabList>
+        @for (name of names(); track name) {
+          <button ngAtomsTabTrigger [value]="name">{{ name }}</button>
+        }
+      </div>
+    </nga-tabs>
+  `,
+})
+class ReorderedTabsHost {
+  readonly names = signal(['X', 'Y', 'Z']);
+}
+
+@Component({
+  standalone: true,
+  imports: [NgAtomsTabsComponent, NgAtomsTabListDirective, NgAtomsTabTriggerDirective, NgAtomsTabPanelDirective],
+  template: `
+    <nga-tabs>
+      <div ngAtomsTabList>
+        @if (showFirst()) {
+          <button ngAtomsTabTrigger value="first">First</button>
+        }
+        <button ngAtomsTabTrigger value="a">A</button>
+        <button ngAtomsTabTrigger value="b">B</button>
+      </div>
+    </nga-tabs>
+  `,
+})
+class LateFirstTabHost {
+  readonly showFirst = signal(false);
+}
+
 /** Renders a host and returns the fixture with a trigger lookup by its text. */
 function mount(
   host: Type<unknown> = TabsHost,
@@ -230,5 +285,84 @@ describe('NgAtomsTabTriggerDirective — active tab disabled at runtime', () => 
     expect(document.activeElement).toBe(trigger('Three'));
     expect(trigger('Three').getAttribute('aria-selected')).toBe('true');
     expect(tabStops(trigger)).toEqual(['-1', '-1', '0']);
+  });
+});
+
+describe('NgAtomsTabsComponent — keyboard order follows the page', () => {
+  /** Renders the change, then the effects it triggers. */
+  async function settle(fixture: ComponentFixture<unknown>): Promise<void> {
+    fixture.detectChanges();
+    await new Promise(resolve => setTimeout(resolve));
+    await fixture.whenStable();
+    fixture.detectChanges();
+  }
+
+  /**
+   * Focuses a trigger, makes it active, presses a key and returns the text
+   * of the trigger that ends up focused, which must also be the only tab stop.
+   */
+  async function from(
+    fixture: ComponentFixture<unknown>,
+    trigger: (text: string) => HTMLButtonElement,
+    start: string,
+    key: string,
+  ): Promise<string> {
+    trigger(start).click();
+    await settle(fixture);
+    trigger(start).focus();
+    press(fixture, { key });
+    await settle(fixture);
+    const focused = (document.activeElement as HTMLElement).textContent?.trim() ?? '';
+    const stops = [...fixture.nativeElement.querySelectorAll('[tabindex="0"]')].map(
+      (element: HTMLElement) => element.textContent?.trim(),
+    );
+    expect(stops, `${start} ${key}`).toEqual([focused]);
+    return focused;
+  }
+
+  it('moves through a tab inserted in the middle by @if in page order', async () => {
+    const { fixture, trigger } = mount(InsertedTabHost);
+    (fixture.componentInstance as InsertedTabHost).showB.set(true);
+    await settle(fixture);
+
+    expect(await from(fixture, trigger, 'A', 'ArrowRight')).toBe('B');
+    expect(await from(fixture, trigger, 'B', 'ArrowRight')).toBe('C');
+    expect(await from(fixture, trigger, 'A', 'ArrowLeft')).toBe('C');
+    expect(await from(fixture, trigger, 'C', 'ArrowLeft')).toBe('B');
+    expect(await from(fixture, trigger, 'A', 'End')).toBe('C');
+    expect(await from(fixture, trigger, 'C', 'Home')).toBe('A');
+  });
+
+  it('keeps the first active tab of registration when a tab is later added before it', async () => {
+    const { fixture, trigger } = mount(LateFirstTabHost);
+    await settle(fixture);
+    expect(trigger('A').getAttribute('aria-selected')).toBe('true');
+
+    (fixture.componentInstance as LateFirstTabHost).showFirst.set(true);
+    await settle(fixture);
+
+    const onPage = [...fixture.nativeElement.querySelectorAll('[role="tab"]')].map(
+      (element: HTMLElement) => element.textContent?.trim(),
+    );
+    expect(onPage).toEqual(['First', 'A', 'B']);
+    expect(trigger('A').getAttribute('aria-selected')).toBe('true');
+    expect(trigger('First').getAttribute('aria-selected')).toBe('false');
+    expect(trigger('A').getAttribute('tabindex')).toBe('0');
+  });
+
+  it('follows the new order after an @for reorders its tabs', async () => {
+    const { fixture, trigger } = mount(ReorderedTabsHost);
+    (fixture.componentInstance as ReorderedTabsHost).names.set(['Z', 'Y', 'X']);
+    await settle(fixture);
+    const onPage = [...fixture.nativeElement.querySelectorAll('[role="tab"]')].map(
+      (element: HTMLElement) => element.textContent?.trim(),
+    );
+    expect(onPage).toEqual(['Z', 'Y', 'X']);
+
+    expect(await from(fixture, trigger, 'Z', 'ArrowRight')).toBe('Y');
+    expect(await from(fixture, trigger, 'Z', 'ArrowLeft')).toBe('X');
+    expect(await from(fixture, trigger, 'X', 'ArrowRight')).toBe('Z');
+    expect(await from(fixture, trigger, 'Y', 'End')).toBe('X');
+    expect(await from(fixture, trigger, 'Y', 'Home')).toBe('Z');
   });
 });
