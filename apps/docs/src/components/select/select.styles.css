@@ -20,7 +20,7 @@
   --nga-select-filled-fg:           var(--nga-color-secondary-foreground, #252320);
   --nga-select-filled-border:       transparent;
   --nga-select-filled-border-hover: var(--nga-color-primary, #252320);
-  --nga-select-filled-bg-hover:     color-mix(in srgb, var(--nga-select-filled-bg) 85%, #111111);
+  --nga-select-filled-bg-hover:     color-mix(in oklch, var(--nga-select-filled-bg) 85%, #111111);
 
   /* Variant: ghost */
   --nga-select-ghost-bg:           transparent;
@@ -34,11 +34,12 @@
   /* Panel */
   --nga-select-panel-bg:     color-mix(in oklab, var(--nga-color-card, #FBF8F1) 78%, transparent);
   --nga-select-panel-border: color-mix(in oklab, var(--nga-color-border, #DDD4C1) 55%, transparent);
-  --nga-select-panel-inset:  inset 0 1px 0 rgba(251, 248, 241, 0.85);
+  --nga-select-panel-inset:  inset 0 1px 0 color-mix(in oklch, #FBF8F1 85%, transparent);
   --nga-select-panel-blur:   blur(20px) saturate(180%);
-  --nga-select-panel-shadow: 0 8px 24px -4px rgba(17, 17, 17, 0.10), 0 2px 8px -2px rgba(17, 17, 17, 0.06);
+  --nga-select-panel-shadow: 0 8px 24px -4px color-mix(in oklch, oklch(10% 0 0) 10%, transparent),
+                             0 2px 8px -2px  color-mix(in oklch, oklch(10% 0 0) 6%, transparent);
 
-  /* Options */
+  /* Options — the selected one has an accent tint and accent-active text, for a minimum contrast of 4.5:1 */
   --nga-select-option-hover-bg:    var(--nga-color-muted, #EAE3D4);
   --nga-select-option-selected-bg: color-mix(in oklch, var(--nga-color-accent, #D9541E) 10%, transparent);
   --nga-select-option-selected-fg: var(--nga-color-accent-active, #AB3D14);
@@ -46,7 +47,7 @@
 
 /* ── Dark mode ──────────────────────────────────────────────── */
 .dark {
-  --nga-select-filled-bg-hover:    color-mix(in srgb, var(--nga-select-filled-bg) 82%, #FBF8F1);
+  --nga-select-filled-bg-hover:    color-mix(in oklch, var(--nga-select-filled-bg) 82%, #FBF8F1);
   --nga-select-panel-bg:           color-mix(in oklab, var(--nga-color-card) 82%, transparent);
   --nga-select-panel-border:       color-mix(in oklab, #FBF8F1 14%, transparent);
   --nga-select-panel-blur:         blur(24px) saturate(200%) brightness(1.06);
@@ -59,6 +60,19 @@
 
 .nga-select-wrapper {
   position: relative;
+}
+
+/* ── Visually hidden utility ────────────────────────────────── */
+.nga-sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
 }
 
 /* ── Trigger ────────────────────────────────────────────────── */
@@ -151,12 +165,14 @@
 }
 
 /* ── Panel ──────────────────────────────────────────────────── */
+/* The panel is shown in the top layer (Popover API) and placed with fixed
+   coordinates by the component, so a scroll container never clips it. */
 .nga-select-panel {
-  position: absolute;
-  top: calc(100% + 4px);
+  position: fixed;
+  top: 0;
   left: 0;
-  right: 0;
   z-index: 50;
+  box-sizing: border-box;
   background: var(--nga-select-panel-bg);
   backdrop-filter: var(--nga-select-panel-blur);
   -webkit-backdrop-filter: var(--nga-select-panel-blur);
@@ -167,9 +183,15 @@
   animation: nga-select-panel-in var(--nga-dur-fast, 120ms) var(--nga-ease-out, ease);
 }
 
+/* In the top layer the browser applies its own popover styles; keep the panel's. */
+.nga-select-panel[popover] {
+  inset: auto;
+  margin: 0;
+  padding: 0;
+  color: inherit;
+}
+
 .nga-select-panel--above {
-  top: auto;
-  bottom: calc(100% + 4px);
   animation: nga-select-panel-in-above var(--nga-dur-fast, 120ms) var(--nga-ease-out, ease);
 }
 
@@ -180,6 +202,10 @@
 @keyframes nga-select-panel-in-above {
   from { opacity: 0; transform: translateY(4px); }
   to   { opacity: 1; transform: translateY(0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nga-select-panel { animation: none; }
 }
 
 /* ── Search ─────────────────────────────────────────────────── */
@@ -233,7 +259,8 @@
   font-size: var(--nga-size-font-sm, 13px);
   line-height: 1.4;
   cursor: pointer;
-  transition: background var(--nga-dur-fast, 120ms) var(--nga-ease-out, ease), color var(--nga-dur-fast, 120ms) var(--nga-ease-out, ease);
+  transition: background var(--nga-dur-fast, 120ms) var(--nga-ease-out, ease),
+              color var(--nga-dur-fast, 120ms) var(--nga-ease-out, ease);
   color: var(--nga-color-foreground, #111111);
   user-select: none;
 }
@@ -246,6 +273,7 @@
 .nga-select-option--selected {
   background: var(--nga-select-option-selected-bg);
   color: var(--nga-select-option-selected-fg);
+  font-weight: var(--nga-font-weight-medium, 500);
 }
 
 .nga-select-option--selected.nga-select-option--focused,

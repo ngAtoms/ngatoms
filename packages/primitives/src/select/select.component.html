@@ -27,6 +27,7 @@
   <!-- Panel -->
   @if (isOpen()) {
     <div
+      #panelEl
       class="nga-select-panel"
       [class.nga-select-panel--above]="panelAbove()"
       role="listbox"
@@ -54,7 +55,7 @@
             (input)="onSearch($event)"
           />
         </div>
-        <!-- Live region: announces filtered count to screen readers -->
+        <!-- Live region (aria-live): the number of options left after filtering -->
         <span class="nga-sr-only" role="status" aria-atomic="true" aria-live="polite">
           {{ filteredOptions().length }} {{ filteredOptions().length === 1 ? 'option' : 'options' }} available
         </span>

@@ -242,10 +242,11 @@
                                     (valueChange)="commit($any($event))"
                                     size="sm"
                                     variant="ghost"
+                                    [defaultOpen]="true"
                                 />
                             </ng-template>
                             <ng-template ngaGridEditor="due" let-value let-commit="commit">
-                                <nga-date-picker [value]="$any(value) ?? ''" (valueChange)="commit($event || null)" size="sm" />
+                                <nga-date-picker [value]="$any(value) ?? ''" (valueChange)="commit($event || null)" size="sm" [defaultOpen]="true" />
                             </ng-template>
                             <ng-template ngaGridCell="done" let-value let-row="row">
                                 @if (value !== null) {

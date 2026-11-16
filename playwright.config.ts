@@ -1,8 +1,8 @@
 import { defineConfig } from '@playwright/test';
 
 /**
- * Manual Chromium pass for the docs grid page.
- * Not part of `npm test` and not wired into CI.
+ * Manual Chromium pass for the docs grid page. The overlay-in-dialog spec
+ * also runs in Firefox and WebKit. Not part of `npm test` and not wired into CI.
  * Reports and traces stay out of the repo.
  */
 export default defineConfig({
@@ -20,6 +20,11 @@ export default defineConfig({
     screenshot: 'off',
     video: 'off',
   },
+  projects: [
+    { name: 'chromium', use: { browserName: 'chromium' } },
+    { name: 'firefox', use: { browserName: 'firefox' }, testMatch: /overlay-dialog\.spec\.ts$/ },
+    { name: 'webkit', use: { browserName: 'webkit' }, testMatch: /overlay-dialog\.spec\.ts$/ },
+  ],
   webServer: {
     command: 'npx ng serve docs --host 127.0.0.1 --port 4217',
     url: 'http://127.0.0.1:4217/grid',

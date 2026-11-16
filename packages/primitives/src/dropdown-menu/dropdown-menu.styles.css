@@ -61,6 +61,13 @@
   display: none;
 }
 
+/* In the top layer the browser applies its own popover styles; keep the panel's. */
+.nga-dropdown-panel[popover] {
+  inset: auto;
+  margin: 0;
+  overflow: visible;
+}
+
 .nga-dropdown-panel--open {
   display: block;
 }

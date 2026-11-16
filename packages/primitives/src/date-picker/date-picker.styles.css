@@ -180,7 +180,7 @@
   opacity: 0.6;
 }
 
-/* ── Screen-reader only utility ─────────────────────────────── */
+/* ── Visually hidden utility ────────────────────────────────── */
 .nga-sr-only {
   position: absolute;
   width: 1px;
@@ -207,6 +207,14 @@
   box-shadow: var(--nga-date-picker-panel-shadow), var(--nga-date-picker-panel-inset);
   display: none;
   box-sizing: border-box;
+}
+
+/* In the top layer the browser applies its own popover styles; keep the panel's. */
+.nga-date-picker-panel[popover] {
+  inset: auto;
+  margin: 0;
+  overflow: visible;
+  color: inherit;
 }
 
 .nga-date-picker-panel--open {

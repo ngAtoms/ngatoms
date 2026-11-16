@@ -6,8 +6,11 @@
 import { Injectable, OnDestroy, inject } from '@angular/core';
 import { DOCUMENT } from '@angular/common';
 
+/** Why the service is closing an overlay. */
+export type NgAtomsOverlayCloseReason = 'escape' | 'outside' | 'scroll';
+
 interface OverlayEntry {
-  close: () => void;
+  close: (reason: NgAtomsOverlayCloseReason) => void;
   contains: HTMLElement[];
   closeOnScroll?: boolean;
 }
@@ -29,8 +32,10 @@ export class NgAtomsOverlayService implements OnDestroy {
   /**
    * Register an open overlay.
    *
-   * @param closeFn         Called by the service to close the overlay
-   *                        (scroll / Escape / click-outside).
+   * @param closeFn         Called by the service to close the overlay, with
+   *                        the reason: scroll, Escape or a click outside.
+   *                        Escape is the one case where focus should go
+   *                        back to the trigger.
    * @param contains        Elements whose subtree, when clicked, should NOT
    *                        close this overlay (e.g. trigger + panel elements).
    * @param options.closeOnScroll Whether to close the overlay when the user scrolls.
@@ -38,7 +43,7 @@ export class NgAtomsOverlayService implements OnDestroy {
    *          itself so the service can remove it from the stack.
    */
   register(
-    closeFn: () => void,
+    closeFn: (reason: NgAtomsOverlayCloseReason) => void,
     contains: HTMLElement | HTMLElement[],
     options: { closeOnScroll?: boolean } = {}
   ): () => void {
@@ -73,15 +78,21 @@ export class NgAtomsOverlayService implements OnDestroy {
     });
 
     if (!this.stack.length) this.detach();
-    toClose.forEach(e => e.close());
+    toClose.forEach(e => e.close('scroll'));
   };
 
-  /** Closes the overlay opened last when Escape is pressed. */
+  /**
+   * Closes the overlay opened last when Escape is pressed, and cancels the
+   * key so a modal dialog around the overlay stays open. An Escape that a
+   * component already handled is left alone.
+   */
   private readonly onEscape = (e: KeyboardEvent): void => {
-    if (e.key !== 'Escape') return;
+    if (e.key !== 'Escape' || e.defaultPrevented) return;
     const entry = this.stack.pop();
     if (!this.stack.length) this.detach();
-    entry?.close();
+    if (!entry) return;
+    e.preventDefault();
+    entry.close('escape');
   };
 
   /** Closes every overlay the click landed outside of. */
@@ -92,7 +103,7 @@ export class NgAtomsOverlayService implements OnDestroy {
     );
     toClose.forEach(entry => {
       this.deregister(entry);
-      entry.close();
+      entry.close('outside');
     });
   };
 

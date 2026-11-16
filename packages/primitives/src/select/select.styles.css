@@ -39,7 +39,7 @@
   --nga-select-panel-shadow: 0 8px 24px -4px color-mix(in oklch, oklch(10% 0 0) 10%, transparent),
                              0 2px 8px -2px  color-mix(in oklch, oklch(10% 0 0) 6%, transparent);
 
-  /* Options — selected uses accent tint + accent text for WCAG AA compliance */
+  /* Options — the selected one has an accent tint and accent-active text, for a minimum contrast of 4.5:1 */
   --nga-select-option-hover-bg:    var(--nga-color-muted, #EAE3D4);
   --nga-select-option-selected-bg: color-mix(in oklch, var(--nga-color-accent, #D9541E) 10%, transparent);
   --nga-select-option-selected-fg: var(--nga-color-accent-active, #AB3D14);
@@ -62,7 +62,7 @@
   position: relative;
 }
 
-/* ── Screen reader utility ──────────────────────────────────── */
+/* ── Visually hidden utility ────────────────────────────────── */
 .nga-sr-only {
   position: absolute;
   width: 1px;
@@ -165,12 +165,14 @@
 }
 
 /* ── Panel ──────────────────────────────────────────────────── */
+/* The panel is shown in the top layer (Popover API) and placed with fixed
+   coordinates by the component, so a scroll container never clips it. */
 .nga-select-panel {
-  position: absolute;
-  top: calc(100% + 4px);
+  position: fixed;
+  top: 0;
   left: 0;
-  right: 0;
   z-index: 50;
+  box-sizing: border-box;
   background: var(--nga-select-panel-bg);
   backdrop-filter: var(--nga-select-panel-blur);
   -webkit-backdrop-filter: var(--nga-select-panel-blur);
@@ -181,9 +183,15 @@
   animation: nga-select-panel-in var(--nga-dur-fast, 120ms) var(--nga-ease-out, ease);
 }
 
+/* In the top layer the browser applies its own popover styles; keep the panel's. */
+.nga-select-panel[popover] {
+  inset: auto;
+  margin: 0;
+  padding: 0;
+  color: inherit;
+}
+
 .nga-select-panel--above {
-  top: auto;
-  bottom: calc(100% + 4px);
   animation: nga-select-panel-in-above var(--nga-dur-fast, 120ms) var(--nga-ease-out, ease);
 }
 
