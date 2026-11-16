@@ -121,7 +121,7 @@ export class MyComponent {
     {
       icon: "circles",
       title: "Group name",
-      body: "All radios in the group share a common name attribute (auto-generated). Screen readers announce each option as part of the group.",
+      body: "All radios in the group share a common name attribute (auto-generated).",
     },
   ];
 

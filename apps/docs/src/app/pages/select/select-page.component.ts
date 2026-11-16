@@ -191,11 +191,11 @@ export class MyComponent {
     },
     {
       term: "Focus ring",
-      body: 'Visible focus ring on keyboard navigation. The trigger exposes aria-expanded and aria-haspopup="listbox". aria-activedescendant tracks the focused option for screen readers.',
+      body: 'Visible focus ring on keyboard navigation. The trigger exposes aria-expanded and aria-haspopup="listbox". aria-activedescendant tracks the focused option.',
     },
     {
       term: "Search",
-      body: "When searchable, options filter as you type. A live region announces the count of matching results after each keystroke.",
+      body: 'When searchable, options filter as you type. A live region (role="status") updates the count of matching results.',
     },
     {
       term: "Repositioning",
@@ -203,7 +203,7 @@ export class MyComponent {
     },
     {
       term: "Disabled",
-      body: 'Disabled options carry aria-disabled="true" so screen readers announce them as unavailable rather than silently refusing selection.',
+      body: 'Disabled options carry aria-disabled="true".',
     },
   ];
 

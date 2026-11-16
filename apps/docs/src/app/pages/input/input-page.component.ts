@@ -84,7 +84,7 @@ export class MyComponent {}`;
     {
       icon: "warning",
       title: "Invalid",
-      body: 'Setting [invalid]="true" adds aria-invalid="true" so screen readers surface the error state. Pair with an error message using aria-describedby.',
+      body: 'Setting [invalid]="true" adds aria-invalid="true". Pair with an error message using aria-describedby.',
     },
     {
       icon: "keyboard",

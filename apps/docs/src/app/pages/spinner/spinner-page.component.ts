@@ -63,7 +63,7 @@ export class MyComponent {}`;
     {
       icon: "speaker-high",
       title: "Live region",
-      body: 'role="status" acts as a polite live region — screen readers announce "Loading" without interrupting the current speech.',
+      body: 'role="status" acts as a polite live region.',
     },
     {
       icon: "tag",
@@ -73,7 +73,7 @@ export class MyComponent {}`;
     {
       icon: "eye-slash",
       title: "Hide when done",
-      body: "Remove or hide the spinner when the operation completes. A persistent spinner is confusing for screen reader users.",
+      body: "Remove or hide the spinner when the operation completes. A spinner left on screen after the work ends is confusing.",
     },
   ];
 

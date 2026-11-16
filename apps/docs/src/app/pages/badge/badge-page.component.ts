@@ -83,12 +83,7 @@ export class MyComponent {}`;
     {
       icon: "link",
       title: "Anchor badges",
-      body: "When applied to an <a> tag, the badge inherits link semantics — screen readers announce it as a link and it is keyboard-navigable.",
-    },
-    {
-      icon: "eye",
-      title: "Contrast",
-      body: "All variant + theme combinations pass WCAG 2.2 AA contrast against their intended surface.",
+      body: "When applied to an <a> tag, the badge inherits link semantics and is keyboard-navigable.",
     },
   ];
 

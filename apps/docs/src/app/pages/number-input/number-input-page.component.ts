@@ -107,7 +107,7 @@ export class MyComponent {
     {
       icon: "tag",
       title: "Labels",
-      body: "Provide a visible <label> or aria-label so screen readers announce the field name alongside the current value.",
+      body: "Provide a visible <label> or aria-label to name the field.",
     },
     {
       icon: "lock",

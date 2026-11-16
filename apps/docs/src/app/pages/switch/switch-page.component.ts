@@ -94,7 +94,7 @@ export class MyComponent {
     {
       icon: "toggle-left",
       title: "Role",
-      body: 'role="switch" is set automatically. Screen readers announce the state as "on" or "off" rather than "checked" or "unchecked".',
+      body: 'role="switch" is set automatically.',
     },
     {
       icon: "keyboard",
