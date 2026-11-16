@@ -58,6 +58,15 @@ export class NgAtomsDropdownItemDirective {
     this.menu.close();
   }
 
+  /**
+   * The item under the pointer takes focus, so the pointer and the keyboard
+   * share one highlight and the arrows continue from where the pointer is.
+   */
+  @HostListener('mouseenter')
+  protected onMouseEnter(): void {
+    if (!this.disabled()) this.el.nativeElement.focus({ preventScroll: true });
+  }
+
   /** Arrow keys, Home and End move between items; Tab closes the menu. */
   @HostListener('keydown', ['$event'])
   onKeydown(event: KeyboardEvent): void {

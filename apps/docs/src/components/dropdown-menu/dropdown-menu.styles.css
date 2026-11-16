@@ -129,6 +129,12 @@
   background: var(--nga-dropdown-item-focus-bg);
 }
 
+/* While an item has focus, only it is highlighted: an item left under a
+   resting pointer gives up its hover background as the arrows move on. */
+.nga-dropdown-panel:focus-within .nga-dropdown-item:hover:not(:focus) {
+  background: transparent;
+}
+
 /* ── Item variants ──────────────────────────────────────────── */
 .nga-dropdown-item--destructive {
   color: var(--nga-dropdown-item-destructive-color);
