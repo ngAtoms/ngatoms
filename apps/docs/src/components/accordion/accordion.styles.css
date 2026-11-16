@@ -53,7 +53,7 @@
 }
 
 .nga-accordion-trigger:focus-visible {
-  box-shadow: inset var(--nga-glow-ember, 0 0 0 4px rgba(26, 26, 26, 0.16));
+  box-shadow: inset 0 0 0 2px var(--nga-color-ring, #D9541E);
 }
 
 /* Chevron icon */

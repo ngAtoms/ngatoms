@@ -466,6 +466,7 @@
 }
 
 .nga-grid__header-filter:hover,
+.nga-grid__header-filter:focus-visible,
 .nga-grid__header-filter[aria-expanded='true'] {
   opacity: 1;
   background: color-mix(in oklab, var(--nga-grid-fg) 9%, transparent);
@@ -615,7 +616,7 @@
 
 .nga-grid-filter__field:focus-visible {
   border-color: var(--nga-color-ring, #D9541E);
-  box-shadow: var(--nga-glow-ember, 0 0 0 4px rgba(217, 84, 30, 0.24));
+  box-shadow: var(--nga-focus-ring, 0 0 0 2px var(--nga-color-background, #F3EEE3), 0 0 0 4px var(--nga-color-ring, #D9541E));
 }
 
 .nga-grid-filter__options {
@@ -678,7 +679,7 @@
 .nga-grid__empty-action:focus-visible,
 .nga-grid-filter__button:focus-visible {
   outline: none;
-  box-shadow: var(--nga-glow-ember, 0 0 0 4px rgba(217, 84, 30, 0.24));
+  box-shadow: var(--nga-focus-ring, 0 0 0 2px var(--nga-color-background, #F3EEE3), 0 0 0 4px var(--nga-color-ring, #D9541E));
 }
 
 /* ── Active cell and editing ────────────────────────────────── */

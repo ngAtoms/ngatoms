@@ -107,7 +107,7 @@
 }
 
 .nga-btn:focus-visible {
-  box-shadow: var(--nga-glow-ember, 0 0 0 4px color-mix(in oklch, var(--nga-color-accent, #D9541E) 18%, transparent));
+  box-shadow: var(--nga-focus-ring, 0 0 0 2px var(--nga-color-background, #F3EEE3), 0 0 0 4px var(--nga-color-ring, #D9541E));
 }
 
 .nga-btn[aria-disabled="true"],

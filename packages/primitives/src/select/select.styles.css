@@ -42,7 +42,7 @@
   /* Options — selected uses accent tint + accent text for WCAG AA compliance */
   --nga-select-option-hover-bg:    var(--nga-color-muted, #EAE3D4);
   --nga-select-option-selected-bg: color-mix(in oklch, var(--nga-color-accent, #D9541E) 10%, transparent);
-  --nga-select-option-selected-fg: var(--nga-color-accent, #D9541E);
+  --nga-select-option-selected-fg: var(--nga-color-accent-active, #AB3D14);
 }
 
 /* ── Dark mode ──────────────────────────────────────────────── */
@@ -95,7 +95,7 @@
 }
 
 .nga-select-trigger:focus-visible {
-  box-shadow: 0 0 0 4px color-mix(in oklch, var(--nga-color-accent, #D9541E) 18%, transparent);
+  box-shadow: var(--nga-focus-ring, 0 0 0 2px var(--nga-color-background, #F3EEE3), 0 0 0 4px var(--nga-color-ring, #D9541E));
 }
 
 .nga-select-trigger:disabled {
@@ -161,7 +161,7 @@
 /* ── Invalid ────────────────────────────────────────────────── */
 .nga-select-trigger--invalid { border-color: var(--nga-select-invalid-border) !important; }
 .nga-select-trigger--invalid:focus-visible {
-  box-shadow: 0 0 0 4px color-mix(in oklch, var(--nga-color-destructive, #C81E3A) 18%, transparent);
+  box-shadow: 0 0 0 2px var(--nga-color-background, #F3EEE3), 0 0 0 4px var(--nga-color-destructive, #C81E3A);
 }
 
 /* ── Panel ──────────────────────────────────────────────────── */

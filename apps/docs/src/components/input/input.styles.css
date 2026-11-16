@@ -77,7 +77,7 @@
 }
 
 .nga-input:focus-visible {
-  box-shadow: var(--nga-glow-ember, 0 0 0 4px rgba(26, 26, 26, 0.16));
+  box-shadow: var(--nga-focus-ring, 0 0 0 2px var(--nga-color-background, #F3EEE3), 0 0 0 4px var(--nga-color-ring, #D9541E));
 }
 
 .nga-input:disabled {
@@ -132,5 +132,5 @@
 /* ── Invalid state ──────────────────────────────────────────── */
 .nga-input--invalid { border-color: var(--nga-input-invalid-border) !important; }
 .nga-input--invalid:focus-visible {
-  box-shadow: 0 0 0 4px rgba(26, 26, 26, 0.18);
+  box-shadow: 0 0 0 2px var(--nga-color-background, #F3EEE3), 0 0 0 4px var(--nga-color-destructive, #C81E3A);
 }

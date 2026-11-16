@@ -85,7 +85,7 @@
 }
 
 .nga-textarea:focus-visible {
-  box-shadow: var(--nga-glow-ember, 0 0 0 4px rgba(26, 26, 26, 0.16));
+  box-shadow: var(--nga-focus-ring, 0 0 0 2px var(--nga-color-background, #F3EEE3), 0 0 0 4px var(--nga-color-ring, #D9541E));
 }
 
 .nga-textarea:disabled {
@@ -142,5 +142,5 @@
 /* ── Invalid state ──────────────────────────────────────────── */
 .nga-textarea--invalid { border-color: var(--nga-textarea-invalid-border) !important; }
 .nga-textarea--invalid:focus-visible {
-  box-shadow: 0 0 0 4px rgba(26, 26, 26, 0.18);
+  box-shadow: 0 0 0 2px var(--nga-color-background, #F3EEE3), 0 0 0 4px var(--nga-color-destructive, #C81E3A);
 }

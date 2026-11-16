@@ -143,6 +143,8 @@
   --nga-shadow-xl: 0 24px 48px -12px rgba(26, 26, 26, 0.18);
   --nga-glow-ember:      0 0 0 4px color-mix(in oklab, var(--nga-ember-500) 24%, transparent);
   --nga-glow-ember-soft: 0 8px 32px -8px color-mix(in oklab, var(--nga-ember-500) 30%, transparent);
+  /* Keyboard focus: a gap in the page colour, then a solid ring that keeps 3:1 against the page */
+  --nga-focus-ring:      0 0 0 2px var(--nga-color-background), 0 0 0 4px var(--nga-color-ring);
 
   /* Frost — warm milky glass. Blur only reads when a surface sits over the page. */
   --nga-frost-blur:        blur(22px) saturate(180%);

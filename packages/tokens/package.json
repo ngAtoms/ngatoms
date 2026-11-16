@@ -15,7 +15,7 @@
   ],
   "scripts": {
     "build": "node -e \"console.log('tokens build placeholder')\"",
-    "test": "node --test test/"
+    "test": "node --test test/*.test.js"
   },
   "publishConfig": {
     "access": "public"
