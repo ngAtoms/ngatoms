@@ -34,6 +34,7 @@
     "release-1-0-private-packages",
     "release-1-0",
     "stable-component-status",
+    "stable-keyboard",
     "trusted-publishing-repository"
   ]
 }
