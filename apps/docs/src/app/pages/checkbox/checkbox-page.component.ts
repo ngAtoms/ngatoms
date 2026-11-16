@@ -136,7 +136,7 @@ export class MyComponent {
     {
       icon: "minus-circle",
       title: "Indeterminate",
-      body: 'Sets aria-checked="mixed" so screen readers announce the partial state correctly.',
+      body: "Sets the native indeterminate property for the partial state.",
     },
   ];
 

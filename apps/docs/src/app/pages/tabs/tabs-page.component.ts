@@ -118,7 +118,7 @@ export class MyComponent {}`;
     {
       icon: "eye-slash",
       title: "Hidden panels",
-      body: 'Inactive panels are hidden with aria-hidden="true" so screen readers only announce the visible panel content.',
+      body: "Inactive panels are hidden with display: none.",
     },
   ];
 

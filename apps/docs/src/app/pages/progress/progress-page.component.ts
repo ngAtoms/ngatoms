@@ -87,7 +87,7 @@ export class MyComponent {}`;
     {
       icon: "minus-circle",
       title: "Indeterminate",
-      body: "When indeterminate, aria-valuenow is removed so screen readers announce the loading state rather than a stale percentage.",
+      body: "When indeterminate, aria-valuenow is removed rather than left at a stale percentage.",
     },
     {
       icon: "tag",

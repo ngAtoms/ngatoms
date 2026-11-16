@@ -66,7 +66,7 @@ export class MyComponent {}`;
     {
       icon: "layout",
       title: "Role",
-      body: 'role="separator" is set automatically, identifying the divider as a landmark boundary for assistive technologies.',
+      body: 'role="separator" is set automatically.',
     },
     {
       icon: "eye-slash",

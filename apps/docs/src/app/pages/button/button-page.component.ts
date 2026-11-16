@@ -246,7 +246,7 @@ export class ContactForm {
     {
       icon: "spinner-gap",
       title: "Loading state",
-      body: 'Sets aria-busy="true" and disables pointer events without removing focus — screen readers announce the state change.',
+      body: 'Sets aria-busy="true" and disables pointer events without removing focus.',
     },
     {
       icon: "ear",
@@ -257,11 +257,6 @@ export class ContactForm {
       icon: "eye",
       title: "Focus ring",
       body: "Visible on keyboard focus, suppressed on mouse click. Honors the user's forced-color-scheme preference.",
-    },
-    {
-      icon: "circle-half",
-      title: "Contrast",
-      body: "All variant + state combinations pass WCAG 2.2 AA against their intended surface in both light and dark themes.",
     },
   ];
 

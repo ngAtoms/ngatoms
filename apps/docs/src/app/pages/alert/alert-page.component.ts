@@ -158,7 +158,7 @@ export class MyComponent {}`;
     {
       icon: "speaker-high",
       title: "Live regions",
-      body: 'For alerts that appear dynamically, add role="alert" or aria-live="polite" to announce to screen readers immediately.',
+      body: 'For alerts that appear dynamically, add role="alert" or aria-live="polite".',
     },
     {
       icon: "palette",

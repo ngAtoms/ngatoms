@@ -208,7 +208,7 @@ export class MyComponent {
     },
     {
       term: "Grid",
-      body: 'The calendar grid uses role="grid" with role="row" and role="gridcell" semantics so screen readers can announce day, month, and position.',
+      body: 'The calendar grid uses role="grid" with role="row" and role="gridcell" semantics.',
     },
     {
       term: "Repositioning",

@@ -97,7 +97,7 @@ export class MyComponent {}`;
     {
       icon: "image",
       title: "Alt text",
-      body: 'When the avatar conveys identity, provide a descriptive alt (e.g. "Jane Doe"). For purely decorative avatars, pass alt="" so screen readers skip it.',
+      body: 'When the avatar conveys identity, provide a descriptive alt (e.g. "Jane Doe"). For purely decorative avatars, pass alt="".',
     },
     {
       icon: "warning",
@@ -107,7 +107,7 @@ export class MyComponent {}`;
     {
       icon: "eye-slash",
       title: "Broken images",
-      body: 'The component handles load errors silently. The fallback (initials or icon) has role="img" so assistive technology can still surface it.',
+      body: "The component handles load errors silently and shows the fallback (initials or icon) instead.",
     },
   ];
 
