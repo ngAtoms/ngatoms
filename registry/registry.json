@@ -24,7 +24,7 @@
     },
     {
       "name": "badge",
-      "description": "A badge with 7 variants: default, ember, success, warning, destructive, solid, and outline.",
+      "description": "A badge with 8 variants: default, ember, success, warning, destructive, info, solid, and outline.",
       "status": "stable",
       "files": [
         "packages/primitives/src/badge/badge.directive.ts",

@@ -15,62 +15,54 @@
     border-color var(--nga-dur-base, 180ms) var(--nga-ease-out, ease);
 
   /* Variant: default — neutral stone */
-  --nga-badge-default-bg:  var(--nga-stone-150, #E7EAEF);
-  --nga-badge-default-fg:  var(--nga-stone-700, #404040);
+  --nga-badge-default-bg:  var(--nga-stone-150, #EAE3D4);
+  --nga-badge-default-fg:  var(--nga-stone-700, #433E37);
 
   /* Variant: ember — warm accent */
-  --nga-badge-ember-bg:    var(--nga-ember-100, #E7EAEF);
-  --nga-badge-ember-fg:    var(--nga-ember-700, #1F1F1F);
+  --nga-badge-ember-bg:    color-mix(in oklab, var(--nga-ember-500, #D9541E) 14%, transparent);
+  --nga-badge-ember-fg:    var(--nga-ember-700, #AB3D14);
 
   /* Variant: success — green tint */
-  --nga-badge-success-bg:  #F2F4F6;
-  --nga-badge-success-fg:  #262626;
+  --nga-badge-success-bg:  var(--nga-color-success-soft, color-mix(in oklab, var(--nga-color-success, #2B7A3B) 14%, transparent));
+  --nga-badge-success-fg:  color-mix(in oklab, var(--nga-color-success, #2B7A3B) 85%, var(--nga-color-foreground, #111111));
 
   /* Variant: warning — amber tint */
-  --nga-badge-warning-bg:  #E7EAEF;
-  --nga-badge-warning-fg:  #1A1A1A;
+  --nga-badge-warning-bg:  var(--nga-color-warning-soft, color-mix(in oklab, var(--nga-color-warning, #94680A) 14%, transparent));
+  --nga-badge-warning-fg:  color-mix(in oklab, var(--nga-color-warning, #94680A) 85%, var(--nga-color-foreground, #111111));
 
   /* Variant: destructive — red tint */
-  --nga-badge-destructive-bg: #CCCCCC;
-  --nga-badge-destructive-fg: #1A1A1A;
+  --nga-badge-destructive-bg:  var(--nga-color-destructive-soft, color-mix(in oklab, var(--nga-color-destructive, #C81E3A) 14%, transparent));
+  --nga-badge-destructive-fg:  color-mix(in oklab, var(--nga-color-destructive, #C81E3A) 85%, var(--nga-color-foreground, #111111));
+
+  /* Variant: info — blue tint */
+  --nga-badge-info-bg:  var(--nga-color-info-soft, color-mix(in oklab, var(--nga-color-info, #2F6BFF) 14%, transparent));
+  --nga-badge-info-fg:  color-mix(in oklab, var(--nga-color-info, #2F6BFF) 85%, var(--nga-color-foreground, #111111));
 
   /* Variant: solid — high contrast */
-  --nga-badge-solid-bg:    var(--nga-stone-900, #1A1A1A);
-  --nga-badge-solid-fg:    var(--nga-stone-50,  #F7F8FA);
+  --nga-badge-solid-bg:    var(--nga-stone-900, #252320);
+  --nga-badge-solid-fg:    var(--nga-stone-50, #FBF8F1);
 
   /* Variant: outline */
-  --nga-badge-outline-border: var(--nga-color-border-strong, #B3B3B3);
-  --nga-badge-outline-fg:     var(--nga-color-foreground, #1A1A1A);
+  --nga-badge-outline-border: var(--nga-color-border-strong, #BDB29C);
+  --nga-badge-outline-fg:     var(--nga-color-foreground, #111111);
 }
 
 .dark {
   /* default */
-  --nga-badge-default-bg:  var(--nga-stone-800, #333333);
-  --nga-badge-default-fg:  var(--nga-stone-300, #B3B3B3);
+  --nga-badge-default-bg:  var(--nga-stone-800, #33302B);
+  --nga-badge-default-fg:  var(--nga-stone-300, #BDB29C);
 
   /* ember */
-  --nga-badge-ember-bg:    rgba(26, 26, 26, 0.12);
-  --nga-badge-ember-fg:    var(--nga-ember-300, #8A8A8A);
-
-  /* success */
-  --nga-badge-success-bg:  rgba(26, 26, 26, 0.10);
-  --nga-badge-success-fg:  #8A8A8A;
-
-  /* warning */
-  --nga-badge-warning-bg:  rgba(26, 26, 26, 0.14);
-  --nga-badge-warning-fg:  #B3B3B3;
-
-  /* destructive */
-  --nga-badge-destructive-bg: rgba(26, 26, 26, 0.18);
-  --nga-badge-destructive-fg: #F7F8FA;
+  --nga-badge-ember-bg:    color-mix(in oklab, var(--nga-ember-400, #EE6A2F) 16%, transparent);
+  --nga-badge-ember-fg:    var(--nga-ember-300, #F47F4A);
 
   /* solid */
-  --nga-badge-solid-bg:    var(--nga-stone-100, #F2F4F6);
-  --nga-badge-solid-fg:    var(--nga-stone-900, #1A1A1A);
+  --nga-badge-solid-bg:    var(--nga-stone-100, #F3EEE3);
+  --nga-badge-solid-fg:    var(--nga-stone-900, #252320);
 
   /* outline */
-  --nga-badge-outline-border: var(--nga-color-border-strong, #404040);
-  --nga-badge-outline-fg:     var(--nga-color-foreground, #F2F4F6);
+  --nga-badge-outline-border: var(--nga-color-border-strong, #4A4740);
+  --nga-badge-outline-fg:     var(--nga-color-foreground, #D8CBB3);
 }
 
 /* ── Base ───────────────────────────────────────────────────── */
@@ -114,6 +106,11 @@
 .nga-badge--destructive {
   background: var(--nga-badge-destructive-bg);
   color: var(--nga-badge-destructive-fg);
+}
+
+.nga-badge--info {
+  background: var(--nga-badge-info-bg);
+  color: var(--nga-badge-info-fg);
 }
 
 .nga-badge--solid {

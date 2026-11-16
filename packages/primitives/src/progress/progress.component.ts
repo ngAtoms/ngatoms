@@ -12,7 +12,13 @@ import {
 } from '@angular/core';
 
 export type NgAtomsProgressSize    = 'sm' | 'md' | 'lg';
-export type NgAtomsProgressVariant = 'default' | 'accent' | 'success' | 'destructive';
+export type NgAtomsProgressVariant =
+  | 'default'
+  | 'accent'
+  | 'success'
+  | 'warning'
+  | 'destructive'
+  | 'info';
 
 /** Progress bar, determinate or indeterminate. */
 @Component({

@@ -10,45 +10,45 @@
   --nga-select-transition:   border-color var(--nga-dur-base, 180ms) var(--nga-ease-out, ease), box-shadow var(--nga-dur-base, 180ms) var(--nga-ease-out, ease), background var(--nga-dur-base, 180ms) var(--nga-ease-out, ease);
 
   /* Variant: default */
-  --nga-select-default-bg:           var(--nga-color-background, #F7F8FA);
-  --nga-select-default-fg:           var(--nga-color-foreground, #1A1A1A);
-  --nga-select-default-border:       var(--nga-color-border, #CCCCCC);
-  --nga-select-default-border-hover: var(--nga-color-primary, #1A1A1A);
+  --nga-select-default-bg:           var(--nga-color-background, #F3EEE3);
+  --nga-select-default-fg:           var(--nga-color-foreground, #111111);
+  --nga-select-default-border:       var(--nga-color-border, #DDD4C1);
+  --nga-select-default-border-hover: var(--nga-color-primary, #252320);
 
   /* Variant: filled */
-  --nga-select-filled-bg:           var(--nga-color-secondary, #F2F4F6);
-  --nga-select-filled-fg:           var(--nga-color-secondary-foreground, #1A1A1A);
+  --nga-select-filled-bg:           var(--nga-color-secondary, #EAE3D4);
+  --nga-select-filled-fg:           var(--nga-color-secondary-foreground, #252320);
   --nga-select-filled-border:       transparent;
-  --nga-select-filled-border-hover: var(--nga-color-primary, #1A1A1A);
-  --nga-select-filled-bg-hover:     color-mix(in srgb, var(--nga-select-filled-bg) 85%, #1A1A1A);
+  --nga-select-filled-border-hover: var(--nga-color-primary, #252320);
+  --nga-select-filled-bg-hover:     color-mix(in srgb, var(--nga-select-filled-bg) 85%, #111111);
 
   /* Variant: ghost */
   --nga-select-ghost-bg:           transparent;
-  --nga-select-ghost-fg:           var(--nga-color-foreground, #1A1A1A);
+  --nga-select-ghost-fg:           var(--nga-color-foreground, #111111);
   --nga-select-ghost-border:       transparent;
-  --nga-select-ghost-border-hover: var(--nga-color-border, #CCCCCC);
+  --nga-select-ghost-border-hover: var(--nga-color-border, #DDD4C1);
 
   /* Invalid */
-  --nga-select-invalid-border:     var(--nga-color-destructive, #1A1A1A);
+  --nga-select-invalid-border:     var(--nga-color-destructive, #C81E3A);
 
   /* Panel */
-  --nga-select-panel-bg:     color-mix(in oklab, var(--nga-color-card, #F7F8FA) 78%, transparent);
-  --nga-select-panel-border: color-mix(in oklab, var(--nga-color-border, #CCCCCC) 55%, transparent);
-  --nga-select-panel-inset:  inset 0 1px 0 rgba(230, 230, 230, 0.85);
+  --nga-select-panel-bg:     color-mix(in oklab, var(--nga-color-card, #FBF8F1) 78%, transparent);
+  --nga-select-panel-border: color-mix(in oklab, var(--nga-color-border, #DDD4C1) 55%, transparent);
+  --nga-select-panel-inset:  inset 0 1px 0 rgba(251, 248, 241, 0.85);
   --nga-select-panel-blur:   blur(20px) saturate(180%);
-  --nga-select-panel-shadow: 0 8px 24px -4px rgba(26, 26, 26, 0.10), 0 2px 8px -2px rgba(26, 26, 26, 0.06);
+  --nga-select-panel-shadow: 0 8px 24px -4px rgba(17, 17, 17, 0.10), 0 2px 8px -2px rgba(17, 17, 17, 0.06);
 
   /* Options */
-  --nga-select-option-hover-bg:    var(--nga-color-muted, #F2F4F6);
-  --nga-select-option-selected-bg: color-mix(in oklch, var(--nga-color-accent, #333333) 10%, transparent);
-  --nga-select-option-selected-fg: var(--nga-color-accent, #333333);
+  --nga-select-option-hover-bg:    var(--nga-color-muted, #EAE3D4);
+  --nga-select-option-selected-bg: color-mix(in oklch, var(--nga-color-accent, #D9541E) 10%, transparent);
+  --nga-select-option-selected-fg: var(--nga-color-accent, #D9541E);
 }
 
 /* ── Dark mode ──────────────────────────────────────────────── */
 .dark {
-  --nga-select-filled-bg-hover:    color-mix(in srgb, var(--nga-select-filled-bg) 82%, #F7F8FA);
+  --nga-select-filled-bg-hover:    color-mix(in srgb, var(--nga-select-filled-bg) 82%, #FBF8F1);
   --nga-select-panel-bg:           color-mix(in oklab, var(--nga-color-card) 82%, transparent);
-  --nga-select-panel-border:       color-mix(in oklab, #F7F8FA 14%, transparent);
+  --nga-select-panel-border:       color-mix(in oklab, #FBF8F1 14%, transparent);
   --nga-select-panel-blur:         blur(24px) saturate(200%) brightness(1.06);
 }
 
@@ -81,7 +81,7 @@
 }
 
 .nga-select-trigger:focus-visible {
-  box-shadow: var(--nga-glow-ember, 0 0 0 4px rgba(26, 26, 26, 0.16));
+  box-shadow: var(--nga-glow-ember, 0 0 0 4px color-mix(in oklch, var(--nga-color-accent, #D9541E) 18%, transparent));
 }
 
 .nga-select-trigger:disabled {
@@ -90,7 +90,7 @@
 }
 
 .nga-select-placeholder {
-  color: var(--nga-color-muted-foreground, #6E6E6E);
+  color: var(--nga-color-muted-foreground, #756C5F);
 }
 
 /* ── Chevron ────────────────────────────────────────────────── */
@@ -119,7 +119,7 @@
 }
 .nga-select-trigger--default:hover:not(:disabled) { border-color: var(--nga-select-default-border-hover); }
 .nga-select-trigger--default.nga-select-trigger--open,
-.nga-select-trigger--default:focus-visible { border-color: var(--nga-color-ring, #333333); }
+.nga-select-trigger--default:focus-visible { border-color: var(--nga-color-ring, #D9541E); }
 
 /* ── Variant: filled ────────────────────────────────────────── */
 .nga-select-trigger--filled {
@@ -132,7 +132,7 @@
   border-color: var(--nga-select-filled-border-hover);
 }
 .nga-select-trigger--filled.nga-select-trigger--open,
-.nga-select-trigger--filled:focus-visible { border-color: var(--nga-color-ring, #333333); }
+.nga-select-trigger--filled:focus-visible { border-color: var(--nga-color-ring, #D9541E); }
 
 /* ── Variant: ghost ─────────────────────────────────────────── */
 .nga-select-trigger--ghost {
@@ -142,12 +142,12 @@
 }
 .nga-select-trigger--ghost:hover:not(:disabled) { border-color: var(--nga-select-ghost-border-hover); }
 .nga-select-trigger--ghost.nga-select-trigger--open,
-.nga-select-trigger--ghost:focus-visible { border-color: var(--nga-color-ring, #333333); }
+.nga-select-trigger--ghost:focus-visible { border-color: var(--nga-color-ring, #D9541E); }
 
 /* ── Invalid ────────────────────────────────────────────────── */
 .nga-select-trigger--invalid { border-color: var(--nga-select-invalid-border) !important; }
 .nga-select-trigger--invalid:focus-visible {
-  box-shadow: 0 0 0 4px rgba(26, 26, 26, 0.18);
+  box-shadow: 0 0 0 4px color-mix(in oklch, var(--nga-color-destructive, #C81E3A) 18%, transparent);
 }
 
 /* ── Panel ──────────────────────────────────────────────────── */
@@ -193,7 +193,7 @@
 
 .nga-select-search-icon {
   flex-shrink: 0;
-  color: var(--nga-color-muted-foreground, #6E6E6E);
+  color: var(--nga-color-muted-foreground, #756C5F);
 }
 
 .nga-select-search {
@@ -203,12 +203,12 @@
   background: transparent;
   font-family: inherit;
   font-size: var(--nga-size-font-sm, 13px);
-  color: var(--nga-color-foreground, #1A1A1A);
+  color: var(--nga-color-foreground, #111111);
   line-height: 1.5;
 }
 
 .nga-select-search::placeholder {
-  color: var(--nga-color-muted-foreground, #6E6E6E);
+  color: var(--nga-color-muted-foreground, #756C5F);
 }
 
 /* ── Options ────────────────────────────────────────────────── */
@@ -234,7 +234,7 @@
   line-height: 1.4;
   cursor: pointer;
   transition: background var(--nga-dur-fast, 120ms) var(--nga-ease-out, ease), color var(--nga-dur-fast, 120ms) var(--nga-ease-out, ease);
-  color: var(--nga-color-foreground, #1A1A1A);
+  color: var(--nga-color-foreground, #111111);
   user-select: none;
 }
 
@@ -250,7 +250,7 @@
 
 .nga-select-option--selected.nga-select-option--focused,
 .nga-select-option--selected:hover:not(.nga-select-option--disabled) {
-  background: color-mix(in oklch, var(--nga-color-accent, #333333) 15%, transparent);
+  background: color-mix(in oklch, var(--nga-color-accent, #D9541E) 15%, transparent);
 }
 
 .nga-select-option--disabled {
@@ -273,5 +273,5 @@
   padding: 0.75rem 0.625rem;
   text-align: center;
   font-size: var(--nga-size-font-sm, 13px);
-  color: var(--nga-color-muted-foreground, #6E6E6E);
+  color: var(--nga-color-muted-foreground, #756C5F);
 }

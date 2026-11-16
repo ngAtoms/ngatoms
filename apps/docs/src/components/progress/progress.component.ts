@@ -13,7 +13,9 @@ export type NgAtomsProgressVariant =
   | "default"
   | "accent"
   | "success"
-  | "destructive";
+  | "warning"
+  | "destructive"
+  | "info";
 
 @Component({
   selector: "nga-progress",
