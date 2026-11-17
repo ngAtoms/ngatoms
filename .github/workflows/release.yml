@@ -139,6 +139,76 @@ jobs:
         run: |
           git push --follow-tags "https://x-access-token:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" "HEAD:refs/heads/${REF_NAME}"
 
+      # One draft GitHub Release per tag created in this run. Drafts only: the
+      # package stays staged until the owner approves it with 2FA, so nothing
+      # is announced here. A problem in this step does not fail the release.
+      - name: Draft GitHub Releases
+        continue-on-error: true
+        timeout-minutes: 5
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          set -uo pipefail
+          export LC_ALL=C
+          # New tags are the ones on the version commit made in this run. When no
+          # version commit was made (HEAD is the pushed commit), nothing is new.
+          if [[ "$(git rev-parse HEAD)" == "$GITHUB_SHA" ]]; then
+            echo "No version commit in this run; no new release tags."
+            exit 0
+          fi
+          new="$(git tag --points-at HEAD \
+            | grep -E '^(ngatoms|@ngatoms/ngatoms-tokens)@[0-9]+\.[0-9]+\.[0-9]+(-[0-9A-Za-z.-]+)?$' || true)"
+          if [[ -z "$new" ]]; then
+            echo "No new release tags in this run."
+            exit 0
+          fi
+          existing="$(gh release list --limit 1000 --json tagName --jq '.[].tagName')"
+          status=0
+          while IFS= read -r tag; do
+            version="${tag##*@}"
+            case "$tag" in
+              ngatoms@*) changelog="packages/ngatoms/CHANGELOG.md" ;;
+              @ngatoms/ngatoms-tokens@*) changelog="packages/tokens/CHANGELOG.md" ;;
+            esac
+            if grep -qxF "$tag" <<< "$existing"; then
+              echo "Release for $tag already exists; skipping."
+              continue
+            fi
+            notes="$RUNNER_TEMP/notes-${tag//[@\/]/_}.md"
+            awk -v heading="## ${version}" '
+              $0 == heading { found = 1; next }
+              /^## / && found { exit }
+              found { print }
+            ' "$changelog" | sed -e :a -e '/^\n*$/{$d;N;ba' -e '}' | sed '/./,$!d' > "$notes"
+            if [[ ! -s "$notes" ]]; then
+              echo "::warning::No notes for $tag in $changelog; no Release drafted."
+              status=1
+              continue
+            fi
+            if grep -qiE 'GHSA|advisory|CVE|vulnerab|traversal|injection|exploit' "$notes"; then
+              echo "::warning::Notes for $tag mention a security term; no Release drafted. Review the notes by hand."
+              status=1
+              continue
+            fi
+            flags=(--draft --verify-tag --title "$tag" --notes-file "$notes")
+            if [[ "$version" == *-* ]]; then
+              flags+=(--prerelease)
+            fi
+            if [[ "$tag" == @ngatoms/ngatoms-tokens@* ]]; then
+              flags+=(--latest=false)
+            fi
+            if out="$(gh release create "$tag" "${flags[@]}" 2>&1)"; then
+              echo "Drafted release for $tag"
+            elif grep -qi "already exists" <<< "$out"; then
+              echo "Release for $tag already exists; skipping."
+            else
+              echo "::warning::Could not draft a release for $tag."
+              status=1
+            fi
+          done <<< "$new"
+          exit "$status"
+
       - name: Exit LTS pre-release mode
         if: success() && github.ref_name == 'lts'
         env:
