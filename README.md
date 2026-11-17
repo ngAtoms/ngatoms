@@ -20,6 +20,14 @@
 
 ---
 
+## What is NgAtoms
+
+NgAtoms is a set of Angular UI components that you copy into your own project instead of installing as a dependency. A small CLI downloads the source of each component, so the code is yours to read, change and keep. There is no runtime package to update and no library API to wait on.
+
+NgAtoms is MIT-licensed and will always be free.
+
+Documentation and live previews: **[ngatoms.com](https://ngatoms.com)**.
+
 ## Quick Start
 
 ```bash
@@ -30,16 +38,24 @@ npx ngatoms init
 npx ngatoms add button
 ```
 
+`init` creates `ngatoms.json` (config), a default theme file, and wires it into your styles.
+`add <component>` fetches the component source from GitHub and copies it into your `componentsDir`.
+
+## Requirements
+
+- Angular 22 or later (`@angular/core` and `@angular/common` `>=22.0.0`)
+- Node.js 22.22.3, 24.15 or 26 and later (required by Angular 22)
+
 ## Components
 
-Full docs and previews at **[ngatoms.com](https://ngatoms.com)**.
+Components are marked `stable` or `alpha`.
 
 | Component | Description | Status |
 |-----------|-------------|--------|
 | `accordion` | Collapsible items, single or multiple mode | ![stable](https://img.shields.io/badge/stable-green?style=flat-square) |
 | `alert` | Feedback messages — 5 variants | ![stable](https://img.shields.io/badge/stable-green?style=flat-square) |
 | `avatar` | Image with fallback initials or icon | ![stable](https://img.shields.io/badge/stable-green?style=flat-square) |
-| `badge` | Labels — 7 variants: default, ember, success, warning, destructive, solid, outline | ![stable](https://img.shields.io/badge/stable-green?style=flat-square) |
+| `badge` | Labels — 8 variants: default, ember, success, warning, destructive, info, solid, outline | ![stable](https://img.shields.io/badge/stable-green?style=flat-square) |
 | `button` | 5 variants, 5 sizes, loading state, icon support | ![stable](https://img.shields.io/badge/stable-green?style=flat-square) |
 | `card` | Container with header, content, footer slots | ![stable](https://img.shields.io/badge/stable-green?style=flat-square) |
 | `checkbox` | Checked, unchecked, and indeterminate states | ![stable](https://img.shields.io/badge/stable-green?style=flat-square) |
@@ -48,10 +64,10 @@ Full docs and previews at **[ngatoms.com](https://ngatoms.com)**.
 | `dropdown-menu` | Contextual action menu — 4 placements, flip, icons, keyboard navigation | ![stable](https://img.shields.io/badge/stable-green?style=flat-square) |
 | `input` | 3 variants, 5 sizes, invalid state | ![stable](https://img.shields.io/badge/stable-green?style=flat-square) |
 | `number-input` | Numeric input with increment/decrement controls | ![stable](https://img.shields.io/badge/stable-green?style=flat-square) |
+| `overlay` | Shared overlay plumbing, installed automatically with the components that need it | ![stable](https://img.shields.io/badge/stable-green?style=flat-square) |
 | `popover` | Floating content anchored to a trigger — 4 placements, flip | ![stable](https://img.shields.io/badge/stable-green?style=flat-square) |
 | `progress` | Progress bar — determinate and indeterminate | ![stable](https://img.shields.io/badge/stable-green?style=flat-square) |
 | `radio-group` | Radio button group with keyboard navigation | ![stable](https://img.shields.io/badge/stable-green?style=flat-square) |
-| `grid` | Data grid with tree rows, column groups, editing and virtualization. | ![alpha](https://img.shields.io/badge/alpha-yellow?style=flat-square) |
 | `select` | Custom select list — 3 variants, 5 sizes, invalid state | ![stable](https://img.shields.io/badge/stable-green?style=flat-square) |
 | `separator` | Horizontal or vertical divider | ![stable](https://img.shields.io/badge/stable-green?style=flat-square) |
 | `spinner` | Loading spinner | ![stable](https://img.shields.io/badge/stable-green?style=flat-square) |
@@ -59,25 +75,28 @@ Full docs and previews at **[ngatoms.com](https://ngatoms.com)**.
 | `tabs` | Underline and pills variants, keyboard navigation | ![stable](https://img.shields.io/badge/stable-green?style=flat-square) |
 | `textarea` | Multiline input with auto-resize | ![stable](https://img.shields.io/badge/stable-green?style=flat-square) |
 | `tooltip` | Floating label — 4 placements, viewport clamping | ![stable](https://img.shields.io/badge/stable-green?style=flat-square) |
-| `breadcrumb` | Hierarchical navigation trail | ![planned](https://img.shields.io/badge/planned-lightgrey?style=flat-square) |
-| `combobox` | Text input with filtered dropdown | ![planned](https://img.shields.io/badge/planned-lightgrey?style=flat-square) |
-| `file-upload` | Drag-and-drop file input zone | ![planned](https://img.shields.io/badge/planned-lightgrey?style=flat-square) |
-| `pagination` | Page navigation controls | ![planned](https://img.shields.io/badge/planned-lightgrey?style=flat-square) |
-| `slider` | Range slider — single and dual thumb | ![planned](https://img.shields.io/badge/planned-lightgrey?style=flat-square) |
-| `stepper` | Multi-step wizard progress indicator | ![planned](https://img.shields.io/badge/planned-lightgrey?style=flat-square) |
-| `tag-input` | Input that creates removable tag chips | ![planned](https://img.shields.io/badge/planned-lightgrey?style=flat-square) |
-| `code-block` | Syntax-highlighted code display | ![planned](https://img.shields.io/badge/planned-lightgrey?style=flat-square) |
-| `color-picker` | HSL/hex color selector | ![planned](https://img.shields.io/badge/planned-lightgrey?style=flat-square) |
-| `context-menu` | Right-click triggered menu | ![planned](https://img.shields.io/badge/planned-lightgrey?style=flat-square) |
-| `drawer` | Side-panel overlay | ![planned](https://img.shields.io/badge/planned-lightgrey?style=flat-square) |
-| `rating` | Star rating input | ![planned](https://img.shields.io/badge/planned-lightgrey?style=flat-square) |
-| `skeleton` | Placeholder loading shimmer | ![planned](https://img.shields.io/badge/planned-lightgrey?style=flat-square) |
-| `timeline` | Vertical event timeline | ![planned](https://img.shields.io/badge/planned-lightgrey?style=flat-square) |
-| `tree` | Collapsible tree view | ![planned](https://img.shields.io/badge/planned-lightgrey?style=flat-square) |
+| `grid` | Data grid with tree rows, column groups, pinned columns, filters, sorting, editing, range selection and virtualization | ![alpha](https://img.shields.io/badge/alpha-yellow?style=flat-square) |
+| `grid-core` | Framework-free models behind the grid, installed automatically with it | ![alpha](https://img.shields.io/badge/alpha-yellow?style=flat-square) |
 
-**Stability.** The public API of a `stable` component follows semver: it changes only in a major release. A component marked `alpha` is outside semver and can change in a minor or patch release. Today that is `grid`, with `grid-core`, including the exported helpers `fillDownChanges` and `fillFromChanges`.
+**Stability.** The public API of a `stable` component follows semver: it changes only in a major release. A component marked `alpha` is outside semver and can change in a minor or patch release. Today that is `grid` and `grid-core`, including the exported helpers `fillDownChanges` and `fillFromChanges`.
 
-## Monorepo Structure
+## Design tokens
+
+The colors, spacing, radii, shadows, fonts and other design values are CSS variables (prefixed `--nga-`), published as [`@ngatoms/ngatoms-tokens`](https://www.npmjs.com/package/@ngatoms/ngatoms-tokens). The theme file that `init` creates contains them, so you can restyle the components by changing variables.
+
+## Configuration
+
+`init` writes `ngatoms.json`:
+
+```json
+{
+  "componentsDir": "src/components",
+  "stylesFile": "src/styles.css",
+  "themes": ["src/themes/default.css"]
+}
+```
+
+## Monorepo structure
 
 ```
 ngatoms/
@@ -85,14 +104,18 @@ ngatoms/
 │  ├─ ngatoms        # Published CLI
 │  ├─ primitives     # Angular UI primitive components
 │  ├─ tokens         # Design tokens / CSS variables
+│  ├─ cli            # Placeholder, not published
 │  └─ utils          # Shared utilities
 ├─ apps/
-│  └─ docs           # Documentation site → ngatoms.com
+│  ├─ docs           # Documentation site → ngatoms.com
+│  └─ example        # Example app
 ├─ registry/         # Component registry metadata
 └─ tools/            # Build and publishing scripts
 ```
 
-## Development
+## Contributing
+
+Contributions are welcome. Read [CONTRIBUTING.md](CONTRIBUTING.md) first. In short:
 
 ```bash
 npm install
@@ -101,7 +124,15 @@ npm run test
 npm run lint
 ```
 
-## Release Channels
+Open pull requests against `rc`. Every pull request that changes a published package needs a changeset:
+
+```bash
+npm run changeset
+```
+
+Releases are described in [RELEASING.md](RELEASING.md).
+
+## Release channels
 
 | Branch | npm tag | Description |
 |--------|---------|-------------|
@@ -111,4 +142,4 @@ npm run lint
 
 ## License
 
-MIT
+[MIT](LICENSE). NgAtoms is MIT-licensed and will always be free.
