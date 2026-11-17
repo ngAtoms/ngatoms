@@ -35,7 +35,7 @@ npm workspaces monorepo with the following packages:
 | `packages/primitives` | `@ngatoms/ngatoms-primitives` | Angular UI primitive components |
 | `packages/tokens` | `@ngatoms/ngatoms-tokens` | Design tokens / CSS variables |
 | `packages/utils` | `@ngatoms/ngatoms-utils` | Shared utilities |
-| `apps/docs` | `@ngatoms/ngatoms-docs` | Angular 22 interactive docs — deployed to `ngatoms.com` via Cloudflare Pages |
+| `apps/docs` | `@ngatoms/ngatoms-docs` | Angular 22 interactive docs — deployed to `ngatoms.com` as a Cloudflare Worker with static assets |
 | `registry/` | — | Component registry metadata (`registry.json`) |
 
 ## Common Commands
@@ -103,8 +103,8 @@ The project supports multiple release channels via branch strategy:
 
 ## Deployment
 
-- **Cloudflare Pages** (current): `apps/docs` is deployed via Cloudflare Pages on push to `main`. Build command: `npm run build --workspace=apps/docs`. Output: `apps/docs/dist/browser`. Config in `wrangler.toml`.
-- When editing `wrangler.toml`: use `pages_build_output_dir` (not `assets`) — this is a Pages deployment, not a Workers deployment.
+- **Cloudflare Worker with static assets**: `apps/docs` is published to ngatoms.com automatically by Cloudflare each time `main` changes (a merge to `main` is the deploy). There is no deploy workflow in `.github`. Build command: `npm run build --workspace=apps/docs`. Output: `apps/docs/dist/browser`. Config in `wrangler.toml`.
+- `wrangler.toml` uses `name` and `[assets]` with `directory = "apps/docs/dist/browser"` and `not_found_handling = "single-page-application"`. Keep that. Do not add `pages_build_output_dir` unless the deploy target changes. Do not run `wrangler deploy` by hand; do not add a Cloudflare token to the repo or to GitHub.
 - Do not add `<base href>` other than `/` to `apps/docs/src/index.html`.
 
 ## npm Publishing
